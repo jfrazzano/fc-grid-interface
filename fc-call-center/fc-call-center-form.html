@@ -1,0 +1,542 @@
+<link rel="import" href="fc-highschools-nj-selector.html">
+<dom-module id="fc-call-center-form">
+<template id="fc-call-center-form-template">
+<style>
+:root{
+
+  }
+:host{margin-top: 2px;
+}
+     paper-card{
+        width: 99%;
+        padding: 4px 8px 8px 4px;
+        margin: 12px;
+        margin-top:-6px;
+        --paper-card-header-image-text:{color:#009; position: absolute; right: 6px; top: 25px;}
+        --paper-card-header:{height: 55px; border-bottom:solid 1px silver;}
+  
+    }
+    *{font-family: merriweather;
+      color: #009;}
+    fc-iss-input.right{
+        padding: 4px;
+        margin: 4px 4px 4px 6px;
+        max-width: 660px;
+      }
+    fc-iss-input.left{
+      padding: 4px 4px 6px 0px;
+        margin: 4px 6px 4px 0px;
+        max-width: 660px;
+    }
+    paper-button{
+		 	 width: 50%;
+		 	 min-width: 147px;
+		 	 font-weight: 600; 	  
+		 	 font-size: 14px;
+		 	 text-align: center;
+		 	 white-space: nowrap;
+		 	 max-height: 36px;
+		 	 @apply(--layout-nowrap);
+		 	 background: white;
+		 	 border: #efefef 1px solid;
+		 }
+		 paper-button.green{
+		 	color: green; 
+		 	border: 2px solid green;
+		}
+		paper-button.darkblue{
+			color: #009;
+			border: 2px solid #009;
+		}
+		paper-button.red{
+			color: red;
+			border: 2px solid red;
+		}
+		paper-button.orange{
+			color: orange;
+			border: 2px solid orange;
+		}
+		paper-button:hover, paper-button:active{
+			box-shadow: 2px 4px 7px 2px; 
+
+		} 
+		paper-button.darkblue:hover, paper-button.darkblue:active{
+			box-shadow: 2px 4px 7px 2px gold; 
+
+		} 
+		.buttonRow{
+			@apply(--layout-flex);
+			@apply(--layout-horizontal);
+			padding: 2px;
+		}
+
+   
+    paper-radio-button{
+    		font-size: 16px;
+    		font-weight: 600;
+    		size: var(--paper-radio-size, 24px);
+    		 /*  --paper-radio-button-label-color: var(--my-blue-009, #000099);*/
+    		   --paper-radio-button-checked-color: var(--paper-green-900);
+
+
+    }
+    .card-actions{
+    	padding: 8px 6px;
+    }
+    label.returningCaller{
+    	color: black;
+    	font-size: 16px;
+    /*	font-style: italic;*/
+    	font-weight: 500;
+    }
+    paper-radio-group.tallbox{
+    	@apply(--layout-vertical);
+    	 --paper-radio-group-padding: var(--too-much-padding, 6px);
+
+    }
+    iron-icon{ 
+        width: 36px;
+        height: 36px;
+    }
+
+  .sumTag{
+  	font-weight: 500;
+  	font-size: 14px;
+  	margin-left: 3px;
+  	outline: 0px white solid;
+  }
+  .detTag{
+  		font-weight: 400;
+  		font-size: 16px;
+  		margin: 10px 16px;
+  		padding: 12px;
+  		color: brown;
+  		border: silver solid 2px;
+  		background: #efefef;
+  		box-shadow: 3px 5px 11px 3px #afafaf;
+
+  }
+
+
+  .timestamp{
+  	font-weight: 300;
+    color: #009;
+    font-family: merriweather;
+  	font-size: 12px;
+  	padding: 8px;
+  	float: left;
+    margin-top: -34px;
+    margin-left: -12px;
+
+  }
+  .pageNumbers{
+    position: absolute; 
+    right: 22px; 
+    top: 12px;
+    font-size: 13px;
+  }
+  
+  .subheading {
+    font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 50px;
+   right: 23px;
+    }
+  
+
+  .dropbtn:hover, .dropbtn:focus{
+		    background-color: #3e8e41;
+		}
+		/* The container <div> - needed to position the dropdown content */
+		.dropdown {
+		    position: relative;
+		    display: inline-block;
+		}
+		/* Dropdown Content (Hidden by Default) */
+		.dropdown-content {
+		    display: none;
+		    position: absolute;
+		    background-color: #f9f9f9;
+		    min-width: 120px;
+		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		}
+		/* Links inside the dropdown */
+		.dropdown-content a {
+		    color: black;
+		    padding: 5px 8px;
+		    text-decoration: none;
+		    display: block;
+		}
+		.check{
+			font-size:26px;
+			color: green;
+			position: absolute;
+			left: 5px;
+		}
+		.instruction{
+			color:#009;
+			font-weight:700;
+		}
+		.radioGroupBlock{
+			padding: 12px;
+    }
+      .questionHeader{
+        padding: 8px;
+        margin: 12px;
+      }
+
+		.importantNote{
+				color: black;
+				font-weight: 400;
+				padding: 8px;
+				margin: 4px;
+				margin-bottom: 26px;
+
+		},
+		.detailPads{
+				margin: 8px;
+
+		}
+    .holderClass{
+        margin:4px;
+        padding:4px;
+    }
+    @media(max-width: 620px){
+    .container{
+        width: 99%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+    };
+  }
+
+</style>
+  <paper-card class="intakeForm vertical layout">
+        <span class="pageNumbers">Page {{pageNumber}} of <content select=".pageTotal"></content></span>
+               <section>
+        <span class="timestamp">
+        [[time]] on [[date]]
+        </span>
+         <span class="subheading">
+        * Indicates a Required Field
+        </span>
+        </section>
+    
+  <div class="card-content">
+  <form>
+    <div class="vertical layout self-stretch nowrap" >    
+      <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
+        <section class="horizontal layout container holderClass"> 
+        <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+      </section>
+      <div class="horizontal layout flex wrap around-justified">
+        <section class="container holderClass">
+          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  item-select-property="value"  value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.multiSelectA]]">
+          </fc-iss-input>
+        </section>
+        <section class="container holderClass">
+          <fc-iss-input id$="{{item.nameB}}_{{counter}}" change-event="{{changeEventB}}" on-keyup="_sendInputChanged" on-change="objectHandler" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}"multi-select="[[item.multiSelectB]]">
+          </fc-iss-input>
+        </section>  
+    </div>
+    
+  </template>
+  </div>  
+  </form>   
+</div>
+<content select=".next"></content>
+    <div class="card-actions horizontal layout flex container center-justified" style="min-height: 18%;">
+          <paper-button class="flex-1" btn="leftClick">back</paper-button>
+           <paper-button class="flex-1" id="one" btn="rightClick">CONTINUE</paper-button>
+    </div>
+  </paper-card>
+</template>
+<script>
+FcCallCenterForm=Polymer({
+    is:"fc-call-center-form",
+    observers:["observeChangeB(changeEventB.event, changeEventB.value, changeEventB.name)", "observeChangeA(changeEventA.event, changeEventA.value, changeEventA.name)"],
+    properties:{
+    	time:{
+		    type:Date,
+        value:function(){
+  					var time=new Date().toLocaleTimeString(),
+            spliceLocation =(time.charAt(1)===":")?4:5;
+            time=time.split("")
+            time.splice(spliceLocation,3)
+            time=time.toString().replace(/,/g,"")
+					return time;
+			},
+			notify: true
+		},
+    pageNumber:{
+      type:Number,
+      value: function(){return 1;},
+      notify: true,
+    },
+		date:{
+				type: Date,
+				value: function(){var date=new Date().toLocaleDateString();
+					return date;},
+				notify: true,
+		},searchVals:{
+      type: Object,
+      value: function(){return {};},
+      notify: true
+    },
+    changeEventA:{
+      type:Object,
+      value:function(){return {};},
+      notify: true,
+    },
+    changeEventB:{
+      type:Object,
+      value:function(){return {};},
+      notify: true,
+    },
+
+      inputArray:{
+        type: Array,
+        notify: true,
+      },
+      dropdownItems:{
+        type:Array,
+        value:function(){return },
+        notify: true,
+      },
+      itemObject:{
+        type:Array,
+        notify: true,
+      },
+    sfna:{
+      type: Array,
+      notify: true,
+      value: function(){return [];},
+      observer:"observeSfna",
+    },
+    slna:{
+      type: Array,
+      notify: true,
+        value: function(){return [];},
+      observer:"observeSlna",
+    },
+      currentHeight:{
+        type: String,
+        notify: true
+      },
+      fcStudent: {
+          type: Object,
+          value: {},
+          observer: "fcStudentSelected",
+          notify: true
+        },
+        liArray: {
+          type: Array,
+          notify: true
+        },
+      njhs: {
+        type:Array,
+        notify: true
+      },
+      
+        fullPath: {
+          type: String,
+          computed: 'computefullPath(rootPath, instancePath)',
+          notify: true
+        },
+        fcid:{
+          type: String,
+          value:function(){
+            return "njhighschools000020160208";
+          },
+          notify: true
+        },
+        instancePath: {
+          type: String,
+          value: function(){
+            var instancePath = 'forms/callIntake';
+            return instancePath;
+          },
+          notify: true
+        },
+        rootPath: {
+          type: String,
+          value: function()
+              { var rootPath= "https://focusedstaging1.firebaseio.com/";
+                return  rootPath;
+              },
+          notify: true
+        },
+        student: {
+          type: Object,
+          value:function(){return {};},
+          notify: true,
+         }
+      },
+        
+
+
+  computefullPath: function(rootPath, instancePath){
+    var olive = rootPath + '/' + instancePath; 
+    return olive;
+  },
+  _computeDropDownItems(liArray, item){
+    console.log(item.valueB, liArray);
+    if(item.valueB){return liArray;}
+    else{
+
+    }
+
+  },
+
+  observeChangeB(event, value, name){
+   // console.log(event, value, name);
+     this.set(["student",name], value);
+     console.log(this.student[name], this.student);
+
+  },
+
+observeChangeA(event, value, name){
+    //console.log(event, value, name);
+    this.set(["student",name], value);
+    console.log(this.student[name], this.student);
+
+  },
+  observeSearchValue(nv, ov){if(nv){console.log(nv);}},
+
+  computeStartListItems: function(fullPath, localStorageHs){
+    var self=this;
+    var olive = fullPath;
+    // console.log(olive);
+    return 250;
+
+  },
+
+
+  _computeShowDropButton(dropItems){
+    var retVal=(dropItems!==false)?true: false;
+    return retVal;
+  },
+
+  computeItemHeaderHidden(header){
+    if(header){return false;}else{return true;}
+  },
+  _passSearchVals: function(e, detail){
+      console.log(e.detail.value, e.detail.name, "take Note here");
+      var name = e.detail.name;
+      var val = e.detail.value;
+       this.set(["searchVals", name], val);
+      //this.$.callList.updateSearchVals(this.searchVals, name, val);
+    },
+    objectHandler(e){
+      console.log(e);
+      var propnameandvalue=(e.target.nameA)?[e.target.nameA,e.target.valueA]:[e.target.nameB,e.target.valueB];
+      var prop=propnameandvalue[0];
+      this.set(["student", prop],propnameandvalue[1]);
+      console.log(this.student);
+    },
+    _computeHidden(label){
+      var retVal=(label==="Current School")?true:false;
+      if(retVal===true){
+         var pickle= this.fullPath+"/"+this.fcid
+        var jason=this;
+        var ref = new Firebase(pickle);
+        ref.on("value", function(snap){
+        var vald = snap.val();
+        jason.set("njhs",vald); 
+        jason.set('liArray', jason.njhs);
+        console.log(jason.liArray);
+    });
+
+
+
+      }
+      return retVal;
+    },
+     observeSfna(nv,ov){
+      if(nv&&nv.length!==0){
+
+        }
+        var elem=Polymer.dom(this.root).querySelectorAll([name='studentFirstName'])
+        if(elem.dropdownItems==undefined||elem.dropdownItems.length==null){elem.dropdownItems=[];}
+        elem.dropdownItems=nv;
+        elem.itemSelectProperty="";
+
+        //console.log(nv,ov,"look hr");
+
+     },
+
+     observeSlna(nv,ov){
+      if(nv&&nv.length!==0){
+
+        }
+        var elem=Polymer.dom(this.root).querySelectorAll([name='studentLastName'])
+        if(elem.dropdownItems==undefined||elem.dropdownItems.length==null){elem.dropdownItems=[];}
+        elem.dropdownItems=nv;
+        elem.itemSelectProperty="";
+        //console.log(nv,ov,"look hr");
+     },
+
+  fcStudentSelected: function(newVal, oldVal)
+  {
+    //console.log(newVal, oldVal);
+    if(newVal!={} && newVal.FcStudent!=null)
+    { //console.log(newVal);
+      var profile=newVal.FcStudent.profile;
+      //console.log(profile);
+      var prokeys =Object.keys(profile);
+      //console.log(prokeys);
+      var counter=prokeys.length;
+      //console.log(counter);
+      var pasta =newVal.FcStudent.pastacademics;
+      //console.log(pasta);
+      var pastakeys=Object.keys(pasta);
+      var len =pastakeys.length;
+      //console.log(pastakeys); 
+      var arr=[];
+      arr = Polymer.dom(this.root).querySelectorAll('fc-input-search-select');
+      //console.log(arr);
+      var i=0;
+      //console.log(arr);
+      for(i=0; i<counter; i++)
+      {
+        arr.forEach(function(elem, index, arr){
+      
+          if(elem.name==prokeys[i])
+            {
+              elem.issValue=profile[prokeys[i]];
+              //console.log(elem.issValue);
+            }
+          if((len-i)>0 && elem.name==pastakeys[i])
+            {
+              elem.issValue=pasta[pastakeys[i]];
+              elem.selected=pasta[pastakeys[i]];
+              //console.log(elem.issValue);
+            }
+          //console.log(elem.name, elem.issValue);
+        });
+      }
+    }
+  },
+  _sendInputChanged: function(e, detail){
+    //console.log(e,e.target);
+    var target=e.target;
+    //console.log(e.model.item);
+    var name=target.name;
+    this.fire("sendInputVal", {value: target.value, name: name});
+    this.searchVals[name]=target.value;
+  },
+_computeProfileObj: function(dataSource){
+  //console.log(dataSource.itemValue);
+},
+  
+
+
+});
+
+</script>
+</dom-module>

@@ -1,0 +1,210 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcCallCenterDataBehavior = {
+   submitHandler(event){
+        this.set("formSubmitOne", true);
+          var formResults = this.$.callIntakeForm.serialize();
+          console.log(formResults, this.studentCaller, this.inputArraysAb);
+            var d = new Date();
+            var n = -d.getTime();
+            var readableTime=new Date().toLocaleString();
+            console.log(n);
+            console.log(readableTime, formResults, this.inputArraysAb, n);
+            var dateTime=readableTime.split(",")
+            this.studentCaller.studentFullName=this.studentCaller.studentFirstName + " " + this.studentCaller.studentLastName;
+            this.studentCaller.fcid=this.studentCaller.studentLastName+this.studentCaller.studentFirstName+"_00001";
+              console.log(this.studentCaller);
+            //do search here of database to make an ID... 
+            console.log(this.studentCaller);
+              var obj={"date":dateTime[0], "time":dateTime[1]};
+            var callinObject=Object.assign(obj, formResults, this.studentCaller, {"orderingTime":n});
+            var keys=Object.keys(callinObject);
+            var headers =keys.map(function(val,i,arr){
+                  var label=val.replace(/([A-Z])/g, ' $1'),  
+                  label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+                  label=label.replace("1", " One"),
+                  label=label.replace("2", " Two");
+                    return label;
+                });
+            console.log(headers);
+          var cols=undefined;
+         
+             var month=new Date().getFullMonth();
+             var gridname=month+"_CallCenterRecord";
+             var apiName="FocusedCallCenter";
+             var columnHeaders=[headers];
+             console.log(columnHeaders, "509, folloy");
+             var sheets=1;
+             var row=2;
+             var toolset=null;
+             var addedRow=keys.map(function(key, ind, array){
+                          var fred=callinObject[key];
+                          console.log(fred);
+                            return fred;
+                          });
+             var baseValuesArrays=[];
+             baseValuesArrays.push(addedRow);
+             console.log(baseValuesArrays, addedRow);
+             var userStyle="";
+             var userClass=this.defaultFormat;
+             var userHeaderStyle="";
+             var userHeaderClass=this.defaultHeader;
+             var isCsv=true;
+
+
+             this.pickle={};
+             this.pickle=new DataGrids();
+             
+
+             var array= this.pickle.gridConstructor([cols,row,gridname, apiName, columnHeaders,sheets, toolset, baseValuesArrays, userStyle, userClass, userHeaderStyle,userHeaderClass, isCsv]);
+          var grid=document.getElementById("liveGrid");
+          console.log(this.dataArrays, this.dataArrays);
+          var numInArray=this.dataArrays.length;
+            var str="00000";
+          var co=(str+numInArray).slice(-5);
+          var ngrid="newgrid_"+co; 
+          this.set([ngrid],array);
+          this.push("dataArrays", array);
+          var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
+
+          // grid.dataArrays.push(array);
+          // console.log(array, grid, grid.dataGrids);
+            // var saveObj=inquiry.getFanout();
+          //var ref = new Firebase("https://focused0ne.firebaseio.com"); 
+            //inquiry.fcSave(ref);
+           // var callerRole = this.callerRoleSelected;
+            //ref.child("students/" + profile.fcid).update(profile);
+            //ref.child("students/" + pacademics.fcid + "/pastacademics").update(pacademics);
+             // var inquiry = new FcInquiry(formResults, callerRole, profile);
+             
+             // console.log(this.callerRoleSelected);
+               //inquiry.fcSave(ref);
+            //ref.onAuth(function(authdata){alert(authdata.uid);});
+
+
+
+
+          
+        },
+        observeInputArraysAB(ninputarrays,oldinputarrays){
+          if(ninputarrays){console.log(ninputarrays, oldinputarrays);}
+
+
+
+        },
+
+  calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(protoStaticGetter){
+    var arrReturn=protoStaticGetter,it={},arrHolder=[];
+    var keyValArrReturn= arrReturn.map(function(val,index){
+        if(index%8===0){arrHolder=[];}//sets the 8 inputs a page
+        var temp=val[1].label2;
+        temp=temp.replace(/\s/g, "");
+        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectCheck": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
+        //setting ab allows a row of two inputs to be created for the dom-repeat
+        var nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProp="dropdownItems"+ab, multiSelectProp="multiSelect"+ab;
+        it[nameProp]=name,it[labelProp]=label,it[propertyNameProp]=propertyName,it[dropdownItemsProp]=dropdownItems;
+        it[multiSelectProp]=multiSelect;
+        //the above lines allow the creation of the A input and the B input to be shared in the same object;
+        //console.log(it[dropdownItemsProp]);
+        if(index%2!==0){
+            var holder=it;
+            it={};
+            arrHolder.push(holder);
+            }
+        //above uses sets one full object in an array that will be sent with 3 other object pairs to full a page (see directly below)
+            if((index+1)%8===0){return arrHolder;}
+            else{ return false;} //false allows for the easy filtering of the mapped array, in the chained function below/we are only 1 in 8 of the array "slots" for the new array; so array is not sparse, filter ;-)
+        }).filter(function(val){return(val!==false)});
+    //console.log(keyValArrReturn);
+    return keyValArrReturn;
+  },
+  computePageNumber(selected){ return this.selected+1;},
+
+  _computePageTotal(inputArraysAb, index){
+     var pageTotal=(this.inputArraysAb.length+1);
+     this.set("pageTotal", pageTotal);
+     this.set("shadowIndex", pageTotal);
+     //console.log(index);
+    return pageTotal;},
+
+  initializePages(){
+    //get at least the labelable values from the classes we have made... oh getters and setters would make this five-10 lines of code... 
+    var student=new FcStudentProfile({}), pastAcademics=new FcStudentPastAcademics({});
+        var it={},keyz=Object.keys(pastAcademics),keys=Object.keys(student),inputArrayA=[],inputArrayB=[],contentArray=[], two=keys[12],one=keys.splice(12,1);
+        //note that the it object will be used for moving properties from one object to another, later in the code via an Object.assign--poor mans defineProperties set and gets...
+        keys.push(two);
+        var moreKeys=keys.concat(keyz); 
+        var length;
+        moreKeys.forEach(function(val, index, array){
+          length=array.length;
+        var label=val.replace(/([A-Z])/g, ' $1'),  
+        label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+        label=label.replace("1", " One"),
+        label=label.replace("2", " Two");
+        var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
+        //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
+        it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(val.selectedItems)?val.selecteditems: false;
+      
+        // it[multiSelectProperty]=(val.multiSelect&&val.multiSelect===true)?true:false;
+        var pushVal=(index%2===0)?inputArrayA:inputArrayB;
+        //alternating on the index to get a pair of items to load on the dom!
+        pushVal.push(it);
+        it={};
+        //cleared `it`, next gonna grab eight inputs (four pairs of two) for the cards
+        if((index+1)%4==0 || array.length-1===index){
+              this.push("inputArraysAb", [inputArrayA, inputArrayB]);
+              inputArrayA=[];
+              inputArrayB=[];
+                 }
+         }, this);
+        //this was original impl... used two arrays to make columns... now need to resort them and move paired odd array elements object sub properties all onto one replacement element for the other two, and maintain order in the impl... Wait for it... wait for it... it's...it is coming!
+         var mymerge=this.inputArraysAb.map(function(prop, index, array){
+         var pickle=prop[0].concat(prop[1]); 
+            var nobj=Object.assign({},pickle[0],pickle[2]);//concern here regarding cloning using a getter: did I just bind the properties?
+            var nobj2=Object.assign({},pickle[1],pickle[3]);
+            return[nobj,nobj2];
+         }, this);
+        //this is a columns to rows switch will need same api dynamics in the grid table and in any accounting interface DUAL USE IMPORTANT!!! 
+         var arrat=[];
+         mymerge.forEach(function(val,i,arr){
+                if(i%2===0&&i<arr.length-1){var mini=val.concat(arr[i+1]); arrat.push(mini);}
+            });
+         console.log(arrat);
+         console.log(this.njhs);
+           var jason=this;
+        var pickle= "https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208";
+        var ref = new Firebase(pickle);
+        ref.on("value", function(snap){
+        var vald = snap.val();
+        var valuebased=vald.map(function(val){
+          var nu={"name": "currentSchool", "value":val};
+          return nu;
+        });
+        jason.set("njhs",valuebased); 
+         arrat[2][0].dropdownItemsB=valuebased;
+         arrat[2][0].dropdownItemsA=[{"name":"gradeLevel", "value": "9th Grade"}, {"name":"gradeLevel","value": "10th Grade"}, {"name":"gradeLevel","value": "11th Grade"},{"name":"gradeLevel","value":"12th Grade"}, {"name":"gradeLevel","value": "Grades 7-8"}, {"name":"gradeLevel","value": "Grades 5-6"}, {"name":"gradeLevel","value": "Grades 3-4"}];
+            console.log*(arrat);
+            arrat[2][1].labelB="Educational Aspirations";
+            arrat[2][1].dropdownItemsB=[{"name": "highestEducationLevel","value": "Regional or State College"}, {"name": "highestEducationLevel","value": "Private University"}, {"name": "highestEducationLevel","value": "Competitve Private University"},{"name": "highestEducationLevel","value":"Elite Private University"}, {"name": "highestEducationLevel","value": "Masters Degree"}, {"name": "highestEducationLevel","value": "Professional Degree"}, {"name": "highestEducationLevel","value": "Doctoral Degree, or Equivalent"}];
+            arrat[2][1].labelA="Previous Eductaion";
+            arrat[2][2].dropdownItemsA=[{"name": "startMathScore", "value": "200-300"}, {"name": "startMathScore", "value": "300-400"}, {"name": "startMathScore","value": "400-500"},{"name": "startMathScore","value":"500-600"}, {"name": "startMathScore","value": "600-650"}, {"name": "startMathScore","value": "650-700"}, {"name": "startMathScore","value": "700-750"}, {"name": "startMathScore", "value": "750-800"}];
+            arrat[2][2].dropdownItemsB=[{"name": "startReadingScore","value": "200-300"}, {"name": "startReadingScore","value": "300-400"}, {"name": "startReadingScore","value": "400-500"},{"name": "startReadingScore","value":"500-600"}, {"name": "startReadingScore","value": "600-650"}, {"name": "startReadingScore","value": "650-700"}, {"name": "startReadingScore","value": "700-750"}, {"name": "startReadingScore","value": "750-800"}];
+            arrat[2][3].dropdownItemsA=[{"name": "startTotalScore","value": "500-700"}, {"name": "startTotalScore","value": "700-900"}, {"name": "startTotalScore","value": "900-1050"},{"name": "startTotalScore","value":"1050-1150"}, {"name": "startTotalScore","value": "1150-1250"}, {"name": "startTotalScore","value": "1250-1350"}, {"name": "startTotalScore","value": "1350-1450"}, {"name": "startTotalScore","value": "1450+"}];
+            arrat[2][3].dropdownItemsB=[{"name": "goalTotalScore","value":"1050-1150"}, {"name": "goalTotalScore","value": "1150-1250"}, {"name": "goalTotalScore","value": "1250-1350"}, {"name": "goalTotalScore","value": "1350-1450"}, {"name": "goalTotalScore","value": "1450-1500"}, {"name": "goalTotalScore","value": "1500-1550"}, {"name": "goalTotalScore","value": "1550+"}];
+          jason.set("inputArraysAb",[]);
+         jason.set("inputArraysAb", arrat);
+        });
+         
+         var pickle=this.calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(this.courseInputs);
+         this.set("courseCalendarCreationArrays", pickle);
+         this.set("callIntakeArrays", arrat);
+           var retArray= arrat.concat(pickle);
+            //console.log(arrat,pickle);
+        //had to do the above twice to get the ordering correct...see 391 above, this time though I didnt need the assigment as I did two at once above;
+        // next we wipe out our mistake in approach by resetting the original array we had to deal with...
+         // this.set("inputArraysAb",null);
+         // this.set("inputArraysAb", retArray);
+    },
+
+  };
+  </script>

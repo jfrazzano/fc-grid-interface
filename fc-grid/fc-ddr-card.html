@@ -1,0 +1,468 @@
+
+<link rel="import" href="../bower_components/paper-header-panel/paper-header-panel.html">
+<link rel="import" href="../bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="../bower_components/iron-fit-behavior/iron-fit-behavior.html">
+<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+<dom-module id="fc-ddr-card">
+ <template id="ddr-card">
+<style>
+ :host{
+        min-width: 320px;
+         
+      }
+     paper-header-panel {
+        min-height: 58px;
+        min-width: 320px;
+       /* resize: both;
+         position: absolute;*/
+         background: white; 
+        border: 4px solid #efefef;
+        @apply(--shadow-elevation-2dp);
+        @apply(--layout-flex);
+        @apply(--layout-vertical);
+        @apply(--layout-self-stretch);
+      }
+      .headerRight{
+    position: absolute; right: 50px;top: 5px;
+      }
+      .headerLeft{
+       position: absolute; left: 50px;top: 5px; 
+
+      }
+      .paper-header {
+        height: 64px;
+        font-size: 21px;
+        line-height: 25px;
+        padding: 4px;
+        color: white;
+        transition: height 0.2s;
+        margin-bottom: 5px;
+      }
+   
+      .content {
+        max-height: 2500px;
+        min-height: 64px;
+        overflow-y: scroll;
+        
+   
+      }
+      .tiny{
+        height: 42px;
+        font-size: 16px;
+
+      }
+      .cover {
+        margin: 2px;
+      }
+      .magenta .paper-header {
+        background-color: magenta;
+      }
+      .darkBlue .paper-header {
+        background-color: #008;
+
+      }
+      .blue .paper-header {
+        background-color: var(--paper-light-blue-500);
+      }
+      .red .paper-header {
+        background-color: var(--paper-red-500);
+      }
+      .orange .paper-header {
+        background-color: var(--paper-amber-500);
+      }
+      .green .paper-header {
+        background-color: var(--paper-green-500);
+      }
+      .cyan .paper-header {
+        background-color: var(--paper-cyan-500);
+      }
+      .lime .paper-header {
+        background-color: var(--paper-lime-500);
+      }
+      .pink .paper-header {
+        background-color: var(--paper-pink-a200);
+      }
+
+		
+</style>
+
+  <paper-header-panel id="myPanel" on-track="focusedDragMe" style$="height: [[computePanelHeight(currentHeight)]]; width: [[computePanelWidth(currentWidth)]]; min-height={{computeMinHeight(headHeight);" class$="[[headClass]] [[verticalClass]] layout flex around-justified" draggable>
+  <div class="paper-header layout horizontal center-justified" id="headerPanel" style$="text-align: center; height: [[computeHeadHeight(currentHeight)]]">
+  <iron-icon 
+            icon="icons:highlight-off" 
+            name="fc-dialog-closer"
+            description="designed to close the dialog"
+            class="menuItems-light"
+            hidden="{{!isResizing}}"
+            on-tap="falseClose"
+            style$="position: absolute; z-index: 1; border-radius: 50%; background: [[_computeButtonBG(toggleColor)]]; width: 24px; height: 24px; border-shadow: 11px 4px 18px 7px #afafaf; right: 0px; top: 0px;"
+          >
+      </iron-icon>
+       <!-- <span style="width: 14px; height: 14px; z-index: 1;border-radius: 50%; background: gold;" on-tap="trueClose">
+      </span>  -->
+      <section on-down="dragsOff" on-track="_resize" hidden="{{!isResizing}}" style="position: absolute; right: -4px; top: 0px; bottom:0px; cursor:ew-resize; padding: 4px; width: 8px!important;opacity: 0;"></section>
+      <section class="horizontal layout flex center-justified">
+      <section class="headerLeft">
+<content select=".headerLeft">
+</content>
+</section>
+<section>
+     [[_computeHeader(headerTitle)]]
+</section>
+     <section class="headerRight">
+<content select=".headerRight">
+        </content>
+</section>
+  </section>
+     </div>
+  
+        <div id="attachContent" class="content" style="height: 100%; opacity: 1; z-index: 1; background: white;">
+   <content id="cardContent" style="height: 100%;">
+
+
+
+
+   </content>
+
+   <content select=".daycard">
+   </content>
+  
+          
+
+           	
+		</div>
+
+    
+ </paper-header-panel>    
+      <section  on-down="dragsOff" on-track="_resize" hidden="{{!isResizing}}" style="position: absolute; bottom: -2px; cursor:ns-resize; right: 0px; top:{{computeCurrentHeight(currentHeight)}}px; left: 0px; padding:4px; height: 8px; width: 99%; opacity: 0;"></section>     
+</template>
+    <script>
+    
+FcDdrCard=Polymer({
+	is:'fc-ddr-card',
+	behaviors:[
+     "Polymer.IronFitBehavior", 
+      "Polymer.IronResizableBehavior",
+    ],
+  
+	properties: {
+    showDash:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },
+    toDoList:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },fcGridCellTempl:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },fcGridContainer:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },fcMappedGrid:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },fcRqtversionc:{
+      type:Boolean,
+      value:function(){return false;},
+      notify:true,
+    },
+    heightHolder:{
+      type: String,
+      notify: true,
+    },
+    widthHolder:{
+      type: String, 
+      notify: true
+    },
+    headClass:{
+      type: String,
+      value: "blue",
+      notify: true,
+      reflectToAttribute: true
+    },
+    toggleColor:{
+      type: Boolean,
+      value: true,
+      notify: true
+    },
+    headerTitle:{
+      type: String,
+      notify: true,
+      reflectToAttribute: true
+    },
+
+		drags:{
+			type: Boolean, 
+			value: false,
+      observer:"observeDrags",
+			notify: true,
+      reflectToAttribute: true
+		},
+		isResizing: {
+			type: Boolean,
+			value: false, 
+			notify: true,
+      reflectToAttribute: true
+		},
+
+    dragCounter:{
+      type: Number,
+      value: 0,
+      notify: true
+    },
+   
+      currentWidth: {
+          type: String, 
+          notify: true,
+          observer: "observeCurrentWidth",
+          reflectToAttribute: true
+      },
+      currentHeight: {
+          type: String, 
+          notify: true, 
+          observer: "observeCurrentHeight",
+      },
+      minHeight:{
+        type: String,
+       value: function(){
+            var ht=(Math.floor(parseFloat(this.$.headerPanel.style.height))),
+            height = (ht>1880)?"100px;":(ht<720)? "48px":"60px";
+        return height;
+        },
+        notify: true
+      },
+      headHeight:{
+        type: String,
+        notify: true,
+        computed: "computeHeadHeight(currentHeight)",
+
+      },
+      dragState:{
+        type: Boolean,
+        notify: true,
+      },
+      myIndex:{
+        type: Number,
+        notify: true
+      },
+
+    },
+    listeners: {
+      'iron-resize': '_onIronResize'
+    },
+
+    
+    ready: function(){this.set("verticalAlign", "auto"); this.set("horizontalAlign", "auto");
+    },
+    observeCurrentHeight:function(newVal, oldVal){
+      if(newVal && newVal!=oldVal){
+        Polymer.dom.flush();
+        var ht= Math.floor(parseFloat(newVal));
+        //console.log(ht);//making sure no pxs or %s are sent in;
+      Polymer.dom(this).setAttribute("style.height", ht+"px");
+    }
+
+    },
+    observeDrags(nv,ov){
+      if(nv){console.log(nv,ov,"what a drag");}
+    },
+  _determineContent(sts, nodeTag, index){
+    
+      },
+    _computeHidden(showDash){return showDash;},
+    computePanelWidth: function(measure){
+      return Math.floor(parseFloat(measure)*.98).toString()+"px";
+    },
+
+    computePanelHeight:function(measure){  
+      return Math.floor(parseFloat(measure*.98)).toString()+"px";
+    },
+
+    observeCurrentWidth: function(newVal,oldVal){
+      if(newVal && newVal!=oldVal){
+        var wt= Math.floor(parseFloat(newVal));
+      Polymer.dom(this).setAttribute("style.width", wt+"px");
+
+    }
+    },
+    
+     attached: function(){
+        var self=this;
+        this.set("isResizing", true);
+     
+        this.click();
+        this.set("heightHolder", this.currentHeight);
+        this.set("_notifyingDescendant", true);
+       this.set("verticalAlign", "auto"); this.set("horizontalAlign", "auto");
+       this.set("dragState", this.drags);
+       console.log(this.drags);
+
+    },
+    
+    _computeCurrentWidthPlus: function(currentWidth){
+      var retVal=parseFloat(currentWidth)-16;
+      return retVal;
+    },
+    _computeHeader: function(headerTitle){
+      return headerTitle;
+    },
+    computeHeadHeight: function(ch)
+    { var height = (ch>1880)?"98px;":(ch<720)? "32px":"48px";
+      return height;
+    },
+
+    _onIronResize: function(){
+
+     
+      //console.log(this.currentHeight, this.currentWidth, this.style.width);
+    },
+   
+    computeCurrentHeight: function(currentHeight){
+    	var ht=window.screen.height;
+      ht=.90*(ht);
+      ht=ht.toString()+"px";
+    	if(this.currentHeight==undefined) {this.set("currentHeight", ht); this.style.height=ht;}
+    	
+    	
+    },
+   
+    _resize: function(e){
+        this.dragsOff();
+          var self=this;
+          var template=this.$.ddrtemplate;
+          e.preventDefault();
+          var width=Math.floor(parseFloat(window.screen.width)*.96);
+          var height=Math.floor(parseFloat(window.screen.height)*.999);
+          if(this.isResizing==true){
+          switch(e.detail.state) {
+                case 'start':
+                var theId=this.relId;
+                var elem=this.$$(theId);
+                var sWidth =window.getComputedStyle(self.$.myPanel, null).getPropertyValue("width");
+                self.set("currentWidth", sWidth);
+              
+                 break;
+                case 'track':
+                  var newheight = parseInt(self.currentHeight) + e.detail.ddy;
+                  var nwidth = parseInt(self.currentWidth) + e.detail.ddx;
+                  var nheight2=(newheight<parseFloat(self.minHeight))?self.minHeight:(newheight>height)?height: newheight;
+                  var nwidth2=(nwidth<320)?320:(nwidth>width)? width:nwidth;
+                  var trueWidth = nwidth2.toString()+'px';
+                  var trueHeight = nheight2.toString()+'px';
+                  
+                  
+                  self.set("currentWidth",trueWidth);
+                  self.set("currentHeight",trueHeight);
+                  self.style.width= trueWidth;
+                  self.style.height= trueHeight;
+                
+                  break;
+                case 'end':
+                  self.style.width= trueWidth;
+                  self.style.height= trueHeight;
+                  this.set("heightHolder", self.currentHeight);
+                  this.set("widthHolder", self.currentWidth);
+                  // self.notifyResize();
+                  this.toggleColor=true;
+                  self._onIronResize();
+                  self.set("refit", true);
+                  this.dragsOn();
+                 // self.afterStartResize();
+                  Polymer.dom.flush();
+                  break;
+              }
+            }
+        },
+      
+    dragsOff: function(){this.set("drags", false);},
+    dragsOn: function(){ if(this.dragState){this.async(this.dragSwitch, 50);}},
+    dragSwitch: function(){this.set("drags", true);},
+    focusedDragMe:function(e){
+        if(this.drags===true){
+            var self=this;
+            e.preventDefault();
+            switch(e.detail.state)
+            {
+              case 'start':
+                // console.log('START NoWayAreWe Draggin');
+                self._leftprime = parseInt(window.getComputedStyle(self, null).getPropertyValue("left"))-e.detail.x;
+                self._topprime = parseInt(window.getComputedStyle(self, null).getPropertyValue("top"))-e.detail.y;
+                //console.log('top distance differenced?' + self._topprime);
+               if(self.counter==0){   self.translate3d(0, 0, 0);}
+                Polymer.dom(self).setAttribute("style.position", "fixed"); 
+               Polymer.dom(self).setAttribute("style.left", "0px"); Polymer.dom(self).setAttribute("style.left",self._leftprime+"px");
+               Polymer.dom(self).setAttribute("style.top", "0px"); Polymer.dom(self).setAttribute("style.top",self._topprime+"px");
+                
+                self.set("refit",true);
+                self.changeX=0;
+                self.changeY=0;
+                Polymer.dom.flush();
+                break;
+              case 'track':
+                self.changeX=e.detail.ddx + self.changeX;
+                self.changeY=e.detail.ddy + self.changeY;
+                self.translate3d(self.changeX.toString() + 'px', self.changeY.toString() + 'px', 0);
+                break;
+              case 'end':
+                //console.log(self._topprime);
+                self._right = parseInt(window.getComputedStyle(self, null).getPropertyValue("right"))
+                self._bottom = self.getBoundingClientRect().top;
+                self._x= ((self._leftprime + e.detail.x)>=0)?(self._leftprime + e.detail.x): 0;
+                self._y=((self._topprime + e.detail.y)>=0)?Math.ceil(self._topprime + e.detail.y):0;
+            
+
+                //console.log("ENDING", self._x, e.detail.x, e.detail.y, e.detail.dx);
+              
+                self.style.left=self._x.toString()+'px';
+                self.style.top=self._y.toString()+'px';
+                Polymer.dom(self).setAttribute("style.top", e.detail.y+'px'); Polymer.dom(self).setAttribute("style.left",e.detail.x+'px');
+          self.translate3d(0, 0, 0);
+
+                //console.log('y: ' + e.detail.y);
+                    
+                self.dragging=false;
+                self.set("refit",true);
+                Polymer.dom.flush();
+                break;
+            }
+        }
+    },
+       falseClose: function(){
+        this.toggleColor=!this.toggleColor;
+        if(this.toggleColor===false){
+        this.set('currentHeight', this.minHeight);
+        this.style.height= this.minHeight;
+        this.style.width=this.currentWidth +"px";
+        this._onIronResize();
+      }
+        else{
+          this.set('currentHeight',this.heightHolder);
+          this.style.height = this.heightHolder;
+          this._onIronResize();
+            }
+
+       },
+       _computeButtonBG: function(toggleColor){
+        var returnVal=(toggleColor==false)?"red;":"green;";
+        return returnVal;
+
+       },
+              trueClose: function(){
+                Polymer.dom(this).setAttribute("style.height", "56px");
+                this.minHeight=this.currentHeight;
+                //console.log(this.minHeight, this.currentHeight, this.style.height);
+                this.set("currentHeight", "60px");
+
+
+              },
+
+ 
+});
+</script>
+</dom-module>

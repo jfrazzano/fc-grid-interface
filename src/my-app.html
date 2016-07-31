@@ -1,0 +1,258 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html">
+
+<link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/app-route/app-location.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/app-route/app-route.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
+<link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
+<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
+<link rel="import" href="../bower_components/iron-selector/iron-selector.html">
+
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
+<dom-module id="my-app">
+
+  <template>
+
+    <style>
+
+      :host {
+        display: block;
+        --app-primary-color: #4285f4;
+        --app-secondary-color: black;
+      }
+      .longest{display: flex; flex: row; width: 84px; height: 42px; border: 1px solid #aedefe;} 
+   .link{   
+    color: white;
+    font-family: 'Merriweather', 'Times', sans-serif;
+    font-size: 16px;
+    font-weight: 600;}
+   .turnedon{ font-size: 18px; color: green; background: white;}
+
+      app-header {
+        background-color: var(--app-primary-color);
+        color: #fff;
+      }
+      app-header paper-icon-button {
+        --paper-icon-button-ink-color: white;
+      }
+     
+
+      .drawer-list {
+        margin: 0 20px;
+      }
+      .drawer-list a {
+        display: block;
+        padding: 0 16px;
+        line-height: 40px;
+        text-decoration: none;
+        color: var(--app-secondary-color);
+      }
+      .drawer-list a.iron-selected {
+        color: black;
+        font-weight: bold;
+      }
+      .drawer-list a.subroute {
+        padding-left: 32px;
+      }
+
+
+    </style>
+
+    <app-location route="{{route}}"></app-location>
+    <app-route
+        route="{{route}}"
+        pattern="/:page"
+        data="{{routeData}}"
+        tail="{{subroute}}"></app-route>
+
+    <app-drawer-layout fullbleed>
+
+    
+      <app-drawer id="dashboardLeftDrawer" drawer-current-width="{{leftCurrentWidth}}" swipe-open align="left">
+
+   
+     
+ </app-drawer>
+       <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" opened swipe-open align="right">
+        hi
+        </app-drawer>
+      <!-- Main content -->
+      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:{{centerContentAreaWidth}}px;margin-right:{{rightCurrentWidth}}px;" has-scrolling-region>
+        <app-header condenses reveals effects="waterfall">
+      <app-toolbar>
+           <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+               <fc-drag-header-menu
+            drag-menu='true'  
+            id="dragMenuDrawer"
+            draggable
+            drags
+            class="draggable scrollable on-tracking"
+            style="z-index:50000; position: fixed; top: 0; left: 200px;"
+            not-router="{{notRouter}}"
+              >
+        <paper-tabs 
+          id="protoTabMenu" 
+          scrollable="true"
+          class="horizontal layout"
+          selected-class="turnedon"  
+          style="max-height: 76px; min-height: 24px; min-width: 160px; background: #000066;"
+          hide-scroll-buttons="true" 
+          bar="true">   
+        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+     
+        <div class="horizontal layout flex" style="overflow-x: scroll;" hidden$="{{!notRouter}}">
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="view1" href="/view1">View One</a>
+        </paper-tab>
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="view2" href="/view2">View Two</a>
+        </paper-tab>
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="view3" href="/view3">View Three</a>
+        </paper-tab>
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="grid" href="/grid">Grid View</a>
+        </paper-tab>
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="database-webworker" href="/database-webworker">Worker</a>
+        </paper-tab>
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="dashboard-divisions" href="/dashboard-divisions">Dashboard View</a>
+        </paper-tab>
+        </div>
+           <fc-dialog-toolbar 
+                hidden$="{{notRouter}}" 
+                data-dialog$="{{dataDialog}}">
+        </fc-dialog-toolbar>
+            </paper-tabs>
+        </fc-drag-header-menu> 
+
+
+
+        
+      </app-toolbar>
+
+          
+        </app-header>
+  
+
+        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
+          <my-view1 name="view1"></my-view1>
+          <my-view2 name="view2"></my-view2>
+          <my-view3 name="view3"></my-view3>
+          <fc-grid id="liveGrid" name="grid"></fc-grid>
+           <fc-dashboard-divisions name="dashboard-divisions"></fc-dashboard-divisions>
+          <fc-database-webworker name="database-worker">
+          </fc-database-webworker>
+        </iron-pages>
+
+      </app-header-layout>
+
+  
+    </app-drawer-layout>
+
+  </template>
+
+  <script>
+
+    Polymer({
+
+      is: 'my-app',
+
+      properties: {
+
+        page: {
+          type: String,
+          reflectToAttribute: true,
+          observer: '_pageChanged'
+        },
+        leftDrawerPage:{
+          type: String,
+          reflectToAttribute: true,
+          computed: '_pageLeftDrawerChanged(page)'
+        },
+
+        notRouter:{
+          type: Boolean,
+          value: function(){return true;},
+          notify: true,
+
+        },
+        leftCurrentWidth:{
+          type: Number, 
+          value:function(){return 15;},
+          notify: true,
+
+        },
+        rightCurrentWidth: {
+          type: Number,
+          value: function(){return 15;},
+          notify: true,
+        }, 
+        totalWidthLost: {
+          type:Number, 
+          computed:"_computeTotalWidthLost(leftCurrentWidth,rightCurrentWidth)",
+          notify: true,
+        },
+        centerContentAreaWidth:{
+          type: Number,
+          computed: "_computeContentAreaWidth(totalWidthLost)",
+          notify: true
+        },
+
+      },
+
+      observers: [
+        '_routePageChanged(routeData.page)'
+      ],
+
+      _computeTotalWidthLost(left, right){
+        var retVal=left+right;
+        return retVal;
+      },
+      _computeContentAreaWidth(totalWidthLost){
+
+            var width=screen.width;
+            var retWidth=width-totalWidthLost;
+            console.log(retWidth, "WIDTH REMAINING");
+            return retWidth;
+
+      },
+      _routePageChanged: function(page) {
+        this.page = page || 'grid';
+      },
+
+      _pageChanged: function(page) {
+        // load page import on demand.
+        this.importHref(
+          this.resolveUrl('fc-' + page + '.html'), null, null, true);
+      },
+      _pageLeftDrawerChanged(page){
+          this.importHref(
+            this.resolveUrl('fc-' + page + '.html'), null, null, true);
+      },
+    
+    });
+
+  </script>
+
+</dom-module>

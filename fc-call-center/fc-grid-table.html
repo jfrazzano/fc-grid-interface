@@ -1,0 +1,80 @@
+<dom-module id="fc-grid-table">
+<template>
+<style>
+:host {border: 2px solid #ababab;
+		@apply(--layout-horizontal);
+	@apply(--layout-wrap);
+	}
+</style>
+<sortable-js group="group" class="horizontal layout flex wrap" handle=".handle">
+
+<template is="dom-repeat" class="horizontal layout flex wrap ghost dropzone" draggable items="{{dataArray}}">
+<fc-grid-cell group="group" name$="{{item.index}}" class="pickle group handle" gc-label="{{item.label}}" gc-val="{{item.val}}" value="{{item.val}}">
+
+</fc-grid-cell>
+</template>
+</sortable-js>
+</template>
+<script> 
+FcGridTable=Polymer({
+	is: "fc-grid-table",
+	properties: {
+		
+		dataSource:{
+			type: Object,
+			value: {},
+			notify: true, 
+			
+		},
+		dataArray:{
+			type: Array,
+			computed: "computeDataArray(dataSource, dataArrayTwo)",
+			notify: true
+		},
+		dataArrayTwo:{
+			type: Array,
+			value:[],
+			notify: true
+
+		}
+
+	},
+	
+
+	ready: function(){
+	
+
+
+	},
+	attached: function(){
+		
+	},
+	detached: function(){
+	
+	},
+	computeDataArray: function(dataSource, dataArrayTwo){
+		// console.log(dataSource, dataArrayTwo, "I just got data you were looking for");
+		// if(dataArrayTwo==[] || dataSource!={})
+		// {
+				var obj ={};
+				var arr=[];
+				obj=dataSource;
+				console.log(dataSource); 
+				var uppers=[];
+		      Object.keys(obj).forEach(function(key,index){
+		         arr.push({"label": key,"val": obj[key], "index": index});
+		       });
+
+      	console.log(arr, "am I here");
+      	return arr;
+    // 	}
+    // else { console.log("I am sending the right array");
+
+
+    // 	return dataArrayTwo;}
+
+	}
+
+});
+</script>
+</dom-module>

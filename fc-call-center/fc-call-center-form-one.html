@@ -1,0 +1,370 @@
+
+<dom-module id="fc-call-center-form-one">
+<template id="fc-call-center-form-one-template">
+<style>
+:host{margin: 1px;}
+       paper-card{
+        width: 99%;
+        padding: 12px 4px 12px 2px;
+        margin: 12px 12px 12px 4px;
+        margin-top: -16px;
+        z-index:1;
+        --paper-card-header-image: {width: 138px; height: 90px; position: absolute: top: 0px left: 8px; margin: 2px 16px 16px 8px;}
+        --paper-card-header:{height: 95px; border-bottom: solid 1px silver;}
+  
+    }
+    *{font-family: merriweather;
+      color: #009;}
+    .container{
+        width: 99%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+ 
+  }
+  
+    	paper-button{
+		 	 width: 50%;
+		 	 min-width: 147px;
+		 	 font-weight: 600; 	  
+		 	 font-size: 14px;
+		 	 text-align: center;
+		 	 white-space: nowrap;
+		 	 max-height: 36px;
+		 	 @apply(--layout-nowrap);
+		 	 background: white;
+		 	 border: #efefef 1px solid;
+		 }
+		 paper-button.green{
+		 	color: green; 
+		 	border: 2px solid green;
+		}
+		paper-button.darkblue{
+			color: #009;
+			border: 2px solid #009;
+		}
+		paper-button.red{
+			color: red;
+			border: 2px solid red;
+		}
+		paper-button.orange{
+			color: orange;
+			border: 2px solid orange;
+		}
+		paper-button:hover, paper-button:active{
+			box-shadow: 2px 4px 7px 2px; 
+
+		} 
+		paper-button.darkblue:hover, paper-button.darkblue:active{
+			box-shadow: 2px 4px 7px 2px gold; 
+
+		} 
+		.buttonRow{
+			@apply(--layout-flex);
+			@apply(--layout-horizontal);
+			padding: 2px;
+		}
+
+      neon-animated-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical)
+        margin: 6px;
+        padding: 4px;
+        background: white;
+        @apply(--layout-self-stretch);
+        min-height: 720px;
+      }
+      neon-animatable {
+        color: white;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        @apply(--paper-font-display3);
+        margin: 0px;
+        padding: 0px;
+      }
+    paper-radio-button{
+    		font-size: 14px;
+        color: #005c00;
+    		font-weight: 400;
+    		size: var(--paper-radio-size, 18px);
+    		 /*  --paper-radio-button-label-color: var(--my-blue-009, #000099);*/
+    		   --paper-radio-button-checked-color: var(--paper-green-900);
+    }
+    .card-actions{
+    	padding: 4px;
+    }
+    label.returningCaller{
+    	color: black;
+    	font-size: 15ßpx;
+    /*	font-style: italic;*/
+    	font-weight: 700;
+    }
+    paper-radio-group.tallbox{
+    	@apply(--layout-vertical);
+    	 --paper-radio-group-padding: var(--too-much-padding, 0px);
+
+    }
+    iron-icon{ 
+        width: 36px;
+        height: 36px;
+    }
+    p{
+    	text-indent: 36px;
+    	font-size: 12px;
+    	font-weight: 400;
+    		}
+
+  .detTag{
+  		font-weight: 300;
+  		font-size: 16px;
+  		margin: 12px 6px;
+  		padding: 2px;
+  		color: brown;
+  		border: silver solid 2px;
+  		background: #efefef;
+  		box-shadow: 3px 5px 11px 3px #afafaf;
+
+  }
+    .timestamp{
+    font-weight: 300;
+    color: #009;
+    font-family: merriweather;
+    font-size: 12px;
+    padding: 8px 8px 8px 2px;
+    float: left;
+    margin-top: -30px;
+    margin-left: 5px;
+
+  }
+  .pageNumbers{
+    position: absolute; 
+    right: 48px; 
+    top: 38px;
+    font-size: 16px;
+  }
+  
+  .subheading {
+    font-size: 13px;
+    color: brown;
+    font-family: times;
+    float: right;
+    top: 20px;
+    padding: 3px;
+    }
+ 
+  .dropbtn:hover, .dropbtn:focus{
+		    background-color: #3e8e41;
+		}
+		/* The container <div> - needed to position the dropdown content */
+		.dropdown {
+		    position: relative;
+		    display: inline-block;
+		}
+		/* Dropdown Content (Hidden by Default) */
+		.dropdown-content {
+		    display: none;
+		    position: absolute;
+		    background-color: #f9f9f9;
+		    min-width: 160px;
+		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		}
+		/* Links inside the dropdown */
+		.dropdown-content a {
+		    color: black;
+		    padding: 12px 4px;
+		    text-decoration: none;
+		    display: block;
+		}
+		.check{
+			font-size:26px;
+			color: green;
+			position: absolute;
+			left: 5px;
+		}
+    u{color: black;
+      font-weight: 500;}
+		.instruction{
+			color:#009;
+			font-weight:300;
+		}
+		.radioGroupBlock{
+			padding: 4px;
+		},
+    paper-radio-button{margin-top:-4px;}
+   
+		.importantNote{
+				color: black;
+				font-weight: 600;
+				padding: 8px;
+				margin: 4px;
+				margin-bottom: 26px;
+
+		},
+		.detailPads{
+				margin:24px 12px 12px 0px;
+			
+
+		}
+    summary{margin-left: -8px;}
+    .afterNote{
+      display: block;
+    }
+    .afterNote:after{
+      display: none;
+       content:'The Response to the above question will influence future options, so clarity is important.  For the benefit of new system users, definitions are nested within the "Returning Caller" tag above. Check out the definitions now if you have any questions!';
+
+    }
+    .afterNote:hover:after{
+      display: block;
+    }
+    .returningCaller{
+        color:brown;
+      },
+  @media(max-width: 570px){
+    .container{
+        width: 99%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+    };
+  }
+</style>
+  <paper-card class="intakeForm vertical layout" src="./FC_frontpage_logo.png">
+    <span style="position: absolute; font-size: 15px; right: 16px; top: 85px;">Page 1 of <content select=".pageTotal"></content></span> 
+    <section>        
+      <span class="timestamp">
+        [[time]], on [[date]]
+      </span>
+      <span class="subheading">
+        * Indicates a Required Field
+      </span>
+    </section>
+  <div class="card-content">
+    <details>
+  <summary class="sumTag">Is <i>this</i> caller a <u>Returning Caller</u><span style="color: brown;">*</summary>
+  <section class="detTag"> 
+  <span class="instruction">Begin the call:</span><section style="color: #009; font-size: 13; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;"Hello, Focused Coaching. How may I help you?" <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
+  <span class="instruction">Then ask:</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]  		
+  <br><span class="instruction">Now, record the caller's response below.</span>
+  	<section class="detailPads">
+      <details>
+        <summary class="sumTag">DEFINITIONS: Focused Caller Types</summary>
+          <section class="detTag"> 
+            <span class="instruction">WRITE THESE</span>
+            <section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #2</section>
+            <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"Hello, Focused Coaching. How may I help you?" <br>
+            &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
+            <span class="instruction">Then ask:</span><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
+            <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]     
+          <br><span class="instruction">Now, record the caller's response below.</span>
+        </section>
+      </details>
+    </section>
+  </section>
+    </details>
+     <section class="radioGroupBlock">
+     <label id="label3" class="returningCaller"></label>
+          <paper-radio-group class="tallbox" selected="b" allow-empty-selection aria-labelledby="label3">
+              <paper-radio-button name="newclient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
+              <paper-radio-button name="repeatcaller">This is a <a><u>Returning Caller</u></a>, who has yet to become a client.</paper-radio-button>
+              <paper-radio-button name="activeclient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
+              <paper-radio-button name="inactiveclient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
+          </paper-radio-group>
+    </section>
+    <details>
+  <summary class="sumTag">What is this Caller's <i>role</i> in relation to Focused?
+  </summary>
+  <section class="detTag"> 
+      <span class="instruction">Identifying Caller Makes the Calls Faster and Easier to Handle</span><section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
+       <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"Hello, Focused Coaching. How may I help you?" <br>
+      &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
+      <span class="instruction">Then ask:</span><br>
+      &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
+      <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]     
+      <br><span class="instruction">Now, record the caller's response below.</span>
+      
+  </section>
+    </details>
+    
+    <section class="radioGroupBlock">
+     <label id="label3" class="returningCaller"></label>
+          <paper-radio-group class="tallbox" selected="b" allow-empty-selection aria-labelledby="label3">
+              <paper-radio-button name="parent1"><a link=""><b><u>Parent One</u></b></a>&nbsp;Is this caller the "primary" parent and contactee for a student?
+              </paper-radio-button>
+              <paper-radio-button name="student"><a><b><u>Focused Student</u></b></a>&nbsp;Is this caller a current or potential Focused Student?
+              </paper-radio-button>
+              <paper-radio-button name="parent2"><a><b><u>Parent Two</u></b></a>&nbsp;Is this caller the "Parent 2" contact or some other student related contact?
+              </paper-radio-button>
+              <paper-radio-button name="client-competitor"><a><b><u>Business Client</u></b></a>&nbsp;Is this caller requesting Business Information about FocuseD.</paper-radio-button>
+              <paper-radio-button name="other"><a><b><u>Other</u></b></a>&nbsp;Does this caller fit into none of the above categories?
+              </paper-radio-button>
+          </paper-radio-group>
+    </section>
+    <section hidden="{{_offerFreeResponseOnCallerRole(radioOther)}}">
+        <label for="callerRoleOther" value="Below, Attempt a Brief Categorization of the 'OTHER' Caller--All previous categorizations will be selectable from a dropdown as you type."></label>
+        <fc-iss-input item-select-property="" iss-label="Caller Role:Other" iss-value="{{other}}" iss-name="other"></fc-iss-input>
+   </section>
+   <paper-status></paper-status>
+              
+                </div>
+<content select=".next"></content>
+                <div class="card-actions horizontal layout flex container center-justified" style="min-height: 75px;">
+                    <span class="afterNote"><b><u>IMPORTANT NOTE TO NEW USERS</u></b>:</span>
+                </div>
+            </paper-card>
+   	</template>
+ 	<script>
+FcCallCenterFormOne=Polymer({
+    is:"fc-call-center-form-one",
+    properties:{
+    	time:{
+			type:Date,
+			value:function(){
+					var time=new Date().toLocaleTimeString();
+					console.log(time);
+					return time;
+			},
+			notify: true
+		},
+    radioOther:{
+      type: Boolean,
+      value:function(){return false;},
+      notify: true
+    },
+    currentHeight:{
+      type: String,
+      notify: true,
+    },
+		date:{
+				type: Date,
+				value: function(){var date=new Date().toLocaleDateString();
+					console.log(date);
+					return date;},
+				notify: true,
+
+
+		},
+
+
+
+       		},
+
+
+
+       });
+       </script>
+       </dom-module>

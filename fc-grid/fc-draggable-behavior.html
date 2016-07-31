@@ -1,0 +1,122 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.DraggableBehavior = {
+    properties: {
+      noOffset: {
+        type: Boolean,
+        value: function(){
+          return true;
+          },
+        notify: true
+      },
+      lameDragCounter:{
+          type: Number,
+          value: 0,
+          notify: true
+      },
+      offSet:{
+        type: Number,
+        computed: 'computeOffSet(noOffset)',
+        notify: true
+      },
+      drags:{
+        type: Boolean,
+        value: true, 
+        notify: true
+      },
+      isDropDown:{
+        type: Boolean,
+        notify: true
+      },
+  },
+   listeners: {
+       'track': '_focusedDraggable',
+     },
+    computeOffSet: function(noOffset){
+      return "0px";
+    },
+    dragsOff: function(){
+      this.set("drags", false);
+  },
+  dragsOn: function(){
+      this.async(this.dragSwitch, 50);
+  },
+  dragSwitch: function(){
+    this.set("drags", true);},
+  _focusedDraggable:function(e){
+      this.dragging=true;
+      var self=this;
+      if(this.drags===true){
+        e.preventDefault();
+      var pH=Polymer.dom(this).firstElementChild;
+      //console.log(pH, "the paper-header-panel");
+      var header=Polymer.dom(pH).firstElementChild;
+      //console.log('the actual header: ' + header);
+      switch(e.detail.state) {
+        case 'start':
+          console.log('START');
+          
+          if (this.lameDragCounter<1){
+           
+              Polymer.dom(self).setAttribute("style.position", "fixed");
+                 self._topprime = this.getBoundingClientRect().top-e.detail.y;
+              self._leftprime=self.getBoundingClientRect().left-e.detail.x;
+               Polymer.dom(self).setAttribute("style.left", "0px");
+              Polymer.dom(self).setAttribute("style.top", "0px");
+              Polymer.dom(self).setAttribute("style.top",self._topprime+"px");
+              Polymer.dom(self).setAttribute("style.left",self._leftprime+"px");
+              this.lameDragCounter++;
+            }
+          else{
+          self._leftprime = parseInt(window.getComputedStyle(this, null).getPropertyValue("left"))-e.detail.x;
+          self._topprime =  parseInt(window.getComputedStyle(this, null).getPropertyValue("top"))-e.detail.y;
+          }
+          console.log('left distance differenced' + self._leftprime, self.leftprime);
+          self.changeX=0;
+          self.changeY=0;
+          Polymer.dom.flush();
+          break;
+        case 'track':
+          self.changeX=e.detail.ddx + self.changeX;
+          self.changeY=e.detail.ddy + self.changeY;
+          self.translate3d(self.changeX.toString() + 'px', self.changeY.toString() + 'px', 0);
+          break;
+        case 'end':
+          console.log(self._topprime);
+          self._right = parseInt(window.getComputedStyle(this, null).getPropertyValue("right"))
+          self._bottom = this.getBoundingClientRect().top;
+          self._x= ((self._leftprime + e.detail.x)>=0)?(self._leftprime + e.detail.x): 0;
+          self._y=((self._topprime + e.detail.y)>=0)?Math.ceil(self._topprime + e.detail.y):0;
+          self.translate3d(0, 0, 0);
+          console.log("ENDING", self._x);
+          this.style.left=self._x.toString()+'px';
+          this.style.top=self._y.toString()+'px';
+          console.log('y: ' + e.detail.y);
+          self.dragging=false;
+          Polymer.dom.flush();
+          break;
+      }
+    }
+  },
+  // attached: function(){
+  //   var dragger = document.createElement('iron-icon');
+  //   Polymer.dom(dragger).setAttribute('icon','icons:open-with');
+  //   Polymer.dom(dragger).setAttribute("on-track","_focusedDraggable");
+  //   Polymer.dom(dragger).setAttribute("draggable", true);
+  //    Polymer.dom(dragger).setAttribute("style", "opacity: 0; width: 0px; height: 0px;");
+  //   Polymer.dom(dragger).setAttribute("id", "blink");
+  //   Polymer.dom(dragger).classList.add("dragtag"); 
+  //   Polymer.dom(dragger).classList.add("menuItems-dark");
+  //   var pH = Polymer.dom(this.root).firstElementChild;
+  //   var header = Polymer.dom(pH).firstElementChild;
+  //   var beforeNode = Polymer.dom(header).firstChild;
+  //   Polymer.dom(header).appendChild(dragger, beforeNode);
+    
+  //   //console.log(dragger, Polymer.dom(this.root).appendChild(dragger));
+  // }
+  
+};
+// FCBehaviors.DraggableBehavior = [
+//   Polymer.IronResizableBehavior,
+//   FCBehaviors.DraggableBehaviorImpl];
+</script>

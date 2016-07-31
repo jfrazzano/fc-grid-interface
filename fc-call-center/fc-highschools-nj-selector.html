@@ -1,0 +1,187 @@
+<dom-module id="fc-highschools-nj-selector">
+
+<template>
+<style>
+:host{padding: 0px 12px;
+      margin: 4px;
+      margin-top: -32px;
+      margin-bottom: 24px;
+      }
+  :root::{-ms-overflow-style: none;}
+              paper-input{
+                --paper-input-container-input:{
+                        font-family: merriweather;
+                        font-size: 14px;
+                        font-weight: 600;
+                        color: brown;
+                      };
+      @apply(--paper-input-container-input);
+      --paper-input-container-label:{
+                        font-family: merriweather;
+                        font-size: 14px;
+                        font-weight: 600;
+                      };
+      @apply(--paper-input-container-label);
+    }
+        
+	paper-menu{min-width: 256px;}
+
+	paper-button.better-platinum {
+		padding:36px;
+      background: #E5E4E2;
+     box-shadow: 6px 5px 2px #888888;
+     font-weight: 500;
+     color: #006;
+  	border-radius: 180px;
+     font-size: 12pt;
+     text-align: center;
+     text-indent: 0px;
+    width: 24px !important;
+  	height: 24px !important;
+  	  border: 3px white solid;
+     }
+  .div::-webkit-scrollbar { width: 0 !important; }
+  .select::-webkit-scrollbar { width: 0 !important; }
+  :root::-webkit-scrollbar { width: 0 !important; }
+</style>
+<div style="">
+<fc-iss-input iss-label="Current NJ High School" style="" item-select-property="" iss-value="{{searchValue}}" class="right" dropdown-items="{{liArray}}"></fc-iss-input>
+<!-- <div class="horizontal layout" style="border: 1px solid silver; z-index: 3; padding:12px 42px 18px 42px; margin-bottom: 8px;"> -->
+<!-- <section hidden={{menuHidden}}  class="vertical layout">
+<paper-input label="New Jersey High School Search" no-label-float value="{{searchValue}}"></paper-input> -->
+
+	<!-- <paper-dropdown-menu 
+		name$="{{fcSelectorName}}"   label="Current NJ High School" always-float-label on-iron-select="_ironSelected">
+		<paper-menu 
+			class="dropdown-content" 
+			attr-for-selected="value"
+      label="Current School" 
+			style="width: 100%;" 
+			selected="{{menuSelected}}">
+			<template is="dom-repeat" items="{{liArray}}" >filter="{{_mySelectFilter(searchValue)}}" -->
+			<!-- 	<paper-item value="{{item}}">{{item}}
+				</paper-item>
+			</template>
+		</paper-menu>
+	</paper-dropdown-menu>
+</section> -->
+
+<!-- </div> -->
+</div>
+</template>
+<script>
+FcInputProSelect=Polymer({
+  is: "fc-highschools-nj-selector",
+    behaviors: [],
+    properties: {
+     
+       searchValue:{
+          type: String,
+          observer:"observeSearchValue", 
+          notify: true
+        },
+
+      	fcSelectorName:{
+      		type: String,
+      		value: function(){
+      			return 'fcSelector';
+      		},
+      		notify: true,
+      		reflectToAttribute: true
+      	},
+      	selectorLabel: {
+      		type: String,
+      		value: function(){
+      			return "Current High School";
+      		},
+      		notify: true
+      	},
+      	menuHidden: {
+      		type: Boolean,
+      		value: function(){
+      			return false;
+      		},
+      		notify: true
+      	},
+      	menuSelected:{
+      		type: Number,
+      		value: 323,
+      		notify: true 
+      	},
+      	
+      	startListItems: {
+      		type: Array,
+      		computed: 'computeStartListItems(fullPath)',
+      		notify: true
+      	}, 
+      	liArray: {
+      		type: Array,
+      		notify: true
+      	},
+      njhs: {
+        type:Array,
+        notify: true
+      },
+      
+        fullPath: {
+          type: String,
+          computed: 'computefullPath(rootPath, instancePath)',
+          notify: true
+        },
+        fcid:{
+          type: String,
+          value:function(){
+            return "njhighschools000020160208";
+          },
+          notify: true
+        },
+        instancePath: {
+          type: String,
+          value: function(){
+            var instancePath = 'forms/callIntake';
+            return instancePath;
+          },
+          notify: true
+        },
+        rootPath: {
+          type: String,
+          value: function()
+              { var rootPath= "https://focusedstaging1.firebaseio.com";
+                return  rootPath;
+              },
+          notify: true
+        }
+         
+      },
+
+
+  computefullPath: function(rootPath, instancePath){
+    var olive = rootPath + '/' + instancePath; 
+    return olive;
+  },
+
+  observeSearchValue(nv, ov){if(nv){console.log(nv);}},
+
+  computeStartListItems: function(fullPath, localStorageHs){
+    var self=this;
+    var olive = fullPath;
+    // console.log(olive);
+    return 250;
+
+  },
+
+	
+	attached:function(){
+   var pickle= this.fullPath+"/"+this.fcid
+     var jason=this;
+     var ref = new Firebase(pickle);
+    ref.on("value", function(snap){
+      var vald = snap.val();
+      jason.set("njhs",vald); 
+      jason.set('liArray', jason.njhs);
+      console.log(jason.liArray);
+    });
+  }
+});
+</script>
+</dom-module>

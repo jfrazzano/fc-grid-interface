@@ -1,0 +1,708 @@
+<link rel="import" href="fc-draggable-behavior.html">
+<link rel="import" href="fc-grid-style-behavior.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<!-- <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-shadow-flex-layout.html"> -->
+<link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="fc-iss-input.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../fc-call-center/fc-call-center-dialog.html">
+<dom-module id="fc-indexed-db-helper">
+<template id="fc-indexed-db-helper">
+<style>
+:host{
+	position: fixed;
+	z-index:2200;
+	
+};
+paper-dialog{
+	position: fixed;
+	min-width: 20vw;
+	min-height: 480px;
+	max-height: 70vh;
+	width: 360px;
+	background: #aecefe;
+	border-radius: 3px;
+	border: solid: 2px #005c00;
+	box-shadow: 4px 7px 13px 6px grey;
+	resize: both;
+}
+paper-dialog-scrollable{
+	min-width: 18vw;
+	max-height: 55vh;
+	overflow-y: scroll;
+	border: solid 1px silver;
+	background: white;
+
+
+}
+fc-iss-input{
+	margin:26px 8px;
+	font-family:merriweather;
+	color: #005c00;
+	font-size:1.2em;
+
+}
+</style>
+ <fc-call-center-dialog id="ccdialog" data-arrays="{{dataArrays}}">
+      </fc-call-center-dialog>
+<paper-dialog id="idbHelper"  draggable drags no-cancel-on-outside-click always-on-top >
+<section class="horizontal flex layout around-justified" style="max-height: 28px!important;">
+       <span on-tap="_backOne">&#9664;</span> <paper-button on-tap="selectApi">{{chosen}}</paper-button><span on-tap="_forward">&#9654;</span>
+    </section>
+        <paper-dialog-scrollable>
+        <form  id="callIntakeForm" method="get" action="/" is="iron-form">
+          <p>
+          <template is="dom-repeat" id="inputTemplate" items="{{selectedApiView}}">
+        	<section class="horizontal layout container"> 
+        		<span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+      		</section>
+      		
+      		<div class="horizontal layout flex wrap self-stretch around-justified">
+          		<fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" iss-name="{{item.nameA}}" iss-label="{{item.labelA}}" iss-value="{{item.valueA}}" item-select-property="value" value="{{item.valueA}}" dropdown-items="{{item.dropdownItemsA}}"  name="{{item.nameA}}" on-change="enterDataFromInterface" multi-select="[[item.multiSelectA]]">
+          		</fc-iss-input>
+          		<fc-iss-input id$="{{item.nameB}}_{{counter}}" iss-name="{{item.nameB}}" iss-value="{{item.valueB}}" value="{{item.valueB}}" iss-label="{{item.labelB}}" item-select-property="value" on-change="enterDataFromInterface" name="{{item.nameB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" multi-select="[[item.multiSelectB]]">
+          		</fc-iss-input>
+     		</div>
+  		</template>
+  		</p>
+  		</form>
+  		<section>
+  		<paper-button on-tap="addOneMoreRow">add</paper-button>
+        </section>
+        </paper-dialog-scrollable>
+        <div class="buttons"  style="padding: 0px 0px 28px 0px; min-height: 65px!important;">
+          <paper-button style="height: 25px;" dialog-dismiss>Cancel</paper-button>
+          <paper-button style="height: 25px;" dialog-confirm autofocus>OK</paper-button>
+          <paper-button on-tap="submitHandler"> submit</paper-button>
+          <paper-button addRo0w on 
+        </div>
+      </paper-dialog>
+     
+<!--style="height: 0px; width: 1px; opacity: 0; visibility: hidden;"-->
+</template>
+<script>
+FcIndexedDbHelper=Polymer({
+	is:"fc-indexed-db-helper",
+	behaviors:[FCBehaviors.FcGridStyleBehavior, FCBehaviors.DraggableBehavior],
+	observers:["observeChangeB(changeEventB.event, changeEventB.value, changeEventB.name)", "observeChangeA(changeEventA.event, changeEventA.value, changeEventA.name)"],
+	
+	properties:{
+		chosen:{
+			type: String,
+			notify: true,
+
+		},
+	changeEventA:{
+      type:Object,
+      value:function(){return {};},
+      notify: true,
+    },
+    changeEventB:{
+      type:Object,
+      value:function(){return {};},
+      notify: true,
+    },
+    gridArraysFromInputs:{
+    	type: Array, 
+    	value: function(){return [];},
+    	notify: true,
+
+    },
+    tagIndex:{
+    	type: Number,
+    	computed:'_computeTagIndex(selectedApiIndex)',
+
+
+    },
+		apiLinked:{
+			type: Object,
+			notify: true,
+		},
+		apiDataSource:{
+			type: Array,
+			notify: true,
+		},
+		inputFields:{
+			type: Object,
+			notify: true,
+		},
+
+		apiChoices:{
+			type: Array, 
+			notify: true,
+			value: function(){return [];},
+		},
+		
+	//api selection
+		selectedApiIndex:{
+			type: Number,
+			notify: true,
+			observer:"observeSelectedApiIndex",
+		},
+		apisArrays:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		selectedApi:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		//end of api selection 
+		//apiView Properties
+		selectedApiViewIndex:{
+			type: Number,
+			notify: true,
+			observer:"observeSelectedApiViewIndex",
+		},
+		selectedApiView:{
+			type: Array, 
+			value:function(){return [];},
+			notify: true,
+		},
+		 studentCaller:{
+      type: Object,
+      value:function(){return {};},
+      observer:"observeStudent",
+      reflectToAttribute: true,
+      notify: true,
+
+    },
+		
+		//end api view Properties
+		//begin api view inputs array sets
+
+		baseGridInterface:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		callCenterArrays:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		courseCalendarCreationArrays:{
+			type:Array, 
+			value: function(){return [];},
+			notify: true,
+		},
+		
+		
+
+
+
+		indexeddbIndexArray:{
+			type:Array,
+			value:function(){return [];},
+			// observer:"observeTheIndex",
+			notify: true,
+		},
+		counter:{
+			type: Number,
+			value: function(){return 0;},
+			notify: true,
+
+		},
+		gridMakerInputs:{
+			type:Array, 
+			value: function(){return [];},
+			notify: true,
+		},
+	
+
+	},
+
+
+	_computeTagIndex(sap){
+		return parseInt(sap)+4;
+	},
+	observeStudent(nv,ov){},
+	initializeHelper(){
+		if(this.counter===0){
+			this.initializeApiChoices();
+		var data=this.viewIndexOfIndexedDatabases();
+		console.log(data);
+		var cucumber=this.makeInputPage(data);
+		console.log(cucumber);
+		 this.set('basicGridInterface', cucumber);
+		var arrays=this.getArraysAb();
+		//console.log(arrays[0], "FUCK THIS");
+		this.set("callCenterArrays", arrays[0]);
+		//console.log(arrays[0]);
+		var arg=this.gridMakerInputGenerator();
+		this.set("gridMakerInputs", arg);
+		this.set("courseCalendarCreationArrays", arrays[1]);
+		this.push("apisArrays",this.callCenterArrays);
+		this.push("apisArrays",this.courseCalendarCreationArrays);
+		this.push("apisArrays", this.basicGridInterface);
+		this.push("apisArrays", this.gridMakerInputs);
+		this.set("selectedApiIndex",0);
+		this.set("selectedApiViewIndex", 0);
+		//console.log(this.apisArrays);
+		this.set("selectedApi", this.apisArrays[0]);
+		this.set("selectedApiView", this.selectedApi[0]);
+		this.set('indexeddbIndexArray', cucumber);
+		//console.log(this.selectedApi, this.selectedApiView);
+		this.counter++;
+		}
+
+		this.async(function(){var selection=this.apiChoices[this.selectedApiIndex].value; this.set("chosen", selection);},20)
+
+	},
+
+	initializeApiChoices(apiArrays){
+		var array=[{"value": "Call Center","subStore":"allCalls","apiName":"callCenter", "apiIndex":0},{"value": "Course Calendars", "apiName": "courseCalendars", "subStore":"allCourseCalendars","apiIndex":1}, {"value": "Grid Review","name":"selectedApiName","apiIndex":2}, {"value": "Grid Builder","apiName": "apiBuilder", "subStore": "masterBuild", "name":"selectedApiName","apiIndex":3}];
+		var apiarray=array.map(function(val){val.gridId=val.apiName+"00"+val.subStore; return val;});
+		this.set("apiChoices",apiarray);
+		array=[];
+		apiarray=[];
+	},
+	_computeSelectedProperty(item){
+		//console.log(item);
+	},
+	addEntryToApiSheet(vals, sheetNumber, samePage){
+		console.log(vals);
+		if(this.sameThing===true){this.set("arrayIndex", this.tagIndex);ß}
+		console.log(this.arrayIndex, this.tagIndex);
+		if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
+		var newRowNumber=this.dataArrays[this.tagIndex][0].length;
+		for(var i=0;i<this.dataArrays[this.tagIndex].length;i++){
+		 	var str="00000";
+         	var co=(str+i).slice(-5);
+         	var ro=(str+newRowNumber).slice(-5);
+			var id=this.selectedApi.gridId+"_"+co+"_"+ro+"_";
+			var appliedClass="layout horizontal flex around-justified";
+			var val=vals[0][i];
+			val=(val==undefined)?"--":val;
+			var previousRow=newRowNumber-1;
+			var sty=this.dataArrays[this.tagIndex][i][1].style;
+		
+			var archive=[];
+			var name=this.dataArrays[this.tagIndex][i][0].value;
+			name=name.replace(/\s/g,"");
+			name=name.charAt(0).toLowerCase()+name.slice(1);
+			console.log(name, val, val, val);
+			archive.push(val);
+			var time=new Date().getTime();
+		
+		 		var cell={"key":id, "value":val, "contenteditable": true, "id": id, "style":  sty, "apiName":this.selectedApi.apiName, "subStore": this.selectedApi.subStore, "name": name, "class": appliedClass, "time": time, "archive":archive, "closed": false};
+		 		var width=this.textMeasurements(cell);
+				width=parseInt(width)+63;
+			var cellStyleArrayForWidth=this.dataArrays[this.tagIndex][i][previousRow].style.split("width:");
+			//console.log(cellStyleArrayForWidth);
+			var lastone=cellStyleArrayForWidth.length-1;
+			var cellWidthForParseInt=cellStyleArrayForWidth[lastone].split(";");
+			//console.log(cellWidthForParseInt);
+			if(this.tagIndex===this.arrayIndex){var assign=this.tagIndex;}
+			var colWidth=parseInt(cellWidthForParseInt[0]);console.log(colWidth);
+				if(width>colWidth){console.log("TOOSMALL");}
+				if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");this.splice(["selectedArraySet",this.tagIndex,i],newRowNumber,0,cell);;}
+			this.splice(["dataArrays",this.tagIndex,i],newRowNumber,0,cell);
+
+			console.log(this.arrayIndex, this.tagIndex);
+
+		
+		}
+	},
+
+	regularizeColumnWidth(grid, columnsToChange){
+		if(columnsToChange==="all" || columnsToChange===undefined){
+			grid.forEach(function(column,index, array){
+				this.setColumnWidthToText(column);
+					
+       		},this); 
+       	}			
+          	
+    },
+        
+    setColumnWidthToText(column){
+    	var minWidth;
+    	for(var i=0; i<column.length; i++){
+    		var cell=column[i];
+        	var width=this.textMeasurements(cell);
+       		width=parseInt(width);
+       		minWidth=(minWidth>=width)?minWidth:width;
+
+          celolumn.forEach(function(cell, ind){
+          	var numb=Math.ceil(parseInt(minWidth)+63);//do the cleaner removal
+          	cell.style+="width: " +numb+"px; ";
+          	this[mapName].set(cell.key, [cell.value, cell]);
+          }, this);
+    }
+
+	},
+
+	attached:function(){
+	
+	
+	},
+
+	selectApi(e){
+		console.log(e);
+		var max=this.apisArrays.length-1;
+		if(this.selectedApiIndex===max){this.set("selectedApiIndex",0);}
+		else{this.set("selectedApiIndex", this.selectedApiIndex+1);
+	}
+		this.set("selectedApi", this.apisArrays[this.selectedApiIndex]);
+		this.set("selectedApiView",this.selectedApi[0]);
+		this.set("chosen", this.apiChoices[this.selectedApiIndex].value);
+		console.log(this.apisArrays, this.selectedApi);
+	},
+
+	observeSelectedApiIndex(nv, ov){
+	},
+	observeSelectedApiViewIndex(nv,ov){
+	},
+	
+	openit(){
+		this.$.idbHelper.opened=!this.$.idbHelper.opened;
+		this.initializeHelper();
+		 
+	},
+
+	enterDataFromInterface(e){
+		//console.log(e, e.model.item);
+		var inputSet=e.model.item;
+		var arrayForInputPage=this.indexeddbIndexArray[this.itemsArraysIndex];
+		arrayForInputPage.forEach(function(obj, i, array){
+			var values=Object.values(obj);
+				var index=values.indexOf(e.target.value);
+				if(index>-1){
+					var keys=Object.keys(obj);
+					var key=keys[index];					
+					this.set(["indexeddbIndexArray", this.itemsArraysIndex, key],e.target.value);
+					obj[keys[index]]=e.target.value;
+				}
+		}, this);
+	},
+
+
+	
+
+	getArraysAb(){
+		 var inputArrays=this.$.ccdialog.callIntakeArrays;
+		 var ccalendarArrays=this.$.ccdialog.courseCalendarCreationArrays;
+		 var array=[];
+		 array.push(inputArrays);
+		 array.push(ccalendarArrays);
+		 this.set("courseCalendarCreationArrays",ccalendarArrays);
+		 //console.log(this.courseCalendarCreationArrays);
+		this.set("callCenterArrays",inputArrays);
+		 return array;	
+	},
+
+
+_forward(e){
+		if(this.selectedApiViewIndex===this.selectedApi.length-1)
+			{
+				this.selectedApiViewIndex=0;
+				this.set("selectedApiView", this.selectedApi[0]);
+			}
+		else{
+			this.set("selectedApiViewIndex", this.selectedApiViewIndex+1);
+    		this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+    		
+    	}
+    },
+ _backOne(){	
+ 		if(this.selectedApiViewIndex===0)
+ 		{ 
+			var max=this.selectedApi.length-1;
+ 			//console.log(max);
+ 			this.set("selectedApiViewIndex",max);
+ 			this.set("selectedApiView",this.selectedApi[this.selectedApiViewIndex]);
+ 		}
+ 		else
+ 		{	
+ 			this.set("selectedApiViewIndex", this.selectedApiViewIndex-1);
+ 			this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+    		
+ 		}
+ 	},
+    
+
+_sendInputChanged:  function(e, detail){
+    
+    var target=e.target;
+    while(target.nodeName!=="fc-iss-input"){
+      console.log(target.nodeName, e.target.value);
+      target=target.parentNode;
+    }
+    var name=target.name;
+    this.fire("sendInputVal", {value: e.target.value, name: name});
+    this.searchVals[name]=e.target.value;
+  },
+
+   submitHandler(event){
+   		if(this.arrayIndex===this.tagIndex){this.set("sameThing", true);}
+        this.set("formSubmitOne", true);
+          var formResults = this.$.callIntakeForm.serialize();
+            var d = new Date();
+            var n = -d.getTime();
+            var readableTime=new Date().toLocaleString();
+            this.submittedInputs={};
+          	var mappedVals= this.mapValuesToPropertiesFromInputArrays();
+            this.submittedInputs=Object.assign(this.submittedInputs, mappedVals);
+            var dateTime=readableTime.split(",");
+            var obj={"date":dateTime[0], "time":dateTime[1]};
+
+            	if(this.apiChoices[this.selectedApiIndex].apiName=="callCenter"){
+            			this.submittedInputs.studentFullName=this.submittedInputs.studentFirstName + " " + this.submittedInputs.studentLastName;
+            			this.submittedInputs.fcid=this.submittedInputs.studentLastName+this.submittedInputs.studentFirstName+"_00001";
+            			var refObject=obj;
+            		}
+            	else if(this.apiChoices[this.selectedApiIndex].apiName=="courseCalendars"){var refObject={};}
+            	else if(this.apiChoices[this.selectedApiIndex].apiName=="events"){var refObject={};}
+            
+            refObject=Object.assign(refObject, formResults, this.submittedInputs, {"orderingTime":n});
+            	
+            	var valueRow=this.createValueRowsFromProperties(refObject);
+            	if(this.dataArrays[this.tagIndex]==undefined){ 
+           			var headerRow=this.createHeadersFromProperties(refObject);
+           			this.createFirstGridForAnApi(headerRow, valueRow, this.tagIndex);
+           		}
+           		else{
+           				var sheet=1;
+           				//TODO: CREATE THE SHEET MAKER INPUT AND STUFF IN HERE
+           				this.addEntryToApiSheet(valueRow, sheet, this.sameThing);
+           			}
+           		this.wipeCleanInputs();
+          			// var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
+},
+wipeCleanInputs(){this.set("counter", 0); this.initializeHelper();this.set("student",{});},
+mapValuesToPropertiesFromInputArrays(){
+	var mappedValues=this.selectedApi.reduce(function(previous, value, index, array){
+            	var temp=value.reduce(function(pre, val, index, array){
+            				console.log(val);
+            				var propertyA=val.nameA;
+            				var valueA=val.valueA;
+            				var propertyB=val.nameB;
+            				var valueB=val.valueB;
+            				var object={[propertyA]: valueA, [propertyB]: valueB};
+            				pre=Object.assign(pre,object);
+            			 return pre;
+            			},{});
+            		 previous=Object.assign(previous, temp);
+            		return previous;
+            	},{});
+	return mappedValues;
+
+},
+
+createHeadersFromProperties(refObject){
+	var keys=Object.keys(refObject);
+            			var headers =keys.map(function(val,i,arr){
+                  					var label=val.replace(/([A-Z])/g, ' $1'),  
+                  					label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+                  					label=label.replace("1", " One"),
+                  					label=label.replace("2", " Two");
+                    			return label;
+ 	               			});
+            		return [headers];
+
+
+},
+createValueRowsFromProperties(refObject){
+			var keys=Object.keys(refObject);
+					var baseValuesArrays=[];
+             		baseValuesArrays=keys.map(function(key, ind, array){
+                          	var cellContents=refObject[key];
+                          	console.log(cellContents);
+                           return cellContents;
+                          });
+             		return [baseValuesArrays];
+             	},
+createFirstGridForAnApi(headers, rows,trueApiGridIndex){   		
+          			var cols=undefined;     		
+             		var gridname=this.selectedApi.subStore;
+             		var apiName=this.selectedApi.apiName;
+             		var sheets=1, row=2, toolset="null";
+
+             		//TODO: COME UP WITH AND BUILD TOOL SETS FOR API GRIDS ETC.
+             		//EXAMPLE: MATH FOR THE FINANCIALS
+             		//EXAMPLE: CONNECTION TO PAYMENT FOR FINANCIALS
+             		var userStyle=undefined,userClass=undefined, userHeaderStyle=undefined, userHeaderClass=undefined;
+             		var isDataInRows=true;
+             	this.pickle={};
+             	this.pickle=new DataGrids();
+             	var array= this.pickle.gridConstructor([cols,row,gridname, apiName, headers,sheets, toolset, rows, userStyle, userClass, userHeaderStyle,userHeaderClass, isDataInRows]);
+            	var str="00000";
+          		var co=(str+trueApiGridIndex).slice(-5);
+          		var ngrid=this.selectedApi.apiName+"|"+this.selectedApi.subStore+"|"+co; 
+          this.set([ngrid],array);
+          console.log(array);
+          this.set(["dataArrays", trueApiGridIndex], array);
+          // this.push("dataArrays", array);
+          //TODO: SEND THIS SET OF VALUES TO THE GLOBAL DATA TO UPDATE ARRAYS AND MESSAGE WEBWORKER
+},
+
+computeItemHeaderHidden(header){
+    if(header){return false;}
+    else{return true;}
+  },
+
+ _computeIndexOfDatabasesProxy(indexeddbIndexArray){
+ 	var objectA={};
+ 	var arrayForIdb=indexeddbIndexArray.reduce(function(previous,fourItemArrayContainingTwoObjectsInSubItemsA_and_B,index){
+ 			if(index%2==0){objectA={};}	
+ 			pairedObjectArray=fourItemArrayContainingTwoObjectsInSubItemsA_and_B.reduce(function(pre,val, i, arr){	
+ 						//console.log(val, arr);	
+ 						var propertyA=val.nameA;
+ 						var propertyB=val.nameB;
+ 						var setValueA=(val.dropdownItemsA===false)?val.valueA:val.dropDownItemsA;
+ 						var setValueB=(val.dropdownItemsB===false)?val.valueB:val.dropDownItemsB;
+ 						//console.log(setValueA,setValueB);
+ 						pre[propertyA]=setValueA;
+ 						pre[propertyB]=setValueB;
+ 						return pre;
+ 				}, objectA);
+ 			//console.log(previous, pairedObjectArray);
+ 			previous =previous.concat(pairedObjectArray);
+ 			//console.log(previous, pairedObjectArray);
+ 			return previous;
+ 			},[]);
+ 	//console.log(arrayForIdb);
+ 	//this.updateObjectStoreByPuttingNewObjects("indexOfDatabases", 1,arrayForIdb);
+ 	//return arrayForIdb;
+ },
+
+ makeInputPage(objArr){
+	var kvals=objArr.map(function(val,index,array){
+		var keys=Object.keys(val);
+		var numbKeys=keys.length;
+		////console.log(keys);
+		return keys.reduce(function(pre,key, i,arr){
+			pre.push([key,val[key]]);
+			//console.log(pre, key, val[key]);
+			return pre;	
+			},[]);
+		});
+	//console.log(kvals);
+	var bigArray=[];
+	var numPairs=kvals.length;
+	var arrayPair=[];
+	var pageArray=[];
+	for(var i=0;i<numPairs;i++){
+		var last=kvals[i].length-1;
+		for(var j=0;j<kvals[i].length;j++)
+		{	
+			arrayPair.push(kvals[i][j]);
+			if(j>0&&j%2===0){
+			var obj=this.makeInputPairObject(arrayPair);
+			pageArray.push(obj);
+			arrayPair=[];
+			}
+			if(j===last){
+				bigArray.push(pageArray);
+				pageArray=[];
+			}
+			else if (j===last&&pageArray.length!==0){
+					bigArray.push(pageArray);
+
+			}
+			else if(j===last&&pageArray.length===0&&arrayPair.length!==0){
+				bigArray.push(obj);
+			}
+			
+		}
+	}
+	//console.log(bigArray);
+	return bigArray;
+
+	},
+	 observeChangeB(event, value, name){
+   // console.log(event, value, name);
+     this.set(["student",name], value);
+     console.log(this.student[name], this.student);
+
+  },
+
+observeChangeA(event, value, name){
+    //console.log(event, value, name);
+    this.set(["student",name], value);
+    console.log(this.student[name], this.student);
+
+  },
+
+makeInputPairObject(pairArray){
+
+		var keyA=pairArray[0][0];
+		var	valA=pairArray[0][1];
+		var keyB="addProperty";
+		var valB="Add Value"
+		if(pairArray[1]){
+		keyB=pairArray[1][0];
+		valB=pairArray[1][1];
+		//console.log(valB, keyB, pairArray);
+		}
+		if(keyB==="name"){
+			var holderK=keyA;
+			var holderV=valA;
+			keyA=keyB;
+			keyB=holderK;
+			valA=valB;
+			valB=holderV;
+		}
+
+		var object={};
+			object.dropdownItemsA=(Array.isArray(valA))?valA:false;
+ 			object.dropdownItemsB=(Array.isArray(valB))?valB:false;
+ 			//console.log(keyA);
+ 			object.labelA=keyA.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }); 
+ 			//console.log(object.labelA);
+ 			object.labelB=keyB.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+ 			object.nameA=keyA; 			
+ 			object.nameB=keyB; 			
+ 			object.valueA=(!Array.isArray(valA))?valA:false; 		
+ 			object.valueB=(!Array.isArray(valB))?valB:false;
+ 		return object;		
+		},
+
+
+});
+</script>
+</dom-module>
+<!--
+Object
+dropdownItemsA
+:
+false
+dropdownItemsB
+:
+false
+labelA
+:
+"Student First Name"
+labelB
+:
+"Student Last Name"
+nameA
+:
+"studentFirstName"
+nameB
+:
+"studentLastName"
+propertyNameA
+:
+"studentFirstName"
+propertyNameB
+:
+"studentLastName"
+
+		var keys=Object.keys(argObject);
+		var numbKeys=keys.length;
+		if(numbKeys===2)
+			this.dropdownItemsA=(Array.isArray(argObject[keys[0]]))?argObject[keys[0]]:false;
+ 			this.dropdownItemsB=(Array.isArray(argObject[keys[1]]))?argObject[keys[1]]:false;
+ 			this.labelA= keys[0].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }); console.log(this.labelA);
+ 			this.labelB=keys[1].replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+ 			this.nameA=keys[0]; 			
+ 			this.nameB=keys[1]; 			
+ 			this.valueA=(!Array.isArray(argObject[keys[0]]))?argObject[keys[0]]:false; 		
+ 			this.valueB=(!Array.isArray(argObject[keys[0]]))?argObject[keys[1]]:false;				};
