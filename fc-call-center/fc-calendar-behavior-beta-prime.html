@@ -105,16 +105,22 @@ Date.prototype.dayStamp= function()
     return dayStamp;
 }	
 
-function getDates(startDate, stopDate)
-{
-      var dateArray = new Array();
+Date.prototype.getDates=function(startDate, stopDate){      
+	 this.dateArray = new Array();
       var currentDate = startDate;
       while (currentDate <= stopDate)
       {
-        dateArray.push(currentDate)
+        this.dateArray.push(currentDate)
         currentDate = currentDate.addDays(1);
       }
-      return dateArray;
+      return this.dateArray;
+}
+Date.prototype.countdownDays=function(startDate, stopDate)
+{
+      var daysArray=Date.prototype.getDates(startDate,stopDate);
+      var numDays=daysArray.length;
+      var showDate=new Date(stopDate).toLocaleDateString();
+            return numDays + " days to " +showDate;
 }
 
 function shortDayLabel(argDay, numChars)

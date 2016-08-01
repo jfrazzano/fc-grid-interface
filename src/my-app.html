@@ -38,6 +38,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         display: block;
         --app-primary-color: #4285f4;
         --app-secondary-color: black;
+        max-width: 102vw;
+        @apply(--vertical-layout);
+        @apply(--flex-layout);
+        @apply(--layout-self-stretch);
       }
       .longest{display: flex; flex: row; width: 84px; height: 42px; border: 1px solid #aedefe;} 
    .link{   
@@ -96,7 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hi
         </app-drawer>
       <!-- Main content -->
-      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:{{centerContentAreaWidth}}px;margin-right:{{rightCurrentWidth}}px;" has-scrolling-region>
+      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:102%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
         <app-header condenses reveals effects="waterfall">
       <app-toolbar>
            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -161,8 +165,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <my-view3 name="view3"></my-view3>
           <fc-grid id="liveGrid" name="grid"></fc-grid>
            <fc-dashboard-divisions name="dashboard-divisions"></fc-dashboard-divisions>
-          <fc-database-webworker name="database-worker">
-          </fc-database-webworker>
+         
         </iron-pages>
 
       </app-header-layout>

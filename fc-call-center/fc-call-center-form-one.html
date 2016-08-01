@@ -276,12 +276,13 @@
   </section>
     </details>
      <section class="radioGroupBlock">
-     <label id="label3" class="returningCaller"></label>
-          <paper-radio-group class="tallbox" selected="b" allow-empty-selection aria-labelledby="label3">
-              <paper-radio-button name="newclient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
-              <paper-radio-button name="repeatcaller">This is a <a><u>Returning Caller</u></a>, who has yet to become a client.</paper-radio-button>
-              <paper-radio-button name="activeclient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
-              <paper-radio-button name="inactiveclient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
+     <label id="label3" class="isPreviousCaller"></label>
+          <paper-radio-group class="tallbox" activate-event="myradiopush" on-tap="myradiopush" allow-empty-selection aria-labelledby="label3">
+              <paper-radio-button class="isPreviousCaller" name="newClient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="repeatCaller">This is a <a><u>Repeat Caller</u></a>, who has yet to become a client.</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="activeClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="inactiveClient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="nonClient">This is a <a><u>Non-Client Caller</u></a>.</paper-radio-button>
           </paper-radio-group>
     </section>
     <details>
@@ -301,20 +302,20 @@
     </details>
     
     <section class="radioGroupBlock">
-     <label id="label3" class="returningCaller"></label>
-          <paper-radio-group class="tallbox" selected="b" allow-empty-selection aria-labelledby="label3">
-              <paper-radio-button name="parent1"><a link=""><b><u>Parent One</u></b></a>&nbsp;Is this caller the "primary" parent and contactee for a student?
+     <label id="label3" class="callerRole"></label>
+          <paper-radio-group class="callerRole" activate-event="myradiopush" on-tap="myradiopush" allow-empty-selection aria-labelledby="label3">
+              <paper-radio-button class="callerRole" name="parent1"><a link=""><b><u>Parent One</u></b></a>&nbsp;Is this caller the "primary" parent and contactee for a student?
               </paper-radio-button>
-              <paper-radio-button name="student"><a><b><u>Focused Student</u></b></a>&nbsp;Is this caller a current or potential Focused Student?
+              <paper-radio-button class="callerRole" name="student"><a><b><u>Focused Student</u></b></a>&nbsp;Is this caller a current or potential Focused Student?
               </paper-radio-button>
-              <paper-radio-button name="parent2"><a><b><u>Parent Two</u></b></a>&nbsp;Is this caller the "Parent 2" contact or some other student related contact?
+              <paper-radio-button class="callerRole" name="parent2"><a><b><u>Parent Two</u></b></a>&nbsp;Is this caller the "Parent 2" contact or some other student related contact?
               </paper-radio-button>
-              <paper-radio-button name="client-competitor"><a><b><u>Business Client</u></b></a>&nbsp;Is this caller requesting Business Information about FocuseD.</paper-radio-button>
-              <paper-radio-button name="other"><a><b><u>Other</u></b></a>&nbsp;Does this caller fit into none of the above categories?
+              <paper-radio-button class="callerRole" name="clientCompetitor"><a><b><u>Business Client</u></b></a>&nbsp;Is this caller requesting Business Information about Focused.</paper-radio-button>
+              <paper-radio-button class="callerRole" name="other"><a><b><u>Other</u></b></a>&nbsp;Does this caller fit into none of the above categories?
               </paper-radio-button>
           </paper-radio-group>
     </section>
-    <section hidden="{{_offerFreeResponseOnCallerRole(radioOther)}}">
+    <section hidden="{{!radioOther}}">
         <label for="callerRoleOther" value="Below, Attempt a Brief Categorization of the 'OTHER' Caller--All previous categorizations will be selectable from a dropdown as you type."></label>
         <fc-iss-input item-select-property="" iss-label="Caller Role:Other" iss-value="{{other}}" iss-name="other"></fc-iss-input>
    </section>
@@ -345,26 +346,58 @@ FcCallCenterFormOne=Polymer({
       value:function(){return false;},
       notify: true
     },
+    pageIndex:{
+      type:Number,
+      value: function(){return 0;},
+      notify: true, 
+
+
+
+    },
     currentHeight:{
       type: String,
       notify: true,
     },
 		date:{
 				type: Date,
-				value: function(){var date=new Date().toLocaleDateString();
-					console.log(date);
-					return date;},
+				value: function(){
+          var date=new Date().toLocaleDateString();
+					return date;
+            },
 				notify: true,
-
-
-		},
-
-
-
-       		},
-
-
+		    },
+    inquiry:{
+      type: Object, 
+      value:function(){return {};},
+        notify: true,
+      }
+    },
+  
+      myradiopush(e){ 
+        console.log(e.target.class, e.target.name, e.target.checked);
+        if(e.target.class==="isPreviousCaller"){
+                var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
+          }
+        else if(e.target.class ==="callerRole"&&e.target.name==="other"){
+                      this.set("radioOther", true);
+            //            var pack=new FcInquiry(this.inquiry);
+            // this.set("inquiry",pack);
+          }
+        else{
+              this.set("inquiry.callerRole", e.target.name); 
+            
+            // var pack=new FcInquiry(this.inquiry);
+            // this.set("inquiry",pack);
+          }
+        console.log(e.target.name, e.target.checked, e.target.class); 
+      },
 
        });
-       </script>
-       </dom-module>
+</script>
+</dom-module>
+
+
+
+
+
+

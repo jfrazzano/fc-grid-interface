@@ -9,7 +9,7 @@
 <sortable-js group="group" class="horizontal layout flex wrap" handle=".handle">
 
 <template is="dom-repeat" class="horizontal layout flex wrap ghost dropzone" draggable items="{{dataArray}}">
-<fc-grid-cell group="group" name$="{{item.index}}" class="pickle group handle" gc-label="{{item.label}}" gc-val="{{item.val}}" value="{{item.val}}">
+<fc-grid-cell group="group" name$="{{item.index}}" contenteditable class="pickle group handle" gc-label="{{item.label}}" gc-val="{{item.val}}" value="{{item.val}}">
 
 </fc-grid-cell>
 </template>

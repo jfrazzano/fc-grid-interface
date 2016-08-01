@@ -20,7 +20,7 @@
 <link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
 <link rel="import" href="../src/fc-grid.html">
 <!-- <script src="../fc-grid/indexedDb-worker-scripts.js"></script> -->
-
+<link rel="import" href="fc-inquiry.html">
 <link rel="import" href="fc-tabbed-card.html">
 <link rel="import" href="fc-call-list-view.html">
 <link rel="import" href="fc-call-item.html">
@@ -37,7 +37,7 @@
 <style>
 :host{
       background: white;
-      padding: 0px 3px 4px 8px;
+      padding: 0px 23px 4px 28px;
       opacity: 1;
       position: static;
       @apply(--horizontal-layout);
@@ -277,20 +277,20 @@
 <form is="iron-form" id="callIntakeForm" method="get" action="/">
   <fc-ddr-card id="focusedCallInterface"  waterfall header-set-height="125px" head-class="darkBlue" header-title="Client Intake" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
    <div class="dropdown headerRight">
-          <span btn="rightClick" style="position: absolute; right: -36px; top: 4px; font-size: 42px;"><span style="position: relative; font-size: 18px;top:-5px;"></span>&#8680;</span>
-      
+          <span btn="rightClick" style="position: absolute; right: -36px; top: 4px; font-size: 18px;"><span style="position: relative; font-size: 18px;top:-5px;"></span>&#8680;</span>
+          <span on-tap="notlist">&#9994;</span>
   </div>
-
+<span on-tap="notlist">&#9994;</span>
   <div class="dropdown headerLeft horizontal layout">
-   <span btn="leftClick" style="position: absolute; left: -36px; top: 4px; font-size: 42px;">&#8678;<span style="position: relative; font-size: 18px;top:-5px;"></span></span>
+   <span btn="leftClick" style="position: absolute; left: -36px; top: 4px; font-size: 18px;">&#8678;<span style="position: relative; font-size: 18px;top:-5px;"></span> <span on-tap="amCard" style="font-size: 22px;">  &#9806</span></span>
     
   </div>
  	<div class="flex layout horizontal center-justified">
  		<section id="hanger" ></section>
     
-        <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+        <neon-animated-pages id="pages" selected="[[selected]]" hidden="{{inputsHidden}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <div id="container1">
-                <fc-call-center-form-one id="childOne" current-height="{{childHeight}}">
+                <fc-call-center-form-one page-index="{{selected}}" inquiry="{{_isSearchRequired}}"  id="childOne" current-height="{{childHeight}}">
                         <span class="pageTotal">{{shadowIndex}}</span>
                         <section class="next" style="color: brown; font-size: 32px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
                 </fc-call-center-form-one>
@@ -299,21 +299,22 @@
                 <div>
                     <fc-call-center-form input-array="{{item}}" student="{{studentCaller}}" current-height="{{siblingHeight}}" item="{{inputArraysAb}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" 
                     fc-student="{{studentSelectable}}" search-vals="{{searchVals}}" slna="{{slna}}" sfna="{{sfna}}">
-                        <span class="pageTotal">{{_computePageTotal(inputArraysAb, index)}}
+                        <span class="pageTotal" on-tap="openCollapse">{{_computePageTotal(inputArraysAb, index)}}
                         </span>
                         <section class="next" style="color: brown; padding: 12px 8px; font-size: 32px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
                     </fc-call-center-form>
                 </div>
             </template>
+        </neon-animated-pages>
+        <neon-animated-pages id="pages" selected="[[selectedtwo]]" hidden="{{!inputsHidden}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <div>
-            <paper-button on-tap="submitHandler">Submit</paper-button>
-           
-        <fc-call-list-view id="callList" style="min-height: 420px; min-width:315px;" search-vals="{{searchVals}}" student-first-name-A="{{sfna}}" student-last-name-A="{{slna}}"></fc-call-list-view>
+        <fc-call-list-view id="callList" search-vals="{{searchVals}}" student-first-name-A="{{sfna}}" student-last-name-A="{{slna}}"></fc-call-list-view>
         </div>
         <div>
-         <fc-tabbed-card-plus id="viewProfile" student="{{studentSelectable}}" on-close="_onClose"></fc-tabbed-card-plus>
+         <fc-tabbed-card-plus style="width: 300px; height: 600px; position: absolute: right: -400px; " id="viewProfile" student="{{studentSelectable}}" on-close="_onClose"></fc-tabbed-card-plus>
         </div>
         </neon-animated-pages>
+
     </fc-ddr-card>
      </form>
 </template>
@@ -330,6 +331,7 @@ FcCallCenterDialog=Polymer({
             "sendInputVal": "_passSearchVals", 
             "studentSelected":"_setPreviousCaller"
             },
+        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)'],
     properties: {
         entryAnimation: {
           type: String,
@@ -361,6 +363,11 @@ FcCallCenterDialog=Polymer({
       notify: true,
 
     },
+    selectedtwo:{
+      type: Number, 
+      value: 0, 
+      notify: true,
+    },
     sfna:{
       type: Array,
       notify: true,
@@ -378,6 +385,16 @@ FcCallCenterDialog=Polymer({
         type: String,
         computed: "_computeSiblingHeight(childHeight)",
         notify: true,
+    },
+    isSearchRequired:{
+      type: Object, 
+      //observer:"observeIsSearchRequired",
+      notify: true,
+    },
+    inputsHidden:{
+      type:Boolean, 
+      value: function(){return false;},
+      notify: true
     },
     data: {
         type: Array,
@@ -460,7 +477,11 @@ FcCallCenterDialog=Polymer({
           reflectToAttribute: true
         },
   },//end of properties
-		
+		amCard(e){
+      this.selectedtwo=(this.selectedtwo===0)?1:0;
+      
+    },
+    notlist(e){this.inputsHidden=!this.inputsHidden;},
     doStuffOnLoad(e){
         this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");console.log(ht, wt);this.style.width="480px"; this.style.height="720px";}, 4400);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
@@ -577,6 +598,7 @@ FcCallCenterDialog=Polymer({
 
           
         },
+
         observeInputArraysAB(ninputarrays,oldinputarrays){
           if(ninputarrays){console.log(ninputarrays, oldinputarrays);}
 
@@ -625,6 +647,8 @@ FcCallCenterDialog=Polymer({
         pastAcademics=Object.assign(pastAcademics, addAcademics);
         var it={},keyz=Object.keys(pastAcademics),keys=Object.keys(student),inputArrayA=[],inputArrayB=[],contentArray=[], two=keys[12],one=keys.splice(12,1);
         //note that the it object will be used for moving properties from one object to another, later in the code via an Object.assign--poor mans defineProperties set and gets...
+        var tester={};
+        tester=Object.assign(tester, student, pastAcademics);
         keys.push(two);
         var moreKeys=keys.concat(keyz); 
         var length;
@@ -636,9 +660,25 @@ FcCallCenterDialog=Polymer({
         label=label.replace("2", " Two");
         var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
         //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
-        it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(val.selectedItems)?val.selecteditems: false;
-      
+        it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(tester[val]))?"value":(val.selectedItems)?val.selecteditems:false; 
+        var mapName=val;
+        if(it[dropdownItemsProperty]=="value")
+          { it[dropdownItemsProperty]=[];
+            it[dropdownItemsProperty]=tester[val].map(function(item){ 
+                      var retVal={"name": mapName, "value": item}; 
+                      return retVal;
+                  });
+          }
         // it[multiSelectProperty]=(val.multiSelect&&val.multiSelect===true)?true:false;
+        //I avoided multi-select for the time being//will come back to it very SHORTLY NOW AUG 1, 2016;
+        //ADDING A UNIQUE HANDLER HERE WILL DEAL WITH "related properties in next redo"//after multi=select
+
+        if(it[nameProp]==="daysToNextTestDate"){
+              var dynamicDependantValue="value" +ab;
+                it[dynamicDependantValue]=tester.daysToNextTestDate;
+        }
+        //TODO--FIX THIS REALLY ITS A SCAR ON THE SYSTEM; SLIPPERY SLOPE
+
         var pushVal=(index%2===0)?inputArrayA:inputArrayB;
         //alternating on the index to get a pair of items to load on the dom!
         pushVal.push(it);
@@ -702,38 +742,12 @@ FcCallCenterDialog=Polymer({
   _onCallClick: function(e) {
       this.$.pages.selected = 7;
       //console.log(e.detail.item);
-     this.$.viewProfile.setStudent(e.detail.item.fcid); 
+     this.$.viewProfile.setStudent(e.detail.item.fcid);
+
      //console.log(e.detail.item.fcid);
      //console.log(this.studentSelectable, "here is selected");
   
     },
-
-    startWorker(){
-    if(typeof(Worker) !== "undefined") {
-        if(typeof(this.worker) == "undefined") {
-            this.worker = new Worker("indexedDB-worker-script.js");
-        }
-        this.worker.onmessage = function(event) {
-            console.log(event.data, "here we are");
-            this.push("dataArrays", event.data);
-        };
-    } else {
-        console.log("Sorry, your browser does not support Web Workers...");
-    }
-},
-  sendWorkerArrayForStorage(e){
-
-
-
-  },
-    stopWorker() {
-    //this.worker.terminate();
-    this.worker = undefined;
-},
-
-
-
-  
 
 	_tapHandler(e){
 		var targ=e.target;
@@ -774,7 +788,7 @@ FcCallCenterDialog=Polymer({
 
      _setPreviousCaller: function(e, detail)
     {
-        //console.log(e.detail);
+        console.log(e.detail);
         this.set("studentSelectable", e.detail);
     },
 
@@ -815,6 +829,18 @@ FcCallCenterDialog=Polymer({
        this.selected = this.selected === 0 ?(this.inputArraysAb.length+2): (this.selected - 1);
          
       },
+      observerForSearch(isPreviousCaller, callerRole){
+        if(isPreviousCaller===true){
+             if("2".match(callerRole)){this.leftClick();this.leftClick();}
+                  else{this.leftClick();}
+
+
+
+        }
+
+
+
+      },
 
 
 
@@ -839,18 +865,10 @@ FcCallCenterDialog=Polymer({
     { //console.log(newVal);
       var profile=newVal.FcStudent.profile;
       //console.log(profile);
-      var prokeys =Object.keys(profile);
-      //console.log(prokeys);
-      var counter=prokeys.length;
-      //console.log(counter);
       var pasta =newVal.FcStudent.pastacademics;
-      //console.log(pasta);
-      var pastakeys=Object.keys(pasta);
-      var len =pastakeys.length;
-      //console.log(pastakeys); 
       var arr=[];
-      arr = Polymer.dom(this.root).querySelectorAll('fc-iss-input');
-      console.log(arr);
+      arr = Polymer.dom(this).querySelectorAll('FC-ISS-INPUT');
+      console.log(arr, arr, arr, arr);
       var i=0;
       //console.log(arr);
       for(i=0; i<counter; i++)

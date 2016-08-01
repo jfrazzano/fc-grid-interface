@@ -1,3 +1,4 @@
+<link rel="import" href="fc-calendar-behavior-beta-prime.html">
 <script>
 'use strict';
 class FcStudentProfile {
@@ -32,20 +33,69 @@ class FcStudentProfile {
 		return fanoutObj;
 	}
 }
+function objectArrayForPossiblePropertyValues(propertyName, arrayOfPossibleValues, context){
+		var prop=propertyName;
+		var arrayToInputDropdownsAndMenus=arrayOfPossibleValues.map(function(value){ 
+			var retVal={"name":prop, "value": value};
+			return retVal;
+		}, context);
+		return arrayToInputDropdownsAndMenus;
 
+}
 class FcAdditionalAcademics {
 	constructor(argAces, fcid){this.build(argAces.completedMathCourse, argAces.currentEnglishClass, argAces.completedScience,argAces.currentHistoryCourse, fcid);}
-	build(completedMathCourse, currentEnglishClass, completedScience,currentHistoryCourse, fcid)
+	build(completedMathCourse, currentEnglishCourse, completedScienceCourse,currentHistoryCourse, fcid)
 	{
-	this.completedMathCourse = completedMathCourse || "";
-	this.currentEnglishClass = currentEnglishClass || "";
-	this.completedScience = completedScience || "";
-	this.currentHistoryCourse = currentHistoryCourse || "";
+		var english= ["Standard English",
+             "Honors English",
+             "AP Language and Composition",
+             "AP Literature and Composition",
+             "English Writing Colloquim",
+             "I want to be a writer",
+             "I am currently writing for publication",
+             "I Have Published Work Professionally",
+             "Other (write what you want, it's a writing question)"];
+   
+        var science=[ "Biology",
+             "Chemistry",
+             "Physics",
+             "AP Biology",
+             "AP Chemistry",
+             "AP Physics",
+             "AP Bio & AP Chem",
+             "AP Bio & AP Phys",
+             "AP Phys & AP Chem",
+             "AP Phys, AP Bio & AP Chem",
+             "I currently have a project with a university laboratory",
+             "I am currentyly doing research in industry",
+             "I am currently doing research for the government",
+             "I have a laboratory in my basement and a good friend named Igor, but I hate it when everyone calls me Dr. Frankenstein"];
+        
+         var history=["World History",
+             "AP U.S. History One",
+             "AP U.S. History Two",
+             "AP Human Geography",
+             "AP World History",
+             "AP European History",
+             "AP Art History",
+             "U.S. History",
+             "AP Gov. & Pol.",
+             "I am currently involved in local politics", 
+             "I am currently running for local or state office", 
+             "I figured I could be President if Donald Trump could..."];
+        
+
+	this.completedMathCourse = completedMathCourse ||["Algebra I","Geometery, no Algebra I","Algebra I and Geometery","Algebra II, no Geometry","Algebra II and Geometry","Currently in Pre-Calculus","Completed Pre-Calculus","Completed Basic Statistics","Calculus AB or Higher","Completed Higher Math Courses (You May Type in Your Courses Here)","Let's Not Talk About 'THAT MATH'"];
+     this.currentEnglishCourse = currentEnglishCourse || english;
+     this.completedScienceCourse= completedScienceCourse || science;
+	this.currentHistoryCourse = currentHistoryCourse || history;
 	//this.fcid = fcid;
 	}
 }
+var testdateHolder=[];
+  var d=new Date();
 class FcPastAcademics{
-constructor (gradeLevel, currentSchool, pastSchool, highestEducationLevel, startMath, startReading, startTotal,goalScore,desiredTestDate, lastTestDate, fcid){
+constructor (gradeLevel, currentSchool, pastSchool, highestEducationLevel, startMath, startReading, startTotal,goalScore,fcid){
   this.gradeLevel= gradeLevel ||"";
   this.currentSchool= currentSchool ||"";
   this.pastSchool= pastSchool ||"";
@@ -54,13 +104,88 @@ constructor (gradeLevel, currentSchool, pastSchool, highestEducationLevel, start
   this.startReadingScore = startReading || "";
   this.startTotalScore = startTotal || "";
   this.goalScore=goalScore || "";
-  this.lastTestDate=lastTestDate || "none";
-  this.desiredTestDate=desiredTestDate||"";
-  this.weeksUntilTestDate=new Date()-this.desiredTestDate || "10 weeks";
-  this.focusedServiceMatch={};
-  
+  this.pastTestDates=[];
+  testdateHolder=this.nextReasonableTestDates(8);
+  console.log(testdateHolder);
+  this.approachingTestDates=testdateHolder;
+  console.log(this.approachingTestDates, this.approachingTestDates[0]);
+  this.daysToNextTestDate=Date.prototype.countdownDays(d,new Date(this.approachingTestDates[0]));
+  console.log(this.daysToNextTestDate);
+  this.serviceMatchLevelOne=[];
   }
+computeServiceMatchLevelOne(gradeLevel){
+    var returnVal =("focusedProgramFit"=="Grade 4")?["Young Scholars Reading","Young Scholars Math"]:("focusedProgramFit"=="Grade 5")?["Young Scholars Reading","Young Scholars Math", "Young Scholars:Young Authors"]:("focusedProgramFit"=="Grade 6")?["Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","PSAT 8/9"]:("focusedProgramFit"=="Grade 7")?["PSAT 8/9","Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","Focused1600Prep"]:("focusedProgramFit"=="Grade 8")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II: True Scholarship"]:("focusedProgramFit"=="Grade 9")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II:Deep Learning"]:("focusedProgramFit"=="Grade 10+")?["1600 SAT","PSAT-NMSQT","PSAT 10"]:["1600 SAT"];
+
+}
+nextReasonableTestDates(num)
+{
+
+var allTestDates=[[2016,1,23], [2016, 3, 5],[2016, 5, 7],[2016, 6, 4],[2016, 8, 6],[2016,10,1],[2016,11,5],[2016,12,3],[2017,1,28],[2017,3,11],[2017, 5, 6], [2017, 6, 3],[2017, 8, 26],[2017, 10, 7],[2017,11,4],[2017, 12, 2],[2018,3, 10],[2018, 5, 5], [2018, 6, 2], [2018, 8, 25], [2018, 10, 6],[2018,11,3],[2018,12,1],[2019,3, 9],[2019,5,4],[2019, 6, 1]];
+
+	var now = new Date();
+	var i=0;
+	var testDates=allTestDates.filter(function(val){ 
+			var date=new Date(val);
+			if(date>now.addDays(+30)&&i<num)
+				{
+					i++;return true;
+				}
+			else if(date<now.addDays(+30)&&date.getMonth()!==7){
+				date=new Date(date).toDateString();
+				this.pastTestDates.push(date);
+			}
+		}, this);
+	console.log(this.lastTestDate);
+		console.log(testDates);
+		var readableDates=testDates.map(function(date){var td=new Date(date).toDateString(); return td;});
+		console.log(readableDates);
+		return readableDates;	
+}
+
 };
+class FcInquiry{
+	constructor(argInquiry, argCallerRole, argFcProfile)
+	{	
+
+		this.builder(argInquiry.timeStamp, argInquiry.callerFullName, argInquiry.isClosed, argInquiry.relatedStudent, argInquiry.callerMessage, argInquiry.focusedProgramMatch, argInquiry.returnContactTime, argInquiry.callerExpectedFollowUp, argInquiry.isPreviousCaller, argInquiry.intakeFcid, argInquiry.fcid, argCallerRole, argFcProfile);
+	
+	} 
+	builder(timeStamp, callerFullName, isClosed, relatedStudent, callerMessage, focusedProgramMatch, returnContactTime, callerExpectedFollowUp, isPreviousCaller, intakeFcid, fcid, callerRole, fcProfile){
+	this.timeStamp=timeStamp || "ALERT FAIL"; 
+	var  callerFirstName = fcProfile[callerRole+"FirstName"];
+	var callerLastName = fcProfile[callerRole+"LastName"];
+	this.callerFullName=callerFullName || callerFirstName + " " + callerLastName;
+	var email= fcProfile[callerRole+"Email"];
+	this.callerEmail=email  || "";
+	var phone = fcProfile[callerRole+"Telephone"];
+	this.callerTelephone=phone  || "";
+	this.isClosed=isClosed || false;  
+	this.relatedStudent=relatedStudent || fcProfile.studentFullName;  
+	this.callerMessage=callerMessage || "AlertVital"; 
+	this.focusedProgramMatch=focusedProgramMatch || "Focused 1600SAT";  
+	this.returnContactTime=returnContactTime || "";  
+	this.callerExpectedFollowUp=callerExpectedFollowUp || "";
+	this.callerRole =callerRole || "fail";
+	this.isPreviousCaller = isPreviousCaller || false; 
+	if(this.inquiryNumber==null){this.inquiryNumber= 1; console.log(this.inquiryNumber);}
+	else if(this.inquiryNumber==Nan){var num = parseInt(this.inquiryNumber); if(num ==Nan || num == null){this.inquiryNumber=1;} else{ num++; this.inquiryNumber=num; console.log(this.inquiryNumber, num, "this is the else on the if in the else if one");}}
+	else if(typeof this.inquiryNumber==Number){this.inquiryNumber++; this.inquiryNumber = this.inquiryNumber; console.log(this.inquiryNumber, "this is if stuff goes right");}   
+	this.intakeFcid=intakeFcid || "ALERT"; 
+	this.fcid= fcid || fcProfile.fcid;
+	this.fcProfile= fcProfile || {};
+	}
+	fcSave(ref){
+		var inq = ref.child("inquiries");
+		var key1= -(new Date(this.timeStamp).getTime()) + "_" + this.fcid;
+		var savObject ={};
+		savObject[key1]=this;
+		inq.update(savObject);
+		var student = ref.child("students/" + this.fcid + "/inquiries");
+		student.update(savObject);
+	}
+	
+}
+</script>
 // class FcAccountDetails{
 // 	constructor(argAcctDs, argFcProfile, argFcInquiries, fcid){this.build(argAcctDs.inquiryNumber, argAcctDs.totalAmmountDue)
 // 	(firstName,lastName,address1,address2,parent1,parent2,phone1,parent1Telephone,parent2Telephone,email,parent1Email,parent2Email,telephone,fcid);
@@ -70,3 +195,8 @@ window.FCBehaviors = window.FCBehaviors || {};
 FCBehaviors.FcProfileClass= {
 };
 </script>
+
+
+
+
+

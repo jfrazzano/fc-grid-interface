@@ -13,7 +13,7 @@
 <template>
 <style>
  :host {
-        max-width: 900px; max-height: 1200px;
+        min-width: 480px; max-height: 900px;
         @apply(--layout-vertical);
       }
       .main {
@@ -291,13 +291,12 @@ Polymer({
     },
     _onClearButtonClick: function() {
       this.fire('close');
+     setProfile:function(data){
+       this.set("data", data);
+       console.log("in profile card", this.data);
+
+
     },
-    // setProfile:function(data){
-    //   this.set("data", data);
-    //   console.log("in profile card", this.data);
-
-
-    // },
  
     setStudent: function(argFcid){
       console.log(argFcid, this.studlist);
@@ -319,6 +318,7 @@ Polymer({
 },
 attached: function(){
      console.log(this.studlist);
+     console.log(this.student, this.accountDetails, this.syllabus, this.FcStudent);
 
 },
 

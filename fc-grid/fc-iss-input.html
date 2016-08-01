@@ -36,7 +36,7 @@ span, {
 input.question.menuItem{
  visibility: hidden;
  width: 110px;
-    font-size: 18px;
+    font-size: 16px;
   font-family: merriweather;
   color: brown;
   font-weight: 600;
@@ -47,7 +47,7 @@ input:focus {
   margin-bottom: 8px;
 }
 input.question {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 300;
   border-radius: 2px;
   margin: 0;
@@ -101,6 +101,9 @@ input.question:valid{
   opacity: 1;
   font-family: merriweather;
   font-weight: 600;
+  width: 101%;
+  padding:1px 10px 2px 2px;
+  margin: 0px 2px;
 
 }
 input.question:valid + label > span {
@@ -116,8 +119,8 @@ input.menuItem:blur + label + paper-listbox.menuItem{
       position: absolute;
       background-color: #efefef;
       min-width: 160px;
-      opacity: 0;
-      z-index:-1;
+      /*opacity: 0;
+      z-index:-1;*/
       box-shadow: 3px 8px 16px 5px #afafaf;
     -webkit-transition: background-color 0.6 ease, display 0.6s ease, opacity 0.6s ease;
   transition: background-color 0.6s ease, display 0.6s ease, opacity 0.6s ease;
@@ -136,7 +139,7 @@ input.question + label > span{
   font-weight: 500;
   margin: 0;
   position: absolute;
-  font-size: 18px;
+  font-size: 16px;
   top: -26px;
   color: brown;
   left: 0px;
@@ -144,6 +147,7 @@ input.question + label > span{
   -webkit-transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
   transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
 }
+paper-icon-button{margin-left:-6px;}
 input.question.menuItem + label.menuItem{
   border-top: 0px white dashed;
 }
@@ -156,7 +160,7 @@ visibility: visible;
   animation: appear 1.2s forwards;
 } 
 input.menuItem+label+paper-listbox.show{
-   font-size: 18px;
+   font-size: 16px;
   font-family: merriweather;
   color: #005c00;
   font-weight: 300;
@@ -201,7 +205,7 @@ input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label
 }
 .dropbtn{
  margin-top:-8px;
-}.dropbtn.menuItem{margin:8px;}
+}.dropbtn.menuItem{margin:4px;}
  .dropbtn:hover, .dropbtn:focus{
   
   }
