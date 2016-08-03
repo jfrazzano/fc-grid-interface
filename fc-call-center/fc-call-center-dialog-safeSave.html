@@ -1,0 +1,1090 @@
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/iron-image/iron-image.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
+<link rel="import" href="../fc-grid/fc-iss-input.html">
+<link rel="import" href="../fc-grid/fc-ddr-card.html">
+<link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
+<link rel="import" href="../src/fc-grid.html">
+<!-- <script src="../fc-grid/indexedDb-worker-scripts.js"></script> -->
+<link rel="import" href="fc-inquiry.html">
+<link rel="import" href="fc-tabbed-card.html">
+<link rel="import" href="fc-call-list-view.html">
+<link rel="import" href="fc-call-item.html">
+<link rel="import" href="FC_frontpage_logo.png">
+<link rel="import" href="fc-call-center-form-one.html">
+<link rel="import" href="fc-call-center-form.html">
+<link rel="import" href="fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="fc-profile-class.html">
+<link rel="import" href="fc-tabbed-card-plus.html">
+<link rel="import" href="FC_frontpage_logo.png">
+<dom-module id="fc-call-center-dialog">
+
+<template>
+<style>
+:host{
+      background: white;
+      padding: 0px 23px 4px 28px;
+      position: static;
+      opacity: 1;
+      @apply(--horizontal-layout);
+      @apply(--layout-flex);
+      }
+     
+    .headerLeft{
+      height: 42px; width: 42px; color: white; float: left;top: 5px;
+    }
+    .headerRight{
+      height: 42px; width: 42px; color: white; float: right;top: 5px;
+      }
+      .intakeForm{
+      	border: 1px #efefef solid;
+      	margin: 12px 0px;
+      }
+     
+		paper-button{
+		 	 width: 50%;
+		 	 min-width: 147px;
+		 	 font-weight: 600; 	  
+		 	 font-size: 14px;
+		 	 text-align: center;
+		 	 white-space: nowrap;
+		 	 max-height: 36px;
+		 	 @apply(--layout-nowrap);
+		 	 background: white;
+		 	 border: #efefef 1px solid;
+		 }
+		 paper-button.green{
+		 	color: green; 
+		 	border: 2px solid green;
+		}
+    fc-ddr-card{
+      min-width: 360px;
+      min-height: 80px;
+      max-height: 600px;
+      max-width: 580px;
+    }
+		paper-button.darkblue{
+			color: #009;
+			border: 2px solid #009;
+		}
+		paper-button.red{
+			color: red;
+			border: 2px solid red;
+		}
+		paper-button.orange{
+			color: orange;
+			border: 2px solid orange;
+		}
+		paper-button:hover, paper-button:active{
+			box-shadow: 2px 4px 7px 2px; 
+
+		} 
+		paper-button.darkblue:hover, paper-button.darkblue:active{
+			box-shadow: 2px 4px 7px 2px gold; 
+
+		} 
+		.buttonRow{
+			@apply(--layout-flex);
+			@apply(--layout-horizontal);
+			padding: 2px;
+		}
+
+.footerclass{
+	height: 32px;
+	padding: 14px;
+	color: white;
+	background: #03A9F4;
+	font-weight: 600;
+	text-align: center;
+	font-size: 11px;
+}
+.slides{overflow: hidden; overflow-y: scroll;}
+
+.one{
+	font-family: merriweather; 
+	font-weight: 600;
+	color: #080808;
+	font-size: 14px;
+
+	white-space: nowrap;
+	display: inline-block;
+}
+      paper-card{
+        width: 100%;
+        --paper-card-header-image-text:{color:#009; position: absolute; right: 32px; top: 45px;}
+        --paper-card-header-image: {width: 165px; height: 120px; margin: 12px 16px 16px 16px;};
+        --paper-card-header:{height: 95px; border-bottom: double 6px green;}
+  
+    }
+  
+      neon-animated-pages {
+        @apply(--layout-flex);
+        @apply(--layout-horizontal)
+        margin: 12px 0px 12px 0px
+        padding: 12px;
+        background: white;
+        @apply(--layout-self-stretch);
+        min-height: 1080px;
+        height: 100%;
+      }
+      neon-animatable {
+        color: white;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        @apply(--paper-font-display3);
+        margin: 0px;
+        padding: 0px;
+      }
+    
+    .subheading {
+    font-size: 14px;
+    color: brown;
+    font-family: times;
+ 		float: right;
+ 		margin: 0px 12px;
+    padding: 8px;
+    }
+    paper-radio-button{
+    		font-size: 16px;
+    		font-weight: 600;
+    		size: var(--paper-radio-size, 18px);
+    		 /*  --paper-radio-button-label-color: var(--my-blue-009, #000099);*/
+    		   --paper-radio-button-checked-color: var(--paper-green-900);
+
+
+    }
+    .card-actions{
+    	padding: 16px 8px;
+    }
+    label.returningCaller{
+    	color: black;
+    	font-size: 16px;
+    /*	font-style: italic;*/
+    	font-weight: 700;
+    }
+    paper-radio-group.tallbox{
+    	@apply(--layout-vertical);
+    	 --paper-radio-group-padding: var(--too-much-padding, 6px);
+
+    }
+    
+    p{
+    	text-indent: 36px;
+    	font-size: 14px;
+    	font-weight: 600;
+    		}
+  .setHeight {
+    min-height: 68px;
+    max-height: 980px;
+
+    max-width: 485px;
+    min-width: 380px;
+    margin: 4px;
+    padding: 4px;
+  }
+  
+  .timestamp{
+  	font-weight: 600;
+  	font-size: 16px;
+  	padding: 8px;
+  	float: left;
+
+  }
+  .dropbtn:hover, .dropbtn:focus{
+		    background-color: #3e8e41;
+		}
+		/* The container <div> - needed to position the dropdown content */
+		.dropdown {
+		    position: relative;
+		    display: inline-block;
+		}
+		/* Dropdown Content (Hidden by Default) */
+		.dropdown-content {
+		    display: none;
+		    position: absolute;
+		    background-color: #f9f9f9;
+		    min-width: 160px;
+		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+		}
+		/* Links inside the dropdown */
+		.dropdown-content a {
+		    color: black;
+		    padding: 12px 16px;
+		    text-decoration: none;
+		    display: block;
+		}
+		.check{
+			font-size:26px;
+			color: green;
+			position: absolute;
+			left: 5px;
+		}
+		.instruction{
+			color:#009;
+			font-weight:700;
+		}
+		.radioGroupBlock{
+			padding: 12px;
+
+
+
+		},
+		.importantNote{
+				color: black;
+				font-weight: 600;
+				padding: 8px;
+				margin: 4px;
+				margin-bottom: 26px;
+
+		},
+		.detailPads{
+				margin:12px;
+				margin-top: 24px;
+
+		}
+
+		.show {display:block; z-index: 45; right: 0;}
+  @media(max-width: 687px){
+  	#content{
+  		@apply(--layout-vertical);
+  		@apply(--layout-center);
+  	}
+  	/*add more here*/
+  }
+  </style>
+<form is="iron-form" id="callIntakeForm" method="get" action="/">
+  <fc-ddr-card id="focusedCallInterface"  waterfall header-set-height="125px" head-class="darkBlue" header-title="Client Intake" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
+
+
+  <div class="dropdown headerLeft horizontal layout">
+   <span btn="leftClick" style="position: absolute; left: -36px; top: 4px; font-size: 18px;">&#8678;</span>
+   <span style="position: relative; font-size: 18px;top:-5px;"></span> 
+   <span on-tap="amCard" style="font-size: 18x;">  &#9806</span>
+   <span on-tap="notlist">&#9994;</span>
+
+      <paper-button class="darkblue" on-tap="submitHandler">Submit</paper-button>.
+    
+  </div>
+
+     <div class="dropdown headerRight">
+          <span btn="rightClick" style="position: absolute; right: -36px; top: 4px; font-size: 24px;"><span style="position: relative; font-size: 18px;top:-5px;"></span>&#8680;</span>
+          <span on-tap="notlist">&#9994;</span>
+
+    </div>
+ 	<div class="flex layout horizontal center-justified">
+ 		<section id="hanger" ></section>
+    
+        <neon-animated-pages id="pages" selected="[[selected]]" hidden="{{inputsHidden}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+            <div id="container1">
+                <fc-call-center-form-one page-index="{{selected}}" inquiry="{{inquiry}}"  id="childOne" current-height="{{childHeight}}">
+                        <span class="pageTotal">{{shadowIndex}}</span>
+                        <section class="next" style="color: brown; font-size:  24px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                </fc-call-center-form-one>
+            </div>
+            <template is="dom-repeat" items="{{inputArraysAb}}">
+                <div>
+                    <fc-call-center-form value-object="{{valueObject}}" inquiry="{{inquiry}}" input-array="{{item}}" student="{{studentCaller}}" current-height="{{siblingHeight}}" item="{{inputArraysAb}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" 
+                    fc-student="{{studentSelectable}}" search-vals="{{searchVals}}" slna="{{slna}}" sfna="{{sfna}}">
+                        <span class="pageTotal" on-tap="openCollapse">{{_computePageTotal(inputArraysAb, index)}}
+                        </span>
+                        <section class="next" style="color: brown; padding: 12px 8px; font-size: 28px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                    </fc-call-center-form>
+                </div>
+            </template>
+
+        </neon-animated-pages>
+    </fc-ddr-card>
+     </form>
+</template>
+<script>
+FcCallCenterDialog=Polymer({
+	is:"fc-call-center-dialog",
+		 behaviors:[Polymer.NeonAnimatableBehavior,
+                Polymer.NeonAnimationBehavior,
+                Polymer.NeonAnimationRunnerBehavior,
+                FCBehaviors.FcCalendarBehaviorPrime,
+                FCBehaviors.FcGridStyleBehavior],
+        listeners: {"onload":"doStuffOnLoad",
+                        },
+        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)'],
+    properties: {
+        entryAnimation: {
+          type: String,
+          value: function(){ return "";},
+          notify: true
+        },
+        shadowIndex:{
+            type: String,
+            notify: true
+        },
+        exitAnimation:{
+            type: String,
+            value: function(){return "";},
+            notify: true
+        },
+       
+    valueObject:{
+      type: Object, 
+      notify: true,
+      observer:"observeValueObject",
+    },
+ 
+    inquiry:{
+      type: Object,
+      value:function(){ var obj={
+                                 "isPreviousCaller": false,
+                                  "isCurrentClient":undefined,
+                                  "callerType": "",
+                                  "callerRole": "",
+                                  "callerFirstName": "",
+                                  "callerLastName": "",
+                                  "callerTelephone": "",
+                                  "inquirerFcid":"",
+                                  "relatedStudent": "",
+                                "date":"",
+                                "time":"",
+                                "message": "",
+                                 "request": "",
+                                "handler": "",
+                                "isClosed": ""
+                              };
+                      return obj;
+                    },
+      notify: true,
+    },
+ 
+    selectedtwo:{
+      type: Number, 
+      value: 0, 
+      notify: true,
+    },
+  
+    childHeight:{
+        type: String,
+        notify: true,
+    },
+    siblingHeight:{
+        type: String,
+        computed: "_computeSiblingHeight(childHeight)",
+        notify: true,
+    },
+    isSearchRequired:{
+      type: Object, 
+      //observer:"observeIsSearchRequired",
+      notify: true,
+    },
+    inputsHidden:{
+      type:Boolean, 
+      value: function(){return false;},
+      notify: true
+    },
+    data: {
+        type: Array,
+        value: function(){return [];},
+        notify: true
+    },
+        pageTotal:{
+          type: Number,
+          notify: true
+        },
+        selected: {
+          type: Number,
+          value: function(){return 0;},
+          notify: true
+        },
+    inputArraysAb:{
+        type: Array,
+        value:function(){return[];},
+        observer:"observeInputArraysAB",
+        notify: true
+    },
+    courseInputs:{
+        type:Function,
+        value:FcCourse.getInputs(),
+        notify: true,
+    },
+    currentPage:{
+      type: Number,
+      computed:"computePageNumber(selected)",
+      notify: true
+    },
+		signUpPages:{
+			type: Array,
+			value:function(){
+				return [{"name":"Identify Returning Callers", "selectCheck": false}, {"name":"Name and Phone Number", "selectCheck": false}];
+			},
+			notify: true,
+		},
+    studentSelectable:{
+      type:Object,
+      value: {},
+      notify: true,
+    },
+    isFormSubmitted:{
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      njhs:{
+        type:Array,
+        value: [],
+        notify: true
+      },
+      worker:{
+        type: Object,
+        value: function(){},
+        notify: true,
+      },
+    
+     rootPath: {
+          type: String,
+          value: function()
+              { var rootPath= "https://focusedstaging1.firebaseio.com";
+                return  rootPath;
+              },
+          notify: true
+        },
+      callRecordPath:{
+          type: String,
+          value: function(){return "/inquiries"}
+        },
+        worker:{
+          notify: true,
+        },
+     
+      searchVals:{
+          type: Object,
+          value: {},
+          notify: true,
+          reflectToAttribute: true
+        },
+      studentPath:{
+        type: Object,
+        value:function (){var obj={"basePath": "https://focused0ne.firebaseio.com/students", 
+                                  "orderByChild": "fcid",
+                                  "equalTo":""
+                                };
+                              return obj;
+                            },
+        notify: true, 
+      },
+  },//end of properties
+		
+
+    observeValueObject(nv, ov)
+    {
+      if(nv)
+      {
+        console.log(nv, ov);
+          if(nv.fcProfile!=undefined)
+          {
+            var count =this.inputArraysAb.length;
+            console.log(count);
+            for(var i=0;i<count;i++)
+            {
+              var pageInputArray=this.inputArraysAb[i];
+              console.log(pageInputArray);
+              var inputSetCount=pageInputArray.length;
+              console.log(inputSetCount);
+              for(var j=0; j<inputSetCount;j++)
+              {
+                var inputOfSet=pageInputArray[j];
+                console.log(inputOfSet);
+                console.log(nv.fcProfile[inputOfSet.nameA], nv.fcProfile[inputOfSet.nameB]);
+                if(nv.fcProfile[inputOfSet.nameA]!=undefined){this.set(["inputArraysAb",i,j,"valueA"], nv.fcProfile[inputOfSet.nameA]); }
+                if(nv.fcProfile[inputOfSet.nameB]!=undefined){this.set(["inputArraysAb",i, j,"valueB"], nv.fcProfile[inputOfSet.nameB]);console.log(this.inputArraysAb[i][j].valueA, this.inputArraysAb[i][j].valueB)}
+              }
+            }
+          }
+      } 
+    }, 
+    amCard(e){
+      this.selectedtwo=(this.selectedtwo===0)?1:0;
+      
+    },
+    notlist(e){this.inputsHidden=!this.inputsHidden;},
+    doStuffOnLoad(e){
+        this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");console.log(ht, wt);this.style.width="480px"; this.style.height="720px";}, 4400);
+        //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
+    },
+  _computeSiblingHeight(childHeight){
+    //console.log(childHeight, childHeight);
+    return childHeight;
+
+  },
+  observeStudent(nv,ov){
+    if(nv){console.log(nv,ov, "observe student");}
+  },
+  observeSfna(nv,ov){
+    if(nv&&nv.length>0){
+    }
+  },
+
+  ready(){
+      this.initializePages();
+  },
+  attached(){
+    var childHt= this.$.container1;
+    this.root.addEventListener('dom-change', function() { var ht=window.getComputedStyle(childHt,null).getPropertyValue("height");
+      //console.log('ht', ht);
+    }, this);
+    this.async(this.openDdr, 300);
+    this.doStuffOnLoad();
+ 
+  
+  },
+  initializeApiChoices(apiArrays){
+    var array=[{"value": "Call Center","subStore":"allCalls","apiName":"callCenter", "apiIndex":0},{"value": "Course Calendars", "apiName": "courseCalendars", "subStore":"allCourseCalendars","apiIndex":1}, {"value": "Grid Review","name":"selectedApiName","apiIndex":2}, {"value": "Grid Builder","apiName": "apiBuilder", "subStore": "masterBuild", "name":"selectedApiName","apiIndex":3}];
+    var apiarray=array.map(function(val){val.gridId=val.apiName+"00"+val.subStore; return val;});
+    this.set("apiChoices",apiarray);
+    array=[];
+    apiarray=[];
+  },
+  _computeSelectedProperty(item){
+    //console.log(item);
+  },
+  addEntryToApiSheet(vals, sheetNumber, samePage){
+    console.log(vals);
+    if(this.sameThing===true){this.set("arrayIndex", this.tagIndex);ß}
+    console.log(this.arrayIndex, this.tagIndex);
+    if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
+    var newRowNumber=this.dataArrays[this.tagIndex][0].length;
+    for(var i=0;i<this.dataArrays[this.tagIndex].length;i++){
+      var str="00000";
+          var co=(str+i).slice(-5);
+          var ro=(str+newRowNumber).slice(-5);
+      var id=this.selectedApi.gridId+"_"+co+"_"+ro+"_";
+      var appliedClass="layout horizontal flex around-justified";
+      var val=vals[0][i];
+      val=(val==undefined)?"--":val;
+      var previousRow=newRowNumber-1;
+      var sty=this.dataArrays[this.tagIndex][i][1].style;
+    
+      var archive=[];
+      var name=this.dataArrays[this.tagIndex][i][0].value;
+      name=name.replace(/\s/g,"");
+      name=name.charAt(0).toLowerCase()+name.slice(1);
+      console.log(name, val, val, val);
+      archive.push(val);
+      var time=new Date().getTime();
+    
+        var cell={"key":id, "value":val, "contenteditable": true, "id": id, "style":  sty, "apiName":this.selectedApi.apiName, "subStore": this.selectedApi.subStore, "name": name, "class": appliedClass, "time": time, "archive":archive, "closed": false};
+        var width=this.textMeasurements(cell);
+        width=parseInt(width)+63;
+      var cellStyleArrayForWidth=this.dataArrays[this.tagIndex][i][previousRow].style.split("width:");
+      //console.log(cellStyleArrayForWidth);
+      var lastone=cellStyleArrayForWidth.length-1;
+      var cellWidthForParseInt=cellStyleArrayForWidth[lastone].split(";");
+      //console.log(cellWidthForParseInt);
+      if(this.tagIndex===this.arrayIndex){var assign=this.tagIndex;}
+      var colWidth=parseInt(cellWidthForParseInt[0]);console.log(colWidth);
+        if(width>colWidth){console.log("TOOSMALL");}
+        if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");this.splice(["selectedArraySet",this.tagIndex,i],newRowNumber,0,cell);;}
+      this.splice(["dataArrays",this.tagIndex,i],newRowNumber,0,cell);
+
+      console.log(this.arrayIndex, this.tagIndex);
+
+    
+    }
+  },
+
+  regularizeColumnWidth(grid, columnsToChange){
+    if(columnsToChange==="all" || columnsToChange===undefined){
+      grid.forEach(function(column,index, array){
+        this.setColumnWidthToText(column);
+          
+          },this); 
+        }     
+            
+    },
+        
+    setColumnWidthToText(column){
+      var minWidth;
+      for(var i=0; i<column.length; i++){
+        var cell=column[i];
+          var width=this.textMeasurements(cell);
+          width=parseInt(width);
+          minWidth=(minWidth>=width)?minWidth:width;
+
+          celolumn.forEach(function(cell, ind){
+            var numb=Math.ceil(parseInt(minWidth)+63);//do the cleaner removal
+            cell.style+="width: " +numb+"px; ";
+            this[mapName].set(cell.key, [cell.value, cell]);
+          }, this);
+    }
+
+  },
+
+
+  selectApi(e){
+    console.log(e);
+    var max=this.apisArrays.length-1;
+    if(this.selectedApiIndex===max){this.set("selectedApiIndex",0);}
+    else{this.set("selectedApiIndex", this.selectedApiIndex+1);
+  }
+    this.set("selectedApi", this.apisArrays[this.selectedApiIndex]);
+    this.set("selectedApiView",this.selectedApi[0]);
+    this.set("chosen", this.apiChoices[this.selectedApiIndex].value);
+    console.log(this.apisArrays, this.selectedApi);
+  },
+
+
+
+   submitHandler(event){
+      if(this.arrayIndex===this.tagIndex){this.set("sameThing", true);}
+        this.set("formSubmitOne", true);
+          var formResults = this.$.callIntakeForm.serialize();
+            var d = new Date();
+            var n = -d.getTime();
+            var readableTime=new Date().toLocaleString();
+            this.submittedInputs={};
+            var mappedVals= this.mapValuesToPropertiesFromInputArrays();
+            this.submittedInputs=Object.assign(this.submittedInputs, mappedVals);
+            var dateTime=readableTime.split(",");
+            var obj={"date":dateTime[0], "time":dateTime[1]};
+
+              if(this.apiChoices[this.selectedApiIndex].apiName=="callCenter"){
+                  this.submittedInputs.studentFullName=this.submittedInputs.studentFirstName + " " + this.submittedInputs.studentLastName;
+                  this.submittedInputs.fcid=this.submittedInputs.studentLastName+this.submittedInputs.studentFirstName+"_00001";
+                  var refObject=obj;
+                }
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="courseCalendars"){var refObject={};}
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="events"){var refObject={};}
+            
+            refObject=Object.assign(refObject, formResults, this.submittedInputs, {"orderingTime":n});
+              
+              var valueRow=this.createValueRowsFromProperties(refObject);
+              if(this.dataArrays[this.tagIndex]==undefined){ 
+                var headerRow=this.createHeadersFromProperties(refObject);
+                this.createFirstGridForAnApi(headerRow, valueRow, this.tagIndex);
+              }
+              else{
+                  var sheet=1;
+                  //TODO: CREATE THE SHEET MAKER INPUT AND STUFF IN HERE
+                  this.addEntryToApiSheet(valueRow, sheet, this.sameThing);
+                }
+              this.wipeCleanInputs();
+                // var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
+},
+wipeCleanInputs(){this.set("counter", 0); this.initializeHelper();this.set("student",{});},
+mapValuesToPropertiesFromInputArrays(){
+  var mappedValues=this.selectedApi.reduce(function(previous, value, index, array){
+              var temp=value.reduce(function(pre, val, index, array){
+                    console.log(val);
+                    var propertyA=val.nameA;
+                    var valueA=val.valueA;
+                    var propertyB=val.nameB;
+                    var valueB=val.valueB;
+                    var object={[propertyA]: valueA, [propertyB]: valueB};
+                    pre=Object.assign(pre,object);
+                   return pre;
+                  },{});
+                 previous=Object.assign(previous, temp);
+                return previous;
+              },{});
+  return mappedValues;
+
+},
+
+createHeadersFromProperties(refObject){
+  var keys=Object.keys(refObject);
+                  var headers =keys.map(function(val,i,arr){
+                            var label=val.replace(/([A-Z])/g, ' $1'),  
+                            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+                            label=label.replace("1", " One"),
+                            label=label.replace("2", " Two");
+                          return label;
+                      });
+                return [headers];
+
+
+},
+createValueRowsFromProperties(refObject){
+      var keys=Object.keys(refObject);
+          var baseValuesArrays=[];
+                baseValuesArrays=keys.map(function(key, ind, array){
+                            var cellContents=refObject[key];
+                            console.log(cellContents);
+                           return cellContents;
+                          });
+                return [baseValuesArrays];
+              },
+createFirstGridForAnApi(headers, rows,trueApiGridIndex){      
+                var cols=undefined;         
+                var gridname=this.selectedApi.subStore;
+                var apiName=this.selectedApi.apiName;
+                var sheets=1, row=2, toolset="null";
+
+                //TODO: COME UP WITH AND BUILD TOOL SETS FOR API GRIDS ETC.
+                //EXAMPLE: MATH FOR THE FINANCIALS
+                //EXAMPLE: CONNECTION TO PAYMENT FOR FINANCIALS
+                var userStyle=undefined,userClass=undefined, userHeaderStyle=undefined, userHeaderClass=undefined;
+                var isDataInRows=true;
+              this.pickle={};
+              this.pickle=new DataGrids();
+              var array= this.pickle.gridConstructor([cols,row,gridname, apiName, headers,sheets, toolset, rows, userStyle, userClass, userHeaderStyle,userHeaderClass, isDataInRows]);
+              var str="00000";
+              var co=(str+trueApiGridIndex).slice(-5);
+              var ngrid=this.selectedApi.apiName+"|"+this.selectedApi.subStore+"|"+co; 
+          this.set([ngrid],array);
+          console.log(array);
+          this.set(["dataArrays", trueApiGridIndex], array);
+          // this.push("dataArrays", array);
+          //TODO: SEND THIS SET OF VALUES TO THE GLOBAL DATA TO UPDATE ARRAYS AND MESSAGE WEBWORKER
+},
+
+
+
+   // submitHandler(event){
+   //      this.set("formSubmitOne", true);
+   //        var formResults = this.$.callIntakeForm.serialize();
+   //        console.log(formResults, this.studentCaller, this.inputArraysAb);
+   //          var d = new Date();
+   //          var n = -d.getTime();
+   //          var readableTime=new Date().toLocaleString();
+   //          console.log(n);
+   //          console.log(readableTime, formResults, this.inputArraysAb, n);
+   //          var dateTime=readableTime.split(",")
+   //          this.studentCaller.studentFullName=this.studentCaller.studentFirstName + " " + this.studentCaller.studentLastName;
+   //          this.studentCaller.fcid=this.studentCaller.studentLastName+this.studentCaller.studentFirstName+"_00001";
+   //            console.log(this.studentCaller);
+   //          //do search here of database to make an ID... 
+   //          console.log(this.studentCaller);
+   //            var obj={"date":dateTime[0], "time":dateTime[1]};
+   //          var callinObject=Object.assign(obj, formResults, this.studentCaller, {"orderingTime":n});
+   //          var keys=Object.keys(callinObject);
+   //          var headers =keys.map(function(val,i,arr){
+   //                var label=val.replace(/([A-Z])/g, ' $1'),  
+   //                label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+   //                label=label.replace("1", " One"),
+   //                label=label.replace("2", " Two");
+   //                  return label;
+   //              });
+   //          console.log(headers);
+   //        var cols=undefined;
+         
+   //           var month=new Date().getFullMonth();
+   //           var gridname=month+"_CallCenterRecord";
+   //           var apiName="FocusedCallCenter";
+   //           var columnHeaders=[headers];
+   //           console.log(columnHeaders, "509, folloy");
+   //           var sheets=1;
+   //           var row=2;
+   //           var toolset=null;
+   //           var addedRow=keys.map(function(key, ind, array){
+   //                        var fred=callinObject[key];
+   //                        console.log(fred);
+   //                          return fred;
+   //                        });
+   //           var baseValuesArrays=[];
+   //           baseValuesArrays.push(addedRow);
+   //           console.log(baseValuesArrays, addedRow);
+   //           var userStyle="";
+   //           var userClass=this.defaultFormat;
+   //           var userHeaderStyle="";
+   //           var userHeaderClass=this.defaultHeader;
+   //           var isCsv=true;
+
+
+   //           this.pickle={};
+   //           this.pickle=new DataGrids();
+             
+
+   //           var array= this.pickle.gridConstructor([cols,row,gridname, apiName, columnHeaders,sheets, toolset, baseValuesArrays, userStyle, userClass, userHeaderStyle,userHeaderClass, isCsv]);
+   //        var grid=document.getElementById("liveGrid");
+   //        console.log(this.dataArrays, this.dataArrays);
+   //        var numInArray=this.dataArrays.length;
+   //          var str="00000";
+   //        var co=(str+numInArray).slice(-5);
+   //        var ngrid="newgrid_"+co; 
+   //        this.set([ngrid],array);
+   //        this.push("dataArrays", array);
+   //        var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
+
+          // grid.dataArrays.push(array);
+          // console.log(array, grid, grid.dataGrids);
+            // var saveObj=inquiry.getFanout();
+          //var ref = new Firebase("https://focused0ne.firebaseio.com"); 
+            //inquiry.fcSave(ref);
+           // var callerRole = this.callerRoleSelected;
+            //ref.child("students/" + profile.fcid).update(profile);
+            //ref.child("students/" + pacademics.fcid + "/pastacademics").update(pacademics);
+             // var inquiry = new FcInquiry(formResults, callerRole, profile);
+             
+             // console.log(this.callerRoleSelected);
+               //inquiry.fcSave(ref);
+            //ref.onAuth(function(authdata){alert(authdata.uid);});
+
+
+
+
+          
+        // },
+
+        observeInputArraysAB(ninputarrays,oldinputarrays){
+          if(ninputarrays){console.log(ninputarrays, oldinputarrays);}
+
+
+
+        },
+
+        
+  calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(protoStaticGetter){
+    var arrReturn=protoStaticGetter,it={},arrHolder=[];
+    var keyValArrReturn= arrReturn.map(function(val,index){
+        if(index%8===0){arrHolder=[];}//sets the 8 inputs a page
+        var temp=val[1].label2;
+        temp=temp.replace(/\s/g, "");
+        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectCheck": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
+        //setting ab allows a row of two inputs to be created for the dom-repeat
+        var nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProp="dropdownItems"+ab, multiSelectProp="multiSelect"+ab;
+        it[nameProp]=name,it[labelProp]=label,it[propertyNameProp]=propertyName,it[dropdownItemsProp]=dropdownItems;
+        it[multiSelectProp]=multiSelect;
+        //the above lines allow the creation of the A input and the B input to be shared in the same object;
+        //console.log(it[dropdownItemsProp]);
+        if(index%2!==0){
+            var holder=it;
+            it={};
+            arrHolder.push(holder);
+            }
+        //above uses sets one full object in an array that will be sent with 3 other object pairs to full a page (see directly below)
+            if((index+1)%8===0){return arrHolder;}
+            else{ return false;} //false allows for the easy filtering of the mapped array, in the chained function below/we are only 1 in 8 of the array "slots" for the new array; so array is not sparse, filter ;-)
+        }).filter(function(val){return(val!==false)});
+    //console.log(keyValArrReturn);
+    return keyValArrReturn;
+  },
+  computePageNumber(selected){ return this.selected+1;},
+
+  _computePageTotal(inputArraysAb, index){
+     var pageTotal=(this.inputArraysAb.length+1);
+     this.set("pageTotal", pageTotal);
+     this.set("shadowIndex", pageTotal);
+     //console.log(index);
+    return pageTotal;},
+
+  initializePages(){
+    //get at least the labelable values from the classes we have made... oh getters and setters would make this five-10 lines of code....
+    var student=new FcStudentProfile({}), pastAcademics=new FcPastAcademics({}), addAcademics=new FcAdditionalAcademics({});
+        pastAcademics=Object.assign(pastAcademics, addAcademics);
+        var it={},keyz=Object.keys(pastAcademics),keys=Object.keys(student),inputArrayA=[],inputArrayB=[],contentArray=[], two=keys[12],one=keys.splice(12,1);
+        //note that the it object will be used for moving properties from one object to another, later in the code via an Object.assign--poor mans defineProperties set and gets...
+        var tester={};
+        tester=Object.assign(tester, student, pastAcademics);
+        keys.push(two);
+        var moreKeys=keys.concat(keyz); 
+        var length;
+        moreKeys.forEach(function(val, index, array){
+          length=array.length;
+        var label=val.replace(/([A-Z])/g, ' $1'),  
+        label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+        label=label.replace("1", " One"),
+        label=label.replace("2", " Two");
+        var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
+        //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
+        it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(tester[val]))?"value":(val.selectedItems)?val.selecteditems:false; 
+        var mapName=val;
+        if(it[dropdownItemsProperty]=="value")
+          { it[dropdownItemsProperty]=[];
+            it[dropdownItemsProperty]=tester[val].map(function(item){ 
+                      var retVal={"name": mapName, "value": item}; 
+                      return retVal;
+                  });
+          }
+        // it[multiSelectProperty]=(val.multiSelect&&val.multiSelect===true)?true:false;
+        //I avoided multi-select for the time being//will come back to it very SHORTLY NOW AUG 1, 2016;
+        //ADDING A UNIQUE HANDLER HERE WILL DEAL WITH "related properties in next redo"//after multi=select
+
+        if(it[nameProp]==="daysToNextTestDate"){
+              var dynamicDependantValue="value" +ab;
+                it[dynamicDependantValue]=tester.daysToNextTestDate;
+        }
+        //TODO--FIX THIS REALLY ITS A SCAR ON THE SYSTEM; SLIPPERY SLOPE
+
+        var pushVal=(index%2===0)?inputArrayA:inputArrayB;
+        //alternating on the index to get a pair of items to load on the dom!
+        pushVal.push(it);
+        it={};
+        //cleared `it`, next gonna grab eight inputs (four pairs of two) for the cards
+        if((index+1)%4==0 || array.length-1===index){
+              this.push("inputArraysAb", [inputArrayA, inputArrayB]);
+              inputArrayA=[];
+              inputArrayB=[];
+                 }
+         }, this);
+        //this was original impl... used two arrays to make columns... now need to resort them and move paired odd array elements object sub properties all onto one replacement element for the other two, and maintain order in the impl... Wait for it... wait for it... it's...it is coming!
+         var mymerge=this.inputArraysAb.map(function(prop, index, array){
+         var pickle=prop[0].concat(prop[1]); 
+            var nobj=Object.assign({},pickle[0],pickle[2]);//concern here regarding cloning using a getter: did I just bind the properties?
+            var nobj2=Object.assign({},pickle[1],pickle[3]);
+            return[nobj,nobj2];
+         }, this);
+        //this is a columns to rows switch will need same api dynamics in the grid table and in any accounting interface DUAL USE IMPORTANT!!! 
+         var arrat=[];
+         mymerge.forEach(function(val,i,arr){
+                if(i%2===0&&i<arr.length-1){var mini=val.concat(arr[i+1]); arrat.push(mini);}
+            });
+         console.log(arrat);
+         console.log(this.njhs);
+           var jason=this;
+        var pickle= "https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208";
+        var ref = new Firebase(pickle);
+        ref.on("value", function(snap){
+        var vald = snap.val();
+        var valuebased=vald.map(function(val){
+          var nu={"name": "currentSchool", "value":val};
+          return nu;
+        });
+        jason.set("njhs",valuebased); 
+         arrat[2][0].dropdownItemsB=valuebased;
+         arrat[2][0].dropdownItemsA=[{"name":"gradeLevel", "value": "9th Grade"}, {"name":"gradeLevel","value": "10th Grade"}, {"name":"gradeLevel","value": "11th Grade"},{"name":"gradeLevel","value":"12th Grade"}, {"name":"gradeLevel","value": "Grades 7-8"}, {"name":"gradeLevel","value": "Grades 5-6"}, {"name":"gradeLevel","value": "Grades 3-4"}];
+            console.log(arrat);
+            arrat[2][1].labelB="Educational Aspirations";
+            arrat[2][1].dropdownItemsB=[{"name": "highestEducationLevel","value": "Regional or State College"}, {"name": "highestEducationLevel","value": "Private University"}, {"name": "highestEducationLevel","value": "Competitve Private University"},{"name": "highestEducationLevel","value":"Elite Private University"}, {"name": "highestEducationLevel","value": "Masters Degree"}, {"name": "highestEducationLevel","value": "Professional Degree"}, {"name": "highestEducationLevel","value": "Doctoral Degree, or Equivalent"}];
+            arrat[2][1].labelA="Previous Eductaion";
+            arrat[2][1].dropdownItemsA=[{"name": "previousEducation", "value": "see current school"}, {"name": "previousEducation", "value": "home schooled"}]
+            arrat[2][2].dropdownItemsA=[{"name": "startMathScore", "value": "200-300"}, {"name": "startMathScore", "value": "300-400"}, {"name": "startMathScore","value": "400-500"},{"name": "startMathScore","value":"500-600"}, {"name": "startMathScore","value": "600-650"}, {"name": "startMathScore","value": "650-700"}, {"name": "startMathScore","value": "700-750"}, {"name": "startMathScore", "value": "750-800"}];
+            arrat[2][2].dropdownItemsB=[{"name": "startReadingScore","value": "200-300"}, {"name": "startReadingScore","value": "300-400"}, {"name": "startReadingScore","value": "400-500"},{"name": "startReadingScore","value":"500-600"}, {"name": "startReadingScore","value": "600-650"}, {"name": "startReadingScore","value": "650-700"}, {"name": "startReadingScore","value": "700-750"}, {"name": "startReadingScore","value": "750-800"}];
+            arrat[2][3].dropdownItemsA=[{"name": "startTotalScore","value": "500-700"}, {"name": "startTotalScore","value": "700-900"}, {"name": "startTotalScore","value": "900-1050"},{"name": "startTotalScore","value":"1050-1150"}, {"name": "startTotalScore","value": "1150-1250"}, {"name": "startTotalScore","value": "1250-1350"}, {"name": "startTotalScore","value": "1350-1450"}, {"name": "startTotalScore","value": "1450+"}];
+            arrat[2][3].dropdownItemsB=[{"name": "goalTotalScore","value":"1050-1150"}, {"name": "goalTotalScore","value": "1150-1250"}, {"name": "goalTotalScore","value": "1250-1350"}, {"name": "goalTotalScore","value": "1350-1450"}, {"name": "goalTotalScore","value": "1450-1500"}, {"name": "goalTotalScore","value": "1500-1550"}, {"name": "goalTotalScore","value": "1550+"}];
+          jason.set("inputArraysAb",[]);
+         jason.set("inputArraysAb", arrat);
+        });
+         
+         var pickle=this.calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(this.courseInputs);
+         console.log(pickle);
+         console.log(this.courseCalendarCreationArrays, "loook here Martin");
+         this.set("courseCalendarCreationArrays", pickle);
+         this.set("callIntakeArrays", arrat);
+           var retArray= arrat.concat(pickle);
+            //console.log(arrat,pickle);
+        //had to do the above twice to get the ordering correct...see 391 above, this time though I didnt need the assigment as I did two at once above;
+        // next we wipe out our mistake in approach by resetting the original array we had to deal with...
+         // this.set("inputArraysAb",null);
+         // this.set("inputArraysAb", retArray);
+    },
+
+  _onCallClick: function(e) {
+      this.$.pages.selected =5;
+     this.$.viewProfile.setStudent(e.detail.item.fcid);
+    },
+
+	_tapHandler(e){
+		var targ=e.target;
+		while(!targ.attributes.btn && targ.nodeName!=="FC-DDR-CARD")
+		{
+			targ=targ.parentElement;
+		}
+		if(targ.attributes.btn){
+		this[targ.attributes.btn.value](e);
+	   }
+	},
+	openDdr(){
+		this.$.focusedCallInterface.falseClose();
+		this.$.focusedCallInterface.falseClose();
+	},
+   _computePageNumber(index){
+    // console.log(index); 
+    var retVal = parseInt(index)+2;
+  },
+	
+    toggleSelection(e){
+        var item = this.$.controllerList.itemForElement(e.target);
+        var model=this.$.controllerList.modelForElement(e.target);
+        if(model.item.selectCheck&&(model.item.selectCheck===true||model.item.selectCheck===false))
+        {
+            model.set("item.selectCheck",!model.item.selectCheck);
+            var index=this.selected.indexOf(item);
+            if(index<0){
+        	   e.target.style.background="aliceblue";
+        	   this.$.selector.select(item);
+    	   }
+    	   else{
+    		  e.target.style.background="white";
+    		  this.splice("selected",index,1);
+            }
+        }
+    },
+
+    //  _setPreviousCaller: function(e, detail)
+    // {
+    //     console.log(e.detail);
+    //     this.set("studentSelectable", e.detail);
+    // },
+
+    _onClose: function() {
+      this.$.pages.selected = 0;
+    },
+
+       rightClick: function() {
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+       this.selected = (this.selected === (this.inputArraysAb.length+2))? 0 : (this.selected + 1);
+       
+      },
+      leftClick: function() {
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+       this.selected = this.selected === 0 ?(this.inputArraysAb.length+2): (this.selected - 1);
+         
+      },
+      observerForSearch(isPreviousCaller, callerRole){
+        if(isPreviousCaller===true){
+             if("2".match(callerRole)){this.leftClick();this.leftClick();}
+                  else{this.leftClick();}
+        }
+      },
+
+_computeTimeStampUseful: function(timeStamp, callLogFormOneObject){
+    var d = new Date();
+    var n = -d.getTime();
+    console.log(n);
+    return n;
+
+},
+
+_onChange: function(e){
+//console.log(e.target.value);
+
+},
+updateInput: function(e){
+
+}
+
+});  
+
+class FcStudentPastAcademics{
+constructor (gradeLevel, currentSchool, pastSchool, highestEducationLvl, startMath, startReading, startTotal,goalScore,desiredTestDate, fcid){
+  this.gradeLevel= gradeLevel ||"";
+  this.currentSchool= currentSchool ||"";
+  this.pastSchool= pastSchool ||"";
+  this.highestEducationLevel= highestEducationLvl ||"";
+  this.startMathScore =  startMath  || "";
+  this.startReadingScore = startReading || "";
+  this.startTotalScore = startTotal || "";
+  this.goalScore=goalScore || "";
+  this.desiredTestDate=desiredTestDate||"";
+  if(this.desiredTestDate){
+  this.weeksUntilTestDate=new Date()-this.desiredTestDate;
+  }
+  }
+};
+</script>
+</dom-module>
+
+
+        -->

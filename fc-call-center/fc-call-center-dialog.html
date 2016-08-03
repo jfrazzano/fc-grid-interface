@@ -1,4 +1,8 @@
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../fc-grid/data-manager.html">
+<link rel="import" href="../fc-grid/fc-grid-input-behaviors/fc-api-inputs-grid-navigation-behavior.html">
+<link rel="import" href="../fc-grid/fc-grid-input-behaviors/fc-grids-from-api-inputs-behavior.html">
+<link rel="import" href="../fc-grid/fc-grid-input-behaviors/fc-api-inputs-from-grids-behavior.html">
 <link rel="import" href="../bower_components/iron-image/iron-image.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -18,8 +22,10 @@
 <link rel="import" href="../fc-grid/fc-iss-input.html">
 <link rel="import" href="../fc-grid/fc-ddr-card.html">
 <link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
+
 <link rel="import" href="../src/fc-grid.html">
-<!-- <script src="../fc-grid/indexedDb-worker-scripts.js"></script> -->
+
+
 <link rel="import" href="fc-inquiry.html">
 <link rel="import" href="fc-tabbed-card.html">
 <link rel="import" href="fc-call-list-view.html">
@@ -27,8 +33,8 @@
 <link rel="import" href="FC_frontpage_logo.png">
 <link rel="import" href="fc-call-center-form-one.html">
 <link rel="import" href="fc-call-center-form.html">
-<link rel="import" href="fc-calendar-behavior-beta-prime.html">
-<link rel="import" href="fc-profile-class.html">
+<!-- <link rel="import" href="fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="fc-profile-class.html"> -->
 <link rel="import" href="fc-tabbed-card-plus.html">
 <link rel="import" href="FC_frontpage_logo.png">
 <dom-module id="fc-call-center-dialog">
@@ -38,8 +44,8 @@
 :host{
       background: white;
       padding: 0px 23px 4px 28px;
-      opacity: 1;
       position: static;
+      opacity: 1;
       @apply(--horizontal-layout);
       @apply(--layout-flex);
       }
@@ -74,7 +80,7 @@
     fc-ddr-card{
       min-width: 360px;
       min-height: 80px;
-      max-height: 700px;
+      max-height: 600px;
       max-width: 580px;
     }
 		paper-button.darkblue{
@@ -130,12 +136,7 @@
         --paper-card-header:{height: 95px; border-bottom: double 6px green;}
   
     }
-    paper-input{
-      margin:8px;
-    }
-    gold-input{
-     margin:8px; 
-    }
+  
       neon-animated-pages {
         @apply(--layout-flex);
         @apply(--layout-horizontal)
@@ -177,7 +178,7 @@
     }
     label.returningCaller{
     	color: black;
-    	font-size: 18px;
+    	font-size: 16px;
     /*	font-style: italic;*/
     	font-weight: 700;
     }
@@ -186,10 +187,7 @@
     	 --paper-radio-group-padding: var(--too-much-padding, 6px);
 
     }
-    iron-icon{ 
-        width: 36px;
-        height: 36px;
-    }
+    
     p{
     	text-indent: 36px;
     	font-size: 14px;
@@ -275,48 +273,50 @@
   }
   </style>
 <form is="iron-form" id="callIntakeForm" method="get" action="/">
-  <fc-ddr-card id="focusedCallInterface"  waterfall header-set-height="125px" head-class="darkBlue" header-title="Client Intake" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
-   <div class="dropdown headerRight">
-          <span btn="rightClick" style="position: absolute; right: -36px; top: 4px; font-size: 18px;"><span style="position: relative; font-size: 18px;top:-5px;"></span>&#8680;</span>
-          <span on-tap="notlist">&#9994;</span>
-  </div>
-<span on-tap="notlist">&#9994;</span>
+  <fc-ddr-card id="focusedCallInterface"  waterfall header-set-height="125px" head-class="darkBlue" header-title="{{chosen}}" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
+
+
   <div class="dropdown headerLeft horizontal layout">
-   <span btn="leftClick" style="position: absolute; left: -36px; top: 4px; font-size: 18px;">&#8678;<span style="position: relative; font-size: 18px;top:-5px;"></span> <span on-tap="amCard" style="font-size: 22px;">  &#9806</span></span>
-    
+   <span btn="leftClick" style="position: absolute; left: -30px; top: 8px; font-size: 18px; cursor: pointer;">&#8678;</span>
+     <span on-tap="selectApi" style="cursor: pointer;">&#9994;</span>
+
   </div>
+
+     <div class="dropdown headerRight">
+          <span btn="rightClick" style="position: absolute; right: -30px; top: 8px; font-size: 18px; cursor: pointer;">&#8680;</span>
+          <span on-tap="selectApi" style="cursor: pointer; font-size:28px;">&#9995;</span>
+
+    </div>
  	<div class="flex layout horizontal center-justified">
  		<section id="hanger" ></section>
     
-        <neon-animated-pages id="pages" selected="[[selected]]" hidden="{{inputsHidden}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+        <neon-animated-pages id="pages" selected="[[selected]]" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <div id="container1">
-                <fc-call-center-form-one page-index="{{selected}}" inquiry="{{_isSearchRequired}}"  id="childOne" current-height="{{childHeight}}">
+                <fc-call-center-form-one page-index="{{selected}}" inquiry="{{inquiry}}"  id="childOne" current-height="{{childHeight}}">
                         <span class="pageTotal">{{shadowIndex}}</span>
-                        <section class="next" style="color: brown; font-size: 32px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                        <section class="next" style="color: brown; font-size:  20px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
                 </fc-call-center-form-one>
             </div>
-            <template is="dom-repeat" items="{{inputArraysAb}}">
+            <template is="dom-repeat" items="{{selectedApi}}">
                 <div>
-                    <fc-call-center-form input-array="{{item}}" student="{{studentCaller}}" current-height="{{siblingHeight}}" item="{{inputArraysAb}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" 
-                    fc-student="{{studentSelectable}}" search-vals="{{searchVals}}" slna="{{slna}}" sfna="{{sfna}}">
-                        <span class="pageTotal" on-tap="openCollapse">{{_computePageTotal(inputArraysAb, index)}}
-                        </span>
-                        <section class="next" style="color: brown; padding: 12px 8px; font-size: 32px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                    <fc-call-center-form value-object="{{valueObject}}" inquiry="{{inquiry}}" input-array="{{item}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
+                        <span class="pageTotal" on-tap="openCollapse">{{_computePageTotal(selectedApi, index)}}
+                        </span>  <span class="pageTotal">{{shadowIndex}}</span>
+                        <section class="next" style="color: brown; padding: 12px 8px; font-size: 20px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                        
+                        <section class="horizontal layout flex buttons"><paper-button class="flex-1" btn="leftClick">back</paper-button>
+                        <paper-button class="flex-1" id="one" btn="rightClick">CONTINUE</paper-button>
+                        </section>
+                              <paper-button class="darkblue" on-tap="submitHandler">Submit</paper-button>
                     </fc-call-center-form>
                 </div>
             </template>
-        </neon-animated-pages>
-        <neon-animated-pages id="pages" selected="[[selectedtwo]]" hidden="{{!inputsHidden}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
-            <div>
-        <fc-call-list-view id="callList" search-vals="{{searchVals}}" student-first-name-A="{{sfna}}" student-last-name-A="{{slna}}"></fc-call-list-view>
-        </div>
-        <div>
-         <fc-tabbed-card-plus style="width: 300px; height: 600px; position: absolute: right: -400px; " id="viewProfile" student="{{studentSelectable}}" on-close="_onClose"></fc-tabbed-card-plus>
-        </div>
-        </neon-animated-pages>
 
+        </neon-animated-pages>
     </fc-ddr-card>
      </form>
+   
+    
 </template>
 <script>
 FcCallCenterDialog=Polymer({
@@ -325,15 +325,19 @@ FcCallCenterDialog=Polymer({
                 Polymer.NeonAnimationBehavior,
                 Polymer.NeonAnimationRunnerBehavior,
                 FCBehaviors.FcCalendarBehaviorPrime,
-                FCBehaviors.FcGridStyleBehavior],
+                FCBehaviors.FcGridStyleBehavior, 
+                FCBehaviors.FcGridsFromApiInputsBehavior,
+                FCBehaviors.FocusedDataManagerBehavior,
+                FCBehaviors.FcGridsFromApiInputsBehavior,
+                FCBehaviors.FcApiInputsGridNavigationBehavior
+                ],
+          
         listeners: {"onload":"doStuffOnLoad",
-            "on-call-click": "_onCallClick", 
-            "sendInputVal": "_passSearchVals", 
-            "studentSelected":"_setPreviousCaller"
-            },
+                        },
         observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)'],
     properties: {
-        entryAnimation: {
+
+      entryAnimation: {
           type: String,
           value: function(){ return "";},
           notify: true
@@ -347,36 +351,43 @@ FcCallCenterDialog=Polymer({
             value: function(){return "";},
             notify: true
         },
-        searchVals:{
-            type: Object,
-            value: {
-            fcProfile: {},
-        },
-            notify: true, 
-            reflectToAttribute: true
-    },
-    studentCaller:{
-      type: Object,
-      value:function(){return {};},
-      observer:"observeStudent",
-      reflectToAttribute: true,
+ 
+    valueObject:{
+      type: Object, 
       notify: true,
-
+      observer:"observeValueObject",
     },
+ 
+    inquiry:{
+      type: Object,
+      value:function(){ var obj={
+                                 "isPreviousCaller": false,
+                                  "isCurrentClient":undefined,
+                                  "callerType": "",
+                                  "callerRole": "",
+                                  "callerFirstName": "",
+                                  "callerLastName": "",
+                                  "callerTelephone": "",
+                                  "inquirerFcid":"",
+                                  "relatedStudent": "",
+                                "date":"",
+                                "time":"",
+                                "message": "",
+                                 "request": "",
+                                "handler": "",
+                                "isClosed": ""
+                              };
+                      return obj;
+                    },
+      notify: true,
+    },
+   
     selectedtwo:{
       type: Number, 
       value: 0, 
       notify: true,
     },
-    sfna:{
-      type: Array,
-      notify: true,
-      observer:"observeSfna",
-    },
-    slna:{
-      type: Array,
-      notify: true,
-    },
+  
     childHeight:{
         type: String,
         notify: true,
@@ -391,21 +402,12 @@ FcCallCenterDialog=Polymer({
       //observer:"observeIsSearchRequired",
       notify: true,
     },
-    inputsHidden:{
-      type:Boolean, 
-      value: function(){return false;},
-      notify: true
-    },
-    data: {
-        type: Array,
-        value: function(){return [];},
-        notify: true
-    },
-        pageTotal:{
+
+    pageTotal:{
           type: Number,
           notify: true
         },
-        selected: {
+    selected: {
           type: Number,
           value: function(){return 0;},
           notify: true
@@ -413,75 +415,51 @@ FcCallCenterDialog=Polymer({
     inputArraysAb:{
         type: Array,
         value:function(){return[];},
-        observer:"observeInputArraysAB",
         notify: true
     },
-    courseInputs:{
-        type:Function,
-        value:FcCourse.getInputs(),
-        notify: true,
-    },
+  
     currentPage:{
       type: Number,
       computed:"computePageNumber(selected)",
       notify: true
-    },
-		signUpPages:{
-			type: Array,
-			value:function(){
-				return [{"name":"Identify Returning Callers", "selectCheck": false}, {"name":"Name and Phone Number", "selectCheck": false}];
-			},
-			notify: true,
-		},
-    studentSelectable:{
-      type:Object,
-      value: {},
-      notify: true,
     },
     isFormSubmitted:{
         type: Boolean,
         value: false,
         notify: true
       },
-      njhs:{
-        type:Array,
-        value: [],
-        notify: true
-      },
-      worker:{
-        type: Object,
-        value: function(){},
-        notify: true,
-      },
-    
-     rootPath: {
-          type: String,
-          value: function()
-              { var rootPath= "https://focusedstaging1.firebaseio.com";
-                return  rootPath;
-              },
-          notify: true
-        },
-      callRecordPath:{
-          type: String,
-          value: function(){return "/inquiries"}
-        },
-        worker:{
-          notify: true,
-        },
-     
-      searchVals:{
-          type: Object,
-          value: {},
-          notify: true,
-          reflectToAttribute: true
-        },
+   
   },//end of properties
-		amCard(e){
-      this.selectedtwo=(this.selectedtwo===0)?1:0;
-      
-    },
-    notlist(e){this.inputsHidden=!this.inputsHidden;},
+		
+
+    observeValueObject(nv, ov)
+    {
+      if(nv)
+      {
+        console.log(nv, ov);
+          if(nv.fcProfile!=undefined)
+          {
+            var count =this.selectedApi.length;
+            console.log(count);
+            for(var i=0;i<count;i++)
+            {
+              var pageInputArray=this.selectedApi[i];
+              console.log(pageInputArray);
+              var inputSetCount=pageInputArray.length;
+              console.log(inputSetCount);
+              for(var j=0; j<inputSetCount;j++)
+              {
+                var inputOfSet=pageInputArray[j];
+                console.log(inputOfSet);
+                console.log(nv.fcProfile[inputOfSet.nameA], nv.fcProfile[inputOfSet.nameB]);
+                if(nv.fcProfile[inputOfSet.nameA]!=undefined){this.set(["selectedApi",i,j,"valueA"], nv.fcProfile[inputOfSet.nameA]); }
+                if(nv.fcProfile[inputOfSet.nameB]!=undefined){this.set(["selectedApi",i, j,"valueB"], nv.fcProfile[inputOfSet.nameB]);console.log(this.selectedApi[i][j].valueA, this.selectedApi[i][j].valueB);}
+              }
+            }
+          }
+      } 
+    }, 
+   
     doStuffOnLoad(e){
         this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");console.log(ht, wt);this.style.width="480px"; this.style.height="720px";}, 4400);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
@@ -491,16 +469,9 @@ FcCallCenterDialog=Polymer({
     return childHeight;
 
   },
-  observeStudent(nv,ov){
-    if(nv){console.log(nv,ov, "observe student");}
-  },
-  observeSfna(nv,ov){
-    if(nv&&nv.length>0){
-    }
-  },
-
+  
   ready(){
-      this.initializePages();
+
   },
   attached(){
     var childHt= this.$.container1;
@@ -509,245 +480,51 @@ FcCallCenterDialog=Polymer({
     }, this);
     this.async(this.openDdr, 300);
     this.doStuffOnLoad();
- 
+
+    this.async(this.initializeApiArrays, 300);
   
   },
 
    submitHandler(event){
+      if(this.arrayIndex===this.tagIndex){this.set("sameThing", true);}
         this.set("formSubmitOne", true);
           var formResults = this.$.callIntakeForm.serialize();
-          console.log(formResults, this.studentCaller, this.inputArraysAb);
             var d = new Date();
             var n = -d.getTime();
             var readableTime=new Date().toLocaleString();
-            console.log(n);
-            console.log(readableTime, formResults, this.inputArraysAb, n);
-            var dateTime=readableTime.split(",")
-            this.studentCaller.studentFullName=this.studentCaller.studentFirstName + " " + this.studentCaller.studentLastName;
-            this.studentCaller.fcid=this.studentCaller.studentLastName+this.studentCaller.studentFirstName+"_00001";
-              console.log(this.studentCaller);
-            //do search here of database to make an ID... 
-            console.log(this.studentCaller);
-              var obj={"date":dateTime[0], "time":dateTime[1]};
-            var callinObject=Object.assign(obj, formResults, this.studentCaller, {"orderingTime":n});
-            var keys=Object.keys(callinObject);
-            var headers =keys.map(function(val,i,arr){
-                  var label=val.replace(/([A-Z])/g, ' $1'),  
-                  label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
-                  label=label.replace("1", " One"),
-                  label=label.replace("2", " Two");
-                    return label;
-                });
-            console.log(headers);
-          var cols=undefined;
-         
-             var month=new Date().getFullMonth();
-             var gridname=month+"_CallCenterRecord";
-             var apiName="FocusedCallCenter";
-             var columnHeaders=[headers];
-             console.log(columnHeaders, "509, folloy");
-             var sheets=1;
-             var row=2;
-             var toolset=null;
-             var addedRow=keys.map(function(key, ind, array){
-                          var fred=callinObject[key];
-                          console.log(fred);
-                            return fred;
-                          });
-             var baseValuesArrays=[];
-             baseValuesArrays.push(addedRow);
-             console.log(baseValuesArrays, addedRow);
-             var userStyle="";
-             var userClass=this.defaultFormat;
-             var userHeaderStyle="";
-             var userHeaderClass=this.defaultHeader;
-             var isCsv=true;
+            this.submittedInputs={};
+            this.gridMakerFunction(this.apiChoices[this.selectedApiIndex].apiName);
+              this.wipeCleanInputs();
+                // var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
+},
+wipeCleanInputs(){this.set("counter", 0); this.initializeHelper();this.set("student",{});},
 
+computePageNumber(selected){ return this.selected+1;},
 
-             this.pickle={};
-             this.pickle=new DataGrids();
-             
-
-             var array= this.pickle.gridConstructor([cols,row,gridname, apiName, columnHeaders,sheets, toolset, baseValuesArrays, userStyle, userClass, userHeaderStyle,userHeaderClass, isCsv]);
-          var grid=document.getElementById("liveGrid");
-          console.log(this.dataArrays, this.dataArrays);
-          var numInArray=this.dataArrays.length;
-            var str="00000";
-          var co=(str+numInArray).slice(-5);
-          var ngrid="newgrid_"+co; 
-          this.set([ngrid],array);
-          this.push("dataArrays", array);
-          var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
-
-          // grid.dataArrays.push(array);
-          // console.log(array, grid, grid.dataGrids);
-            // var saveObj=inquiry.getFanout();
-          //var ref = new Firebase("https://focused0ne.firebaseio.com"); 
-            //inquiry.fcSave(ref);
-           // var callerRole = this.callerRoleSelected;
-            //ref.child("students/" + profile.fcid).update(profile);
-            //ref.child("students/" + pacademics.fcid + "/pastacademics").update(pacademics);
-             // var inquiry = new FcInquiry(formResults, callerRole, profile);
-             
-             // console.log(this.callerRoleSelected);
-               //inquiry.fcSave(ref);
-            //ref.onAuth(function(authdata){alert(authdata.uid);});
-
-
-
-
-          
-        },
-
-        observeInputArraysAB(ninputarrays,oldinputarrays){
-          if(ninputarrays){console.log(ninputarrays, oldinputarrays);}
-
-
-
-        },
-
-        
-  calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(protoStaticGetter){
-    var arrReturn=protoStaticGetter,it={},arrHolder=[];
-    var keyValArrReturn= arrReturn.map(function(val,index){
-        if(index%8===0){arrHolder=[];}//sets the 8 inputs a page
-        var temp=val[1].label2;
-        temp=temp.replace(/\s/g, "");
-        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectCheck": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
-        //setting ab allows a row of two inputs to be created for the dom-repeat
-        var nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProp="dropdownItems"+ab, multiSelectProp="multiSelect"+ab;
-        it[nameProp]=name,it[labelProp]=label,it[propertyNameProp]=propertyName,it[dropdownItemsProp]=dropdownItems;
-        it[multiSelectProp]=multiSelect;
-        //the above lines allow the creation of the A input and the B input to be shared in the same object;
-        //console.log(it[dropdownItemsProp]);
-        if(index%2!==0){
-            var holder=it;
-            it={};
-            arrHolder.push(holder);
-            }
-        //above uses sets one full object in an array that will be sent with 3 other object pairs to full a page (see directly below)
-            if((index+1)%8===0){return arrHolder;}
-            else{ return false;} //false allows for the easy filtering of the mapped array, in the chained function below/we are only 1 in 8 of the array "slots" for the new array; so array is not sparse, filter ;-)
-        }).filter(function(val){return(val!==false)});
-    //console.log(keyValArrReturn);
-    return keyValArrReturn;
-  },
-  computePageNumber(selected){ return this.selected+1;},
-
-  _computePageTotal(inputArraysAb, index){
-     var pageTotal=(this.inputArraysAb.length+1);
+  _computePageTotal(selectedApi, index){
+     var pageTotal=(this.selectedApi.length+1);
+     console.log(this.intakeInputs);
      this.set("pageTotal", pageTotal);
      this.set("shadowIndex", pageTotal);
-     //console.log(index);
-    return pageTotal;},
 
-  initializePages(){
-    //get at least the labelable values from the classes we have made... oh getters and setters would make this five-10 lines of code....
-    var student=new FcStudentProfile({}), pastAcademics=new FcPastAcademics({}), addAcademics=new FcAdditionalAcademics({});
-        pastAcademics=Object.assign(pastAcademics, addAcademics);
-        var it={},keyz=Object.keys(pastAcademics),keys=Object.keys(student),inputArrayA=[],inputArrayB=[],contentArray=[], two=keys[12],one=keys.splice(12,1);
-        //note that the it object will be used for moving properties from one object to another, later in the code via an Object.assign--poor mans defineProperties set and gets...
-        var tester={};
-        tester=Object.assign(tester, student, pastAcademics);
-        keys.push(two);
-        var moreKeys=keys.concat(keyz); 
-        var length;
-        moreKeys.forEach(function(val, index, array){
-          length=array.length;
-        var label=val.replace(/([A-Z])/g, ' $1'),  
-        label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
-        label=label.replace("1", " One"),
-        label=label.replace("2", " Two");
-        var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
-        //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
-        it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(tester[val]))?"value":(val.selectedItems)?val.selecteditems:false; 
-        var mapName=val;
-        if(it[dropdownItemsProperty]=="value")
-          { it[dropdownItemsProperty]=[];
-            it[dropdownItemsProperty]=tester[val].map(function(item){ 
-                      var retVal={"name": mapName, "value": item}; 
-                      return retVal;
-                  });
-          }
-        // it[multiSelectProperty]=(val.multiSelect&&val.multiSelect===true)?true:false;
-        //I avoided multi-select for the time being//will come back to it very SHORTLY NOW AUG 1, 2016;
-        //ADDING A UNIQUE HANDLER HERE WILL DEAL WITH "related properties in next redo"//after multi=select
 
-        if(it[nameProp]==="daysToNextTestDate"){
-              var dynamicDependantValue="value" +ab;
-                it[dynamicDependantValue]=tester.daysToNextTestDate;
-        }
-        //TODO--FIX THIS REALLY ITS A SCAR ON THE SYSTEM; SLIPPERY SLOPE
+},
 
-        var pushVal=(index%2===0)?inputArrayA:inputArrayB;
-        //alternating on the index to get a pair of items to load on the dom!
-        pushVal.push(it);
-        it={};
-        //cleared `it`, next gonna grab eight inputs (four pairs of two) for the cards
-        if((index+1)%4==0 || array.length-1===index){
-              this.push("inputArraysAb", [inputArrayA, inputArrayB]);
-              inputArrayA=[];
-              inputArrayB=[];
-                 }
-         }, this);
-        //this was original impl... used two arrays to make columns... now need to resort them and move paired odd array elements object sub properties all onto one replacement element for the other two, and maintain order in the impl... Wait for it... wait for it... it's...it is coming!
-         var mymerge=this.inputArraysAb.map(function(prop, index, array){
-         var pickle=prop[0].concat(prop[1]); 
-            var nobj=Object.assign({},pickle[0],pickle[2]);//concern here regarding cloning using a getter: did I just bind the properties?
-            var nobj2=Object.assign({},pickle[1],pickle[3]);
-            return[nobj,nobj2];
-         }, this);
-        //this is a columns to rows switch will need same api dynamics in the grid table and in any accounting interface DUAL USE IMPORTANT!!! 
-         var arrat=[];
-         mymerge.forEach(function(val,i,arr){
-                if(i%2===0&&i<arr.length-1){var mini=val.concat(arr[i+1]); arrat.push(mini);}
-            });
-         console.log(arrat);
-         console.log(this.njhs);
-           var jason=this;
-        var pickle= "https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208";
-        var ref = new Firebase(pickle);
-        ref.on("value", function(snap){
-        var vald = snap.val();
-        var valuebased=vald.map(function(val){
-          var nu={"name": "currentSchool", "value":val};
-          return nu;
-        });
-        jason.set("njhs",valuebased); 
-         arrat[2][0].dropdownItemsB=valuebased;
-         arrat[2][0].dropdownItemsA=[{"name":"gradeLevel", "value": "9th Grade"}, {"name":"gradeLevel","value": "10th Grade"}, {"name":"gradeLevel","value": "11th Grade"},{"name":"gradeLevel","value":"12th Grade"}, {"name":"gradeLevel","value": "Grades 7-8"}, {"name":"gradeLevel","value": "Grades 5-6"}, {"name":"gradeLevel","value": "Grades 3-4"}];
-            console.log*(arrat);
-            arrat[2][1].labelB="Educational Aspirations";
-            arrat[2][1].dropdownItemsB=[{"name": "highestEducationLevel","value": "Regional or State College"}, {"name": "highestEducationLevel","value": "Private University"}, {"name": "highestEducationLevel","value": "Competitve Private University"},{"name": "highestEducationLevel","value":"Elite Private University"}, {"name": "highestEducationLevel","value": "Masters Degree"}, {"name": "highestEducationLevel","value": "Professional Degree"}, {"name": "highestEducationLevel","value": "Doctoral Degree, or Equivalent"}];
-            arrat[2][1].labelA="Previous Eductaion";
-            arrat[2][2].dropdownItemsA=[{"name": "startMathScore", "value": "200-300"}, {"name": "startMathScore", "value": "300-400"}, {"name": "startMathScore","value": "400-500"},{"name": "startMathScore","value":"500-600"}, {"name": "startMathScore","value": "600-650"}, {"name": "startMathScore","value": "650-700"}, {"name": "startMathScore","value": "700-750"}, {"name": "startMathScore", "value": "750-800"}];
-            arrat[2][2].dropdownItemsB=[{"name": "startReadingScore","value": "200-300"}, {"name": "startReadingScore","value": "300-400"}, {"name": "startReadingScore","value": "400-500"},{"name": "startReadingScore","value":"500-600"}, {"name": "startReadingScore","value": "600-650"}, {"name": "startReadingScore","value": "650-700"}, {"name": "startReadingScore","value": "700-750"}, {"name": "startReadingScore","value": "750-800"}];
-            arrat[2][3].dropdownItemsA=[{"name": "startTotalScore","value": "500-700"}, {"name": "startTotalScore","value": "700-900"}, {"name": "startTotalScore","value": "900-1050"},{"name": "startTotalScore","value":"1050-1150"}, {"name": "startTotalScore","value": "1150-1250"}, {"name": "startTotalScore","value": "1250-1350"}, {"name": "startTotalScore","value": "1350-1450"}, {"name": "startTotalScore","value": "1450+"}];
-            arrat[2][3].dropdownItemsB=[{"name": "goalTotalScore","value":"1050-1150"}, {"name": "goalTotalScore","value": "1150-1250"}, {"name": "goalTotalScore","value": "1250-1350"}, {"name": "goalTotalScore","value": "1350-1450"}, {"name": "goalTotalScore","value": "1450-1500"}, {"name": "goalTotalScore","value": "1500-1550"}, {"name": "goalTotalScore","value": "1550+"}];
-          jason.set("inputArraysAb",[]);
-         jason.set("inputArraysAb", arrat);
-        });
-         
-         var pickle=this.calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(this.courseInputs);
-         this.set("courseCalendarCreationArrays", pickle);
-         this.set("callIntakeArrays", arrat);
-           var retArray= arrat.concat(pickle);
-            //console.log(arrat,pickle);
-        //had to do the above twice to get the ordering correct...see 391 above, this time though I didnt need the assigment as I did two at once above;
-        // next we wipe out our mistake in approach by resetting the original array we had to deal with...
-         // this.set("inputArraysAb",null);
-         // this.set("inputArraysAb", retArray);
-    },
 
-  _onCallClick: function(e) {
-      this.$.pages.selected = 7;
-      //console.log(e.detail.item);
-     this.$.viewProfile.setStudent(e.detail.item.fcid);
+   observeChangeB(event, value, name){
+   // console.log(event, value, name);
+     this.set(["student",name], value);
+     console.log(this.student[name], this.student);
 
-     //console.log(e.detail.item.fcid);
-     //console.log(this.studentSelectable, "here is selected");
-  
-    },
+  },
+
+observeChangeA(event, value, name){
+    //console.log(event, value, name);
+    this.set(["student",name], value);
+    console.log(this.student[name], this.student);
+
+  },
+
 
 	_tapHandler(e){
 		var targ=e.target;
@@ -768,228 +545,39 @@ FcCallCenterDialog=Polymer({
     var retVal = parseInt(index)+2;
   },
 	
-    toggleSelection(e){
-        var item = this.$.controllerList.itemForElement(e.target);
-        var model=this.$.controllerList.modelForElement(e.target);
-        if(model.item.selectCheck&&(model.item.selectCheck===true||model.item.selectCheck===false))
-        {
-            model.set("item.selectCheck",!model.item.selectCheck);
-            var index=this.selected.indexOf(item);
-            if(index<0){
-        	   e.target.style.background="aliceblue";
-        	   this.$.selector.select(item);
-    	   }
-    	   else{
-    		  e.target.style.background="white";
-    		  this.splice("selected",index,1);
-            }
-        }
-    },
 
-     _setPreviousCaller: function(e, detail)
-    {
-        console.log(e.detail);
-        this.set("studentSelectable", e.detail);
-    },
-
-    _onClose: function() {
-      this.$.pages.selected = 0;
-    },
-
-
- openDropdown(e){
-		var targ=e.target;
-		while(targ.nodeName!="PAPER-ICON-BUTTON"&& targ.nodeName!=="FC-DDR-CARD")
-		{
-			targ=targ.parentElement;
-		}
-		if(targ.nodeName=="PAPER-ICON-BUTTON")
-		{
-			var list=targ.nextElementSibling;
-					console.log(list);
-			var check =Polymer.dom(list).classList.contains("show");
-			if(check){
-					Polymer.dom(list).classList.remove("show"); 		
-			}
-			else{
-				this.set("dropdownOpen",true);
-				Polymer.dom(list).classList.add("show");
-				}
-		}
-     },
+    
        rightClick: function() {
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
-       this.selected = (this.selected === (this.inputArraysAb.length+2))? 0 : (this.selected + 1);
+        
+       this.selected = (this.selected === (this.selectedApi.length))? 0 : (this.selected + 1);
        
       },
       leftClick: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
-       this.selected = this.selected === 0 ?(this.inputArraysAb.length+2): (this.selected - 1);
+       this.selected = this.selected === 0 ?(this.selectedApi.length-1): (this.selected - 1);
          
       },
       observerForSearch(isPreviousCaller, callerRole){
         if(isPreviousCaller===true){
              if("2".match(callerRole)){this.leftClick();this.leftClick();}
                   else{this.leftClick();}
-
-
-
         }
-
-
-
       },
 
-
-
-// ready: function(){ 
-//     var d = new Date();
-//     var days = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
-//     this.daysOfWeek = days[d.getDay()].toString();  
-//     var months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-//     this.month = months[d.getMonth()].toString().slice(0,3);
-//     console.log(this.month);
-
-//     var day = this.day = d.getDate().toString();
-//     console.log(d);
-//     var year = this.year = d.getFullYear().toString();
-//     this.timeStamp = days[d.getDay()].toString().slice(0,3) +'.' + ' ' + this.month + ' ' + day + ',' + ' ' +year;
-//   },
-
-  fcStudentSelected: function(newVal, oldVal)
-  {
-    console.log(newVal, oldVal);
-    if(newVal!={} && newVal.FcStudent!=null)
-    { //console.log(newVal);
-      var profile=newVal.FcStudent.profile;
-      //console.log(profile);
-      var pasta =newVal.FcStudent.pastacademics;
-      var arr=[];
-      arr = Polymer.dom(this).querySelectorAll('FC-ISS-INPUT');
-      console.log(arr, arr, arr, arr);
-      var i=0;
-      //console.log(arr);
-      for(i=0; i<counter; i++)
-      {
-        arr.forEach(function(elem, index, arr){
-      
-          if(elem.name==prokeys[i])
-            {
-              elem.value=profile[prokeys[i]];
-              console.log(elem.value);
-            }
-          if((len-i)>0 && elem.name==pastakeys[i])
-            {
-              elem.value=pasta[pastakeys[i]];
-              elem.selected=pasta[pastakeys[i]];
-              console.log(elem.value);
-            }
-          console.log(elem.name, elem.value);
-        });
-      }
-    }
-  },
-  _sendInputChanged:  function(e, detail){
-    
-    var target=e.target;
-    while(target.nodeName!=="fc-iss-input"){
-      console.log(target.nodeName, e.target.value);
-      target=target.parentNode;
-    }
-    var name=target.name;
-    this.fire("sendInputVal", {value: e.target.value, name: name});
-    this.searchVals[name]=e.target.value;
-  },
-_computeProfileObj: function(dataSource){
-  console.log(dataSource.itemValue);
-},
-
-_passSearchVals: function(e, detail){
-      //console.log(e.detail.value, e.detail,e, e.detail.name, "take Note here");
-      var name = e.detail.name;
-      var val = e.detail.value;
-        this.set(["searchVals",name], val);
-      this.$.callList.updateSearchVals(this.searchVals, name, val);
-
-
-    },
-_compute_atFocusedProgramFit: function(ak){
-    var returnVal =("focusedProgramFit"=="Grade 4")?["Young Scholars Reading","Young Scholars Math"]:("focusedProgramFit"=="Grade 5")?["Young Scholars Reading","Young Scholars Math", "Young Scholars:Young Authors"]:("focusedProgramFit"=="Grade 6")?["Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","PSAT 8/9"]:("focusedProgramFit"=="Grade 7")?["PSAT 8/9","Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","Focused1600Prep"]:("focusedProgramFit"=="Grade 8")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II: True Scholarship"]:("focusedProgramFit"=="Grade 9")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II:Deep Learning"]:("focusedProgramFit"=="Grade 10+")?["1600 SAT","PSAT-NMSQT","PSAT 10"]:["1600 SAT"];
-      return returnVal;
-  },
 _computeTimeStampUseful: function(timeStamp, callLogFormOneObject){
     var d = new Date();
     var n = -d.getTime();
     console.log(n);
     return n;
 
-
-
 },
-
-_onChange: function(e){
-//console.log(e.target.value);
-
-},
-updateInput: function(e){
-
-
-
-}
-
 });
 
-class FcStudentPastAcademics{
-constructor (gradeLevel, currentSchool, pastSchool, highestEducationLvl, startMath, startReading, startTotal,goalScore,desiredTestDate, fcid){
-  this.gradeLevel= gradeLevel ||"";
-  this.currentSchool= currentSchool ||"";
-  this.pastSchool= pastSchool ||"";
-  this.highestEducationLevel= highestEducationLvl ||"";
-  this.startMathScore =  startMath  || "";
-  this.startReadingScore = startReading || "";
-  this.startTotalScore = startTotal || "";
-  this.goalScore=goalScore || "";
-  this.desiredTestDate=desiredTestDate||"";
-  if(this.desiredTestDate){
-  this.weeksUntilTestDate=new Date()-this.desiredTestDate;
-  }
-  }
-};
 </script>
 </dom-module>
 
-<!--
-}else if(name=="parent1LastName"){this.set("searchVals.parent1LastName", val);} else if(name=="parent2FirstName"){this.set("searchVals.parent2FirstName", val);}else if(name=="parent2LastName"){this.set("searchVals.parent2LastName", val);}else if(name=="firstName" || name=="studentFirstName"){ this.set("searchVals.studentFirstName", val);}else if(name=="studentLastName" || name=="lastName"){ this.set("searchVals.studentLastName", val);}else if(name=="parent1Email"){this.set("searchVals.parent1Email", val);} else if(name=="studentEmail" || name=="email"){ this.set("searchVals.studentEmail", val);} else if(name=="parent2Email"){ this.set("searchVals.parent2Email", val);}else if(name=="parent1Telephone"){ this.set("searchVals.parent1Telephone", val);}else if(name=="parent2Telephone"){ this.set("searchVals.parent2Telephone", val);} else if(name=="telephone" || name=="studentTelephone"){this.set("searchVals.studentTelephone", val);}else{this.set("searchVals", this.searchVals);}
 
-    <div class="dropdown headerRight">
-          <span btn="rightClick" style="position: absolute; right: -36px; top: 4px; font-size: 42px;"><span style="position: relative; font-size: 18px;top:-5px;">NEXT</span>&#8680;</span>
-        <paper-icon-button icon="icons:dashboard" class="dropbtn" btn="openDropdown" style="position: relative; right: 64px;">   
-        </paper-icon-button>
-        <paper-list-box id="dropdownlist" class="dropdown-content" style="position: absolute; right: 64px; border: 1px #adadad solid;">
-      <template is="dom-repeat" id="controllerList" items="{{signUpPages}}">
-        <paper-item class="block" style="border: 1px silver solid; min-width: 146px!important; max-width: 360px!important;padding: 3px!important;color: green;" on-tap="toggleSelection">
-                    <span hidden$="{{!item.selectCheck}}" class="check">&#10148;</span>
-                    <span>{{item.name}}</span><span>{{selected}}</span>
-                </paper-item>
-      </template>
-    </paper-list-box>
-  </div>
-
-  <div class="dropdown headerLeft horizontal layout">
-   <span btn="leftClick" style="position: absolute; left: -36px; top: 4px; font-size: 42px;">&#8678;<span style="position: relative; font-size: 18px;top:-5px;">BACK</span></span>
-    <paper-icon-button icon="icons:dashboard" class="dropbtn" style="position: relative; left: 64px;" btn="openDropdown"></paper-icon-button>
-      <paper-list-box id="dropdownlist2" class="dropdown-content" style="position:relative; left: 18px;width: 320px!important; min-width: 320px!important; max-width: 320px!important; border: 4px green solid;">
-  
-        <template is="dom-repeat" id="controllerList" items="{{signUpPages}}">
-          <paper-item class="block" style="border: 1px silver solid; width: 300px!important; min-width: 300px!important; max-width: 300px!important;padding: 3px!important;color: green;" btn="toggleSelection"><span hidden$="{{!item.selectCheck}}" class="check">&#10148;</span>{{item.name}}
-                    </paper-item>
-          </template> 
-      </paper-list-box>
-  </div>
-<neon-animated-pages class="fit" id="pages9" selected="0">
-    <fc-call-list-view id="callList" style="height: 600px; width:460px;" search-vals="{{searchVals}}"></fc-call-list-view>
-         <fc-tabbed-card id="viewProfile" student="{{studentSelectable}}" on-close="_onClose"></fc-tabbed-card>
-        </neon-animated-pages>
         -->

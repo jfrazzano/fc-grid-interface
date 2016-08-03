@@ -212,17 +212,7 @@
     .afterNote{
       display: block;
     }
-    .afterNote:after{
-      display: none;
-       content:'The Response to the above question will influence future options, so clarity is important.  For the benefit of new system users, definitions are nested within the "Returning Caller" tag above. Check out the definitions now if you have any questions!';
 
-    }
-    .afterNote:hover:after{
-      display: block;
-    }
-    .returningCaller{
-        color:brown;
-      },
   @media(max-width: 570px){
     .container{
         width: 99%;
@@ -235,7 +225,7 @@
     };
   }
 </style>
-  <paper-card class="intakeForm vertical layout" src="./FC_frontpage_logo.png">
+  <paper-card class="intakeForm vertical layout" src="./FC_frontpage_logo.png" on-tap="myradiopush">
     <span style="position: absolute; font-size: 15px; right: 16px; top: 85px;">Page 1 of <content select=".pageTotal"></content></span> 
     <section>        
       <span class="timestamp">
@@ -276,8 +266,8 @@
   </section>
     </details>
      <section class="radioGroupBlock">
-     <label id="label3" class="isPreviousCaller"></label>
-          <paper-radio-group class="tallbox" activate-event="myradiopush" on-tap="myradiopush" allow-empty-selection aria-labelledby="label3">
+     <label id="label3" class="isPreviousCaller" name="isPreviousCaller"></label>
+          <paper-radio-group class="tallbox" activate-event="myradiopush"  aria-labelledby="label3">
               <paper-radio-button class="isPreviousCaller" name="newClient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
               <paper-radio-button class="isPreviousCaller" name="repeatCaller">This is a <a><u>Repeat Caller</u></a>, who has yet to become a client.</paper-radio-button>
               <paper-radio-button class="isPreviousCaller" name="activeClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
@@ -302,8 +292,8 @@
     </details>
     
     <section class="radioGroupBlock">
-     <label id="label3" class="callerRole"></label>
-          <paper-radio-group class="callerRole" activate-event="myradiopush" on-tap="myradiopush" allow-empty-selection aria-labelledby="label3">
+     <label id="label4" class="callerRole" name="callerRole"></label>
+          <paper-radio-group name="callerRole" class="callerRole" selected="a" activate-event="myradiopush" aria-labelledby="label4">
               <paper-radio-button class="callerRole" name="parent1"><a link=""><b><u>Parent One</u></b></a>&nbsp;Is this caller the "primary" parent and contactee for a student?
               </paper-radio-button>
               <paper-radio-button class="callerRole" name="student"><a><b><u>Focused Student</u></b></a>&nbsp;Is this caller a current or potential Focused Student?
@@ -349,10 +339,7 @@ FcCallCenterFormOne=Polymer({
     pageIndex:{
       type:Number,
       value: function(){return 0;},
-      notify: true, 
-
-
-
+      notify: true,
     },
     currentHeight:{
       type: String,
@@ -375,11 +362,16 @@ FcCallCenterFormOne=Polymer({
   
       myradiopush(e){ 
         console.log(e.target.class, e.target.name, e.target.checked);
-        if(e.target.class==="isPreviousCaller"){
+        if(Polymer.dom(e.target).classList.contains("isPreviousCaller")){
                 var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
+                var two=(e.target.name==="activeClient")?true: false;
+                this.set("inquiry.isPreviousCaller", one);
+                this.set("inquiry.callerType", e.target.name);
+                this.set("inquiry.isActiveClient", two)
           }
-        else if(e.target.class ==="callerRole"&&e.target.name==="other"){
+        else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
                       this.set("radioOther", true);
+                      this.set("inquiry.callerRole", "other");
             //            var pack=new FcInquiry(this.inquiry);
             // this.set("inquiry",pack);
           }
@@ -389,13 +381,31 @@ FcCallCenterFormOne=Polymer({
             // var pack=new FcInquiry(this.inquiry);
             // this.set("inquiry",pack);
           }
-        console.log(e.target.name, e.target.checked, e.target.class); 
+        if(this.inquiry.callerRole!=undefined&& this.inquiry.isPreviousCaller===true){
+            //somehow set the next input to the searchable set...
+
+
+
+          }
+        console.log(e.target.name, e.target.checked, e.target.class, "class, now inquiry", this.inquiry); 
       },
 
        });
 </script>
 </dom-module>
 
+
+    /*.afterNote:after{
+      display: none;
+       content:'The Response to the above question will influence future options, so clarity is important.  For the benefit of new system users, definitions are nested within the "Returning Caller" tag above. Check out the definitions now if you have any questions!';
+
+    }
+    .afterNote:hover:after{
+      display: block;
+    }*/
+    .returningCaller{
+        color:brown;
+      },
 
 
 

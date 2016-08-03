@@ -1,0 +1,243 @@
+
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcApiInputsGridNavigationBehavior = {	
+
+properties:{
+		chosen:{
+			type: String,
+			notify: true,
+
+		},
+	 gridArraysFromInputs:{
+    	type: Array, 
+    	value: function(){return [];},
+    	notify: true,
+
+    },
+	apiChoices:{
+			type: Array, 
+			notify: true,
+			value: function(){return [];},
+		},
+		
+		selectedApiIndex:{
+			type: Number,
+			notify: true,
+			// observer:"observeSelectedApiIndex",
+		},
+		apisArrays:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		selectedApi:{
+			type:Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		//end of api selection 
+		//apiView Properties
+		selectedApiViewIndex:{
+			type: Number,
+			notify: true,
+			// observer:"observeSelectedApiViewIndex",
+		},
+		selectedApiView:{
+			type: Array, 
+			value:function(){return [];},
+			notify: true,
+		},
+			gridMakerInputs:{
+			type:Array, 
+			value: function(){return [];},
+			notify: true,
+		},
+	tagIndex:{
+    	type: Number,
+    	computed:'_computeTagIndex(selectedApiIndex)',
+    },
+
+			counter:{
+			type: Number,
+			value: function(){return 0;},
+			notify: true,
+
+		},
+	
+
+	},
+	_computeTagIndex(sap){
+		return parseInt(sap)+4;
+	},
+
+	
+
+	initializeApiArrays(){
+		if(this.counter===0){
+			this.initializeApiChoices();
+		var data=this.viewIndexOfIndexedDatabases();
+		console.log(data);
+		var cucumber=this.makeInputPage(data);
+		console.log(cucumber);
+		 this.set('basicGridInterface', cucumber);
+		var arg=this.gridMakerInputGenerator();
+		this.set("gridMakerInputs", arg);
+		this.push("apisArrays",dataManager.intakeInputs);
+		this.push("apisArrays",dataManager.courseCalendarCreationArrays);
+		this.push("apisArrays",dataManager.inquiryApi);
+		this.push("apisArrays", this.basicGridInterface);
+		this.push("apisArrays", this.gridMakerInputs);
+		this.set("selectedApiIndex",0);
+		this.set("selectedApiViewIndex", 0);
+		//console.log(this.apisArrays);
+		this.set("selectedApi", this.apisArrays[0]);
+		this.set("selectedApiView", this.selectedApi[0]);
+		this.set('indexeddbIndexArray', cucumber);
+		//console.log(this.selectedApi, this.selectedApiView);
+		this.counter++;
+		}
+
+		this.async(function(){var selection=this.apiChoices[this.selectedApiIndex].value; this.set("chosen", selection);},20)
+
+	},
+	initializeApiChoices(apiArrays){
+			var array=[{"value": "Call Center","subStore":"Student Intakes","apiTag":"studentIntakes", "apiName":"callCenter", "apiIndex":0},
+			{"value": "Course Calendars", "apiName": "courseCalendars", "subStore":"allCourseCalendars","apiIndex":1}, 
+			{"value": "Inquiry","apiName":"inquiries", "subStore": "inquiryLinks", "apiIndex":2},
+			{"value": "Grid Review","apiName":"gridDetails","apiIndex":3},
+			{"value": "Grid Builder","apiName": "apiBuilder", "subStore": "masterBuild", "name":"selectedApiName","apiIndex":4}];
+		var apiarray=array.map(function(val){val.gridId=val.apiName+"00"+val.subStore; return val;});
+		this.set("apiChoices",apiarray);
+		array=[];
+		apiarray=[];
+	},
+
+	selectApi(e){
+		console.log(e);
+		var max=this.apisArrays.length-1;
+		if(this.selectedApiIndex===max){this.set("selectedApiIndex",0);}
+		else{this.set("selectedApiIndex", this.selectedApiIndex+1);
+	}
+		this.set("selectedApi", this.apisArrays[this.selectedApiIndex]);
+		this.set("selectedApiView",this.selectedApi[0]);
+		this.set("chosen", this.apiChoices[this.selectedApiIndex].value);
+		console.log(this.apisArrays, this.selectedApi);
+	},
+
+	_forward(e){
+		if(this.selectedApiViewIndex===this.selectedApi.length-1)
+			{
+				this.selectedApiViewIndex=0;
+				this.set("selectedApiView", this.selectedApi[0]);
+			}
+		else{
+			this.set("selectedApiViewIndex", this.selectedApiViewIndex+1);
+    		this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+    		
+    	}
+    },
+ _back(){	
+ 		if(this.selectedApiViewIndex===0)
+ 		{ 
+			var max=this.selectedApi.length-1;
+ 			//console.log(max);
+ 			this.set("selectedApiViewIndex",max);
+ 			this.set("selectedApiView",this.selectedApi[this.selectedApiViewIndex]);
+ 		}
+ 		else
+ 		{	
+ 			this.set("selectedApiViewIndex", this.selectedApiViewIndex-1);
+ 			this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+    		
+ 		}
+ 	},
+
+ 	makeInputPage(objArr){
+  var kvals=objArr.map(function(val,index,array){
+    var keys=Object.keys(val);
+    var numbKeys=keys.length;
+    ////console.log(keys);
+    return keys.reduce(function(pre,key, i,arr){
+      pre.push([key,val[key]]);
+      //console.log(pre, key, val[key]);
+      return pre; 
+      },[]);
+    });
+  //console.log(kvals);
+  var bigArray=[];
+  var numPairs=kvals.length;
+  var arrayPair=[];
+  var pageArray=[];
+  for(var i=0;i<numPairs;i++){
+    var last=kvals[i].length-1;
+    for(var j=0;j<kvals[i].length;j++)
+    { 
+      arrayPair.push(kvals[i][j]);
+      if(j>0&&j%2===0){
+      var obj=this.makeInputPairObject(arrayPair);
+      pageArray.push(obj);
+      arrayPair=[];
+      }
+      if(j===last){
+        bigArray.push(pageArray);
+        pageArray=[];
+      }
+      else if (j===last&&pageArray.length!==0){
+          bigArray.push(pageArray);
+
+      }
+      else if(j===last&&pageArray.length===0&&arrayPair.length!==0){
+        bigArray.push(obj);
+      }
+      
+    }
+  }
+  //console.log(bigArray);
+  return bigArray;
+
+  },
+
+  makeInputPairObject(pairArray){
+
+    var keyA=pairArray[0][0];
+    var valA=pairArray[0][1];
+    var keyB="addProperty";
+    var valB="Add Value"
+    if(pairArray[1]){
+    keyB=pairArray[1][0];
+    valB=pairArray[1][1];
+    //console.log(valB, keyB, pairArray);
+    }
+    if(keyB==="name"){
+      var holderK=keyA;
+      var holderV=valA;
+      keyA=keyB;
+      keyB=holderK;
+      valA=valB;
+      valB=holderV;
+    }
+
+    var object={};
+      object.dropdownItemsA=(Array.isArray(valA))?valA:false;
+      object.dropdownItemsB=(Array.isArray(valB))?valB:false;
+      //console.log(keyA);
+      object.labelA=keyA.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }); 
+      //console.log(object.labelA);
+      object.labelB=keyB.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+      object.nameA=keyA;      
+      object.nameB=keyB;      
+      object.valueA=(!Array.isArray(valA))?valA:false;    
+      object.valueB=(!Array.isArray(valB))?valB:false;
+    return object;    
+    },
+
+
+
+
+
+
+};
+
+
+</script>

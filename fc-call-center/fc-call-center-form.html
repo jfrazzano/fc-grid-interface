@@ -1,4 +1,5 @@
 <link rel="import" href="fc-highschools-nj-selector.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
 <dom-module id="fc-call-center-form">
 <template id="fc-call-center-form-template">
 <style>
@@ -9,7 +10,7 @@
 }
      paper-card{
         width: 99%;
-        padding: 4px 8px 8px 4px;
+        padding: 4px;
         margin: 12px;
         margin-top:-6px;
         --paper-card-header-image-text:{color:#009; position: absolute; right: 6px; top: 25px;}
@@ -100,8 +101,8 @@
 
     }
     iron-icon{ 
-        width: 36px;
-        height: 36px;
+        width: 24px;
+        height: 24px;
     }
 
   .sumTag{
@@ -136,7 +137,7 @@
   }
   .pageNumbers{
     position: absolute; 
-    right: 22px; 
+    right: 32px; 
     top: 12px;
     font-size: 13px;
   }
@@ -170,7 +171,7 @@
 		/* Links inside the dropdown */
 		.dropdown-content a {
 		    color: black;
-		    padding: 5px 8px;
+		    /*padding: 5px 8px;*/
 		    text-decoration: none;
 		    display: block;
 		}
@@ -204,13 +205,10 @@
 				margin: 8px;
 
 		}
-    .holderClass{
-        margin:4px;
-        padding:4px;
-    }
+  
     @media(max-width: 620px){
     .container{
-        width: 99%;
+        width: 110%;
         @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--layout-self-stretch);
@@ -221,6 +219,8 @@
   }
 
 </style>
+<firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerRole" order-by-value="{{inquiry.callerRole}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection>
+<array-selector ></array-selector>
   <paper-card class="intakeForm vertical layout">
         <span class="pageNumbers">Page {{pageNumber}} of <content select=".pageTotal"></content></span>
                <section>
@@ -234,18 +234,26 @@
     
   <div class="card-content">
   <form>
-    <div class="vertical layout self-stretch nowrap" >    
+    <div class="vertical layout self-stretch nowrap">
+      <div class="horizontal layout flex wrap around-justified" hidden="{{!inquiry.isPreviousCaller}}">
+        <section class="container holderClass">
+          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="callerFullName" iss-name="{{item.nameA}}"  iss-label="Caller Full Name"  iss-value="{{inquiry.callerFullName}}"  item-select-property="callerFullName"  value="{{inquiry.callerFullName}" value-object="{{valueObject}}" change-event="{{searchChangeEvent}}" dropdown-items="{{calls}}" multi-select="[[item.multiSelectA]]">
+          </fc-iss-input>
+        </section>
+       
+    </div>
+        
       <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
-        <section class="horizontal layout container holderClass"> 
+        <section class="horizontal layout flex"> 
         <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
       </section>
       <div class="horizontal layout flex wrap around-justified">
         <section class="container holderClass">
-          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  item-select-property="value"  value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.multiSelectA]]">
+          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  item-select-property="value"  value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA)}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.multiSelectA]]">
           </fc-iss-input>
         </section>
         <section class="container holderClass">
-          <fc-iss-input id$="{{item.nameB}}_{{counter}}" change-event="{{changeEventB}}" on-keyup="_sendInputChanged" on-change="objectHandler" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}"multi-select="[[item.multiSelectB]]">
+          <fc-iss-input id$="{{item.nameB}}_{{counter}}" change-event="{{changeEventB}}" on-keyup="_sendInputChanged" on-change="objectHandler" iss-name="{{item.nameB}}" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" multi-select="[[item.multiSelectB]]">
           </fc-iss-input>
         </section>  
     </div>
@@ -256,8 +264,7 @@
 </div>
 <content select=".next"></content>
     <div class="card-actions horizontal layout flex container center-justified" style="min-height: 18%;">
-          <paper-button class="flex-1" btn="leftClick">back</paper-button>
-           <paper-button class="flex-1" id="one" btn="rightClick">CONTINUE</paper-button>
+          <content select=".buttons"></content>
     </div>
   </paper-card>
 </template>
@@ -280,7 +287,7 @@ FcCallCenterForm=Polymer({
 		},
     pageNumber:{
       type:Number,
-      value: function(){return 1;},
+      value: function(){return 2;},
       notify: true,
     },
 		date:{
@@ -293,9 +300,21 @@ FcCallCenterForm=Polymer({
       value: function(){return {};},
       notify: true
     },
+    inquiry:{
+      type: Object, 
+      notify: true,
+
+    },
+    searchChangeEvent:{
+      type: Object, 
+      value: function(){return {};},
+      notify: true, 
+      observer: "observeSearchChanges",
+    },
     changeEventA:{
       type:Object,
       value:function(){return {};},
+      observer: "changeEventAObserve",
       notify: true,
     },
     changeEventB:{
@@ -303,125 +322,43 @@ FcCallCenterForm=Polymer({
       value:function(){return {};},
       notify: true,
     },
-
-      inputArray:{
-        type: Array,
-        notify: true,
-      },
-      dropdownItems:{
-        type:Array,
-        value:function(){return },
-        notify: true,
-      },
       itemObject:{
         type:Array,
         notify: true,
       },
-    sfna:{
-      type: Array,
-      notify: true,
-      value: function(){return [];},
-      observer:"observeSfna",
-    },
-    slna:{
-      type: Array,
-      notify: true,
-        value: function(){return [];},
-      observer:"observeSlna",
-    },
+
       currentHeight:{
         type: String,
         notify: true
       },
-      fcStudent: {
-          type: Object,
-          value: {},
-          observer: "fcStudentSelected",
-          notify: true
-        },
-        liArray: {
-          type: Array,
-          notify: true
-        },
-      njhs: {
-        type:Array,
-        notify: true
+ 
+      valueObject:{
+        type: Object,
+        value: function(){return {};},
+        notify: true,
+        observer:"observeValueObject",
       },
       
-        fullPath: {
-          type: String,
-          computed: 'computefullPath(rootPath, instancePath)',
-          notify: true
-        },
-        fcid:{
-          type: String,
-          value:function(){
-            return "njhighschools000020160208";
-          },
-          notify: true
-        },
-        instancePath: {
-          type: String,
-          value: function(){
-            var instancePath = 'forms/callIntake';
-            return instancePath;
-          },
-          notify: true
-        },
-        rootPath: {
-          type: String,
-          value: function()
-              { var rootPath= "https://focusedstaging1.firebaseio.com/";
-                return  rootPath;
-              },
-          notify: true
-        },
-        student: {
-          type: Object,
-          value:function(){return {};},
-          notify: true,
-         }
       },
-        
+     
+    changeEventAObserve(nv, ov){
+      
+    } ,   
+    observeValueObject(nv, ov){if(nv){console.log(nv,ov);}},
 
-
-  computefullPath: function(rootPath, instancePath){
-    var olive = rootPath + '/' + instancePath; 
-    return olive;
-  },
-  _computeDropDownItems(liArray, item){
-    console.log(item.valueB, liArray);
-    if(item.valueB){return liArray;}
-    else{
-
-    }
-
-  },
+  
 
   observeChangeB(event, value, name){
-   // console.log(event, value, name);
-     this.set(["student",name], value);
-     console.log(this.student[name], this.student);
-
+  
   },
 
 observeChangeA(event, value, name){
-    //console.log(event, value, name);
-    this.set(["student",name], value);
-    console.log(this.student[name], this.student);
-
+    
   },
   observeSearchValue(nv, ov){if(nv){console.log(nv);}},
-
-  computeStartListItems: function(fullPath, localStorageHs){
-    var self=this;
-    var olive = fullPath;
-    // console.log(olive);
-    return 250;
-
+  observeSearchChanges(nv, ov){
   },
-
-
+  
   _computeShowDropButton(dropItems){
     var retVal=(dropItems!==false)?true: false;
     return retVal;
@@ -444,89 +381,7 @@ observeChangeA(event, value, name){
       this.set(["student", prop],propnameandvalue[1]);
       console.log(this.student);
     },
-    _computeHidden(label){
-      var retVal=(label==="Current School")?true:false;
-      if(retVal===true){
-         var pickle= this.fullPath+"/"+this.fcid
-        var jason=this;
-        var ref = new Firebase(pickle);
-        ref.on("value", function(snap){
-        var vald = snap.val();
-        jason.set("njhs",vald); 
-        jason.set('liArray', jason.njhs);
-        console.log(jason.liArray);
-    });
-
-
-
-      }
-      return retVal;
-    },
-     observeSfna(nv,ov){
-      if(nv&&nv.length!==0){
-
-        }
-        var elem=Polymer.dom(this.root).querySelectorAll([name='studentFirstName'])
-        if(elem.dropdownItems==undefined||elem.dropdownItems.length==null){elem.dropdownItems=[];}
-        elem.dropdownItems=nv;
-        elem.itemSelectProperty="";
-
-        //console.log(nv,ov,"look hr");
-
-     },
-
-     observeSlna(nv,ov){
-      if(nv&&nv.length!==0){
-
-        }
-        var elem=Polymer.dom(this.root).querySelectorAll([name='studentLastName'])
-        if(elem.dropdownItems==undefined||elem.dropdownItems.length==null){elem.dropdownItems=[];}
-        elem.dropdownItems=nv;
-        elem.itemSelectProperty="";
-        //console.log(nv,ov,"look hr");
-     },
-
-  fcStudentSelected: function(newVal, oldVal)
-  {
-    //console.log(newVal, oldVal);
-    if(newVal!={} && newVal.FcStudent!=null)
-    { //console.log(newVal);
-      var profile=newVal.FcStudent.profile;
-      //console.log(profile);
-      var prokeys =Object.keys(profile);
-      //console.log(prokeys);
-      var counter=prokeys.length;
-      //console.log(counter);
-      var pasta =newVal.FcStudent.pastacademics;
-      //console.log(pasta);
-      var pastakeys=Object.keys(pasta);
-      var len =pastakeys.length;
-      //console.log(pastakeys); 
-      var arr=[];
-      arr = Polymer.dom(this.root).querySelectorAll('fc-input-search-select');
-      //console.log(arr);
-      var i=0;
-      //console.log(arr);
-      for(i=0; i<counter; i++)
-      {
-        arr.forEach(function(elem, index, arr){
-      
-          if(elem.name==prokeys[i])
-            {
-              elem.issValue=profile[prokeys[i]];
-              //console.log(elem.issValue);
-            }
-          if((len-i)>0 && elem.name==pastakeys[i])
-            {
-              elem.issValue=pasta[pastakeys[i]];
-              elem.selected=pasta[pastakeys[i]];
-              //console.log(elem.issValue);
-            }
-          //console.log(elem.name, elem.issValue);
-        });
-      }
-    }
-  },
+    
   _sendInputChanged: function(e, detail){
     //console.log(e,e.target);
     var target=e.target;
@@ -535,10 +390,6 @@ observeChangeA(event, value, name){
     this.fire("sendInputVal", {value: target.value, name: name});
     this.searchVals[name]=target.value;
   },
-_computeProfileObj: function(dataSource){
-  //console.log(dataSource.itemValue);
-},
-  
 
 
 });

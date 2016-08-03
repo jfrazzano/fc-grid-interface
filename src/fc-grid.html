@@ -182,21 +182,9 @@
         selected="{{selectedArraySet}}">
     </array-selector>
     <!--begin grid-->
+    
     <div on-mousedown="closemenu" class="layout horizontal" style="position: relative; width: 100%;">
-        <!--begin left control panel-->
-        <section 
-            class="leftpanel">
-            BCK
-            <paper-icon-button
-                icon="icons:dashboard" 
-                on-tap="arraySwapBack">  
-            </paper-icon-button>
-            ONE 
-           
-              {{arrayIndex}} 
-        </section>
-        <!--end left controll panel-->
-        <!--begin center grid scroll container-->
+        
         <div 
             is-gridbox="true"  
             id="mappedGridContainer" 
@@ -252,7 +240,7 @@
         </div><!--end center grid scroll container-->
         <!--begin Right control panel-->
        <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-        <section 
+        <!-- <section 
             class="rightpanel">
             FWD
             <paper-icon-button 
@@ -260,8 +248,9 @@
                 on-tap="arraySwap">
             </paper-icon-button>
             ONE 
-
+ -->
             <fc-indexed-database 
+                style="position: fixed; top: -400px; left: -300px width: 2px; height: 2px; opacity:;"
                 maps-array="{{mapsArray}}" 
                 indexed-databases="{{indexedDatabases}}" 
                 database-changed="{{databaseChanged}}" 
@@ -294,7 +283,7 @@
         </template>
     </paper-listbox>
      <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-<!--      <fc-grid-cell></fc-grid-cell> -->
+
   </template>
   <script>
   FcGrid=Polymer({
@@ -331,22 +320,9 @@
        
      	},
 
-     get gridPresets(){
-        return [ [50,50, "JasonTest", "allRed", 1, null, false, undefined, undefined],
-          [40,40, "ACalendar", "calendar", 1, null, false, undefined, undefined],
-          [30,30, "ACalendar2", "daysofweek", 1, null, true, undefined, undefined],
-          [26,26,"jasonGrid2","monthsFinancial",1, null, true, undefined, undefined],
-          [16,25,"jasonGrid","allBlue",1, null, true, undefined, undefined],
-          [12,12,"months","allBlue",1, null, false, undefined, undefined],
-          [38,43,"class","allBlue",1, null, false, undefined, undefined],
-          [4,10,"class21","allBlue",1, null, false, undefined, undefined],
-          [6,12,"class20","allBlue",1, null, false, undefined, undefined],
-          [5,10,"class22","allBlue",1, null, false, undefined, undefined]
-          ];
-        },
     
       registered(){
-//        this.getAllObjectStoresAtInit();
+      // this.getAllObjectStoresAtInit();
       },
       ready(){
             

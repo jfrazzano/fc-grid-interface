@@ -1,0 +1,110 @@
+ <script>
+
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcApiInputsFromGridsBehavior = {  
+ makeInputPage(objArr){
+  var kvals=objArr.map(function(val,index,array){
+    var keys=Object.keys(val);
+    var numbKeys=keys.length;
+    ////console.log(keys);
+    return keys.reduce(function(pre,key, i,arr){
+      pre.push([key,val[key]]);
+      //console.log(pre, key, val[key]);
+      return pre; 
+      },[]);
+    });
+  //console.log(kvals);
+  var bigArray=[];
+  var numPairs=kvals.length;
+  var arrayPair=[];
+  var pageArray=[];
+  for(var i=0;i<numPairs;i++){
+    var last=kvals[i].length-1;
+    for(var j=0;j<kvals[i].length;j++)
+    { 
+      arrayPair.push(kvals[i][j]);
+      if(j>0&&j%2===0){
+      var obj=this.makeInputPairObject(arrayPair);
+      pageArray.push(obj);
+      arrayPair=[];
+      }
+      if(j===last){
+        bigArray.push(pageArray);
+        pageArray=[];
+      }
+      else if (j===last&&pageArray.length!==0){
+          bigArray.push(pageArray);
+
+      }
+      else if(j===last&&pageArray.length===0&&arrayPair.length!==0){
+        bigArray.push(obj);
+      }
+      
+    }
+  }
+  //console.log(bigArray);
+  return bigArray;
+
+  },
+
+  makeInputPairObject(pairArray){
+
+    var keyA=pairArray[0][0];
+    var valA=pairArray[0][1];
+    var keyB="addProperty";
+    var valB="Add Value"
+    if(pairArray[1]){
+    keyB=pairArray[1][0];
+    valB=pairArray[1][1];
+    //console.log(valB, keyB, pairArray);
+    }
+    if(keyB==="name"){
+      var holderK=keyA;
+      var holderV=valA;
+      keyA=keyB;
+      keyB=holderK;
+      valA=valB;
+      valB=holderV;
+    }
+
+    var object={};
+      object.dropdownItemsA=(Array.isArray(valA))?valA:false;
+      object.dropdownItemsB=(Array.isArray(valB))?valB:false;
+      //console.log(keyA);
+      object.labelA=keyA.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }); 
+      //console.log(object.labelA);
+      object.labelB=keyB.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+      object.nameA=keyA;      
+      object.nameB=keyB;      
+      object.valueA=(!Array.isArray(valA))?valA:false;    
+      object.valueB=(!Array.isArray(valB))?valB:false;
+    return object;    
+    },
+
+ // _computeIndexOfDatabasesProxy(indexeddbIndexArray){
+ //  var objectA={};
+ //  var arrayForIdb=indexeddbIndexArray.reduce(function(previous,fourItemArrayContainingTwoObjectsInSubItemsA_and_B,index){
+ //      if(index%2==0){objectA={};} 
+ //      pairedObjectArray=fourItemArrayContainingTwoObjectsInSubItemsA_and_B.reduce(function(pre,val, i, arr){  
+ //            //console.log(val, arr);  
+ //            var propertyA=val.nameA;
+ //            var propertyB=val.nameB;
+ //            var setValueA=(val.dropdownItemsA===false)?val.valueA:val.dropDownItemsA;
+ //            var setValueB=(val.dropdownItemsB===false)?val.valueB:val.dropDownItemsB;
+ //            //console.log(setValueA,setValueB);
+ //            pre[propertyA]=setValueA;
+ //            pre[propertyB]=setValueB;
+ //            return pre;
+ //        }, objectA);
+ //      //console.log(previous, pairedObjectArray);
+ //      previous =previous.concat(pairedObjectArray);
+ //      //console.log(previous, pairedObjectArray);
+ //      return previous;
+ //      },[]);
+ 
+ // },
+
+ 
+    
+  };
+</script>

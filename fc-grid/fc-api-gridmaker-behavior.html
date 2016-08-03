@@ -1,0 +1,175 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcGridsFromApiInputsBehavior = {  
+gridMakerFunction(apiName){
+    var mappedVals= this.mapValuesToPropertiesFromInputArrays();
+            this.submittedInputs=Object.assign(this.submittedInputs, mappedVals);
+            var dateTime=readableTime.split(",");
+            var obj={"date":dateTime[0], "time":dateTime[1]};
+
+              if(this.apiChoices[this.selectedApiIndex].apiName=="callCenter"){
+                  this.submittedInputs.studentFullName=this.submittedInputs.studentFirstName + " " + this.submittedInputs.studentLastName;
+                  this.submittedInputs.fcid=this.submittedInputs.studentLastName+this.submittedInputs.studentFirstName+"_00001";
+                  var refObject=obj;
+                }
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="courseCalendars"){var refObject={};}
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="events"){var refObject={};}
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="inquiries"){var refObject={};}
+            
+            refObject=Object.assign(refObject, formResults, this.submittedInputs, {"orderingTime":n});
+              
+              var valueRow=this.createValueRowsFromProperties(refObject);
+              if(this.dataArrays[this.tagIndex]==undefined){ 
+                var headerRow=this.createHeadersFromProperties(refObject);
+                this.createFirstGridForAnApi(headerRow, valueRow, this.tagIndex);
+              }
+              else{
+                  var sheet=1;
+                  //TODO: CREATE THE SHEET MAKER INPUT AND STUFF IN HERE
+                  this.addEntryToApiSheet(valueRow, sheet, this.sameThing);
+                }
+}
+
+
+mapValuesToPropertiesFromInputArrays(){
+  var mappedValues=this.selectedApi.reduce(function(previous, value, index, array){
+              var temp=value.reduce(function(pre, val, index, array){
+                    console.log(val);
+                    var propertyA=val.nameA;
+                    var valueA=val.valueA;
+                    var propertyB=val.nameB;
+                    var valueB=val.valueB;
+                    var object={[propertyA]: valueA, [propertyB]: valueB};
+                    pre=Object.assign(pre,object);
+                   return pre;
+                  },{});
+                 previous=Object.assign(previous, temp);
+                return previous;
+              },{});
+  return mappedValues;
+
+},
+
+createHeadersFromProperties(refObject){
+  var keys=Object.keys(refObject);
+                  var headers =keys.map(function(val,i,arr){
+                            var label=val.replace(/([A-Z])/g, ' $1'),  
+                            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+                            label=label.replace("1", " One"),
+                            label=label.replace("2", " Two");
+                          return label;
+                      });
+                return [headers];
+},
+
+createValueRowsFromProperties(refObject){
+      var keys=Object.keys(refObject);
+          var baseValuesArrays=[];
+                baseValuesArrays=keys.map(function(key, ind, array){
+                            var cellContents=refObject[key];
+                            console.log(cellContents);
+                           return cellContents;
+                          });
+                return [baseValuesArrays];
+              },
+  //this is for an initialization of a gric
+
+  createFirstGridForAnApi(headers, rows,trueApiGridIndex){      
+                var cols=undefined;         
+                var gridname=this.selectedApi.subStore;
+                var apiName=this.selectedApi.apiName;
+                var sheets=1, row=2, toolset="null";
+                //TODO: COME UP WITH AND BUILD TOOL SETS FOR API GRIDS ETC.
+                //EXAMPLE: MATH FOR THE FINANCIALS
+                //EXAMPLE: CONNECTION TO PAYMENT FOR FINANCIALS
+                var userStyle=undefined,userClass=undefined, userHeaderStyle=undefined, userHeaderClass=undefined;
+                var isDataInRows=true;
+              this.pickle={};
+              this.pickle=new DataGrids();
+              var array= this.pickle.gridConstructor([cols,row,gridname, apiName, headers,sheets, toolset, rows, userStyle, userClass, userHeaderStyle,userHeaderClass, isDataInRows]);
+              var str="00000";
+              var co=(str+trueApiGridIndex).slice(-5);
+              var ngrid=this.selectedApi.apiName+"|"+this.selectedApi.subStore+"|"+co; 
+          this.set([ngrid],array);
+          console.log(array);
+          this.set(["dataArrays", trueApiGridIndex], array);
+          // this.push("dataArrays", array);
+          //TODO: SEND THIS SET OF VALUES TO THE GLOBAL DATA TO UPDATE ARRAYS AND MESSAGE WEBWORKER
+},
+
+
+  addEntryToApiSheet(vals, sheetNumber, samePage){
+    console.log(vals);
+    if(this.sameThing===true){this.set("arrayIndex", this.tagIndex);ß}
+    console.log(this.arrayIndex, this.tagIndex);
+    if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
+    var newRowNumber=this.dataArrays[this.tagIndex][0].length;
+    for(var i=0;i<this.dataArrays[this.tagIndex].length;i++){
+      var str="00000";
+          var co=(str+i).slice(-5);
+          var ro=(str+newRowNumber).slice(-5);
+      var id=this.selectedApi.gridId+"_"+co+"_"+ro+"_";
+      var appliedClass="layout horizontal flex around-justified";
+      var val=vals[0][i];
+      val=(val==undefined)?"--":val;
+      var previousRow=newRowNumber-1;
+      var sty=this.dataArrays[this.tagIndex][i][1].style;
+    
+      var archive=[];
+      var name=this.dataArrays[this.tagIndex][i][0].value;
+      name=name.replace(/\s/g,"");
+      name=name.charAt(0).toLowerCase()+name.slice(1);
+      console.log(name, val, val, val);
+      archive.push(val);
+      var time=new Date().getTime();
+    
+        var cell={"key":id, "value":val, "contenteditable": true, "id": id, "style":  sty, "apiName":this.selectedApi.apiName, "subStore": this.selectedApi.subStore, "name": name, "class": appliedClass, "time": time, "archive":archive, "closed": false};
+        var width=this.textMeasurements(cell);
+        width=parseInt(width)+63;
+      var cellStyleArrayForWidth=this.dataArrays[this.tagIndex][i][previousRow].style.split("width:");
+      //console.log(cellStyleArrayForWidth);
+      var lastone=cellStyleArrayForWidth.length-1;
+      var cellWidthForParseInt=cellStyleArrayForWidth[lastone].split(";");
+      //console.log(cellWidthForParseInt);
+      if(this.tagIndex===this.arrayIndex){var assign=this.tagIndex;}
+      var colWidth=parseInt(cellWidthForParseInt[0]);console.log(colWidth);
+        if(width>colWidth){console.log("TOOSMALL");}
+        if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");this.splice(["selectedArraySet",this.tagIndex,i],newRowNumber,0,cell);;}
+      this.splice(["dataArrays",this.tagIndex,i],newRowNumber,0,cell);
+
+      console.log(this.arrayIndex, this.tagIndex);
+
+    
+    }
+  },
+
+  regularizeColumnWidth(grid, columnsToChange){
+    if(columnsToChange==="all" || columnsToChange===undefined){
+      grid.forEach(function(column,index, array){
+        this.setColumnWidthToText(column);
+          
+          },this); 
+        }     
+            
+    },
+        
+    setColumnWidthToText(column){
+      var minWidth;
+      for(var i=0; i<column.length; i++){
+        var cell=column[i];
+          var width=this.textMeasurements(cell);
+          width=parseInt(width);
+          minWidth=(minWidth>=width)?minWidth:width;
+
+          celolumn.forEach(function(cell, ind){
+            var numb=Math.ceil(parseInt(minWidth)+63);//do the cleaner removal
+            cell.style+="width: " +numb+"px; ";
+            this[mapName].set(cell.key, [cell.value, cell]);
+          }, this);
+    }
+
+  },
+
+
+
+  </script>

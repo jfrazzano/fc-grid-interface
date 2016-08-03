@@ -1,0 +1,456 @@
+<link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
+<script>
+
+//UTILITY FUNCTIONS
+	//deep assign gets getters
+
+function deepAssign(target, ...sources) {
+  sources.forEach(source => {
+    let descriptors = Object.keys(source).reduce((descriptors, key) => {
+      descriptors[key] = Object.getOwnPropertyDescriptor(source, key);
+      return descriptors;
+    }, {});
+    // by default, Object.assign copies enumerable Symbols too
+    Object.getOwnPropertySymbols(source).forEach(sym => {
+      let descriptor = Object.getOwnPropertyDescriptor(source, sym);
+      if (descriptor.enumerable) {
+        descriptors[sym] = descriptor;
+      }
+    });
+    Object.defineProperties(target, descriptors);
+  });
+  return target;
+}
+function surfaceCopy(target, listOrArrayOfObjectsToStripOrderMatters){
+	if(Array.isArray(listOrArrayOfObjectsToStripOrderMatters)){
+
+    }
+
+}
+
+function methodAssignment(objectThatIsToBeExtended, funktionToAdd, rg1, [argArray]){
+	Object.assign(objectThatIsToBeExtended, [objectThatIsToBeExtended].prototype[funktionToAdd]([argArray]));
+}
+
+
+function FcCurrentUserProfile(userParams, context){
+    var type=userParams.type;
+    var batchA=["FcStudentProfile", "FcAdditionalAcademics","FcPastAcademics"];
+    var batchB=["FcInquirerTable","FcInquiry", "FcInquiries", "FcToDos", "FcCalendaring", "FcAvailableCourses"];
+    var batchC=[];
+    var batchD=[];
+    var batchE=[];
+    var arrayOfConstructors=(type==="studentOne")?batchA:(type==="callCenterOperator")? batchB.concat(batchA):(type==="coach")?batchA.concat(batchC):(type==="accountant")?batchD:(type==="admin")?batchA.concat(batchB, batchC, batchD, batchE): [];
+
+}
+function DataManager(user){
+    this.fullName=user.fullname;
+    this.fcid=user.fcid;
+	this.dataManagerProfile={};
+    this.courseInputs=this.courseInputGetter();
+}
+
+ DataManager.prototype.courseInputGetter=function(){
+    var inputs = FcCourse.getInputs();
+    var retVal= this.calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter(inputs);
+    return retVal;
+
+ }
+ DataManager.prototype.calculateInputKeyAndValueArrayFromPrototypeOfClassStaticGetter=function(protoStaticGetter){
+    var arrReturn=protoStaticGetter,it={},arrHolder=[];
+    var keyValArrReturn= arrReturn.map(function(val,index){
+        if(index%8===0){arrHolder=[];}//sets the 8 inputs a page
+        var temp=val[1].label2;
+        temp=temp.replace(/\s/g, "");
+        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectCheck": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
+        //setting ab allows a row of two inputs to be created for the dom-repeat
+        var nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProp="dropdownItems"+ab, multiSelectProp="multiSelect"+ab;
+        it[nameProp]=name,it[labelProp]=label,it[propertyNameProp]=propertyName,it[dropdownItemsProp]=dropdownItems;
+        it[multiSelectProp]=multiSelect;
+        if(index%2!==0){
+            var holder=it;
+            it={};
+            arrHolder.push(holder);
+            }
+        //above uses sets one full object in an array that will be sent with 3 other object pairs to full a page (see directly below)
+            if((index+1)%8===0){return arrHolder;}
+            else{ return false;} //false allows for the easy filtering of the mapped array, in the chained function below/we are only 1 in 8 of the array "slots" for the new array; so array is not sparse, filter ;-)
+        }).filter(function(val){return(val!==false)});
+ 
+    return keyValArrReturn;
+  }
+  
+
+  DataManager.prototype.setPropertiesFromConstructorsToInitializeInputsForAnApi=function(argArray, api){
+        var argContstructorArray=argArray;
+        if(api==null){api={};}
+        var newObject=argContstructorArray.reduce((pre,constructor, index, array)=>{
+        		var obj=new constructor({});
+                console.log(obj);
+        		api=Object.assign(api, obj);
+        		return api;
+        		}, this);
+        var keysOne=Object.keys(newObject);
+        var it={};
+        var arrayAb=[];
+        var pageArray=[];
+        keysOne.forEach(function(val, index, array){
+            length=array.length;
+            var label=val.replace(/([A-Z])/g, ' $1'),  
+            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+            label=label.replace("1", " One"),
+            label=label.replace("2", " Two");
+            var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
+            //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
+            it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(newObject[val]))?"value":(val.selectedItems)?val.selecteditems:false; 
+            var mapName=val;
+            if(it[dropdownItemsProperty]=="value")
+            {
+                it[dropdownItemsProperty]=[];
+                it[dropdownItemsProperty]=newObject[val].map(function(item){ 
+                      var retVal={"name": mapName, "value": item}; 
+                      return retVal;
+                  });
+            }
+        if(it[nameProp]==="daysToNextTestDate"){
+              var dynamicDependantValue="value" +ab;
+                it[dynamicDependantValue]=newObject.daysToNextTestDate;
+        }
+        //TODO--FIX THIS REALLY ITS A SCAR ON THE SYSTEM; SLIPPERY SLOPE
+        var count=index+1;
+        if(count%2==0)
+        {
+            pageArray.push(it);
+            it={};
+        }
+        // BELOW SETS UP A PAGE OF EIGHT INPUTS IN TWO COLUMNS OR ONE DEPENDING ON VIEW WIDTH
+        if((count)%8==0 || array.length-1===index)
+        {
+            arrayAb.push(pageArray);
+            pageArray=[];
+            it={};
+        }
+         });
+        console.log(arrayAb);
+
+           var retArray= arrayAb;
+           dataManager.intakeInputs=arrayAb;
+           return retArray;
+}
+
+'use strict';
+class FocusedProfile {
+	constructor(argProfile){this.build(argProfile.studentFirstName, argProfile.studentLastName, argProfile.studentTelephone, argProfile.studentEmail, argProfile.parent1FirstName, argProfile.parent1LastName, argProfile.parent1Telephone, argProfile.parent1Email, argProfile.parent2FirstName, argProfile.parent2LastName, argProfile.parent2Telephone, argProfile.parent2Email, argProfile.addressLine1, argProfile.addressLine2, argProfile.fcid);}
+	build(studentFirstName,studentLastName, studentTelephone, studentEmail, parent1FirstName, parent1LastName, parent1Telephone, parent1Email, parent2FirstName, parent2LastName, parent2Telephone, parent2Email, addressLine1, addressLine2, fcid)
+	{
+		this.studentFirstName= studentFirstName ||"";
+		this.studentLastName= studentLastName ||"";
+		this.studentTelephone= studentTelephone ||"";
+		this.studentEmail= studentEmail || "";
+		this.parent1FirstName= parent1FirstName ||"";
+		this.parent1LastName= parent1LastName || "";
+		this.parent1Telephone= parent1Telephone ||"";
+		this.parent1Email= parent1Email ||"";
+		this.parent2FirstName= parent2FirstName ||"";
+		this.parent2LastName=parent2LastName || "";
+		this.parent2Telephone= parent2Telephone ||"";
+		this.parent2Email= parent2Email ||"";
+		this.studentFullName=this.studentFirstName + " " + this.studentLastName;
+		this.addressLine1= addressLine1 ||"";
+		this.addressLine2= addressLine2 ||"";
+		this.fcid= fcid || this.studentLastName + this.studentFirstName + "00001";
+	}
+
+	getFanout(){
+		var fanoutObj = {
+
+
+		};
+		fanoutObj[this.fcid]=this;
+		fanoutObj.currentStudents=this;
+		return fanoutObj;
+	}
+}
+function objectArrayForPossiblePropertyValues(propertyName, arrayOfPossibleValues, context){
+		var prop=propertyName;
+		var arrayToInputDropdownsAndMenus=arrayOfPossibleValues.map(function(value){ 
+			var retVal={"name":prop, "value": value};
+			return retVal;
+		}, context);
+		return arrayToInputDropdownsAndMenus;
+
+}
+class FocusedAdditionalAcademics {
+	constructor(argAces, fcid){this.build(argAces.completedMathCourse, argAces.currentEnglishClass, argAces.completedScience,argAces.currentHistoryCourse, fcid);}
+	build(completedMathCourse, currentEnglishCourse, completedScienceCourse,currentHistoryCourse, fcid)
+	{
+		var english= ["Standard English",
+             "Honors English",
+             "AP Language and Composition",
+             "AP Literature and Composition",
+             "English Writing Colloquim",
+             "I want to be a writer",
+             "I am currently writing for publication",
+             "I Have Published Work Professionally",
+             "Other (write what you want, it's a writing question)"];
+   
+        var science=[ "Biology",
+             "Chemistry",
+             "Physics",
+             "AP Biology",
+             "AP Chemistry",
+             "AP Physics",
+             "AP Bio & AP Chem",
+             "AP Bio & AP Phys",
+             "AP Phys & AP Chem",
+             "AP Phys, AP Bio & AP Chem",
+             "I currently have a project with a university laboratory",
+             "I am currentyly doing research in industry",
+             "I am currently doing research for the government",
+             "I have a laboratory in my basement and a good friend named Igor, but I hate it when everyone calls me Dr. Frankenstein"];
+        
+         var history=["World History",
+             "AP U.S. History One",
+             "AP U.S. History Two",
+             "AP Human Geography",
+             "AP World History",
+             "AP European History",
+             "AP Art History",
+             "U.S. History",
+             "AP Gov. & Pol.",
+             "I am currently involved in local politics", 
+             "I am currently running for local or state office", 
+             "I figured I could be President if Donald Trump could..."];
+        
+
+	this.completedMathCourse = completedMathCourse ||["Algebra I","Geometery, no Algebra I","Algebra I and Geometery","Algebra II, no Geometry","Algebra II and Geometry","Currently in Pre-Calculus","Completed Pre-Calculus","Completed Basic Statistics","Calculus AB or Higher","Completed Higher Math Courses (You May Type in Your Courses Here)","Let's Not Talk About 'THAT MATH'"];
+     this.currentEnglishCourse = currentEnglishCourse || english;
+     this.completedScienceCourse= completedScienceCourse || science;
+	this.currentHistoryCourse = currentHistoryCourse || history;
+	//this.fcid = fcid;
+	}
+}
+var testdateHolder=[];
+  var d=new Date();
+var holder=[];
+
+class FocusedPastAcademics{
+constructor (gradeLevel, currentSchool, previousEducation, educationalAspirations, startMath, startReading, startTotal,goalScore,fcid){
+
+  this.getGradeLevel();
+
+  this.previousEducation= previousEducation || this.getPreviousEducation();
+  this.educationalAspirations= educationalAspirations || this.getEducationalAspirations();
+  this.startMathScore =  startMath  || this.getStartMathScore();
+  this.startReadingScore = startReading || this.getStartReadingScore();
+  this.startTotalScore = startTotal || this.getStartTotalScore();
+  this.goalTotalScore=goalScore || this.getGoalTotalScore();
+  this.pastTestDates=[];
+  testdateHolder=this.nextReasonableTestDates(8);
+  console.log(testdateHolder);
+  this.approachingTestDates=testdateHolder;
+  console.log(this.approachingTestDates, this.approachingTestDates[0]);
+  this.daysToNextTestDate=Date.prototype.countdownDays(d,new Date(this.approachingTestDates[0]));
+  console.log(this.daysToNextTestDate);
+  if(this.gradeLevel){ this.serviceMatchLevelOne=this.computeServiceMatchLevelOne(this.gradeLevel);}
+  }
+computeServiceMatchLevelOne(gradeLevel){
+
+    var returnVal =(gradeLevel=="Grade: 4")?["Young Scholars Reading","Young Scholars Math"]:(gradeLevel=="Grade: 5")?["Young Scholars Reading","Young Scholars Math", "Young Scholars:Young Authors"]:(gradeLevel=="Grade: 6")?["Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","PSAT 8/9"]:(gradeLevel=="Grade: 7")?["PSAT 8/9","Young Scholars Reading","Young Scholars Math","Young Scholars:Young Authors","Focused1600Prep"]:(gradeLevel=="Grade: 8")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II: True Scholarship"]:(gradeLevel=="Grade: 9")?["1600 SAT","PSAT-NMSQT","PSAT 10","PSAT 8/9","Young Scholars II:Deep Learning"]:(gradeLevel=="Grade: 10")?["1600 SAT","PSAT-NMSQT","PSAT 10"]:["1600 SAT"];
+    return returnVal;
+
+}
+nextReasonableTestDates(num)
+{
+
+var allTestDates=[[2016,1,23], [2016, 3, 5],[2016, 5, 7],[2016, 6, 4],[2016, 8, 6],[2016,10,1],[2016,11,5],[2016,12,3],[2017,1,28],[2017,3,11],[2017, 5, 6], [2017, 6, 3],[2017, 8, 26],[2017, 10, 7],[2017,11,4],[2017, 12, 2],[2018,3, 10],[2018, 5, 5], [2018, 6, 2], [2018, 8, 25], [2018, 10, 6],[2018,11,3],[2018,12,1],[2019,3, 9],[2019,5,4],[2019, 6, 1]];
+
+	var now = new Date();
+	var i=0;
+	var testDates=allTestDates.filter(function(val){ 
+			var date=new Date(val);
+			if(date>now.addDays(+30)&&i<num)
+				{
+					i++;return true;
+				}
+			else if(date<now.addDays(+30)&&date.getMonth()!==7){
+				date=new Date(date).toDateString();
+				this.pastTestDates.push(date);
+			}
+		}, this);
+	console.log(this.lastTestDate);
+		console.log(testDates);
+		var readableDates=testDates.map(function(date){var td=new Date(date).toDateString(); return td;});
+		console.log(readableDates);
+		return readableDates;	
+}
+objectArrayGeneratorForStaticGettersUsingChoicesArray(propertyName, choicesArray){
+       var returnArray = choicesArray.map(function(value, index, arrauy){
+            var obj={"name": propertyName, "value": value};
+            return obj;
+        });
+        return returnArray;
+
+}
+objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray(propertyName, startValue, endValue,  valuePhrase1, valuePhrase2, increment, isOnlyChoices){
+    var returnArray=[];
+    var returnOnlyChoices=[];
+    var vp1=(valuePhrase1&&valuePhrase1!=undefined)?valuePhrase1:" ";
+    var vp2=(valuePhrase2&&valuePhrase2!=undefined)?valuePhrase2:" ";
+    var trueEnd=endValue+increment;
+    var increase=(increment&&increment!==0)?increment:1;
+    for(var i=startValue; i<trueEnd;i+=increase)
+    {
+        var value=vp1 + i + vp2;
+        var name=propertyName;
+        var obj={"name": name, "value": value};
+        returnArray.push(obj);
+        returnOnlyChoices.push(value);
+        obj={};
+    }
+    var retVal=(isOnlyChoices===true)?returnOnlyChoices: returnArray;
+    console.log(returnArray);
+    return retVal;
+}
+
+getGradeLevel()
+    {
+        var retArray=this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("gradeLevel", 1, 12, "Grade: ", " ",1, true);
+         this.gradeLevel= retArray;
+    }
+ get currentSchool(){
+      var ref=new Firebase("https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208");
+      var jason=[];
+      ref.once('value', function(snap){jason=snap.val();});
+     return jason;
+}
+ getEducationalAspirations()
+    {
+        var choicesArray=[ "Regional or State College","Private University","Competitve Private University", "Elite Private University","Masters Degree","Professional Degree", "Doctoral Degree, or Equivalent", "Other"];
+        var isOnlyChoices=true;
+        var name="educationalAspirations"
+        var retArray =  this.objectArrayGeneratorForStaticGettersUsingChoicesArray(name, choicesArray);
+        var retVal=(isOnlyChoices===true)?choicesArray:retArray;
+        return retVal;
+    } 
+getPreviousEducation()
+    {
+        var choicesArray=["See Current School", "Home Schooled", "Boarding School", "Private Local Academy", "Public School"];
+        var name="previousEducation";
+        var isOnlyChoices=true;
+        var retArray =  this.objectArrayGeneratorForStaticGettersUsingChoicesArray(name, choicesArray);
+        var retVal=(isOnlyChoices===true)?choicesArray:retArray;
+        return retVal;
+   }
+ getStartMathScore(){
+    var isOnlyChoices=true;
+    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startMathScore", 200, 800, "Math: ", " ",10, true);
+    return retValue;
+}
+ getStartReadingScore(){
+    var isOnlyChoices=true;
+    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startReadingScore", 200, 800, "Reading: ", " ",10, true);
+    return retValue;
+}       
+          
+ getStartTotalScore(){
+    var isOnlyChoices=true;
+     var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startTotalScore", 700, 1600, "Total: ", " ",10, true);
+    return retValue;
+}
+ getGoalTotalScore(){
+    var isOnlyChoices=true;
+     var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("goalTotalScore", 1100, 1600, "Your Goal: ", " ",10, true);
+    return retValue;
+}
+
+};
+class FocusedInquiry{
+	constructor(argInquiry, argCallerRole, argFcProfile)
+	{	
+
+		this.builder(argInquiry.timeStamp, argInquiry.callerFullName, argInquiry.isClosed, argInquiry.relatedStudent, argInquiry.callerMessage, argInquiry.focusedProgramMatch, argInquiry.returnContactTime, argInquiry.callerExpectedFollowUp, argInquiry.isPreviousCaller, argInquiry.intakeFcid, argInquiry.fcid, argCallerRole, argFcProfile);
+	
+	} 
+	builder(timeStamp, callerFullName, isClosed, relatedStudent, callerMessage, focusedProgramMatch, returnContactTime, callerExpectedFollowUp, isPreviousCaller, intakeFcid, fcid, callerRole, fcProfile){
+	this.timeStamp=timeStamp || "ALERT FAIL"; 
+	var  callerFirstName = (callerRole!=undefined)?FocusedProfile[callerRole+"FirstName"]:"";
+	var callerLastName =(callerRole!=undefined)? FocusedProfile[callerRole+"LastName"]: "";
+	this.callerFullName=callerFullName || callerFirstName + " " + callerLastName|| "";
+	var email= FocusedProfile[callerRole+"Email"]|| "";
+	this.callerEmail=email  || ""|| "";
+	var phone = FocusedProfile[callerRole+"Telephone"]|| "";
+	this.callerTelephone=phone  || ""|| "";
+	this.isClosed=isClosed || false|| "";  
+	this.relatedStudent=relatedStudent || FocusedProfile.studentFullName|| "";  
+	this.callerMessage=callerMessage || "AlertVital"|| ""; 
+	this.focusedProgramMatch=focusedProgramMatch || "Focused 1600SAT"|| "";  
+	this.returnContactTime=returnContactTime || ""|| "";  
+	this.callerExpectedFollowUp=callerExpectedFollowUp || ""|| "";
+	this.callerRole =callerRole || "fail"|| "";
+	this.isPreviousCaller = isPreviousCaller || false|| ""; 
+	if(this.inquiryNumber==null){this.inquiryNumber= 1; console.log(this.inquiryNumber);}
+	else if(this.inquiryNumber==Nan){var num = parseInt(this.inquiryNumber); if(num ==Nan || num == null){this.inquiryNumber=1;} else{ num++; this.inquiryNumber=num; console.log(this.inquiryNumber, num, "this is the else on the if in the else if one");}}
+	else if(typeof this.inquiryNumber==Number){this.inquiryNumber++; this.inquiryNumber = this.inquiryNumber; console.log(this.inquiryNumber, "this is if stuff goes right");}   
+	this.intakeFcid=intakeFcid || "ALERT"; 
+	this.fcid= fcid || FocusedProfile.fcid || "";
+	this.fcProfile= fcProfile || {};
+	}
+	fcSave(ref){
+		var inq = ref.child("inquiries");
+		var key1= -(new Date(this.timeStamp).getTime()) + "_" + this.fcid;
+		var savObject ={};
+		savObject[key1]=this;
+		inq.update(savObject);
+		var student = ref.child("students/" + this.fcid + "/inquiries");
+		student.update(savObject);
+	}
+	
+}
+
+
+var user={"userFullName": "Jason Frazzano", "fcid": "FrazzanoJason000001", "type":"admin"};
+var dataManager =new DataManager(user);
+var constArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics];
+var inquiryArray=[FocusedInquiry];
+dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(constArray, dataManager.intakeInputs); 
+//dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(inquiryArray, dataManager.inquiryApi);
+console.log(dataManager);
+
+dataManager.courseCalendarCreationArrays=dataManager.courseInputGetter();
+
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FocusedDataManagerBehavior= {
+    properties: {
+        focusedManager:{
+            type:Object,
+            value:function(){return dataManager;},
+            notify: true,
+        },
+        intakeInputs:{
+            type: Array, 
+            value: function(){return dataManager.intakeInputs;},
+            notify: true,
+        },
+        cccInputs:{
+            type: Array, 
+            value: function(){return dataManager.courseCalendarCreationArrays;},
+            notify: true,
+        },
+
+        inquiryApi:{
+             type: Array, 
+            value: function(){return dataManager.inquiryApi;},
+            notify: true,
+        },
+
+        },
+
+        ready(){
+          
+            
+          },
+
+};
+
+</script>

@@ -17,39 +17,33 @@
 <dom-module id="fc-iss-input">	
 <template>
 <style>
-root{--label-position-top:-53px;
+/*root{--label-position-top:-53px;
   --label-position-bottom:3px;
- }
-:host{background:"";}
+ }*/
+:host{background:"";
+  @apply(--layout-flex);
+  @apply(--layout-start)
+  @apply(--layout-vertical);
+  @apply(--layout-self-stretch)
+
+  }
 paper-item{--paper-item-focused:{background: orange;};
    @apply(--paper-item-focused);
   }
-input,
-span, {
+input{
  display: block;
-  margin: 6px;
-  padding: 4px;
   border: none;
   background: "none";
   font-size: 16px;
 }
-input.question.menuItem{
- visibility: hidden;
- width: 110px;
-    font-size: 16px;
-  font-family: merriweather;
-  color: brown;
-  font-weight: 600;
-}
+/
 textarea:focus,
 input:focus {
-  /*outline: 1px green solid;*/
   margin-bottom: 8px;
 }
 input.question {
   font-size: 16px;
   font-weight: 300;
-  border-radius: 2px;
   margin: 0;
   border: none;
   opacity: 1;
@@ -72,27 +66,27 @@ width: 100%;
 }
 input.question:focus + label
 {
-  width: 99%;
-  border-top: 1.5px solid #005c00;
+  width: 100%;
+  border-top: 1.2px solid #005c00;
    -webkit-transition: width 0.3s ease, border-top .3s ease;
   transition: width 0.3s ease, border-top .3s ease;
 }
 input.question:focus + label > span{
 top: -53px;
   z-index:1;
-  font-size: 16px;
+  font-size: 14px;
   font-family: merriweather;
   color: #050;
   -webkit-transition: color 0.3s ease, top .3s ease;
   transition: color 0.3s ease, top .3s ease;
 }
 input:valid + label + paper-listbox{
-  display:none; z-index: -1; left:0px; right:0px; top:30px; opacity: 0;
+  z-index: -1; left:0px; right:0px; top:30px; width: 210px; opacity: 0;
          -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease,z-index 0.6s ease;
   transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
 }
 input:focus + label + paper-listbox{
-  display:block; z-index: 45; left:0px; right:0px; top:30px; opacity: 1;
+  display:block; z-index: 4500; left:0px; right:0px; top:30px; opacity: 1;
          -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
   transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;
 }
@@ -101,34 +95,22 @@ input.question:valid{
   opacity: 1;
   font-family: merriweather;
   font-weight: 600;
-  width: 101%;
-  padding:1px 10px 2px 2px;
-  margin: 0px 2px;
+  width: 100%;
 
 }
 input.question:valid + label > span {
-  top: 3px;
+  top: 1px;
   z-index:0;
-  font-size: 16px;
+  font-size: 12px;
   font-family: merriweather;
   color: #005c00;
-  padding:; 6px 4px;
+
 }
-input.menuItem:blur + label + paper-listbox.menuItem{
-   display: none;
-      position: absolute;
-      background-color: #efefef;
-      min-width: 160px;
-      /*opacity: 0;
-      z-index:-1;*/
-      box-shadow: 3px 8px 16px 5px #afafaf;
-    -webkit-transition: background-color 0.6 ease, display 0.6s ease, opacity 0.6s ease;
-  transition: background-color 0.6s ease, display 0.6s ease, opacity 0.6s ease;
-}
+
 input.question:valid + label{
   border-color: green;
-  left: -4px;
-  width: 99%;
+  width: 100%;
+
 }
 input.question:invalid{
   box-shadow: none;
@@ -147,28 +129,6 @@ input.question + label > span{
   -webkit-transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
   transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
 }
-paper-icon-button{margin-left:-6px;}
-input.question.menuItem + label.menuItem{
-  border-top: 0px white dashed;
-}
-input.question.cell + label{
-  border-top:0px white solid;
-}
-input.menuItem:valid{
-visibility: visible;
--webkit-animation: appear 1.2s forwards;
-  animation: appear 1.2s forwards;
-} 
-input.menuItem+label+paper-listbox.show{
-   font-size: 16px;
-  font-family: merriweather;
-  color: #005c00;
-  font-weight: 300;
-  display:block; z-index: 45; left:0px; right:0px; top:30px; opacity: 1;
-         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
-  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;
-}
-input.question.cell +label + paper-list-box{display: none;}
 input.question:valid  input[type="submit"], textarea.question:valid  input[type="submit"] {
   -webkit-animation: appear 1.2s forwards;
   animation: appear 1.2s forwards;
@@ -176,23 +136,7 @@ input.question:valid  input[type="submit"], textarea.question:valid  input[type=
 input.question:invalid  input[type="submit"], textarea.question:invalid  input[type="submit"] {
   display: none;
 }
-span.above {
-top: -53px;
-  z-index:1;
-  font-size: 16px;
-  font-family: merriweather;
-  color: #050;
-}
-input.menuItem+label>span.menuItem{
-  margin-top:-3px;
-  top:-2px;
-}
-input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label>span.menuItem, input.menuItem:focus+label>span.menuItem, input.menuItem+label>span{
-  margin-top:-3px;
-  margin-left:-2px;
-  font-size:16px;
-  top:-15px;
-}
+/
 @-webkit-keyframes appear {
   100% {
     opacity: 1;
@@ -203,12 +147,21 @@ input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label
     opacity: 1;
   }
 }
+paper-listbox{
+min-width: 210px;
+
+
+}
 .dropbtn{
- margin-top:-8px;
-}.dropbtn.menuItem{margin:4px;}
+ margin: 0px;
+ padding: 0px   ;
+ 
+}
+.dropbtn.menuItem{}
  .dropbtn:hover, .dropbtn:focus{
   
   }
+  .dropbtn:valid{}
   .defaultToggleButtonClass{background: gold; border-radius: 50%;}
   .toggleOff{color: silver; border-radius: 50%; background: white; @apply(--layout-horizontal);} 
   .toggleOn{color: #005c00; border-radius: 50%; background: white; @apply(--layout-horizontal); }
@@ -219,27 +172,25 @@ input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label
   .dropbtn.cell{
     display: none;
   }
-  input{outline: 0px;
-    border: 0px;
-    border-bottom: #009 solid 2px;}
   /* The container <div> - needed to position the dropdown content */
   .dropdown {
       position: relative;
+       min-width: 210px;
       display: inline-block;
   }
  /* / Dropdown Content (Hidden by Default) /*/
   .dropdown-content {
      display: none;
-      position: absolute;
+ 
       background-color: #efefef;
-      min-width: 160px;
+      width: 210px;
       opacity: 0;
       box-shadow: 3px 8px 16px 5px #afafaf;
   }
 /*  / Links inside the dropdown /*/
   .dropdown-content a {
       color: #009;
-      padding: 8px 16px;
+      /*padding: 8px 16px;*/
       text-decoration: none;
       display: block;
       margin-top:32px;
@@ -254,6 +205,17 @@ input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label
   .show {/*display:block; z-index: 45; left:0px; right:0px; top:30px;*/ opacity: 1;
          -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
   transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;}
+  input{outline: 0px;
+    border: 0px;}
+
+  iron-icon{
+    width: 24px;
+    height: 24px;
+    padding: 0px 4px;
+  
+  }
+  paper-icon-button{ width: 24px; height: 24px;  position: relative; left: -8px;} 
+  .wrapper{width: 100%; position:relative; margin-top: 16px;}
 </style>
 <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
 <iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
@@ -262,16 +224,16 @@ input.question.menuItem+label.menuItem>span.menuItem,input.menuItem:active+label
 <iron-a11y-keys id="a11y4" target="[[target]]" keys="esc" on-keys-pressed="onEsc"></iron-a11y-keys>
 
 
-<div class="horizontal layout flex">
+<div class="horizontal layout flex self-stretch wrapper">
 <!-- <paper-menu-button id="dropdownMenuButton" class="vertical layout dropdown">-->
     <paper-icon-button id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" hidden="{{!showDropButton}}" icon="{{issIcon}}" on-tap="inputToggle"> 
     </paper-icon-button>
-<div class="vertical layout dropdown" on-down="focusInput">
+<div class="vertical layout dropdown inputcontainer" on-down="focusInput">
 	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" is-multi-select="{{isMult}}" on-change="setValueItem" name="[[issName]]">
 		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
 			<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
 		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
-					<paper-item class="block" style="border: 1px silver solid;margin-top: 3px; color: #006; font-size: 16px; font-weight:600;font-family:times;text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
+					<paper-item class="block" style="border: 1px silver solid;margin-top: 3px; width: 180px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
           <span hidden$="{{!item.selectCheck}}" class="check">&#10148;</span>
 
           <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
@@ -446,6 +408,12 @@ FcIssInput=Polymer({
         reflectToAttribute:true,
 
       },
+      valueObject:{
+        type: Object,
+        value: function(){return {};},
+        notify: true,
+
+      },
       
 	},//end properties
      hostAttributes:{
@@ -489,7 +457,8 @@ FcIssInput=Polymer({
         return this.issClass;
  },
  observeIssInput(nv, ov){
-  //  console.log(nv, ov, "fire here");
+  if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="#efefef";}
+  else{this.$.dropdownlist.style.color="#009";}
  },
  _computeItemSelectedPropValue(item, index,isp){
 	 		var retval=(isp==="")?item:item[isp];
@@ -612,6 +581,7 @@ FcIssInput=Polymer({
     var model=this.$.controllerList.modelForElement(e.target);
     console.log(model, e, " I am in the tap",model );
     console.log(item," I am in the tap", item);
+    this.set("valueObject", item);
     var property= model._rootDataHost.__data__.issName;
 
     var value=item.value;
@@ -719,7 +689,9 @@ FcIssInput=Polymer({
       },
   onEnter(e){
     console.log(e);
-      var children=this.getDropdownChildren();
+       var children=this.getDropdownChildren();
+     this.set("valueObject",children[this.itemKeyStrokeIndex]._templateInstance.item);   
+   
       if(this.searchOff===true){
         this.removeColorFromChildren(children);
       }
@@ -734,7 +706,7 @@ FcIssInput=Polymer({
         }
       else if(this.multiSelect==false && this.searchOff==false){
         console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
-          var value=children[this.itemKeyStrokeIndex].model.item[this.itemSelectProperty];
+          var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
         this.set("issValue", value); 
       }
       else if(this.multiSelect===true){

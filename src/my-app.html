@@ -100,8 +100,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         hi
         </app-drawer>
       <!-- Main content -->
-      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:102%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
-        <app-header condenses reveals effects="waterfall">
+      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
+        <app-header condenses reveals effects="waterfall" style="position: relative;">
+        <span on-tap="backOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; left:106px;">&#8678;</span>
+         <span on-tap="forwardOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 106px;">&#8680;</span>
       <app-toolbar>
            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                <fc-drag-header-menu
@@ -135,9 +137,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-tab>
         <paper-tab link selected-class="turnedon" class= "menubuttons longest">
           <a name="grid" href="/grid">Grid View</a>
-        </paper-tab>
-        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="database-webworker" href="/database-webworker">Worker</a>
         </paper-tab>
         <paper-tab link selected-class="turnedon" class= "menubuttons longest">
           <a name="dashboard-divisions" href="/dashboard-divisions">Dashboard View</a>
@@ -227,6 +226,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       observers: [
         '_routePageChanged(routeData.page)'
       ],
+      backOne(e){
+             this.$.liveGrid.arraySwapBack(e);
+
+
+
+      },
+      forwardOne(e){
+        this.$.liveGrid.arraySwap(e);
+
+
+      },
 
       _computeTotalWidthLost(left, right){
         var retVal=left+right;
