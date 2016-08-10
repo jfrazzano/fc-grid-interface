@@ -11,6 +11,10 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../fc-call-center/fc-grid-cell.html">
+<link rel="import" href="../fc-grid/data-manager.html">
+<link rel="import" href="../fc-grid/data-manager.html">
+<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
+<link rel="import" href="../fc-call-center/fc-call-center-dialog.html">
 <dom-module id="fc-grid">
   <template id="fc-grid-template">
     <style>
@@ -182,7 +186,7 @@
         selected="{{selectedArraySet}}">
     </array-selector>
     <!--begin grid-->
-    
+   
     <div on-mousedown="closemenu" class="layout horizontal" style="position: relative; width: 100%;">
         
         <div 
@@ -212,16 +216,17 @@
                         <template 
                             is="dom-repeat" 
                             id$="template_{{columnIndex}}" 
-                            filter="{{_myStupidFilter(item)}}"
+                            filter="{{_myStupidFilter(item, propertyNames, selectedApi)}}"
                             class="vertical flex layout"
                             items="{{col}}">
-                           <!--begin cell repeats--> 
+                           <!--begin cell repeats--> <!-- 
+                            on-keydown="valueChangeRecord" -->
                             <textarea        
                                 input-type="text" 
                                  
                                 id$="{{item.id}}" 
                                 value="{{item.value::input}}"
-                                on-keydown="valueChangeRecord"
+                               
                                 on-change="_valueFunction"
                                 contenteditable="true" 
                                 style="{{item.style}} {{_computeStyleTwo(item.style)}}"
@@ -236,22 +241,14 @@
                     </div><!--end column div-->
                 </template><!--end column repeater-->
             </div><!-- end grid div-->
-             <fc-indexed-db-helper grid-worker="{{gridWorker}}" data-arrays="{{dataArrays}}" id="interface"></fc-indexed-db-helper>
+             <fc-indexed-db-helper grid-worker="{{gridWorker}}" value-object="valueObject" selected-api="{{selectedApi}}" data-arrays="{{dataArrays}}" id="interface"></fc-indexed-db-helper>
         </div><!--end center grid scroll container-->
         <!--begin Right control panel-->
+      <fc-call-center-dialog data-arrays="{{dataArrays}}" value-object="{{valueObject}}" selected-api="{{selectedApi}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
        <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-        <!-- <section 
-            class="rightpanel">
-            FWD
-            <paper-icon-button 
-                icon="icons:dashboard" 
-                on-tap="arraySwap">
-            </paper-icon-button>
-            ONE 
- -->
             <fc-indexed-database 
-                style="position: fixed; top: -400px; left: -300px width: 2px; height: 2px; opacity:;"
-                maps-array="{{mapsArray}}" 
+                style="position: fixed; top: -400px; left: -300px width: 2px; height: 2px; opacity:0;"
+         
                 indexed-databases="{{indexedDatabases}}" 
                 database-changed="{{databaseChanged}}" 
                 data-arrays="{{dataArrays}}"
@@ -262,12 +259,15 @@
         <!--end Right Panel-->
     </div>
     <!--end grid-->
+    <fc-dropdown-libre></fc-dropdown-libre>åß
+  <!--   <fc-singleton-dropdown-box dropdown-item={{drowpdownItemsProxy}} is-multiselect="true"></fc-singleton-dropdown-box> -->
     <paper-listbox id="myContextMenu"  hidden>
         <paper-item class="around-justified">
             <paper-swatch-picker>
             </paper-swatch-picker><span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
             <input type="color" value="{{background::input}}"> Background Color
         </paper-item>
+        <fc-dropdown-libre></fc-dropdown-libre>
         <template is="dom-repeat"  items="{{contextMenuCategories}}" as="category" index-as="categoryIndex">
             <paper-item on-blur="detailOpenListener" value="{{category.title}}">
                 <details on-blur="detailOpenListener" open="{{detailOpen}}">
@@ -283,9 +283,10 @@
         </template>
     </paper-listbox>
      <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-
   </template>
+  </dom-module>
   <script>
+ 
   FcGrid=Polymer({
 	      is:"fc-grid",
       behaviors:[FCBehaviors.FcGridStyleBehavior],
@@ -300,6 +301,10 @@
             type: Object,
             notify: true,
         },
+        selectedApi:{
+          type: Array,
+          notify:true, 
+        },
         data:{
           type: Array,
           value: function(){return [];},
@@ -310,12 +315,12 @@
             value: function(){return false;},
             notify: true,
           },
-
-         
-          mapsArray:{
-            type:Array,
-            value: function(){return [];},
+          valueObject:{
+            type:Object,
+            value: function(){return {};},
             notify: true,
+
+
           },
        
      	},
@@ -324,17 +329,14 @@
       registered(){
       // this.getAllObjectStoresAtInit();
       },
-      ready(){
-            
-      },
       attached(){
-     
-
+            
+      var args= this.display();
+      console.log(drays.displayArrays, "draysStrays");
+    this.set("dataArrays", drays.displayArrays);
       },
 
-      display(){
-        var pickle=new DataGrids();
-        console.log(pickle, pickle.dataArrays);
+       display(){
       },
 
       _computeStyleTwo(style){
@@ -344,7 +346,6 @@
         this.$.interface.openit();
       },
 
-      valueChangeRecord(e){},
       _valueFunction(e){
 
        var model=e.model;
@@ -493,7 +494,9 @@
           }, this);
 
     },
-    _myStupidFilter(item){
+    getFocusedInput(){},
+    _myStupidFilter(item, value1, value2, value3){
+      console.log(item, value1,value2, value3);
       return function(){
 
         return true;
@@ -506,104 +509,4 @@
     computeLockedColumn(col){},
   });
   </script>
-</dom-module>
 
-<!--<span btn-property="{{item.dataProperty}}" btn-text="{{item.text.0}}" btn-set-value="{{item.dataSetValue}}" btn-function="{{item.datafunction}}"style$="font-size: 24px; font-weight: 300; color: #009;{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}"></span>
-
- <span btn-property="{{item.dataProperty}}" btn-text="{{item.text.0}}" btn-set-value="{{item.dataSetValue}}" btn-function="{{item.dataFunction}}" btn-args="{{item.dataArgs}}" style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}; font-size: 28px;">
- </span> 
-
- <section style="display: flex; flex-direction: column; background: yellow; flex: nowrap; white-space: nowrap; overflow-x: scroll;">
-        <span>{{col.value}}-[[columnIndex]]</span>
-        <section style="display: flex; flex-direction: row;flex: nowrap; white-space: nowrap; overflow-x: scroll; margin: auto;">
-        <input on-click="lockColumn" type="checkbox" name="hl" value="[[columnIndex]]" style="background:yellow;" id="column_{{columnIndex}}_0_" checked="[[computeLockedColumn(col.id)]]">
-        <input on-click="lockColumn" style="background:yellow;" type="checkbox" name="hl" value="[[columnIndex]]" id="column_{{columnIndex}}_0_" checked="[[computeLockedColumn(col.id)]]">
-        <input on-click="lockColumn" type="checkbox" style="background:yellow;" name="hl" value="[[columnIndex]]" id="column_{{columnIndex}}_0_" checked="[[computeLockedColumn(col.id)]]">
-        <input on-click="lockColumn" type="checkbox" style="background:yellow;" name="hl" value="[[columnIndex]]" id="column_{{columnIndex}}_0_" checked="[[computeLockedColumn(col.id)]]">
-             </section>
-             </section> 
-
-    var model=e.model;
-    var value=e.target.value;
-    model.set("item.value",value);
-    var setValue=model.item.value;
-    var key=e.model.item.id;
-    var keys=key.split("_");
-    var keys1=parseInt(keys[1]);
-    var width= this.textMeasurements(model.item);
-    var cellStyle=model.item.style;
-    var property="width";
-    var minWidth=0;
-    minWidth=(minWidth>=width)?minWidth:(width>180)?180:width;
-    width=minWidth+63;
-    var fullVal=property+":"+" "+width+"px;" 
-    var noodles=this.selectedArraySet[keys1];
-    var smallestWidth=noodles.reduce((pre,val)=>{
-          let width=this.textMeasurements(val);
-          console.log(width);
-          width=width+63;
-          console.log(width);
-          var retval=(width>pre)?width: pre;
-          return retval;
-          }, 0);
-    if(width>=smallestWidth){
-          noodles.forEach(function(cell, ind){
-             var cstyle=cell.style;
-              if(cstyle.match(property))
-              {
-                var replacer= new RegExp('(('+property+')+(\\w*|\\s*|:)+(\\w|\\s|\\-|\\#)+(;|(\\w|\\s|\\b)+;|\\b))+','g');
-                cstyle=cstyle.replace(replacer, "");
-                }
-              cstyle=cstyle+fullVal;
-              this.set(["selectedArraySet",colKey,ind,"style"], cstyle);
-              let key =cell.id;
-              let keys=cell.id.split("_");
-              this.updateObjectStores(keys[0], 1, key ,"style", cstyle);
-            }
-          }, this);
-      }
-      this.updateObjectStores(keys[0], 1, key,"value", setValue);
-
-       valueChangeRecord(e){
-       var model=e.model;
-        var value=e.target.value;
-        model.set("item.value",value);
-        var setValue=model.item.value;
-        var key=e.model.item.id;
-        var keys=key.split("_");
-        var keys1=parseInt(keys[1]);
-        var width= this.textMeasurements(model.item);
-        var cellStyle=model.item.style;
-        var property="width";
-        var minWidth=0;
-        minWidth=(minWidth>=width)?minWidth:(width>180)?180:width;
-        width=minWidth+63;
-        var fullVal=property+":"+" "+width+"px;" 
-        var noodles=this.selectedArraySet[keys1];
-        var smallestWidth=noodles.reduce((pre,val)=>{
-              let width=this.textMeasurements(val);
-              console.log(width);
-              width=width+63;
-              console.log(width);
-              var retval=(width>pre)?width: pre;
-              return retval;
-              }, 0);
-        if(width>=smallestWidth){
-              noodles.forEach(function(cell, ind){
-                 var cstyle=cell.style;
-                  if(cstyle.match(property))
-                  {
-                    var replacer= new RegExp('(('+property+')+(\\w*|\\s*|:)+(\\w|\\s|\\-|\\#)+(;|(\\w|\\s|\\b)+;|\\b))+','g');
-                    cstyle=cstyle.replace(replacer, "");
-                    }
-                  cstyle=cstyle+fullVal;
-                  this.set(["selectedArraySet",keys1,ind,"style"], cstyle);
-                  let key =cell.id;
-                  let keys=cell.id.split("_");
-                  this.updateObjectStores(keys[0], 1, key ,"style", cstyle);
-              }, this);
-          }
-          this.updateObjectStores(keys[0], 1, key,"value", setValue);
-        },
-
--->

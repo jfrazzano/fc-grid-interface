@@ -31,7 +31,8 @@
     "paper-radio-group": "PolymerElements/paper-radio-group#^1.2.0",
     "paper-radio-button": "PolymerElements/paper-radio-button#^1.2.1",
     "firebase-element": "GoogleWebComponents/firebase-element#^1.0.15",
-    "iron-image": "PolymerElements/iron-image#^1.2.3"
+    "iron-image": "PolymerElements/iron-image#^1.2.3",
+    "iron-component-page": "PolymerElements/iron-component-page#^1.1.7"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

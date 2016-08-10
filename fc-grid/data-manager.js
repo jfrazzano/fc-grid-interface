@@ -1,5 +1,4 @@
 <link rel="import" href="fc-calendar-behavior-beta-prime.html">
-<script>
 
 //UTILITY FUNCTIONS
 	//deep assign gets getters

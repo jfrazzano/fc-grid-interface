@@ -1,10 +1,11 @@
 <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="fc-grid-style-behavior.html">
 <script>
 
 //UTILITY FUNCTIONS
 	//deep assign gets getters
 
-function deepAssign(target, ...sources) {
+function deepAssign(target, sources) {
   sources.forEach(source => {
     let descriptors = Object.keys(source).reduce((descriptors, key) => {
       descriptors[key] = Object.getOwnPropertyDescriptor(source, key);
@@ -35,8 +36,8 @@ function methodAssignment(objectThatIsToBeExtended, funktionToAdd, rg1, [argArra
 
 function FcCurrentUserProfile(userParams, context){
     var type=userParams.type;
-    var batchA=["FcStudentProfile", "FcAdditionalAcademics","FcPastAcademics"];
-    var batchB=["FcInquirerTable","FcInquiry", "FcInquiries", "FcToDos", "FcCalendaring", "FcAvailableCourses"];
+    var batchA=["FocusedProfile", "FocusedAdditionalAcademics","FocusedPastAcademics", "FocusedTestResults", "FocusedHomeworkResults","FocusedClassSchedule", "FocusedCourseSyllabus"];// "FcProgressCharting", "FcMessages", "FcCourseMessages", 
+    var batchB=["FcInquirerTable","FcInquiry", "FcInquiries", "FcToDos", "FcCalendaring", "FcAvailableCourses","FocusedClientPaymentRecords"];
     var batchC=[];
     var batchD=[];
     var batchE=[];
@@ -44,10 +45,24 @@ function FcCurrentUserProfile(userParams, context){
 
 }
 function DataManager(user){
-    this.fullName=user.fullname;
+    this.fullName=user.fullName;
     this.fcid=user.fcid;
+    this.type=user.type;
 	this.dataManagerProfile={};
     this.courseInputs=this.courseInputGetter();
+    this.localIndex=localStorage.getItem("databasesIndex");
+    var index=this.falseInitLocalStorageIndex();
+    this.index=index;
+    if(this.index!=undefined){
+        this.falseInitLocalStorageIndex();
+        var databasesIndex={
+
+
+
+
+
+        };
+    }
 }
 
  DataManager.prototype.courseInputGetter=function(){
@@ -79,17 +94,37 @@ function DataManager(user){
  
     return keyValArrReturn;
   }
-  
+  DataManager.prototype.getAddOns=function(valuesFromInputs){
+        if(valuesFromInputs!=undefined){/*do stuff*/}
+        var arrayOfAddOns=[];
+        var propertyAddOns={"property": undefined, "selectCheck": false, "isMultiSelect":false, "isMenu":false, "menuesPerRow": undefined, "calculateAtView": false, "methodOfCalculation": undefined, "searchOff": false};
+        var listOfProps=[{property:"completedScienceCourses",  "selectCheck": true, "isMultiSelect": true, "searchOff":true}, {property:"completedMathCourses", "selectCheck": true, "isMultiSelect": true, "searchOff":true}, {property:"completedEnglishCourses", "selectCheck": true, "isMultiSelect": true, "searchOff":true}, {property:"completedHistoryCourses", "selectCheck": true, "isMultiSelect": true, "searchOff":true},{property:"pastTestDates", "selectCheck": true, "isMultiSelect": true, "searchOff":true}, {property:"approachingTestDates", "selectCheck": true, "isMultiSelect": true, "searchOff":true}]; 
+        var object={};
+        listOfProps.forEach((key,i, arr)=>{
+            object[key.property]= key;
+            console.log(object, object[key]);
+        });
+        console.log(object, "here is your little property maker");
+        return object;
+  }
+  DataManager.prototype.localSave=function(obj){
 
-  DataManager.prototype.setPropertiesFromConstructorsToInitializeInputsForAnApi=function(argArray, api){
+    // this.arrayWorker.postMessage({"operation":"createApiDatabases", "data":obj});
+    //this.gridWorker.posrMessage({"operation": "createApiDatabases"})
+    this.arrayWorker.postMessage({"operation": "saveToFirebaseWithFanout", "data": obj});
+  
+  }
+  DataManager.prototype.setPropertiesFromConstructorsToInitializeInputsForAnApi=function(argArray, api, addOns){
         var argContstructorArray=argArray;
         if(api==null){api={};}
+        var addOnObj=addOns;
         var newObject=argContstructorArray.reduce((pre,constructor, index, array)=>{
         		var obj=new constructor({});
                 console.log(obj);
         		api=Object.assign(api, obj);
         		return api;
         		}, this);
+        console.log(newObject);
         var keysOne=Object.keys(newObject);
         var it={};
         var arrayAb=[];
@@ -100,9 +135,9 @@ function DataManager(user){
             label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
             label=label.replace("1", " One"),
             label=label.replace("2", " Two");
-            var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab;
+            var ab=(index%2===0)?"A":"B",nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProperty="dropdownItems"+ab, multiSelectProperty="multiSelect"+ab,labelIsAb="isAb"+ab;
             //built up the franken-it object now gonna use it to run sixty input objects! wish i ordered the data more consistently earlier....
-            it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(newObject[val]))?"value":(val.selectedItems)?val.selecteditems:false; 
+            it[labelProp]=label,it[nameProp]=val,it[propertyNameProp]=val, it[dropdownItemsProperty]=(Array.isArray(newObject[val]))?"value":(val.selectedItems)?val.selecteditems:false; it[labelIsAb]=ab; 
             var mapName=val;
             if(it[dropdownItemsProperty]=="value")
             {
@@ -112,18 +147,29 @@ function DataManager(user){
                       return retVal;
                   });
             }
-        if(it[nameProp]==="daysToNextTestDate"){
-              var dynamicDependantValue="value" +ab;
-                it[dynamicDependantValue]=newObject.daysToNextTestDate;
-        }
-        //TODO--FIX THIS REALLY ITS A SCAR ON THE SYSTEM; SLIPPERY SLOPE
+            ;
+            console.log(val, addOnObj);
+            var adds=addOnObj[val];
+            console.log(adds);
+            //inject input properties not found or derivable from class constructors 
+            if(adds){
+                var propObj={};
+                var keys=Object.keys(adds); 
+                keys.forEach((key)=>{
+                    var newKey=key+it[labelIsAb];
+                    console.log(newKey);
+                    propObj[newKey]=adds[key];
+                });
+                it=Object.assign(it,propObj);
+            }
+            console.log(it, propObj, addOnObj, adds);
+            //add dynamic bound functions here
         var count=index+1;
         if(count%2==0)
         {
             pageArray.push(it);
             it={};
         }
-        // BELOW SETS UP A PAGE OF EIGHT INPUTS IN TWO COLUMNS OR ONE DEPENDING ON VIEW WIDTH
         if((count)%8==0 || array.length-1===index)
         {
             arrayAb.push(pageArray);
@@ -137,8 +183,360 @@ function DataManager(user){
            dataManager.intakeInputs=arrayAb;
            return retArray;
 }
+DataManager.prototype.falseInitLocalStorageIndex=function(args){
+        var i=window.localStorage.getItem("databaseIndex");
+         if(i){this.getIndexOnLoad();}
+        else{
+        var notargs=[{dbName:"Profiles", storeName:"basicProfiles", version:2}, {dbName:"callCenter", storeName:"allMessages", version:4}, {dbName:"callCenter", storeName:"MessageDetails", version:4}, {dbName:"callCenter", storeName:"profilesAndMessages", version:4}];
+        var index={}; index.database=[]; index.databaseObjects=[]; index.archive=[];
+            notargs.forEach((db)=>{
+            var key= db.dbName+"_"+db.storeName+"_"+db.version;
+                    index.database.push(key);
+                    index.databaseObjects.push(db);
+                    index[db.dbName +"Current"]=db.version;
+                    var d=new Date().getTime();
+                    index.archive.push({user:this.user, time: d, change: "INDEX", dbName: db.dbName, storeName: db.storeName, version: db.version});
+            });
+                window.localStorage.setItem("databaseIndex", index);
+        //     if(!args){
+                    return index;
+        //         }
+        // }
+        // }
+        // }
+    }
+}
+
+DataManager.prototype.updateLocalStorageIndex=function(dbName, storeName, version, whatWasDone){
+    var index=window.localStorage.getItem("databaseIndex");
+    console.log(index);
+    var d=new Date().getTime();
+    //use string matching on the keys here... cant have empties that deep
+    var ind=index[dbName][storeName][version];
+    var vs=(version>1)?parseInt(version)-1: false;
+    
+    if(index[dbName]&&index[dbName][storeName]&&index[dbName][storeName][version]){
+        index.archive.push(ind);
+        }
+    ind={user:this.user, time: d, change: whatWasDone, dbName: dbName, storeName: storeName, version: version};
+    if(index[dbName][storeName]&&!index[dbName][storeName][version]&&vs){
+                var last=index[dbName][storeName][vs];
+                index[dbName].archive.push(last);
+                var oldkey=dbName+"_"+storeName+"_"+vs;
+                var i=index.databases.idexOf(oldkey);
+                index.databases.splice(i, 1);
+                }
+        index[dbName].current=version;
+        index.archive.push(ind);
+        var newkey=dbName+"_"+storeName+"_"+version;
+        index.database.push(newKey);
+        window.localStorage.setItem("databaseIndex", index);
+    }
+DataManager.prototype.getIndexOnLoad=function(){
+     var index=window.localStorage.getItem("databaseIndex");   
+     index.database.forEach((key)=>{
+            var keys=key.split("_");
+           obj = {"dbName": key[0], "storeName": key[1], 'version': key[2], "requestType": "getDatabase"};
+            this.arrayWorker.pushMessage(obj);
+            return obj;
+            });
+}
 
 'use strict';
+
+class DataGrids{
+  constructor(bindTo){
+    this.firstLoad=true;
+    this.counter=0;
+    this.dataArrays=[];
+    this.indexOfDatabases=[];
+    this.csv=[[  "Monthly Comparisons","January" ,"February" ,"March" ,"April" ,"May" ,"June" ,"July" ,"August" ,"September" ,"October","November" ,"December","Monthly Avg","%_v_Prev","Yr. Tot. Est 14"],
+            ["2008 Totals",,,,,,,,,,,,,"$11,426.42 ",,"$137,117.00 "],
+            ["2009 Totals","39.79%",,,,,,,,,,,,"$16,064.58 ","40.59%","$192,775.00 "],
+            ["2010 Totals",,,,,,,,,,,,,"$25,997.08 ","61.83%","$311,965.00 "],
+            ["2011 Totals","$31,454.86 ","$17,363.07 ","$36,275.98 ","$18,214.92 ","$9,891.99 ","$52,962.60 ","$70,732.42 ","$70,482.71 ","$30,910.19 ","$45,635.75 ","$10,225.00 ","$29,020.00 ","$35,264.12 ","35.65%","$423,169.49 "],
+            ["2012 Totals","$51,545.00 ","$30,709.50 ","$9,300.00 ","$51,240.00 ","$53,762.50 ","$74,445.00 ","$101,800.00 ","$69,150.00 ","$45,700.00","$52,008.00 ","$38,220.00","$25,468.75 ","$50,279.06 ","42.58%","$603,348.75 "],
+            ["2013 Totals","$70,942.00 ","$31,962.00 ","$59,400.00 ","$86,950.00 ","$55,025.00 ","$76,750.00 ","$148,334.00 ","$68,242.00 ","$51,399.00 ","$62,282.00 ","$51,000.00 ","$66,633.00 ","$69,076.58 ","37.39%","$828,919.00 "],
+            ["2014 Totals","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$77,375.00 ",,,,,,,"$86,309.00 ","35.91%","$1,126,578.34 "],
+            ["Avg. Revenue '11-'14","$58,135.47 ","$38,773.14 ","$47,412.75 ","$66,623.98 ","$52,683.62 ","$70,383.15 ","$106,955.47 ","$69,291.57 ","$42,669.73 ","$53,308.58 ","$33,148.33 ","$40,373.92 ","$60,232.19 ",,"$722,786.31 "],
+            ["% Change 14 v. Avg. '11-'14","35.20%","93.58%","78.59%","65.24%","74.73%","9.93%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","43.29%",,"#REF!"],
+            ["Best Month '11-'13 yr. ","$70,942.00 ","$31,962.00 ","$59,400.00 ","$86,950.00 ","$55,025.00 ","$76,750.00 ","$148,334.00 ","$70,482.71 ","$51,399.00 ","$62,282.00 ","$51,000.00 ","$66,633.00 ","$69,263.31 ",,"$900,423.02 "],
+            ["% change 14 v. previous best '11-'13","10.79%","134.84%","42.55%","26.61%","67.30%","0.81%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","24.95%",,"-7.94%"],
+            [ "Avg. Revenue '12-'14","$67,029.00 ","$45,909.83 ","$51,125.00 ","$82,760.33 ","$66,947.50 ","$76,190.00 ","$125,067.00 ","$68,696.00 ","$48,549.50 ","$57,145.00 ","$44,610.00 ","$46,050.88 ","$65,006.67 ",,"$780,080.04 "],
+            ["%Change14 v.14 Avg","17.26%","63.49%","65.62%","33.02%","37.50%","1.56%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","32.77%",,"6.26%"],
+            ["Gross delta '13 to '14","$7,658.00 ","$43,096.00 ","$25,275.00 ","$23,141.00 ","$37,030.00 ","$625.00" ,"($148,334.00)","($68,242.00)","($51,399.00)","($62,282.00)","($51,000.00)","($66,633.00)","$27,240.00 ",,"$326,880.00 "],
+            ["% &#916 13 to '14","10.79%","134.84%","42.55%","26.61%","67.30%","0.81%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","-100.00%","44.76%",,"54.18%"],
+            ["Projections RE: 2014","January" ,"February" ,"March" ,"April" ,"May" ,"June" ,"July" ,"August" ,"September" ,"October","November" ,"December","Monthly Avg","%?'14 v 13","Totals"],
+            ["Worst Remaining M. (WRM) '12+","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$74,445.00 ","$101,800.00 ","$68,242.00 ","$45,700.00 ","$52,008.00 ","$38,220.00 ","$25,468.75 ","$70,530.23 ","2.10%","$846,362.75 "],
+            ["Proj.WRMonths_incQ4 +17%","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$87,100.65 ","$119,106.00 ","$79,843.14 ","$53,469.00 ","$60,849.36 ","$44,717.40 ","$29,798.44 ","$76,280.25 ","10.43%","$915,362.99 "],
+            ["Proj./w_last +15%","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$88,262.50 ","$170,584.10 ","$78,478.30 ","$59,108.85 ","$71,624.30 ","$58,650.00 ","$76,627.95 ","$86,984.58 ","25.92%","$1,043,815.00 "],
+            ["Projected w last+25%","$88,677.50 ","$39,952.50 ","$74,250.00 ","$108,687.50 ","$68,781.25 ","$95,937.50 ","$185,417.50 ","$85,302.50 ","$64,248.75 ","$77,852.50 ","$63,750.00 ","$83,291.25 ","$86,345.73 ","25.00%","$1,036,148.75 "],
+            ["Proj. w/Avg. 12-13","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$76,190.00 ","$125,067.00 ","$68,696.00 ","$48,549.50 ","$57,145.00 ","$44,610.00 ","$46,050.88 ","$75,565.61 ","9.39%","$906,787.38 "],
+            ["2014 Projections" ,"January" ,"February" ,"March" ,"April" ,"May" ,"June" ,"July" ,"August" ,"September" ,"October","November" ,"December","Monthly Avg","%? v. Proj.","2014 Proj."],
+            ["2014 Actual ","$78,600.00 ","$75,058.00 ","$84,675.00 ","$110,091.00 ","$92,055.00 ","$77,375.00 ",,,,,,,"$86,309.00 ","8.73%","$1,126,578.34"],
+            ["? '14 v. + 25%","($10,077.50)","$35,105.50 ","$10,425.00 ","$1,403.50 ","$23,273.75 ","($18,562.50)",,,,,,,"$6,927.96 ","8.73%","$90,429.59"]
+           ];
+    this.defaultFormat={"color": "#009", "background": "#fefefe", "header_backgroundColor":"aliceblue", "fontSize": "14px", "fontWeight": "600", "fontFamily": "merriweather", "lineHeight": "1.15","line-height":"1.3em", "border": "1px #afafaf solid","styleText": "margin:0px; box-shadow: 1px 3px 4px 2px #fafafa; cursor: cell;font-size: 12px; font-weight: 600; color: #009; font-family: merriweather; text-align: center; white-space: wrap; max-height: 65px; min-height: 18px; border: 1px solid #afafaf; padding-top: 4px; font-family: merriweather; text-align: center;resize:none; line-height:1.1em;background: white;"};
+    this.june2015CallSheet=[["6/1/2015", "Ram Lattupally",  "Saketh",  "sophmore"  ,"Monroe Twp HS", "908-239-2233",  "rdreddy116@gmail.com","tue/thurs class"],["6/1/2015", "Mary Coscia", "Matthew",  "sophmore",  "Metuchen HS", "732 494-3751",  "immdc@aol.com",  "sat class"],["6/1/2015", "Mattu Meera"  ,"Juhi",   ,   ,"732-987-9797", ,   "sat class"],["6/1/2015", " Cindy Prestigiacomo", "Jaime",   , "colts neck hs",   "917-750-0552",  "jprestir@aol.com",  "august sat class"],["6/1/2015", " Yelena ,Buryan", "Nicole Zatserkovaniy",  "sophmore",  "colts neck hs",  "617-832-5129",  "yburyan@yahoo.com august sat class"],["6/1/2015", "Rana Hemendra", "Kajal", "sophmore",  "Biotechnology HS",  "862-823-1888",  "hcrana@yahoo.com",  "sat class"]
+    ];
+    this.defaultHeader={"max-height": "65px;","border": "solid 1px #009;", "min-height": "18px;","line-height":"1.3em", "margin": "0px;", "height":"20px!important;", "font-family":"merriweather;", "background": "#f0f8ff;", "color": " #009;", "text-align": "center;", "font-size": "17px;","font-weight":"700;", "resize":"none;","styleText":"max-height: 65px; border: solid 1px #009; min-height: 18px;  margin: 0px;  height:23px!important;  font-family: merriweather; color:  #009;  text-align: center; line-height:1.3em; font-weight:700; resize:none; background: #f0f8ff;"};
+      
+    this.defaultColor="#009";    
+    // this.defaultHeaderbackground="#F0F8FF";
+    this.monthsCalendarHeaderClass="daysOfTheWeekHeader";
+    this.monthsCalendarCellClass="calendarDays";
+
+    var calStyle=this.defaultFormat.styleText+"min-width: 100px!important;max-width: 101px!important; min-height: 100px;!important; max-height:101px!important;";
+    var calHeaderStyle="border: solid 2px #009; height: 24px!important;  margin: 0px; font-family:courier;  background: aliceblue;  color:  #005c00;  text-align: center; line-height:1.3em; font-size: 17px; font-weight:300; resize:none;"
+    this.financialGrid =this.gridConstructor([25,25,"mid2014Monthlies", "fcFinancials", undefined,1, undefined, this.csv, null, null, null, null, true]);
+    this.calendarGrid=this.gridConstructor([7,7,"monthsCalendar", "fcCalendar", [["Sunday", "Monday", "Tuesday", "Wednesday","Thursday", "Friday", "Saturday"]],3, undefined, [["--",1,2,3,4,5,6],[7,8,9,10,11,12,13],[14, 15,16,17,18,19,20],[21,22,23,24,25,26,27,28,29],[30,31]], calStyle,null, calHeaderStyle,null, true]);
+    this.fcCallRecords =this.gridConstructor([9,80,"June2015Calls", "fcCallRecords", [["Date", "Parent Name","Student Name","Year","School","Phone Number","Email","Stated Interest"]],12, undefined, this.june2015CallSheet, null, null, null, null, true]);
+    this.courseResultsByStudent=this.gridConstructor([18,30,"stacyClassSheetJuneTTH900AM", "fcCourseResultsByStudent", undefined,3,undefined, undefined, null, null, null, null, null, true]);
+     if(this.firstLoad===true){this.firstLoad=false;
+
+      this.dataArrays=this.dataForPresetDatabases();
+      console.log(this.dataArrays);
+     this.indexOfDatabases=this.createIndicies(this.dataArrays);
+     this.initDatabasesAndObjectStoresOnFirstLoadToStystem(this.indexOfDatabases);
+    }
+
+    Object.defineProperty(this, "displayArrays", {
+        enumerable: true,
+        get : function ( ) {
+            return bindTo.value;
+        },
+        set : function ( val ) {
+            bindTo.value = val;
+        }
+            });
+
+
+
+
+    this.defaultHeader={"max-height": "65px;","border": "solid 1px #009;", "min-height": "18px;","line-height":"1.3em", "margin": "0px;", "height":"20px!important;", "font-family":"merriweather;", "background": "#f0f8ff;", "color": " #009;", "text-align": "center;", "font-size": "17px;","font-weight":"700;", "resize":"none;","styleText":"max-height: 65px; border: solid 1px #009; min-height: 18px;  margin: 0px;  height:23px!important;  font-family: merriweather; color:  #009;  text-align: center; line-height:1.3em; font-weight:700; resize:none; background: #f0f8ff;"};
+      
+    this.defaultColor="#009";    
+    // this.defaultHeaderbackground="#F0F8FF";
+    this.monthsCalendarHeaderClass="daysOfTheWeekHeader";
+    this.monthsCalendarCellClass="calendarDays";
+    // bindTo.value=this.initDisplays(this.dataArrays);
+  }
+   initDisplays(dataArrays){
+    if(dataArrays){
+         var dataarrs= dataArrays.map(function(val){return val[1];});
+          return dataarrs;
+      }
+      else{return [];}
+
+    }
+   
+   gridConstructor([col,row,gridname, apiName, columnHeaders,sheets, toolset, baseValuesArrays, userStyle, userClass, userHeaderStyle,userHeaderClass, isCsv])
+   {
+    
+    var grid=[], i=0, j=0, cell={},colArray=[]; 
+    var cols=(col)?col:26; var rows=(row)?row:26; 
+    var appliedClass=(userClass)?userClass:"fitter"; 
+    //console.log(baseValuesArrays)
+  var valuesArray=(baseValuesArrays&&baseValuesArrays.length>0)?baseValuesArrays:(baseValuesArrays===true)?this.csv:[];
+  var sheetName=(gridname)?gridname: "newSheet"+this.counter;
+  var input={};
+ // console.log(valuesArray);
+  if(columnHeaders){valuesArray=columnHeaders.concat(valuesArray);}
+    for(i=0;i<cols;i++){
+    
+    var minWidth=0; var altitude=0;
+      for(var j=0;j<rows;j++)
+      {
+       if(isCsv===true||(columnHeaders&&i===0)){
+      var value=(valuesArray&& valuesArray[j] && valuesArray[j][i])?valuesArray[j][i]:"--";
+     // console.log(value);
+   }
+        else{value=(valuesArray&& valuesArray[i] && valuesArray[i][j])?valuesArray[i][j]:"--";}
+      var str="00000";
+      var co=(str+i).slice(-5);
+      var ro=(str+j).slice(-5);
+      var id=sheetName+"_"+co+"_"+ro+"_", keys=id.split("_");
+      var name=(valuesArray===true&&this.csv && this.csv[0][i] && this.csv[j])?this.csv[0][i]+"__"+this.csv[j][0]:(this[sheetName]&&this[sheetName].length>0&&this.sheetName[i])?this[sheetName][i][0]+"__"+this[sheetName][0][j]:"add names";
+      var style=(isCsv===true&&keys[2]==0&&userHeaderStyle!=null)?userHeaderStyle:(isCsv===true&&keys[2]==0&&userHeaderStyle==null)?this.defaultHeader.styleText:(isCsv!==true&&keys[1]===0&&userHeaderStyles!=null)?userHeaderStyles:this.defaultFormat.styleText; 
+      var nowTime=new Date().getTime();
+      var readableTime=new Date(nowTime).toUTCString();
+      var time={"time":nowTime, "readableTime":readableTime, "user": "user","change":"change"}
+          var cell={"key":id, "value":value, "apiName": apiName, "contenteditable": true, "id": id, "style":  style, "name": name,"class": appliedClass, "time": time, "archive":[], "closed": false};
+              var width=this.textMeasurements(cell);
+              width=parseInt(width);
+              minWidth=(minWidth>=width)?minWidth:width;
+              
+              colArray.push(cell); 
+          }
+        
+          colArray.forEach(function(cell, ind){
+            var numb=Math.ceil(parseInt(minWidth)+63);//do the cleaner removal
+            cell.style+="width: " +numb+"px; ";
+          });
+
+         grid.push(colArray);
+         colArray=[];
+        }
+    this.counter++;
+    this[gridname]=grid;
+    return grid;
+  };
+
+
+
+  textMeasurements(cell, units){
+    var c=document.createElement("CANVAS");
+    var ctx=c.getContext("2d");
+    var theId="#"+cell.id
+    if(cell&&cell.style){
+        var ft1=cell.style.match("font-size:");
+        var   cssArr=cell.style.split("font-size:");
+        var inde=cssArr[cssArr.length-1].indexOf(";")
+        var fs=parseInt(cssArr[cssArr.length-1].substr(inde-4,4));
+        fs=parseInt(fs);
+        cell.style.split("font-size:")
+        var ft2= cell.style.split("font-family");
+        var index=ft2[ft2.length-1].indexOf(";"); var family=ft2[ft2.length-1].slice(0, index);
+          
+        ctx.font =fs+"px"+ " "+family;
+        var txt=cell.value;
+        var width=ctx.measureText(txt).width;
+        return width;
+      }
+    else{return "6px";}
+  }
+   
+
+    createIndicies(dataArrays){
+      var indexOfDatabases=[];
+      var counter=dataArrays.length;
+      for(var j=0; j<counter;j++){ 
+                 var gridKey=dataArrays[j][0];  
+                  var dataArray=dataArrays[j][1];
+                  var columns=(gridKey.columns&&gridKey.columns>0)?gridKey.columns:dataArray.length;
+                  var rows=(gridKey.rows&&gridKey.rows>0)?gridKey.rows:dataArray[0].length;
+                  var data=dataArray.map(function(colHolder, col){
+                      return colHolder;
+                      }).reduce(function(pre, val){
+                          return pre.concat(val);
+                      },[]);
+                      //console.log(data);
+                  //descriptor object in 00, value on 01, map model[[keys, values], [keys, values]
+                  var version=gridKey.version;
+                  var apiName=gridKey.apiName;
+                  var nowTime=new Date().getTime();
+                  var readableTime=new Date(nowTime).toUTCString();
+                  var time={"time":nowTime, "readableTime":readableTime, "user": "user","change":"change"}
+                  var storeName = gridKey.storeName; 
+                  var numObj=data.length;
+                  var indexEntry={
+                      "apiName": apiName,
+                      "name": apiName,
+                      "version": version, 
+                      "columns": columns,
+                      "rows": rows,
+                      "size": numObj,
+                      "time": nowTime,
+                      "value": dataArray,
+                      "changeRecord": time,
+                      "key":storeName,
+                      "storeName": storeName,
+                      "indicies": ["key", "apiName", "closed", "value", "time", "user"],
+                      "dataStream": data,
+                    };
+
+              indexOfDatabases.push(indexEntry);
+              indexEntry=[];
+              data=[];
+              } 
+              return indexOfDatabases;
+            }
+ createIndex(indexName,indexVersion){
+     // this.getObjectStore("indexOfDatabases",1, false, this.localDisplayedOfDBIndexSetter);   
+      }
+    makeGrids(setter, context){
+      console.log(context,"this", this);
+      var index=(this.indexOfDatabases&&this.indexOfDatabases.length>0)?this.indexOfDatabases:context.indexOfDatabases;
+      console.log("index", index);
+        for(var i=0;i<index.length;i++){
+        var name=index[i].name;
+        var version=index[i].version;
+        this.getObjectStore(name, version, true,setter,context); 
+        }
+      }
+  observeDataArrays(){}
+  getAllObjectStoresAtInit(){}
+  
+  dataForPresetDatabases(){
+        return [
+
+        // [{"apiName": "fcFinancials", "storeName":"mid2014Monthlies", "version": 1, "columns": undefined, "rows": undefined, "size":0, "time": undefined, "changeRecord": []},this.financialGrid],
+         [{"apiName": "fcCalendar", "version": 1, "storeName":"monthsCalendar", "columns": 7, "rows": 6, "size":0, "time": undefined, "changeRecord": []},this.calendarGrid]
+         // [{"apiName": "fcCallRecords", "version": 1, "storeName":"june2015CallSheet", "columns": undefined, "rows": undefined, "size":0, "time": undefined, "changeRecord": []},    this.fcCallRecords],
+         // [{"apiName": "fcCourseResultsByStudent", "version": 1,"storeName":"stacyClassSheetJuneTTH900AM", "columns": undefined, "rows": undefined, "size":0, "time": undefined, "changeRecord": []},this.courseResultsByStudent]
+          ];
+    }
+initDatabasesAndObjectStoresOnFirstLoadToStystem(){}
+    createColumnsAndRows(cells){          
+                     var topArray=[];
+                     var lastVal=cells.length-1;
+                     var grid =cells.reduce((pre, val, i, arr)=>{
+                       var valKeys=val.id.split("_"); 
+                        if(pre.length==0)
+                          {
+                            pre.push(val); 
+                            return pre;
+                            }
+                        else {  
+                                var last=pre.length-1;
+                                var keys=pre[last].id.split("_");
+                                var valKeys=val.id.split("_");
+                                }
+                                if(keys[1]==valKeys[1]&&i!==(lastVal))
+                                { 
+                                  pre.push(val); return pre;
+                                }
+                                else if(keys[1]!=valKeys[1]){
+                                  topArray.push(pre); 
+                                  var newArr=[];
+                                  newArr.push(val);
+                                  return newArr;
+                                }
+                                else if(i==(lastVal)&&keys[1]==valKeys[1]){
+                                  pre.push(val);
+                                  topArray.push(pre);
+                                  return topArray;
+                                }
+                                else if(i==(lastVal)&&keys[1]!=valKeys[1]){
+                                  topArray.push(pre); 
+                                  var newArr=[];
+                                  newArr.push(val);
+                                  topArray.push(newArr);
+                                  return topArray;
+                                }         
+                          }, []);
+                     return grid;
+      }
+   // getObjectStore(name,version, asGrid, callbackSetter){}
+    
+    createIndex(indexName,indexVersion){
+      //this.getObjectStore("indexOfDatabases",1, false, this.localDisplayedOfDBIndexSetter);   
+      }
+    makeGrids(setter, context){
+      //console.log(context.indexOfDatabases,context, "this",this, this.indexOfDatabases);
+      var index=(this.indexOfDatabases&&this.indexOfDatabases.length>0)?this.indexOfDatabases:context.indexOfDatabases;
+      //console.log("index", index);
+        for(var i=0;i<index.length;i++){
+        var name=index[i].name;
+        var version=index[i].version;
+       // this.getObjectStore(name, version, true,setter,context); 
+        }
+      }
+
+};
+
+
+
 class FocusedProfile {
 	constructor(argProfile){this.build(argProfile.studentFirstName, argProfile.studentLastName, argProfile.studentTelephone, argProfile.studentEmail, argProfile.parent1FirstName, argProfile.parent1LastName, argProfile.parent1Telephone, argProfile.parent1Email, argProfile.parent2FirstName, argProfile.parent2LastName, argProfile.parent2Telephone, argProfile.parent2Email, argProfile.addressLine1, argProfile.addressLine2, argProfile.fcid);}
 	build(studentFirstName,studentLastName, studentTelephone, studentEmail, parent1FirstName, parent1LastName, parent1Telephone, parent1Email, parent2FirstName, parent2LastName, parent2Telephone, parent2Email, addressLine1, addressLine2, fcid)
@@ -181,8 +579,8 @@ function objectArrayForPossiblePropertyValues(propertyName, arrayOfPossibleValue
 
 }
 class FocusedAdditionalAcademics {
-	constructor(argAces, fcid){this.build(argAces.completedMathCourse, argAces.currentEnglishClass, argAces.completedScience,argAces.currentHistoryCourse, fcid);}
-	build(completedMathCourse, currentEnglishCourse, completedScienceCourse,currentHistoryCourse, fcid)
+	constructor(argAces, fcid){this.build(argAces.completedMathCourses, argAces.completedEnglishCourses, argAces.completedScienceCourses,argAces.completedHistoryCourses, fcid);}
+	build(completedMathCourses, completedEnglishCourses, completedScienceCourses,completedHistoryCourses, fcid)
 	{
 		var english= ["Standard English",
              "Honors English",
@@ -192,9 +590,10 @@ class FocusedAdditionalAcademics {
              "I want to be a writer",
              "I am currently writing for publication",
              "I Have Published Work Professionally",
-             "Other (write what you want, it's a writing question)"];
+             "Other (write what you want, it's a writing question)"],
+                // {"multiSelect": true, "selectCheck": true,}];
    
-        var science=[ "Biology",
+         science=[ "Biology",
              "Chemistry",
              "Physics",
              "AP Biology",
@@ -207,9 +606,11 @@ class FocusedAdditionalAcademics {
              "I currently have a project with a university laboratory",
              "I am currentyly doing research in industry",
              "I am currently doing research for the government",
-             "I have a laboratory in my basement and a good friend named Igor, but I hate it when everyone calls me Dr. Frankenstein"];
+             "I have a laboratory in my basement and a good friend named Igor, but I hate it when everyone calls me Dr. Frankenstein"],
+
+             // , {"multiSelect": true, "selectCheck": true}];
         
-         var history=["World History",
+          history=["World History",
              "AP U.S. History One",
              "AP U.S. History Two",
              "AP Human Geography",
@@ -221,12 +622,13 @@ class FocusedAdditionalAcademics {
              "I am currently involved in local politics", 
              "I am currently running for local or state office", 
              "I figured I could be President if Donald Trump could..."];
+              // {"multiSelect": true, "selectCheck": true}];
         
 
-	this.completedMathCourse = completedMathCourse ||["Algebra I","Geometery, no Algebra I","Algebra I and Geometery","Algebra II, no Geometry","Algebra II and Geometry","Currently in Pre-Calculus","Completed Pre-Calculus","Completed Basic Statistics","Calculus AB or Higher","Completed Higher Math Courses (You May Type in Your Courses Here)","Let's Not Talk About 'THAT MATH'"];
-     this.currentEnglishCourse = currentEnglishCourse || english;
-     this.completedScienceCourse= completedScienceCourse || science;
-	this.currentHistoryCourse = currentHistoryCourse || history;
+	this.completedMathCourses = completedMathCourses ||["Algebra I","Geometery, no Algebra I","Algebra I and Geometery","Algebra II, no Geometry","Algebra II and Geometry","Currently in Pre-Calculus","Completed Pre-Calculus","Completed Basic Statistics","Calculus AB or Higher","Completed Higher Math Courses (You May Type in Your Courses Here)","Let's Not Talk About 'THAT MATH'"];
+     this.completedEnglishCourses = completedEnglishCourses || english;
+     this.completedScienceCourses= completedScienceCourses || science;
+	this.completedHistoryCourses = completedHistoryCourses || history;
 	//this.fcid = fcid;
 	}
 }
@@ -236,9 +638,12 @@ var holder=[];
 
 class FocusedPastAcademics{
 constructor (gradeLevel, currentSchool, previousEducation, educationalAspirations, startMath, startReading, startTotal,goalScore,fcid){
-
+    var arr=localStorage.getItem('NJHS');
+    arr=arr.split(",");
+    console.log(arr);
+  var shadowProfile={};
   this.getGradeLevel();
-
+  this.currentSchool=arr ||this.setCurrentSchool();
   this.previousEducation= previousEducation || this.getPreviousEducation();
   this.educationalAspirations= educationalAspirations || this.getEducationalAspirations();
   this.startMathScore =  startMath  || this.getStartMathScore();
@@ -253,6 +658,7 @@ constructor (gradeLevel, currentSchool, previousEducation, educationalAspiration
   this.daysToNextTestDate=Date.prototype.countdownDays(d,new Date(this.approachingTestDates[0]));
   console.log(this.daysToNextTestDate);
   if(this.gradeLevel){ this.serviceMatchLevelOne=this.computeServiceMatchLevelOne(this.gradeLevel);}
+
   }
 computeServiceMatchLevelOne(gradeLevel){
 
@@ -316,14 +722,14 @@ objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoi
 getGradeLevel()
     {
         var retArray=this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("gradeLevel", 1, 12, "Grade: ", " ",1, true);
-         this.gradeLevel= retArray;
+         this.gradeLevel= retArray.reverse();
     }
- get currentSchool(){
+ setCurrentSchool(){
       var ref=new Firebase("https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208");
-      var jason=[];
-      ref.once('value', function(snap){jason=snap.val();});
-     return jason;
-}
+      var jason={};var njhs=localStorage.getItem('NJHS'); if(njhs){njhs=njhs.split(",");if(njhs.length>200){this.currentSchool=njhs; console.log(this.currentSchool);}}
+     else{ var ref=new Firebase("https://focusedstaging1.firebaseio.com/forms/callIntake/njhighschools000020160208");
+        ref.once('value',(snap)=>{localStorage.setItem('NJHS', snap.val()); this.currentSchool=snap.val();}, this);}
+    }
  getEducationalAspirations()
     {
         var choicesArray=[ "Regional or State College","Private University","Competitve Private University", "Elite Private University","Masters Degree","Professional Degree", "Doctoral Degree, or Equivalent", "Other"];
@@ -331,7 +737,7 @@ getGradeLevel()
         var name="educationalAspirations"
         var retArray =  this.objectArrayGeneratorForStaticGettersUsingChoicesArray(name, choicesArray);
         var retVal=(isOnlyChoices===true)?choicesArray:retArray;
-        return retVal;
+        return retVal.reverse();
     } 
 getPreviousEducation()
     {
@@ -344,59 +750,61 @@ getPreviousEducation()
    }
  getStartMathScore(){
     var isOnlyChoices=true;
-    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startMathScore", 200, 800, "Math: ", " ",10, true);
-    return retValue;
+    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startMathScore", 340, 750, "Math: ", " ",10, true);
+    return retValue.reverse();
 }
  getStartReadingScore(){
     var isOnlyChoices=true;
-    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startReadingScore", 200, 800, "Reading: ", " ",10, true);
-    return retValue;
+    var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startReadingScore", 340, 800, "Reading: ", " ",10, true);
+    return retValue.reverse();
 }       
           
  getStartTotalScore(){
     var isOnlyChoices=true;
      var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("startTotalScore", 700, 1600, "Total: ", " ",10, true);
-    return retValue;
+    return retValue.reverse();
 }
  getGoalTotalScore(){
     var isOnlyChoices=true;
      var retValue  =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray("goalTotalScore", 1100, 1600, "Your Goal: ", " ",10, true);
-    return retValue;
+    return retValue.reverse();
 }
 
 };
-class FocusedInquiry{
-	constructor(argInquiry, argCallerRole, argFcProfile)
+ class FocusedInquiry{
+	constructor(arrayValues, arrayKeys,messageObject)
 	{	
+        var profilesObject={};
+            if(Array.isArray(arrayValues)&&Array.isArray(arrayKeys)){
+                     var profile=arrayValues.reduce(function(pre, val, i, array){
+                                                            return pre[arrayKeys[i]]=val;
+                                                        },profilesObject);
+                     console.log(profile, profile.callerType, profile.callerRole);
 
-		this.builder(argInquiry.timeStamp, argInquiry.callerFullName, argInquiry.isClosed, argInquiry.relatedStudent, argInquiry.callerMessage, argInquiry.focusedProgramMatch, argInquiry.returnContactTime, argInquiry.callerExpectedFollowUp, argInquiry.isPreviousCaller, argInquiry.intakeFcid, argInquiry.fcid, argCallerRole, argFcProfile);
-	
+                    this.ref=null;
+                    this.timestamp=profile.orderingTime;
+                    this.readableTime=profile.date+"_"+profile.time;
+                    this.callerFullName=profile[profile.callerRole+"FirstName"] + " " + profile[profile.callerRole+"LastName"];
+                    this.isClosed=(messageObject.isClosed)?messageObject.isClosed:(profile[callerType]=="nonClient"||profile[callerRole]=="clientCompetitor")?true: false;
+                    this.relatedStudent=[{"fullName":profile.studentFullName, "fcid": profile.fcid}];
+                    //TODO BEEF UP THE CALLER MATCHING SERVICES);
+                    this.callerMessage=(messageObject&&messageObject.callerMessage)?messageObject.callerInterest: "No Message";
+                    this.callerInterest=(messageObject&&messageObject.callerInterest)?messageObject.callerInterest:(profile.callerType=="newClient"||profile.callerType=="repeatCaller")?"Focused1600Course":(profile.callerType==="activeClient" || profile.callerType==="inactiveClient")?"FocusedStudyGroup":"Focused1600Course";//this will have to be beefed up
+                    this.focusedProgramMatch=this.callerInterest; //see TODO ABOVE
+                    this.callerExpectedFollowUp=(messageObject&&messageObject.callerExpectedFollowUp)?messageObject.callerExpectedFollowUp:this.timestamp; 
+                    //TODO fix the end of the line above, it will break now;
+                    this.intakeFcid=(messageObject&&messageObject.intakeId)?messageObject.intakeId:self.user;
+                    this.fcid=profile.fcid;
+                    this.callerRole=profile.callerRole;
+                    this.callerType=profile.callerType;
+                    var inqNumber=this.getFcidPastInquiryNumber(profile.fcid);
+		            this.inquiryNumber =(inqNumber!=NaN)?inqNumber+1:1;
+                    this.saveInquiry();
+                    this.displayInquiries();
+                }
 	} 
-	builder(timeStamp, callerFullName, isClosed, relatedStudent, callerMessage, focusedProgramMatch, returnContactTime, callerExpectedFollowUp, isPreviousCaller, intakeFcid, fcid, callerRole, fcProfile){
-	this.timeStamp=timeStamp || "ALERT FAIL"; 
-	var  callerFirstName = (callerRole!=undefined)?FocusedProfile[callerRole+"FirstName"]:"";
-	var callerLastName =(callerRole!=undefined)? FocusedProfile[callerRole+"LastName"]: "";
-	this.callerFullName=callerFullName || callerFirstName + " " + callerLastName|| "";
-	var email= FocusedProfile[callerRole+"Email"]|| "";
-	this.callerEmail=email  || ""|| "";
-	var phone = FocusedProfile[callerRole+"Telephone"]|| "";
-	this.callerTelephone=phone  || ""|| "";
-	this.isClosed=isClosed || false|| "";  
-	this.relatedStudent=relatedStudent || FocusedProfile.studentFullName|| "";  
-	this.callerMessage=callerMessage || "AlertVital"|| ""; 
-	this.focusedProgramMatch=focusedProgramMatch || "Focused 1600SAT"|| "";  
-	this.returnContactTime=returnContactTime || ""|| "";  
-	this.callerExpectedFollowUp=callerExpectedFollowUp || ""|| "";
-	this.callerRole =callerRole || "fail"|| "";
-	this.isPreviousCaller = isPreviousCaller || false|| ""; 
-	if(this.inquiryNumber==null){this.inquiryNumber= 1; console.log(this.inquiryNumber);}
-	else if(this.inquiryNumber==Nan){var num = parseInt(this.inquiryNumber); if(num ==Nan || num == null){this.inquiryNumber=1;} else{ num++; this.inquiryNumber=num; console.log(this.inquiryNumber, num, "this is the else on the if in the else if one");}}
-	else if(typeof this.inquiryNumber==Number){this.inquiryNumber++; this.inquiryNumber = this.inquiryNumber; console.log(this.inquiryNumber, "this is if stuff goes right");}   
-	this.intakeFcid=intakeFcid || "ALERT"; 
-	this.fcid= fcid || FocusedProfile.fcid || "";
-	this.fcProfile= fcProfile || {};
-	}
-	fcSave(ref){
+    getFcidPastInquiryNumber(profilefcid){}
+	saveInquiry(ref){
 		var inq = ref.child("inquiries");
 		var key1= -(new Date(this.timeStamp).getTime()) + "_" + this.fcid;
 		var savObject ={};
@@ -405,52 +813,691 @@ class FocusedInquiry{
 		var student = ref.child("students/" + this.fcid + "/inquiries");
 		student.update(savObject);
 	}
-	
+    displayInquiries(){}
 }
+var arraysVal={};
+arraysVal.value=[];
+var drays=new DataGrids(arraysVal);
+arraysVal.value=drays.initDisplays(drays.dataArrays);
+console.log(arraysVal.value);
+setTimeout(()=>{drays.createIndex("indexOfDatabases", 1, false, drays.localDisplayedOfDBIndexSetter,drays);},1);
+setTimeout(()=>{drays.makeGrids(drays.dataArraysCallBackSetter,drays);},2);
 
 
-var user={"userFullName": "Jason Frazzano", "fcid": "FrazzanoJason000001", "type":"admin"};
+var user={"fullName": "Jason Frazzano", "fcid": "FrazzanoJason000001", "type":"admin"};
+DataManager.prototype.arrayWorker=new Worker("indexedDbWorker.js");
+// DataManager.prototype.arrayWorker.catch=(e)=>{
+// this.messageValue=e;
+// console.log(e);
+// this.catch(e)=DataManage.prototype.arrayWorker.onmessage.catch(e);
+// };
 var dataManager =new DataManager(user);
-var constArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics];
-var inquiryArray=[FocusedInquiry];
-dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(constArray, dataManager.intakeInputs); 
-//dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(inquiryArray, dataManager.inquiryApi);
-console.log(dataManager);
-
+var chump=new FocusedPastAcademics({}),
+chimp=new FocusedAdditionalAcademics({});
+var dataToAdd={};
+ // dataManager.arrayWorker.postMessage({data:"Profiles", requestType:"deleteDatabase"})
+dataToAdd=Object.assign(dataToAdd, chump, chimp);
+dataManager.arrayWorker.postMessage({data:dataToAdd, requestType:"getAllProfiles"});
+var profileCollection={};
+dataManager=Object.assign(dataManager, drays);
+var constArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics, FocusedInquiry];
+var addOns=dataManager.getAddOns();
+dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(constArray, dataManager.intakeInputs, addOns); 
 dataManager.courseCalendarCreationArrays=dataManager.courseInputGetter();
+// dataManager.arrayWorker.onmessage=function(e){
+//     if(e.data&& e.data[1]&&e.data[2]){
+    
+//         var messageList=JSON.parse(e.data[2]);
+//     console.log("do we ever do this");
+//     e.data[1].messageList=[];
+//     e.data[1].messageList=messageList;
+//     profileCollection[e.data[1].fcid]=e.data[1];
+//     console.log(profileCollection, "Do We Ever Do this");
+// }
+//     else if(e.data&&e.data[0]&&e.data[0]=="searchKeys"){
+//         console.log(e.data[1]);
+//     }
+//     else{console.log(e.data);}
+// };
+ dataManager.arrayWorker.postMessage({data:"", requestType: "getDatabase", dbName: "Profiles", storeName: "basicProfiles", version: 2} );
+ var idbReturns=[];
+dataManager.arrayWorker.onmessage=(e)=>{
+    if(e.data.returnMessage=="databaseReturn"){
+                var req=e.data;    
+    
+window.FCBehaviors.FocusedDataManagerBehaviorImpl.mapValuesFromIndexedDb(req.dbName, req.data, arraysVal, req.storeName, req.version);
+
+    }
+};
+
+dataManager.arrayWorker.onmessage=(e)=>{
+    if(e.data.returnMessage=="build"){var data=e.data.data; var name = e.data.name;
+        console.log(name, data, e.data.returnMessage);
+ var req=e.data;     
+
+window.FCBehaviors.FocusedDataManagerBehaviorImpl.mapValuesFromIndexedDb(name, data, arraysVal, req.storeName, req.version);
+    }
+};
+
+
+//dataManager.setPropertiesFromConstructorsToInitializeInputsForAnApi(inquiryArray, dataManager.inquiryApi);
+//console.log(dataManager);
+//dataManager.arrayWorker.postMessage({data:"callCenter", requestType:"deleteDatabase"});
+
+var inq={};
+inq=new FocusedInquiry({});
+dataManager.inquiryApi=inq;
+
+
+
 
 window.FCBehaviors = window.FCBehaviors || {};
-FCBehaviors.FocusedDataManagerBehavior= {
+FCBehaviors.FocusedDataManagerBehaviorImpl= {
     properties: {
         focusedManager:{
             type:Object,
-            value:function(){return dataManager;},
+            value: dataManager,
             notify: true,
+        },
+        arrayWorker:{
+            type: Object, 
+            value: dataManager.arrayWorker,
+            notify: true,
+
+        },
+        gridObject:{
+            type: DataGrids,
+            value:new DataGrids(drays),
+        notify: true,
+    },
+
+      isFirstLoad:{
+        type: Boolean, 
+        notify: true,
+        value: function(){return true},
+
+      },
+
+      indexedDatabases:{
+        type: Array,
+        value:drays.indexOfDatabases,
+        notify: true,
+      },
+
+      indexOfDatabases:{
+        type: Array,
+        value:drays.indexOfDatabases,
+        notify: true,  
+      },
+      dataArrays:{
+          types: Array,
+          value: drays.displayArrays,
+          notify: true,
+          observer: "observeDataArrays",//may want a higher level observer to hit some subproperties
+      },
+
+        toStorage:{
+            type: Array, 
+            value: function(){return [];},
+            observer: "observeToStorage",
+            notify: true
         },
         intakeInputs:{
             type: Array, 
-            value: function(){return dataManager.intakeInputs;},
+            value:  dataManager.intakeInputs,
             notify: true,
         },
         cccInputs:{
             type: Array, 
-            value: function(){return dataManager.courseCalendarCreationArrays;},
+            value: dataManager.courseCalendarCreationArrays,
             notify: true,
         },
 
         inquiryApi:{
              type: Array, 
-            value: function(){return dataManager.inquiryApi;},
+            value: dataManager.inquiryApi,
             notify: true,
         },
 
+        chosen:{
+            type: String,
+            notify: true,
+
+        },
+     gridArraysFromInputs:{
+        type: Array, 
+        value: function(){return [];},
+        notify: true,
+
+    },
+    apiChoices:{
+            type: Array, 
+            value: function(){ return[{"value": "Profiles","dbName": "Profiles", "storeName":"basicProfiles","apiTag":"studentIntakes", "apiName":"callCenter", "apiIndex":0},
+                    {"value": "Course Calendars", "apiName": "courseCalendars", "dbName": "Course", "storeName":"allCourseCalendars","apiIndex":1}, 
+                    {"value": "Inquiries","apiName":"Inquiries","dbName":"Inquiries", "storeName": "allInquiry", "apiIndex":2},
+                    {"value": "Grid Review","apiName":"gridDetails","apiIndex":3},
+                    {"value": "Grid Builder","apiName": "apiBuilder", "subStore": "masterBuild", "name":"selectedApiName","apiIndex":4},
+                     {"value": "Call Intakes","dbName":"callCenter", "storeName":"allIntakes","apiTag": "intakesAsReceived", "apiName":"callCenterDetails", "apiIndex":5}];
+                    //var apiArray=array.map(function(val){val.gridId=val.apiName+"00"+val.subStore; return val;}); return something better later
+                       },
+          notify: true,
+
+        },
+        
+        selectedApiIndex:{
+            type: Number,
+            notify: true,
+            value: 0,
+             observer:"observeSelectedApiIndex",
+        },
+        apisArrays:{
+            type:Array,
+           computed: "computeApiArrays(dataArrays, intakeInputs, cccInputs,  inquiryApi)",
+            notify: true,
+        },
+        selectedApi:{
+            type:Array,
+            computed:"_computeSelectedApi(apisArrays, selectedApiIndex)",
+            observe:"observeSelectedApi",
+            notify: true,
+        },
+        //end of api selection 
+        //apiView Properties
+        selectedApiViewIndex:{
+            type: Number,
+            notify: true,
+            value: 0,
+            observer:"observeSelectedApiViewIndex",
+        },
+        selectedApiView:{
+            type: Array, 
+            value:function(){return [];},
+            notify: true,
+        },
+        searchWorker:{
+            type: Object, 
+            value: function(){          
+        var julius={};
+        return julius;},
+        notify: true,
+        },
+            gridMakerInputs:{
+            type:Array, 
+            value: function(){return [];},
+            notify: true,
+        },
+        tagIndex:{
+            type: Number,
+            computed:'_computeTagIndex(selectedApiIndex)',
+        },
+        counter:{
+                type: Number,
+                value: function(){return 0;},
+                notify: true,
+            },
+        messageContent:{
+            type: Object, 
+            computed: "computeMessageContent(searchWorker)",
+            notify: true, 
+            observer: "observeMessageContent",
+        },
+    },
+
+
+    computeMessageContent(searchWorker){
+        var retValue={};
+        // searchWorker.onmessage=(e)=>{
+        //     console.log(e, e.data, "this is what the searchworker returned");
+        //     retValue=e.data;
+        // };
+        return retValue;
+    },
+    _computeSelectedApi(apis,index){
+        return apis[index];
+    },
+           
+    observeMessageContent(nv, ov){if(nv){console.log(nv, "This is the observed returned data from the search worker");}},
+    
+
+    observeToStorage(newValue, oldValue){
+        if(newValue!=undefined)
+        {
+            console.log(newValue, oldValue); 
+        }
+
+    },
+    observeSelectedApi(nv,ov){
+        if(nv){
+            if(nv!=ov){this.set("selectedApiViewIndex", 0);}
+        }
+    },
+
+    observeSelectedAPiIndex(newVal,oldVal){
+    },
+    observeSelectedApiViewIndex(newValue, oldVal){},
+      
+    attached()
+    {          
+        
+        this.initializeApiArrays();
+        console.log(dataManager, this.focusedManager);
+    },
+    _computeTagIndex(sap){
+        return parseInt(sap)+4;
+    },
+
+    localSave(){
+        // this.gridWorker.postMessage({"operation":"createApiDatabases", "datum":obj});
+        // //this.gridWorker.posrMessage({"operation": "createApiDatabases"})
+        // this.fireWorker.postMessage({"operation": "saveToFirebaseWithFanout", "datum": obj});
+  },
+  computeApiArrays(dataArrays, intakeInputs, cccInputs,  inquiryApi){
+    var returnArray=[];
+   // dataArrays.forEach(function(arr){returnArray.push(arr);});
+    returnArray.push(intakeInputs);
+    returnArray.push(cccInputs);
+    returnArray.push(inquiryApi);
+    console.log("RETURNING RETURN ARRAY FOR INPUTS TO INTERFACE", returnArray);
+    return returnArray;
+
+  },
+
+
+    initializeApiArrays(){
+        var data=this.viewIndexOfIndexedDatabases();
+        console.log(data, "look here view of Index of Indexed");
+        var cucumber=this.makeInputPage(data);
+        console.log(cucumber, "how to make a grid visual database the inputs needed for a grid");
+         this.set('basicGridInterface', cucumber);
+        var arg=this.gridMakerInputGenerator();
+        this.set("gridMakerInputs", arg);
+        this.set('indexeddbIndexArray', cucumber);
+        console.log(this.selectedApi, this.selectedApiView);
+        this.counter++;
+        this.async(function(){var selection=this.apiChoices[this.selectedApiIndex].value; this.set("chosen", selection);},20);
+        this.set("dataArrays", drays.displayArrays);
+
+    },
+
+     viewIndexOfIndexedDatabases(){
+                this.set("indexDatabases", drays.indexOfDatabases);
+                this.set("indexedDatabases",  drays.indexOfDatabases);
+                console.log(this.indexOfDatabases);
+              this.set("indexOfDatabases", drays.indexOfdata)
+                  return drays.indexOfDatabases;
+  },
+
+
+    selectApi(e){
+        console.log(e);
+        var max=this.apisArrays.length-1;
+        if(this.selectedApiIndex===max){this.set("selectedApiIndex",0);}
+        else{this.set("selectedApiIndex", this.selectedApiIndex+1);
+            }
+        this.set("selectedApi", this.apisArrays[this.selectedApiIndex]);
+        this.set("selectedApiView",this.selectedApi[0]);
+        this.set("chosen", this.apiChoices[this.selectedApiIndex].value);
+        console.log(this.apisArrays, this.selectedApi);
+    },
+
+    _forward(e){
+        if(this.selectedApiViewIndex===this.selectedApi.length-1)
+            {
+                this.selectedApiViewIndex=0;
+                this.set("selectedApiView", this.selectedApi[0]);
+            }
+        else{
+            this.set("selectedApiViewIndex", this.selectedApiViewIndex+1);
+            this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+            
+        }
+    },
+ _back(){   
+        if(this.selectedApiViewIndex===0)
+        { 
+            var max=this.selectedApi.length-1;
+            //console.log(max);
+            this.set("selectedApiViewIndex",max);
+            this.set("selectedApiView",this.selectedApi[this.selectedApiViewIndex]);
+        }
+        else
+        {   
+            this.set("selectedApiViewIndex", this.selectedApiViewIndex-1);
+            this.set("selectedApiView", this.selectedApi[this.selectedApiViewIndex]);
+            
+        }
+    },
+
+    makeInputPage(objArr){
+  var kvals=objArr.map(function(val,index,array){
+    var keys=Object.keys(val);
+    var numbKeys=keys.length;
+    ////console.log(keys);
+    return keys.reduce(function(pre,key, i,arr){
+      pre.push([key,val[key]]);
+      //console.log(pre, key, val[key]);
+      return pre; 
+      },[]);
+    });
+  //console.log(kvals);
+  var bigArray=[];
+  var numPairs=kvals.length;
+  var arrayPair=[];
+  var pageArray=[];
+  for(var i=0;i<numPairs;i++){
+    var last=kvals[i].length-1;
+    for(var j=0;j<kvals[i].length;j++)
+    { 
+      arrayPair.push(kvals[i][j]);
+      if(j>0&&j%2===0){
+      var obj=this.makeInputPairObject(arrayPair);
+      pageArray.push(obj);
+      arrayPair=[];
+      }
+      if(j===last){
+        bigArray.push(pageArray);
+        pageArray=[];
+      }
+      else if (j===last&&pageArray.length!==0){
+          bigArray.push(pageArray);
+
+      }
+      else if(j===last&&pageArray.length===0&&arrayPair.length!==0){
+        bigArray.push(obj);
+      }
+      
+    }
+  }
+  //console.log(bigArray);
+  return bigArray;
+
+  },
+
+  makeInputPairObject(pairArray){
+
+    var keyA=pairArray[0][0];
+    var valA=pairArray[0][1];
+    var keyB="addProperty";
+    var valB="Add Value"
+    if(pairArray[1]){
+    keyB=pairArray[1][0];
+    valB=pairArray[1][1];
+    //console.log(valB, keyB, pairArray);
+    }
+    if(keyB==="name"){
+      var holderK=keyA;
+      var holderV=valA;
+      keyA=keyB;
+      keyB=holderK;
+      valA=valB;
+      valB=holderV;
+    }
+
+    var object={};
+      object.dropdownItemsA=(Array.isArray(valA))?valA:false;
+      object.dropdownItemsB=(Array.isArray(valB))?valB:false;
+      //console.log(keyA);
+      object.labelA=keyA.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); }); 
+      //console.log(object.labelA);
+      object.labelB=keyB.replace(/([A-Z])/g, ' $1').replace(/^./, function(str){ return str.toUpperCase(); });
+      object.nameA=keyA;      
+      object.nameB=keyB;      
+      object.valueA=(!Array.isArray(valA))?valA:false;    
+      object.valueB=(!Array.isArray(valB))?valB:false;
+    return object;    
+    },
+gridMakerFunction(apiName, formResults, dsv){
+     this.submittedInputs={};
+            var d = new Date();
+            var n = -d.getTime();
+            var readableTime=new Date().toLocaleString();
+            this.submittedInputs={};
+    var mappedVals= this.mapValuesToPropertiesFromInputArrays();
+            this.submittedInputs=Object.assign(this.submittedInputs, mappedVals);
+            var dateTime=readableTime.split(",");
+            var obj={"date":dateTime[0], "time":dateTime[1]};
+
+              if(this.apiChoices[this.selectedApiIndex].apiName=="callCenter"){
+                  this.submittedInputs.studentFullName=this.submittedInputs.studentFirstName + " " + this.submittedInputs.studentLastName;
+                  this.submittedInputs.fcid=this.submittedInputs.studentLastName+this.submittedInputs.studentFirstName+"_00001";
+                 obj.databaseName=this.apiChoices[this.selectedApiIndex].apiName;
+                    obj.storeName="basicProfiles";
+                    obj.key=this.submittedInputs.fcid;
+                    obj.indicies=["studentFirstName", "studentLastName", "fcid", "parent1FirstName","parent1LastName", "parent2FirstName", "parent2LastName", "course", "coach"];
+                    obj.toProfile=[obj.key];
+                    var refObject=obj;
+                    this.push("toStorage", refObject);
+                }
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="courseCalendars"){var refObject={};}
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="events"){var refObject={};}
+              else if(this.apiChoices[this.selectedApiIndex].apiName=="inquiries"){var refObject={};}
+            
+            refObject=Object.assign(refObject, formResults, this.submittedInputs, {"orderingTime":n});
+              console.log(refObject);
+
+              var headerRow=this.createHeadersFromProperties(refObject);
+              var valueRow=this.createValueRowsFromProperties(refObject);
+              if(this.dataArrays[this.tagIndex]==undefined){ 
+                this.createGridForAnApi(headerRow, valueRow, this.tagIndex,headerRow, dsv);
+              }
+              else{
+                  var storeName="1";
+                  //TODO: CREATE THE SHEET MAKER INPUT AND STUFF IN HERE
+                  this.addEntryToApiSheet(valueRow, storeName, this.sameThing, headerRow, dbName);
+                  dataManager.arrayWorker.postMessage({})
+                }
         },
 
-        ready(){
+
+mapValuesToPropertiesFromInputArrays(){
+  var mappedValues=this.selectedApi.reduce(function(previous, value, index, array){
+              var temp=value.reduce(function(pre, val, index, array){
+                    console.log(val);
+                    var propertyA=val.nameA;
+                    var valueA=val.valueA;
+                    var propertyB=val.nameB;
+                    var valueB=val.valueB;
+                    var object={[propertyA]: valueA, [propertyB]: valueB};
+                    pre=Object.assign(pre,object);
+                   return pre;
+                  },{});
+                 previous=Object.assign(previous, temp);
+                return previous;
+              },{});
+  return mappedValues;
+
+},
+createReferenceObject(propertiesExample){
+     var d = new Date();
+            var n = -d.getTime();
+            var readableTime=new Date().toLocaleString();
+    var dateTime=readableTime.split(",");
+    var obj={"date":dateTime[0], "time":dateTime[1]};
+                    obj.dbName="Profiles";
+                    obj.storeName="basicProfiles";
+                    obj.key="fcid";
+                    obj.indicies=(obj.dbName=="Profiles")?["studentFirstName", "studentLastName", "fcid", "parent1FirstName","parent1LastName", "parent2FirstName", "parent2LastName", "course", "coach"]:["fcid", "callerFullName", "studentFullName", "parent1FirstName", "parent1LastName"];
+                    obj.toProfile=[obj.key];
+                    var refObject={};
+                    if(obj.dbName=="Profiles"){
+                        var betterOrder=new FocusedProfile({});
+                    refObject=Object.assign(refObject,{"date":dateTime[0], "time":dateTime[1]}, {studentFullName: "--", "fcid":"--", "active": "--"},betterOrder, propertiesExample, {"orderingTime":n});
+                    }
+                   keys=Object.keys(refObject);
+                    keys.forEach((key)=>{
+                        refObject[key]="--";
+                    });
+                    console.log(refObject);
+ return {"headers":refObject,"profilesMeta": obj};
+
+},
+mapValuesFromIndexedDb(apiName, idbReturns, dsv){
+       var refObj =this.createReferenceObject(idbReturns[0]);
+       var valueRows =this.createValueRowsFromIdb(refObj.headers, idbReturns, idbReturns.profilesMeta);
+       var headers =this.createHeadersFromProperties(refObj.headers);
+      var counter=idbReturns.length;
+      var i=1;
+      var sheet=1;
+      Polymer.Base.set("tagIndex", dsv.value.length);
+      this.tagIndex=dsv.value.length;
+      this.createGridForAnApi(headers, valueRows,this.tagIndex, refObj, dsv);
+      // for(i=1;i<counter;i++)
+      // {
+      //    valueRow =this.createValueRowsFromIdb(refObj, indexedDbDataArray[i]);
+      //   //TODO: CREATE THE SHEET MAKER INPUT AND STUFF IN HERE
+      //  // this.addEntryToApiSheet(valueRow, sheet, this.sameThing, refObj, i);
+
+      // }
+
+
+},
+
+createHeadersFromProperties(refObject){
+  var keys=Object.keys(refObject);
+                  var headers =keys.map(function(val,i,arr){
+                            var label=val.replace(/([A-Z])/g, ' $1'),  
+                            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+                            label=label.replace("1", " One"),
+                            label=label.replace("2", " Two");
+                          return label;
+                      });
+                return [headers];
+},
+
+createValueRowsFromProperties(refObject){
+      var keys=Object.keys(refObject);
+          var baseValuesArrays=[];
+                baseValuesArrays=keys.map(function(key, ind, array){
+                            var cellContents=(refObject[key])?refObject[key]:"--";
+                            console.log(cellContents);
+                           return cellContents;
+                          });
+                return [baseValuesArrays];
+              },
+createValueRowsFromIdb(refObject, valObjectArray){
+    returnArray=[];
+
+         var keys=Object.keys(refObject);
+
+returnArray= valObjectArray.map((valObject)=>{
+          var baseValuesArrays=[];
+                baseValuesArrays=keys.map(function(key, ind, array){
+                            var cellContents=(valObject[key])?valObject[key]:"--";
+                            console.log(cellContents);
+                           return cellContents;
+                          });
+                return baseValuesArrays;
+              });
+        console.log(returnArray);
+    return returnArray;
+},
+
+  //this is for an initialization of a gric
+
+  createGridForAnApi(headers, rows,trueApiGridIndex, referenceObject, dsv){      
+                var cols=40;
+                var row=rows.length;  
+                console.log(row, cols);  
+                var gridname=(this.selectedApi)?this.selectedApi.storeName:referenceObject.storeName;
+                var apiName=(this.selectedApi)?this.selectedApi.apiName:(referenceObject.apiName)?referenceObject.apiName:"Profiles";
+                var sheets=1, toolset="null";
+                console.log(row);
+                //TODO: COME UP WITH AND BUILD TOOL SETS FOR API GRIDS ETC.
+                //EXAMPLE: MATH FOR THE FINANCIALS
+                //EXAMPLE: CONNECTION TO PAYMENT FOR FINANCIALS
+                var userStyle=undefined,userClass=undefined, userHeaderStyle=undefined, userHeaderClass=undefined;
+                var isDataInRows=true;
+              this.pickle={};
+              this.pickle=new DataGrids();
+              var array= this.pickle.gridConstructor([cols,row,gridname, apiName, headers,sheets, toolset, rows, userStyle, userClass, userHeaderStyle,userHeaderClass, isDataInRows]);
+              var str="00000";
+              var co=(str+trueApiGridIndex).slice(-5);
+              var ngrid=(referenceObject)? referenceObject.apiName+"00"+referenceObject.storeName:this.selectedApi.apiName+"|"+this.selectedApi.subStore+"|"+co; 
+          this[ngrid]=array;
+          console.log(array, this.dataArrays, this.dataDisplays);
+         
+         console.log(dsv.value, array); dsv.value.push(array);
+          Polymer.Base.set("profileApi", array);
+          Polymer.Base.set("selectedApi", array);
+         //var answerProvidedFromOnHigh "so we set hthose and use those";
+          // this.push("dataArrays", array);
+          //TODO: SEND THIS SET OF VALUES TO THE GLOBAL DATA TO UPDATE ARRAYS AND MESSAGE WEBWORKER
+},
+
+addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
+    console.log(vals);
+    if(this.sameThing===true){this.set("arrayIndex", this.tagIndex);}
+    console.log(this.arrayIndex, this.tagIndex);
+    if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
+    var newRowNumber=this.dataArrays[this.tagIndex][0].length;
+    for(var i=0;i<this.dataArrays[this.tagIndex].length;i++)
+    {
+          var str="00000";
+              var co=(str+i).slice(-5);
+              var ro=(str+newRowNumber).slice(-5);
+          var id=this.selectedApi.gridId+"_"+co+"_"+ro+"_";
+          var appliedClass="layout horizontal flex around-justified";
+          var val=vals[0][i];
+          val=(val==undefined)?"--":val;
+          var previousRow=newRowNumber-1;
+          var sty=this.dataArrays[this.tagIndex][i][1].style;
+        
+          var archive=[];
+          var name=this.dataArrays[this.tagIndex][i][0].value;
+          name=name.replace(/\s/g,"");
+          name=name.charAt(0).toLowerCase()+name.slice(1);
+          console.log(name, val, val, val);
+          archive.push(val);
+          var time=new Date().getTime();
+        
+            var cell={"key":id, "value":val, "contenteditable": true, "id": id, "style":  sty, "apiName":this.selectedApi.apiName, "storeName": this.selectedApi.storeName, "name": name, "class": appliedClass, "time": time, "archive":archive, "closed": false};
+            var width=this.textMeasurements(cell);
+            width=parseInt(width)+63;
+          var cellStyleArrayForWidth=this.dataArrays[this.tagIndex][i][previousRow].style.split("width:");
+          //console.log(cellStyleArrayForWidth);
+          var lastone=cellStyleArrayForWidth.length-1;
+          var cellWidthForParseInt=cellStyleArrayForWidth[lastone].split(";");
+          //console.log(cellWidthForParseInt);
+          if(this.tagIndex===this.arrayIndex){var assign=this.tagIndex;}
+          var colWidth=parseInt(cellWidthForParseInt[0]);console.log(colWidth);
+            if(width>colWidth){console.log("TOOSMALL");}
+            if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");this.splice(["selectedArraySet",this.tagIndex,i],newRowNumber,0,cell);}
+          this.splice(["dataArrays",this.tagIndex,i],newRowNumber,0,cell);
+          inq=[vals, refObj];
+          //dataManager.arrayWorker.postMessage=({data: {"valArray": vals, "propertyNames": refObj}, request: "constructAndRecordInquiry"});
+        
+          console.log(this.arrayIndex, this.tagIndex);
+    }
+    dataManager.arrayWorker.postMessage({"data":vals, "propertyNames": refObj, requestType:"constructAndRecordInquiry"});
+  },
+
+  regularizeColumnWidth(grid, columnsToChange){
+    if(columnsToChange==="all" || columnsToChange===undefined){
+      grid.forEach(function(column,index, array){
+        this.setColumnWidthToText(column);
           
+          },this); 
+        }     
             
-          },
+    },
+        
+    setColumnWidthToText(column){
+      var minWidth;
+      for(var i=0; i<column.length; i++){
+        var cell=column[i];
+          var width=this.textMeasurements(cell);
+          width=parseInt(width);
+          minWidth=(minWidth>=width)?minWidth:width;
 
-};
+          celolumn.forEach(function(cell, ind){
+            var numb=Math.ceil(parseInt(minWidth)+63);//do the cleaner removal
+            cell.style+="width: " +numb+"px; ";
+            this[mapName].set(cell.key, [cell.value, cell]);
+          }, this);
+    }
 
+  }
+
+};FCBehaviors.FocusedDataManagerBehavior=[
+        FCBehaviors.FcGridStyleBehavior, FCBehaviors.FocusedDataManagerBehaviorImpl];
 </script>

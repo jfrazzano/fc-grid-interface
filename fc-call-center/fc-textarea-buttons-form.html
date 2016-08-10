@@ -1,0 +1,444 @@
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+
+
+<!-- 
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html"> -->
+
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-radio-button/paper-radio-button.html">
+<link rel="import" href="../bower_components/paper-radio-group/paper-radio-group.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<dom-module id="fc-textarea-buttons-form">
+<template id="fc-textarea-buttons-form-template">
+<style>
+:host{margin: 1px;}
+       paper-card{
+        width: 99%;
+        padding: 12px 4px 12px 2px;
+        margin: 12px 12px 12px 4px;
+        margin-top: -16px;
+        z-index:1;
+        --paper-card-header-image: {width: 138px; height: 90px; position: absolute: top: 0px left: 8px; margin: 2px 16px 16px 8px;}
+        --paper-card-header:{height: 95px; border-bottom: solid 1px silver;}
+  
+    }
+    *{font-family: merriweather;
+      color: #009;}
+    .container{
+        width: 99%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+ 
+  }
+  
+    	paper-button{
+		 	 width: 50%;
+		 	 min-width: 147px;
+		 	 font-weight: 600; 	  
+		 	 font-size: 14px;
+		 	 text-align: center;
+		 	 white-space: nowrap;
+		 	 max-height: 36px;
+		 	 @apply(--layout-nowrap);
+		 	 background: white;
+		 	 border: #efefef 1px solid;
+		 }
+		 paper-button.green{
+		 	color: green; 
+		 	border: 2px solid green;
+		}
+		paper-button.darkblue{
+			color: #009;
+			border: 2px solid #009;
+		}
+		paper-button.red{
+			color: red;
+			border: 2px solid red;
+		}
+		paper-button.orange{
+			color: orange;
+			border: 2px solid orange;
+		}
+		paper-button:hover, paper-button:active{
+			box-shadow: 2px 4px 7px 2px; 
+
+		} 
+		paper-button.darkblue:hover, paper-button.darkblue:active{
+			box-shadow: 2px 4px 7px 2px gold; 
+
+		} 
+		.buttonRow{
+			@apply(--layout-flex);
+			@apply(--layout-horizontal);
+			padding: 2px;
+		}
+
+      neon-animated-pages {
+        @apply(--layout-flex);
+        @apply(--layout-vertical)
+        margin: 6px;
+        padding: 4px;
+        background: white;
+        @apply(--layout-self-stretch);
+        min-height: 720px;
+      }
+      neon-animatable {
+        color: white;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        @apply(--paper-font-display3);
+        margin: 0px;
+        padding: 0px;
+      }
+    paper-radio-button{
+    		font-size: 14px;
+        color: #005c00;
+    		font-weight: 400;
+    		size: var(--paper-radio-size, 18px);
+    		 /*  --paper-radio-button-label-color: var(--my-blue-009, #000099);*/
+    		   --paper-radio-button-checked-color: var(--paper-green-900);
+    }
+    .card-actions{
+    	padding: 4px;
+    }
+    label.returningCaller{
+    	color: black;
+    	font-size: 15ßpx;
+    /*	font-style: italic;*/
+    	font-weight: 700;
+    }
+    paper-radio-group.tallbox{
+    	@apply(--layout-vertical);
+    	 --paper-radio-group-padding: var(--too-much-padding, 0px);
+
+    }
+    iron-icon{ 
+        width: 36px;
+        height: 36px;
+    }
+    p{
+    	text-indent: 36px;
+    	font-size: 12px;
+    	font-weight: 400;
+    		}
+
+  .detTag{
+  		font-weight: 300;
+  		font-size: 16px;
+  		margin: 12px 6px;
+  		padding: 2px;
+  		color: brown;
+  		border: silver solid 2px;
+  		background: #efefef;
+  		box-shadow: 3px 5px 11px 3px #afafaf;
+
+  }
+    .timestamp{
+    font-weight: 300;
+    color: #009;
+    font-family: merriweather;
+    font-size: 11px;
+    padding: 17px 8px 0px 2px;
+   position: absolute;
+    color: brown;
+    margin-bottom: -8px;
+    top: 19px;
+    margin-left: 15px;
+
+  }
+  .pageNumbers{
+    position: absolute; 
+    right: 66px; 
+    top: 28px;
+    padding-top: 8px;l
+    margin-top: 20px;
+    font-size: 16px;
+  }
+  
+  .subheading {
+    font-size: 11px;
+    color: brown;
+    font-family: times;
+    float: right;
+    margin-top: 9px;
+
+    position: absolute;
+    right: 28px;
+    padding: 3px 0px;
+    }
+ .card-content {
+  margin-top: 12px;
+
+ }
+  .dropbtn:hover, .dropbtn:focus{
+		    background-color: #3e8e41;
+		}
+		
+		.check{
+			font-size:26px;
+			color: green;
+			position: absolute;
+			left: 5px;
+		}
+    u{color: black;
+      font-weight: 500;}
+		.instruction{
+			color:#009;
+			font-weight:300;
+		}
+		.radioGroupBlock{
+			padding: 4px 12px;
+      font-size: 14px;
+      margin-left: 13px 
+      line-height: 1.1;
+		}
+    paper-radio-button{margin-top:-4px;}
+   
+		.importantNote{
+				color: black;
+				font-weight: 600;
+				padding: 8px;
+				margin: 4px;
+				margin-bottom: 26px;
+
+		}
+		.detailPads{
+				margin:24px 12px 12px 0px;
+			
+
+		}
+    .nicepadding: {
+      padding: 12px 22px;
+      margin: 10px 16px;
+
+
+
+    }
+    summary{margin-left: -8px;}
+    .afterNote{
+      display: block;
+    }
+
+  @media(max-width: 570px){
+    .container{
+        width: 99%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+    };
+  }
+</style>
+<form>
+  <div class="vertical layout flex nicepadding">
+  <template is="dom-repeat" items="{{fillInTextArray}}">
+   <div horizontal layout flex>
+   <section vertical layout flex>
+   <span class="subheading">
+        * Indicates a Required Field
+      </span>
+    <span style="position: absolute; font-size: 13px; right: 27px; top: 8px;">Page 2 of <content select=".pageTotal"></content></span> 
+  </section>
+    <section class="vertical layout flex">    
+     <span style="{{item.messageHeaderArea}}"><!--{{item.addYourWordsHere}}--></span>   
+      <span class="timestamp">
+        [[time]], on [[date]]
+      </span>
+    </section>
+  </div>
+  <div class="card-content layout vertical flex center-justified">
+    <section class="layout vertical flex center-justified">
+       
+         <textarea        
+              input-type="text" 
+              id$="{{item.id}}" 
+              value="{{item.value::input}}"
+              on-change="_valueFunction"
+              contenteditable="true" 
+              style="{{item.style}} margin: 18px; text-align: center;{{_computeStyleTwo(item.style)}}; outline: 0px white solid;"
+              class$="{{_computeClass(item.id,item)}} layout horizontal self-stretch"
+              key="{{item.key}}"
+              related-cells="{{item.relatedCells}}"
+              name="{{item.name}}"
+              archive="{{item.archive}}" 
+              max-char="750">
+          </textarea>  
+        </section>   
+     <section class="radioGroupBlock">
+     <details>
+  <summary class="sumTag"><label id="label1" style$="{{item.serviceSelection}}" name="{{item.serviceSelection}}">{{item.labelHeaderOne}}<u>{{item.labelInputType}}</u><span style="color: brown;">*</label></summary>
+<!--   <section class="detTag"> 
+  <span class="instruction">{{item.instructionPromptOne}}:</span>
+  <section style="color: #009; font-size: 12; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">{{item.headerCallTipOne}}</section>
+  <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;"{{item.dialogOne}}" <br>
+  &nbsp;&nbsp;&nbsp;&nbsp;"{{item.stageDirectionOne}}".<br>
+  <span class="instruction">"{{item.stageDirectionTwo}}":</span><br>
+  &nbsp;&nbsp;&nbsp;&nbsp;"{{item.dialogTwo}}"
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;[{{item.stageDirectionThree}}]     
+  <br><span class="instruction">{{item.instructionTwo}}</span>
+    <section class="detailPads">
+      <details>
+        <summary class="sumTag">{{item.subHeadingNestedDropdown}}</summary>
+          <section class="detTag"> 
+            <span class="instruction">{{item.largeExpanseOfBulletedText}}</span>
+            <section style="color: #009; font-size: 13; float: right; text-align: margin-right: -170px; max-width: 160px; padding: 4px; background:#fff; border: double blue 6px;">{{item.instructionTipHeadingTwo}}</section>
+        </section>
+      </details>
+    </section>
+  </section> -->
+    </details>
+          <paper-radio-group id="isPreviousCaller" toggle activate-event="getfunction" aria-labelledby="label1">
+              <paper-radio-button class="isPreviousCaller" name="newClient">{{item.serviceOne}} <a><u>{{item.learnMoreOne}}</u></a>!</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="repeatCaller">{{item.serviceTwo}}<a><u>{{item.learnMoreTwo}} </u></a></paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="activeClient"> <a><u>{{item.serviceThree}}</u></a>{{item.learnMoreThree}}.</paper-radio-button>
+              <paper-radio-button class="isPreviousCaller" name="inactiveClient">{{item.serviceFour}}<a><u>{{item.learnMoreFour}} </u></a>.</paper-radio-button>
+         </paper-radio-group>
+        </section>
+      <!--   <section>
+        <span style="{{item.messageHeaderArea}}">{{item.addYourWordsHere}}</span>
+         <textarea        
+              input-type="text" 
+              id$="{{item.id}}" 
+              value="{{item.value::input}}"
+              on-change="_valueFunction"
+              contenteditable="true" 
+              style="{{item.style}} {{_computeStyleTwo(item.style)}}"
+              class$="{{_computeClass(item.id,item)}} layout horizontal self-stretch"
+              key="{{item.key}}"
+              related-cells="{{item.relatedCells}}"
+              name="{{item.name}}"
+              archive="{{item.archive}}" 
+              max-char="750">
+          </textarea>  
+        </section>    -->
+<section>
+  <section class="horizontal layout flex">
+        <paper-button class='{{item.buttonClass}}' btn="{{item.button.function}}">{{item.button}}</paper-button>        <paper-button class='{{item.buttonClass}}' btn="{{item.button.function}}">{{item.button}}</paper-button>       
+  </section>
+  <!-- <section class="horizontal layout flex">
+        <paper-button class='{{item.buttonClass}}' btn="{{item.button.function}}">{{item.button}}</paper-button>   <paper-button class='{{item.buttonClass}}' btn="{{item.button.function}}">{{item.button}}</paper-button>
+  </section> -->
+  
+</section>
+</div>
+</template>
+<content id="odjasp"></content>
+</div>
+</template>
+</dom-module>
+<script>
+FcTextareaButtonsForm=Polymer({
+  is:"fc-textarea-buttons-form",
+  behaviors:[Polymer.NeonAnimatableBehavior,
+                Polymer.NeonAnimationBehavior,
+                Polymer.NeonAnimationRunnerBehavior],
+    properties:{
+      message:{
+        type: String, 
+        value: function(){return  " ";},
+        notify: true,
+      },
+      service:{
+
+
+      },
+       time:{
+      type:Date,
+      value:function(){
+          var time=new Date().toLocaleTimeString();
+          console.log(time);
+          return time;
+      },
+      notify: true
+    },
+    date:{
+        type: Date,
+        value: function(){
+          var date=new Date().toLocaleDateString();
+          return date;
+            },
+        notify: true,
+        },
+      fillInTextArray:{
+          type: Array,
+          value:function(){ return[ {
+                                      "value": "Type Your Questions Here=>... We Might Even Type Something Back ;-)",
+                                      "serviceSelection":"margin-bottom: -36px;",
+                                      "labelHeaderOne":"someSetOfTextTHATwillFitt",
+                                      "labelInputType":"someSetOfTextTHATwillFitt",
+                                      "instructionPromptOne":"someSetOfTextTHATwillFitt",
+                                      "headerCallTipOne":"someSetOfTextTHATwillFitt",
+                                      "dialogOne":"someSetOfTextTHATwillFitt",
+                                      "stageDirectionOne":"someSetOfTextTHATwillFitt",
+                                      "stageDirectionTwo":"someSetOfTextTHATwillFitt",
+                                      "dialogTwo":"Here is where you get to ask Focused for whatever you want, and we will make at least some effort to help you get your own personal whatever.",
+                                      "stageDirectionThree":"someSetOfTextTHATwillFitt",
+                                      "instructionTwo":"someSetOfTextTHATwillFitt",
+                                      "subHeadingNestedDropdown":"someSetOfTextTHATwillFitt",
+                                      "largeExpanseOfBulletedText":"someSetOfTextTHATwillFitt",
+                                      "instructionTipHeadingTwo":"someSetOfTextTHATwillFitt",
+                                      "learnMoreOne":"and More Points than any Other System",
+                                      "serviceOne":"Focused 1600 SAT Course More Perfect Scores",
+                                      "learnMoreTwo":"To truly master any skill takes a group effort.",
+                                      "serviceTwo":"Focused Study Group, For Master Test Takers",
+                                      "learnMoreThree":"Focused Mentoring and Methods for Younger Scholars",
+                                      "serviceThree":"Focused Young Scholars Program Grades 5 and Up",
+                                      "learnMoreFour":"Some Young Minds Need Personalized Coaching",
+                                      "serviceFour":"Focused Project Based Private Coachingå",
+                                    
+                                    
+                                      "messageHeaderArea":"font-size: .9em; line-height:1; font-weight: 300; margin-left: 19px; margin-bottom: -12px;",
+                                      "addYourWordsHere":"Enter Your Message Here!",
+                                      "id":"1234WOW","style": "padding: 6px 6pc 8px 6px; margin:8px; min-width:280px; min-height: 190px; border: silver 1px solid; color: #005c00; opacity: .8; outline: 0px;", 
+                                      "style": "min-width:280px; min-height: 190px; border: silver 1px solid; color: #005c00; opacity: .8; resize: none;", "name": "penelope",
+                                      "key": "1021_key_001", "relatedCells": ["seeInputs"],
+                                      "name": "ophelia", "archive": [""]}
+                                      ];
+                            },
+            notify: true,
+          },
+
+      },
+
+ready(){},
+attached(){},
+handler(){},
+search(){},
+submit(){},
+_computeStyleTwo(style){
+
+  return style;
+},
+_computeClass(one){
+
+  return "layout horizontal flex center around-justified";
+},
+getfunction(e){},
+_valueFunction(e){},
+
+
+
+    });
+</script>
+
+
+
+
+
+

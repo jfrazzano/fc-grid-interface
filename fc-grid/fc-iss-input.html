@@ -47,8 +47,8 @@ input.question {
   margin: 0;
   border: none;
   opacity: 1;
-  width: 100%;
-  background: rgba(0, 0, 0, 0);
+  width: 90%;
+  /*background: rgba(0, 0, 0, 0);*/
   transition: padding-top 0.4s ease, margin-top 0.4s ease;
   overflow-x: hidden;
 }
@@ -58,7 +58,7 @@ input.question + label{
   white-space: nowrap;
   padding: 0;
   margin: 0;
-width: 100%;
+width: 90%;
   border-top: 1px solid red;
   -webkit-transition: width 0.4s ease;
   transition: width 0.4s ease;
@@ -66,7 +66,7 @@ width: 100%;
 }
 input.question:focus + label
 {
-  width: 100%;
+  width: 90%;
   border-top: 1.2px solid #005c00;
    -webkit-transition: width 0.3s ease, border-top .3s ease;
   transition: width 0.3s ease, border-top .3s ease;
@@ -95,7 +95,7 @@ input.question:valid{
   opacity: 1;
   font-family: merriweather;
   font-weight: 600;
-  width: 100%;
+  width: 90%;
 
 }
 input.question:valid + label > span {
@@ -109,7 +109,7 @@ input.question:valid + label > span {
 
 input.question:valid + label{
   border-color: green;
-  width: 100%;
+  width: 90%;
 
 }
 input.question:invalid{
@@ -182,7 +182,7 @@ min-width: 210px;
   .dropdown-content {
      display: none;
  
-      background-color: #efefef;
+      /*background-color: #efefef;*/
       width: 210px;
       opacity: 0;
       box-shadow: 3px 8px 16px 5px #afafaf;
@@ -215,7 +215,7 @@ min-width: 210px;
   
   }
   paper-icon-button{ width: 24px; height: 24px;  position: relative; left: -8px;} 
-  .wrapper{width: 100%; position:relative; margin-top: 16px;}
+  .wrapper{width: 95%; position:relative; margin-top: 16px;}
 </style>
 <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
 <iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
@@ -225,16 +225,17 @@ min-width: 210px;
 
 
 <div class="horizontal layout flex self-stretch wrapper">
+{{issValueArray}}
 <!-- <paper-menu-button id="dropdownMenuButton" class="vertical layout dropdown">-->
     <paper-icon-button id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" hidden="{{!showDropButton}}" icon="{{issIcon}}" on-tap="inputToggle"> 
     </paper-icon-button>
 <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
-	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" is-multi-select="{{isMult}}" on-change="setValueItem" name="[[issName]]">
+	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
 		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
 			<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
 		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
-					<paper-item class="block" style="border: 1px silver solid;margin-top: 3px; width: 180px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
-          <span hidden$="{{!item.selectCheck}}" class="check">&#10148;</span>
+					<paper-item class="block" style="border: 1px silver solid; background:clear;margin-top: 3px; width: 192px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
+          <span hidden="{{!item.selectCheck}}" class="check">&#10148;</span>
 
           <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
           </paper-item>
@@ -457,7 +458,7 @@ FcIssInput=Polymer({
         return this.issClass;
  },
  observeIssInput(nv, ov){
-  if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="#efefef";}
+  if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="";}
   else{this.$.dropdownlist.style.color="#009";}
  },
  _computeItemSelectedPropValue(item, index,isp){
@@ -639,7 +640,7 @@ FcIssInput=Polymer({
   updateAllyKeyChangedItemInColumnPosition(dy, elem){
         this.trackDelta = dy || this.trackDelta || 0;
         //console.log(this.trackDelta);
-        var scrollDelta = this.$.dropdownlist.scrollTop - this.startScrollTop;
+        var scrollDelta = this.$.dropdownlist.scrollTop -this.startScrollTop;
         var pos = this.trackDelta + scrollDelta;
         this.translate3d(0, -pos + 'px', 0, elem);
     },
@@ -671,8 +672,9 @@ FcIssInput=Polymer({
             this[setVal[0]](setVal[1],setVal[2],setVal[3]);
           }
             var boundRect=element.getBoundingClientRect();
-            var delta=boundRect.height+3;
-            this.$.dropdownlist.scrollTop=(this.$.dropdownlist.scrollHeight - this.$.dropdownlist.scrollTop === this.$.dropdownlist.clientHeight)?this.baseScrollTop:this.$.dropdownlist.scrollTop+delta;       
+            this.set("bound",boundRect);
+            var delta=(Math.floor(boundRect.height)+1.6);
+            this.$.dropdownlist.scrollTop=(this.$.dropdownlist.scrollHeight - this.$.dropdownlist.scrollTop < this.$.dropdownlist.clientHeight)?this.baseScrollTop:this.$.dropdownlist.scrollTop+delta;       
     },
   onUpArrow(e){
       	var children=this.getDropdownChildren();

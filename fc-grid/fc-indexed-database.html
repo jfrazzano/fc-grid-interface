@@ -76,7 +76,7 @@ FcIndexedDatabase=Polymer({
           value: function(){return{};},
           notify: true,
           observer:"observeActiveCell",
-      },
+      }
 
     },
 
@@ -88,12 +88,7 @@ FcIndexedDatabase=Polymer({
     this.set("indexedDatabases", data);
    
   },
-  detached(){},
-
-  observeArrayIndex(arrayIndex){
-      //console.log(arrayIndex, this.arrayIndex);
-
-  },
+  
   checkDataBase(e){
     console.log(e);
     this.updateDataArraysFromIndexedDatabase(e.model.item.name, e.model.item.version, e.model.index, this);
@@ -108,9 +103,7 @@ FcIndexedDatabase=Polymer({
       return retVal;
 
   },
-  observeDataArrays(ndav, odav){
-      // if(ndav!=null){console.log(ndav, odav);}
-  },
+  
   setDataBase(gridName, version, data){
 
           var request = indexedDB.open(gridName, version);
@@ -144,6 +137,8 @@ FcIndexedDatabase=Polymer({
        };
      };
  },
+
+ observeArrayIndex(arrayIndex){},
 
  
  

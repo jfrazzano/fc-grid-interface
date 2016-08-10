@@ -93,11 +93,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
       <app-drawer id="dashboardLeftDrawer" drawer-current-width="{{leftCurrentWidth}}" swipe-open align="left">
 
-   
+  
      
  </app-drawer>
-       <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" opened swipe-open align="right">
-        hi
+       <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
+       
         </app-drawer>
       <!-- Main content -->
       <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
@@ -161,7 +161,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
-          <my-view3 name="view3"></my-view3>
+          <my-view3 name="view3"> </my-view3>
           <fc-grid id="liveGrid" name="grid"></fc-grid>
            <fc-dashboard-divisions name="dashboard-divisions"></fc-dashboard-divisions>
          

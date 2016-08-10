@@ -1,0 +1,66 @@
+    dataArraysCallBackSetter(query, context){context.dataArrays.push(query);}
+    
+    localDisplayedOfDBIndexSetter(query, context){
+            var databases=[];
+            console.log(query);
+            var databasesIndex=query.map(function(val,i){
+                  var version =(val.version!=undefined)?val.version:undefined;
+                  var flag=false;
+                  var databases={
+                    "name": val.name,
+                    "version": version, 
+                    "columns": val.columns,
+                    "rows": val.rows,
+                    "size": val.size,
+                    "value": val.value,
+                    "key": val.key,
+                    "time": 0,
+                    "location":"#s_#n",
+                    "changeFlag":flag
+                  };
+                  return databases;
+                });
+          
+            context.indexOfDatabases=databasesIndex;
+            //console.log(context.indexOfDatabases);
+      }
+  
+    createObjectStoresForDataArrays(){
+
+
+    }
+    updateObjectStoreByPuttingNewObjects(name, version,replacementArray){
+      var request=indexedDB.open(name, version);
+      request.onerror = (e)=>{
+                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+                  e.stopPropogation();
+                  var request=indexedDB.open(name, undefined);
+                  request.onerror = (ev)=>{ 
+                          console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
+                  };
+                  request.onsuccess =(event)=>{
+                          var db = event.target.result;
+                          var transaction = db.transaction("cell", "readwrite");
+                          var objectStore = transaction.objectStore("cell");
+                          replacementArray.forEach(function(ref){
+                                  objectStore.put(ref);
+                            });
+                          console.log("SUCCESS!!");
+                  };
+              };//end request on error closure
+        request.onsuccess =(event)=>{
+            var db = event.target.result;
+            var transaction = db.transaction("cell", "readwrite");
+            var objectStore = transaction.objectStore("cell");
+            replacementArray.forEach(function(ref){
+                    objectStore.put(ref);
+              });
+            console.log("SUCCESS!! FIRST TRY!!");
+        };
+    }
+
+    deleteObjectStore(name, version){   
+        console.log("CALL ME CALL ME CALL ME");
+        indexedDB.deleteDatabase(name);
+        console.log("would love this to work");
+      }

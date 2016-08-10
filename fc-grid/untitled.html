@@ -1,20 +1,3 @@
- <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
-<link rel="import" href="../fc-call-center/fc-profile-class.html">
-
-  <script>
-(function(){
-// // "use strict";
-window.indexedDB = window.indexedDB || {};
-window.IDBTransaction = window.IDBTransaction || {}; 
-window.IDBKeyRange = window.IDBKeyRange || {};
-
-// From here on, it's like using IndexedDB from content
-
-if (!window.indexedDB) {
-   window.alert("Your browser doesn't support a stable version of IndexedDB.")
-}
-})();
-
 
 // class DataGrids{
 //   constructor(){
@@ -200,21 +183,7 @@ if (!window.indexedDB) {
 //               } 
 //               return indexOfDatabases;
 //             }
-//  createIndex(indexName,indexVersion){
-//      // this.getObjectStore("indexOfDatabases",1, false, this.localDisplayedOfDBIndexSetter);   
-//       }
-//     makeGrids(setter, context){
-//       console.log(context,"this", this);
-//       var index=(this.indexOfDatabases&&this.indexOfDatabases.length>0)?this.indexOfDatabases:context.indexOfDatabases;
-//       console.log("index", index);
-//         for(var i=0;i<index.length;i++){
-//         var name=index[i].name;
-//         var version=index[i].version;
-   
-//         }
-//       }
-//   observeDataArrays(){}
-//   getAllObjectStoresAtInit(){}
+getAllObjectStoresAtInit(){}
   
 //   dataForPresetDatabases(){
 //         return [
@@ -284,84 +253,10 @@ if (!window.indexedDB) {
 //     }
 // var drays=new DataGrids();console.log(drays.getObjectStore, drays, "HERE ARE THE DATA ARRAYS YOU WANTED SO BADLY");
 //        setTimeout(()=>{drays.createIndex("indexOfDatabases", 1, false, drays.localDisplayedOfDBIndexSetter,drays);},10);setTimeout(()=>{drays.makeGrids(drays.dataArraysCallBackSetter,drays);},250);
-   
-FCBehaviors.FcIndexedDbBehavior = {     
-  
-listeners:{"message": "doSomething"},
-  properties:{
-
-    // gridObject:{
-    //     type: DataGrids,
-    //     value:function(){
-    //       var grids= drays;
-    //       return grids;},
-    //     notify: true,
-    // },
-
-    //   isFirstLoad:{
-    //     type: Boolean, 
-    //     notify: true,
-    //     value: function(){return true},
-
-    //   },
-    
-      indexedDatabases:{
-        type: Array,
-        value:function(){return [];},
-        notify: true,
-      },
-      holders:{
-        type:Array,
-        value:[],
-        notify: true,
-      },
-      // indexOfDatabases:{
-      //   type: Array,
-      //   value:function(){return [];},
-      //   notify: true,  
-      // },
-      // dataArrays:{
-      //     types: Array,
-      //     value: drays.dataArrays,
-      //     notify: true,
-      //     observer: "observeDataArrays",//may want a higher level observer to hit some subproperties
-      // },
-      
-
-    },
-    doSomething(e){//console.log(e);
-    },
-
-    created(){},
-    ready(){ 
-      
-       if(this.id=="fc-indexed-database"){
-              // this.initializeIndexedDb();
-        }
-      
-      },
-    observeDataArrays(news,olds){
-      if(news){
-        //console.log(news, olds, "observing the arrays");
-        if(news.value=2){this.set("selectedArraySet", this.dataArrays[0]); this.set("arrayIndex", 0);}
-             
-
-            }
 
 
-        },
-    detached(){},
 
-    // initializeIndexedDb(){
-    //   if(this.isFirstLoad){
-    //    var gridObj= this.getAllObjectStoresAtInit();
-    //           this.set("gridObject", gridObj);
-         
-    //   }
-    //   else{
-    //         console.log("this is what teh gridworker returned", e. e.date);
-    //       };
-    // },
+
 
    
     createColumnsAndRows(cells, context){          
@@ -503,20 +398,9 @@ listeners:{"message": "doSomething"},
                 var cells=this.indexedDatabases;
                // this.persistCells("indexOfDatabases", 1,cells);
             },
-
-     viewIndexOfIndexedDatabases(){
-                this.set("indexDatabases", drays.indexOfDatabases);
-                this.set("indexedDatabases",  drays.indexOfDatabases);
-                console.log(this.indexOfDatabases);
-              this.set("indexOfDatabases", drays.indexOfdata)
-                  return drays.indexOfDatabases;
-  }
-
-      };
-</script>
-
    
 
+   
 
    <!--  persistCells(gridName, version, subStore, data){
              var substore=(subStore)?subStore:"cell";
@@ -577,3 +461,8 @@ listeners:{"message": "doSomething"},
             },
 
  -->
+
+
+
+
+

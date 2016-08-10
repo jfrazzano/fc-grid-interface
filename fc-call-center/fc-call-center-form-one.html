@@ -1,4 +1,5 @@
 
+<link rel="import" href="FC_frontpage_logo.png">
 <dom-module id="fc-call-center-form-one">
 <template id="fc-call-center-form-one-template">
 <style>
@@ -211,7 +212,7 @@
     summary{margin-left: -8px;}
     .afterNote{
       display: block;
-    }
+    }paper-card{line-height: .95;}
 
   @media(max-width: 570px){
     .container{
@@ -225,7 +226,10 @@
     };
   }
 </style>
-  <paper-card class="intakeForm vertical layout" src="./FC_frontpage_logo.png" on-tap="myradiopush">
+<form>
+  <!-- <img src="FC_frontpage_logo.png" height="52" width="110"> -->
+  <paper-card class="intakeForm vertical layout" src="FC_frontpage_logo.png" on-tap="getfunction">
+
     <span style="position: absolute; font-size: 15px; right: 16px; top: 85px;">Page 1 of <content select=".pageTotal"></content></span> 
     <section>        
       <span class="timestamp">
@@ -237,7 +241,7 @@
     </section>
   <div class="card-content">
     <details>
-  <summary class="sumTag">Is <i>this</i> caller a <u>Returning Caller</u><span style="color: brown;">*</summary>
+  <summary class="sumTag">     <label id="label3" class="isPreviousCaller" name="isPreviousCaller">Caller Type:</label><span style="color: brown;">  *</summary>
   <section class="detTag"> 
   <span class="instruction">Begin the call:</span><section style="color: #009; font-size: 13; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
   <br>
@@ -252,34 +256,28 @@
         <summary class="sumTag">DEFINITIONS: Focused Caller Types</summary>
           <section class="detTag"> 
             <span class="instruction">WRITE THESE</span>
-            <section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #2</section>
-            <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;"Hello, Focused Coaching. How may I help you?" <br>
-            &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
-            <span class="instruction">Then ask:</span><br>
-            &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
-            <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]     
-          <br><span class="instruction">Now, record the caller's response below.</span>
         </section>
       </details>
     </section>
   </section>
     </details>
      <section class="radioGroupBlock">
-     <label id="label3" class="isPreviousCaller" name="isPreviousCaller"></label>
-          <paper-radio-group class="tallbox" activate-event="myradiopush"  aria-labelledby="label3">
-              <paper-radio-button class="isPreviousCaller" name="newClient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
-              <paper-radio-button class="isPreviousCaller" name="repeatCaller">This is a <a><u>Repeat Caller</u></a>, who has yet to become a client.</paper-radio-button>
-              <paper-radio-button class="isPreviousCaller" name="activeClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
-              <paper-radio-button class="isPreviousCaller" name="inactiveClient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
-              <paper-radio-button class="isPreviousCaller" name="nonClient">This is a <a><u>Non-Client Caller</u></a>.</paper-radio-button>
+     <label id="label3" class="callerType" name="callerType"></label>
+          <paper-radio-group id="callerType" activate-event="getfunction"  aria-labelledby="label3">
+              <paper-radio-button class="callerType" name="newClient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
+              <paper-radio-button class="callerType" name="repeatCaller">This is a <a><u>Repeat Caller</u></a>, who has yet to become a client.</paper-radio-button>
+              <paper-radio-button class="callerType" name="activeClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
+              <paper-radio-button class="callerType" name="inactiveClient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
+              <paper-radio-button class="callerType" name="nonClient">This is a <a><u>Non-Client Caller</u></a>.</paper-radio-button>
           </paper-radio-group>
-    </section>
+        </section>
+
+    <section class="radioGroupBlock">
     <details>
-  <summary class="sumTag">What is this Caller's <i>role</i> in relation to Focused?
-  </summary>
-  <section class="detTag"> 
-      <span class="instruction">Identifying Caller Makes the Calls Faster and Easier to Handle</span><section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
+      <summary class="sumTag"><label id="label4" class="callerRole">Caller Role:</label>  <span style="color: brown;">  *</summary></summary>
+        <section class="detTag"> 
+          <span class="instruction">Identifying Caller Makes the Calls Faster and Easier to Handle</span>
+          <section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
        <br>
       &nbsp;&nbsp;&nbsp;&nbsp;"Hello, Focused Coaching. How may I help you?" <br>
       &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
@@ -287,21 +285,18 @@
       &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
       <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]     
       <br><span class="instruction">Now, record the caller's response below.</span>
-      
-  </section>
-    </details>
-    
-    <section class="radioGroupBlock">
-     <label id="label4" class="callerRole" name="callerRole"></label>
-          <paper-radio-group name="callerRole" class="callerRole" selected="a" activate-event="myradiopush" aria-labelledby="label4">
-              <paper-radio-button class="callerRole" name="parent1"><a link=""><b><u>Parent One</u></b></a>&nbsp;Is this caller the "primary" parent and contactee for a student?
+      </section>
+      </details>
+          <paper-radio-group allow-empty-selection activate-event="getfunction" aria-labelledby="label4">
+              <paper-radio-button class="callerRole" name="parent1" role="radio" value="parent1"><b><u>Parent One</u></b>&nbsp;Is this caller the "primary" parent contactee for a student (mother)?
               </paper-radio-button>
-              <paper-radio-button class="callerRole" name="student"><a><b><u>Focused Student</u></b></a>&nbsp;Is this caller a current or potential Focused Student?
+              <paper-radio-button class="callerRole" role="radio"  name="student" value="student"><b><u>Focused Student</u></b>&nbsp;Is this caller a current or potential Focused Student?
               </paper-radio-button>
-              <paper-radio-button class="callerRole" name="parent2"><a><b><u>Parent Two</u></b></a>&nbsp;Is this caller the "Parent 2" contact or some other student related contact?
+              <paper-radio-button role="radio" class="callerRole" name="parent2" value="parent2"><b><u>Parent Two</u></b>&nbsp;Is this caller the "Parent 2" contact (father)?
               </paper-radio-button>
-              <paper-radio-button class="callerRole" name="clientCompetitor"><a><b><u>Business Client</u></b></a>&nbsp;Is this caller requesting Business Information about Focused.</paper-radio-button>
-              <paper-radio-button class="callerRole" name="other"><a><b><u>Other</u></b></a>&nbsp;Does this caller fit into none of the above categories?
+              <paper-radio-button class="callerRole" role="radio"  name="clientCompetitor" value="clientCompetitor"><b><u>Business Client</u></b>&nbsp;Is this caller requesting Business Information about Focused.
+              </paper-radio-button>
+              <paper-radio-button class="callerRole" role="radio" checked="{{radioOther}}" name="other"><b><u>Other</u></b>&nbsp;Does this caller not fit into any of the above categories?
               </paper-radio-button>
           </paper-radio-group>
     </section>
@@ -313,10 +308,10 @@
               
                 </div>
 <content select=".next"></content>
-                <div class="card-actions horizontal layout flex container center-justified" style="min-height: 75px;">
-                    <span class="afterNote"><b><u>IMPORTANT NOTE TO NEW USERS</u></b>:</span>
+              
                 </div>
             </paper-card>
+            </form>
    	</template>
  	<script>
 FcCallCenterFormOne=Polymer({
@@ -345,6 +340,7 @@ FcCallCenterFormOne=Polymer({
       type: String,
       notify: true,
     },
+
 		date:{
 				type: Date,
 				value: function(){
@@ -359,55 +355,38 @@ FcCallCenterFormOne=Polymer({
         notify: true,
       }
     },
-  
-      myradiopush(e){ 
-        console.log(e.target.class, e.target.name, e.target.checked);
-        if(Polymer.dom(e.target).classList.contains("isPreviousCaller")){
-                var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
-                var two=(e.target.name==="activeClient")?true: false;
-                this.set("inquiry.isPreviousCaller", one);
-                this.set("inquiry.callerType", e.target.name);
-                this.set("inquiry.isActiveClient", two)
-          }
-        else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
-                      this.set("radioOther", true);
-                      this.set("inquiry.callerRole", "other");
-            //            var pack=new FcInquiry(this.inquiry);
-            // this.set("inquiry",pack);
-          }
-        else{
-              this.set("inquiry.callerRole", e.target.name); 
+
+      getfunction(e){
+       var setValue= (e.target.checked===true && e.targetname!=undefined)?{value: e.target.name, name: e.target.class}:null; 
+       console.log(e.target.class, e.target.name, e.target.checked, console.log(setValue));
+         if(Polymer.dom(e.target).classList.contains("callerType")){
+                   var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
+                   var two=(e.target.name==="activeClient")?true: false;
+                   this.set("inquiry.isPreviousCaller", one);
+                   this.set("inquiry.callerType", e.target.name);
+                   this.set("inquiry.isActiveClient", two)
+           }
+         else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
+                       // this.set("radioOther", true);
+                       this.set("inquiry.callerRole", "other");
+             //            var pack=new FcInquiry(this.inquiry);
+             // this.set("inquiry",pack);
+           }
+         else{
+               this.set("inquiry.callerRole", e.target.name); 
             
-            // var pack=new FcInquiry(this.inquiry);
-            // this.set("inquiry",pack);
+             // var pack=new FcInquiry(this.inquiry);
+      //       // this.set("inquiry",pack);
+           }
+         if(this.inquiry.callerRole!=undefined&& this.inquiry.isPreviousCaller===true){
+         this.set("valueObject.callerRole", this.inquiry.calllerRole);
+         this.set("valueObject.callerType", this.inquiry.callerType);
           }
-        if(this.inquiry.callerRole!=undefined&& this.inquiry.isPreviousCaller===true){
-            //somehow set the next input to the searchable set...
+
+       }
 
 
-
-          }
-        console.log(e.target.name, e.target.checked, e.target.class, "class, now inquiry", this.inquiry); 
-      },
-
-       });
+     });
 </script>
 </dom-module>
-
-
-    /*.afterNote:after{
-      display: none;
-       content:'The Response to the above question will influence future options, so clarity is important.  For the benefit of new system users, definitions are nested within the "Returning Caller" tag above. Check out the definitions now if you have any questions!';
-
-    }
-    .afterNote:hover:after{
-      display: block;
-    }*/
-    .returningCaller{
-        color:brown;
-      },
-
-
-
-
 

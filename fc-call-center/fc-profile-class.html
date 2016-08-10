@@ -1,8 +1,12 @@
 <link rel="import" href="fc-calendar-behavior-beta-prime.html">
 <script>
 'use strict';
-class FcStudentProfile {
-	constructor(argProfile){this.build(argProfile.studentFirstName, argProfile.studentLastName, argProfile.studentTelephone, argProfile.studentEmail, argProfile.parent1FirstName, argProfile.parent1LastName, argProfile.parent1Telephone, argProfile.parent1Email, argProfile.parent2FirstName, argProfile.parent2LastName, argProfile.parent2Telephone, argProfile.parent2Email, argProfile.addressLine1, argProfile.addressLine2, argProfile.fcid);}
+class FcProfile {
+	constructor(argProfile){
+
+		this.build(argProfile.studentFirstName, argProfile.studentLastName, argProfile.studentTelephone, argProfile.studentEmail, argProfile.parent1FirstName, argProfile.parent1LastName, argProfile.parent1Telephone, argProfile.parent1Email, argProfile.parent2FirstName, argProfile.parent2LastName, argProfile.parent2Telephone, argProfile.parent2Email, argProfile.addressLine1, argProfile.addressLine2, argProfile.fcid);
+	}
+	
 	build(studentFirstName,studentLastName, studentTelephone, studentEmail, parent1FirstName, parent1LastName, parent1Telephone, parent1Email, parent2FirstName, parent2LastName, parent2Telephone, parent2Email, addressLine1, addressLine2, fcid)
 	{
 		this.studentFirstName= studentFirstName ||"";

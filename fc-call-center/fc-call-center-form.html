@@ -1,4 +1,4 @@
-<link rel="import" href="fc-highschools-nj-selector.html">
+ <link rel="import" href="fc-highschools-nj-selector.html">
 <link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
 <dom-module id="fc-call-center-form">
 <template id="fc-call-center-form-template">
@@ -9,12 +9,13 @@
 :host{margin-top: 2px;
 }
      paper-card{
-        width: 99%;
+        width: 88%;
         padding: 4px;
         margin: 12px;
         margin-top:-6px;
         --paper-card-header-image-text:{color:#009; position: absolute; right: 6px; top: 25px;}
-        --paper-card-header:{height: 55px; border-bottom:solid 1px silver;}
+        --paper-card-header:{height: 55px; border-bottom:solid 1px silver;
+          @apply(--layout-fit);}
   
     }
     *{font-family: merriweather;
@@ -23,16 +24,22 @@
       fc-iss-input{
         margin-left:-34px;
       }
+    fc-iss-input >label{
+      width: 82%;
 
+
+    }
     fc-iss-input.right{
         padding: 4px;
-        margin: 4px 4px 4px 6px;
+        margin: 4px -12px 4px 12px;
         max-width: 660px;
+        width: 80%;
       }
     fc-iss-input.left{
       padding: 4px 4px 6px 0px;
-        margin: 4px 6px 4px -12px;
+        margin: 12px 6px 4px -12px;
         max-width: 660px;
+        width: 80%;
     }
     paper-button{
 		 	 width: 50%;
@@ -86,9 +93,7 @@
 
 
     }
-    .card-actions{
-    	padding: 8px 6px;
-    }
+    
     label.returningCaller{
     	color: black;
     	font-size: 16px;
@@ -205,6 +210,10 @@
 				margin: 8px;
 
 		}
+    .topPad{
+      padding-top: 12px;
+      margin-top: 16px;
+    }
   
     @media(max-width: 620px){
     .container{
@@ -216,12 +225,23 @@
         @apply(--layout-flex-grow);
         @apply(--flex-grow);
     };
+    fc-iss-input:{
+      width: 45%;
+      height: 80%;
+      font-size:.8em;
+      margin: 24px;
+
+    }
+    form-content:{
+      margin: 24px;
+      padding: 16px;
+    }
   }
 
 </style>
-<firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerRole" order-by-value="{{inquiry.callerRole}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection>
+<firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerFullName" order-by-value="{{inquiry.callerFullName}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection>
 <array-selector ></array-selector>
-  <paper-card class="intakeForm vertical layout">
+  <div class="intakeForm vertical layout">
         <span class="pageNumbers">Page {{pageNumber}} of <content select=".pageTotal"></content></span>
                <section>
         <span class="timestamp">
@@ -232,12 +252,13 @@
         </span>
         </section>
     
-  <div class="card-content">
+  <div class="form-content" class="fit">
   <form>
-    <div class="vertical layout self-stretch nowrap">
+    <div class="vertical layout self-stretch nowrap topPad">
       <div class="horizontal layout flex wrap around-justified" hidden="{{!inquiry.isPreviousCaller}}">
         <section class="container holderClass">
-          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="callerFullName" iss-name="{{item.nameA}}"  iss-label="Caller Full Name"  iss-value="{{inquiry.callerFullName}}"  item-select-property="callerFullName"  value="{{inquiry.callerFullName}" value-object="{{valueObject}}" change-event="{{searchChangeEvent}}" dropdown-items="{{calls}}" multi-select="[[item.multiSelectA]]">
+   <section class="container holderClass">
+          <fc-iss-input class="left" id$="{{item.nameA}}_Search{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.name}}search" name="callerFullName" iss-name="callerFullName"  iss-label="Caller Full Name"  iss-value="{{inquiry.callerFullName}}"  item-select-property="callerFullName"  value="{{inquiry.callerFullName}" value-object="{{valueObject}}" change-event="{{searchChangeEvent}}" dropdown-items="{{calls}}" multi-select="[[item.multiSelectA]]">
           </fc-iss-input>
         </section>
        
@@ -249,11 +270,11 @@
       </section>
       <div class="horizontal layout flex wrap around-justified">
         <section class="container holderClass">
-          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  item-select-property="value"  value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA)}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.multiSelectA]]">
+          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA)}}" is-multi-select="{{item.isMultiSelectA}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
           </fc-iss-input>
         </section>
         <section class="container holderClass">
-          <fc-iss-input id$="{{item.nameB}}_{{counter}}" change-event="{{changeEventB}}" on-keyup="_sendInputChanged" on-change="objectHandler" iss-name="{{item.nameB}}" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" multi-select="[[item.multiSelectB]]">
+          <fc-iss-input id$="{{item.nameB}}_{{counter}}" change-event="{{changeEventB}}" value-object="{{valueObject}}" on-keyup="_sendInputChanged" on-change="objectHandler" iss-name="{{item.nameB}}" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" is-multi-select="{{item.isMultiSelectB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" multi-select="{{item.isMultiSelectB}}">
           </fc-iss-input>
         </section>  
     </div>
@@ -266,7 +287,7 @@
     <div class="card-actions horizontal layout flex container center-justified" style="min-height: 18%;">
           <content select=".buttons"></content>
     </div>
-  </paper-card>
+  </div>
 </template>
 <script>
 FcCallCenterForm=Polymer({
@@ -336,9 +357,13 @@ FcCallCenterForm=Polymer({
         type: Object,
         value: function(){return {};},
         notify: true,
-        observer:"observeValueObject",
+        // observer:"observeValueObject",
       },
       
+      },
+      ready(){
+         // this.initializeApiArrays();
+        console.log(this.selectedApi, this.selectedApiIndex);
       },
      
     changeEventAObserve(nv, ov){
@@ -387,9 +412,11 @@ observeChangeA(event, value, name){
     var target=e.target;
     //console.log(e.model.item);
     var name=target.name;
+   // this.set(["valueObject", name],target.value); 
     this.fire("sendInputVal", {value: target.value, name: name});
     this.searchVals[name]=target.value;
   },
+  findColumns(){console.log(this.selectedApi);}
 
 
 });

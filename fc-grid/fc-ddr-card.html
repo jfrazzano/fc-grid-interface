@@ -7,7 +7,7 @@
  <template id="ddr-card">
 <style>
  :host{
-        min-width: 320px;
+        min-width: 36px;
       
   
          
@@ -107,7 +107,7 @@
 <content select=".headerLeft">
 </content>
 </section>
-<section class="headerCenter layout vertical">
+<section class="headerCenter layout vertical" style="{{headerStyle}}"">
      [[_computeHeader(headerTitle)]]
      <content select=".headerCenter">
      </content>
@@ -220,6 +220,11 @@ FcDdrCard=Polymer({
       value: 0,
       notify: true
     },
+    headerStyle:{
+      type: String, 
+      value:function(){return "font-family: merriweather; font-weight: 400; font-size: 28px";},
+      notify: true
+    },
    
       currentWidth: {
           type: String, 
@@ -271,6 +276,7 @@ FcDdrCard=Polymer({
         var ht= Math.floor(parseFloat(newVal));
         //console.log(ht);//making sure no pxs or %s are sent in;
       Polymer.dom(this).setAttribute("style.height", ht+"px");
+      this.style.height=ht+"px";
     }
 
     },
@@ -293,6 +299,7 @@ FcDdrCard=Polymer({
       if(newVal && newVal!=oldVal){
         var wt= Math.floor(parseFloat(newVal));
       Polymer.dom(this).setAttribute("style.width", wt+"px");
+      this.style.width=wt+"px";
 
     }
     },
@@ -317,7 +324,7 @@ FcDdrCard=Polymer({
     _computeHeader: function(headerTitle){
       return headerTitle;
     },
-    computeHeadHeight: function(ch)
+    computeHeadHeight: function(ch, shrinkAway)
     { var height = (ch>1880)?"98px;":(ch<720)? "32px":"48px";
       return height;
     },

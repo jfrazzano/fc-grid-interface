@@ -1,0 +1,47 @@
+
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<dom-module id="fc-dropdown-libre">
+<template id="fc-dropdown-libre-template">
+<style></style>
+ <textarea contenteditable style="resize: none; outline: 0px solid;" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
+    <paper-listbox id="myFreeDropdown"  drpdwn-free={{hidden}} >
+        <template is="dom-repeat"  items="{{_computeDropDownItems(focused, clicked, quant, item.dropdownItems)}}" as="category" index-as="categoryIndex">
+            <paper-item value="{{category.title}}" filter="{{createFilter(issValue, searchOff)}}" onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}" btn-args="{{item.dataArgs}}"style$="padding: 0px; margin: 0px; font-size: 18px; font-weight: 700; font-family: merriweather; color: #009;{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" btn-property="{{item.dataProperty}}" class="block" style="border: 1px silver solid;margin-top: 3px; min-width: 180px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">  {{item.label}}
+                                    <span hidden="{{!item.selectCheck}}" class="check">&#10148;</span>
+
+                                    <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
+             </paper-item>
+        </template>
+    </paper-listbox>              
+ </template> 
+ </dom-module>
+ <script>
+ FcDropDownLibre=Polymer({
+    is:"fc-dropdown-libre",
+    listeners:{'openDropdown': 'setGetAndScroll'}
+    properties:{
+        arrayDropdown:{
+            type: Array, 
+            value: function(){ 
+                var njhs=localStorage.getItem("NJHS");
+                this.set("quant", njhs);
+                return njhs;
+            },
+            notify: true,
+        },
+
+
+
+
+    },
+    _computeDropDownItems(focused, clicked, quant, dropdownItems);
+    _computeItemSelectedPropValue(item,index, itemSelectProperty);
+    _computeItemSelectedPropertyName(item, index,itemSelectedProperty);
+    createFilter(issValue, searchOff);
+    _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText);
+
+
+
+
+ })      

@@ -1,12 +1,9 @@
 <link rel="import" href="fc-draggable-behavior.html">
 <link rel="import" href="fc-grid-style-behavior.html">
 <link rel="import" href="data-manager.html">
-<link rel="import" href="fc-grid-input-behaviors/fc-api-inputs-from-grids-behavior.html">
-<link rel="import" href="fc-grid-input-behaviors/fc-grids-from-api-inputs-behavior.html">
-<link rel="import" href="fc-grid-input-behaviors/fc-api-inputs-grid-navigation-behavior.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<!-- <link rel="import" href="../bower_components/iron-flex-layout/classes/iron-shadow-flex-layout.html"> -->
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
 <link rel="import" href="../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
@@ -14,6 +11,8 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../fc-call-center/fc-call-center-dialog.html">
+<link rel="import" href="../fc-call-center/fc-profile-class.html">
+<link rel="import" href="../bower_components/firebase-element/firebase-collection.html">
 <dom-module id="fc-indexed-db-helper">
 <template id="fc-indexed-db-helper">
 <style>
@@ -23,6 +22,7 @@
 	z-index:22;
 	
 };
+paper-icon-buttons{width:18px; height: 18px; padding: 2px; margin-right: 5px;}
 paper-dialog{
 	position: fixed;
 	min-width: 20vw;
@@ -46,18 +46,18 @@ paper-dialog-scrollable{
 
 }
 fc-iss-input{
-	margin:26px 8px;
+	margin:29px 8px;
 	font-family:merriweather;
 	color: #005c00;
 	font-size:1.2em;
+  width: 90%;
 
 }
 </style>
-  <fc-call-center-dialog id="ccdialog" data-arrays="{{dataArrays}}">
-      </fc-call-center-dialog>
+<!-- <firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerRole" order-by-value="{{inquiry.callerRole}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection> -->
 <paper-dialog id="idbHelper"  draggable drags no-cancel-on-outside-click always-on-top >
 <section class="horizontal flex layout around-justified" style="max-height: 28px!important;">
-       <span on-tap="_back">&#9664;</span> <paper-button on-tap="selectApi">{{chosen}}</paper-button><span on-tap="_forward">&#9654;</span>
+       <span on-tap="_back">&#9664;</span> <paper-button>{{chosen}}</paper-button><span on-tap="_forward">&#9654;</span>
     </section>
         <paper-dialog-scrollable>
         <form  id="callIntakeForm" method="get" action="/" is="iron-form">
@@ -68,10 +68,12 @@ fc-iss-input{
       		</section>
       		
       		<div class="horizontal layout flex wrap self-stretch around-justified">
-          		<fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" iss-name="{{item.nameA}}" iss-label="{{item.labelA}}" iss-value="{{item.valueA}}" item-select-property="value" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" dropdown-items="{{item.dropdownItemsA}}"  name="{{item.nameA}}" on-change="enterDataFromInterface" multi-select="[[item.multiSelectA]]">
+
+          		<fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" iss-name="{{item.nameA}}" change-event="{{changeEvent}}" iss-label="{{item.labelA}}" iss-value="{{item.valueA}}" item-select-property="value" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" dropdown-items="{{item.dropdownItemsA}}"  value-object="{{valueObject}}" name="{{item.nameA}}" on-up="enterDataFromInterface" dropdown-items="{{_computeDropDownItems(item.dropdownItemsA, calls, item.nameA)}}" on-change="assignA" multi-select="[[item.multiSelectA]]">
           		</fc-iss-input>
-          		<fc-iss-input id$="{{item.nameB}}_{{counter}}" iss-name="{{item.nameB}}" iss-value="{{item.valueB}}" value="{{item.valueB}}" iss-label="{{item.labelB}}" item-select-property="value" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" on-change="enterDataFromInterface" name="{{item.nameB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" multi-select="[[item.multiSelectB]]">
+          		<fc-iss-input id$="{{item.nameB}}_{{counter}}" iss-name="{{item.nameB}}" iss-value="{{item.valueB}}" value="{{item.valueB}}" iss-label="{{item.labelB}}" item-select-property="value" value-object="{{valueObject}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" on-change="enterDataFromInterface" name="{{item.nameB}}" class="right" dropdown-items="{{_computeDropDownItems(item.dropdownItemsB, calls, item.nameB, item.valueB)}}" multi-select="[[item.multiSelectB]]">
           		</fc-iss-input>
+
      		</div>
   		</template>
   		</p>
@@ -84,16 +86,18 @@ fc-iss-input{
           <paper-button style="height: 25px;" dialog-dismiss>Cancel</paper-button>
           <paper-button style="height: 25px;" dialog-confirm autofocus>OK</paper-button>
           <paper-button on-tap="submitHandler"> submit</paper-button>
-          <paper-button addRo0w on 
+          <paper-button on-top="addRow" >Add Row</paper-button>
         </div>
       </paper-dialog>
     
 <!--style="height: 0px; width: 1px; opacity: 0; visibility: hidden;"-->
 </template>
+</dom-module>
 <script>
+
 FcIndexedDbHelper=Polymer({
 	is:"fc-indexed-db-helper",
-	behaviors:[FCBehaviors.FcGridStyleBehavior, FCBehaviors.DraggableBehavior, FCBehaviors.FcApiInputsGridNavigationBehavior],
+	behaviors:[FCBehaviors.FocusedDataManagerBehavior,FCBehaviors.FcGridStyleBehavior, FCBehaviors.DraggableBehavior],
 	observers:["observeChangeB(changeEventB.event, changeEventB.value, changeEventB.name)", "observeChangeA(changeEventA.event, changeEventA.value, changeEventA.name)"],
 	
 	properties:{
@@ -108,16 +112,36 @@ FcIndexedDbHelper=Polymer({
       value:function(){return {};},
       notify: true,
     },
+    valueObject:{
+      type:Object,
+      value:function(){var ob={};
+        // var intake={};
+        // ob=new FocusedProfile(intake);
+        // var ox=new FocusedAdditionalAcademics({});
+        // var on=new FocusedPastAcademics({});
+        // ob=Object.assign(ob, ox, on);
+        return ob;
+      },
+      notify: true,
+      observe:"valueObject",
+    },
+    profiles: {
+    	type: Object,
+    	value: function(){return [];},
+    	notify: true,
+    },
    
    
 		apiLinked:{
 			type: Object,
 			notify: true,
 		},
-		
 	
-		//end api view Properties
-		//begin api view inputs array sets
+	viewCarrosell:{
+    type: Map,
+    var: function(){return new Map();},
+    notify: true,
+  },
 
 		indexeddbIndexArray:{
 			type:Array,
@@ -130,56 +154,129 @@ FcIndexedDbHelper=Polymer({
 
 	},
 
-	_computeShowDropButton(dropItems, dropItemsB){
-    var retVal=(dropItems!==false || dropItemsB!==false)?true: false;
-    return retVal;
+ready(){
+      
   },
 
+	_computeDropDownItems(items, calls,name, value){
+    if(items&&items.length>0){return items}
+      else if(value==undefined){value="_"; 
+    var keys=Object.keys(); 
+    console.log(keys); var retArray=[];
+    if(keys==undefined||keys.length<1)
+    {         var time=new Date().getTime();  console.log("start", time);
+          var myObj=calls.reduce((pre,val, index, array)=>{
+			   pre[val.fcid]=val.fcProfile;
+			   return pre;
+		    },{});
+        var end=new Date().getTime();
+        var delta=(end-time)/1000;
+          console.log("end", delta);
+          console.log(myObj);
+          var kezz=Object.keys(myObj);
+          console.log(kezz);
+         return kezz.map((key, i, array)=>{if(this.profiles[key]===undefined){;
+          return {"value": this.profiles[key][name]};}});
+    }
+    else
+    {	  console.log(this.profiles);	 
+      var array=keys.map((key)=>{
+			     if(this.profiles[key]==undefined){this.profiles[key][name]="000001";}
+           else{return {"value": this.profiles[key][name]};
+		        }});
+      console.log(array);
+      return array;
+	   }
+      }
+  },
 
+	observeValueObject(nv, ov)
+    {
+      
+
+
+      if(nv!=undefined)
+      { console.log(nv); consol.dir(nv);
+            var count =this.selectedApi.length;
+            console.log(count);
+            for(var i=0;i<count;i++)
+            {
+              var pageInputArray=this.selectedApi[i];
+              console.log(pageInputArray);
+              var inputSetCount=pageInputArray.length;
+              console.log(inputSetCount);
+              for(var j=0; j<inputSetCount;j++)
+              {
+                var inputOfSet=pageInputArray[j];
+                console.log(inputOfSet);
+                console.log("loook h343", nv.Profile[inputOfSet.nameA], nv.Profile[inputOfSet.nameB]);
+                if(nv.Profile[inputOfSet.nameA]!=undefined){this.set(["selectedApi",i,j,"valueA"], nv.fcProfile[inputOfSet.nameA]); }
+                if(nv.Profile[inputOfSet.nameB]!=undefined){this.set(["selectedApi",i, j,"valueB"], nv.fcProfile[inputOfSet.nameB]);console.log(this.selectedApi[i][j].valueA, this.selectedApi[i][j].valueB);}
+              }
+            }
+         }
+      }, 
+
+  assignA(e){
+    console.log(e);
+
+
+      },
+
+	_computeShowDropButton(dropItemsA, dropItemsB){
+    var retVal=(dropItemsA!==false || dropItemsB!==false)?true:!false;
+    return retVal;
+  },
 	
 	attached:function(){
-	
+		//this.initializeApiArrays();
 	},
 
 	
 	openit(){
 		this.$.idbHelper.opened=!this.$.idbHelper.opened;
-		this.initializeApiArrays();
+		//this.initializeApiArrays();
 		 
 	},
 
 	enterDataFromInterface(e){
-		//console.log(e, e.model.item);
-		var inputSet=e.model.item;
-		var arrayForInputPage=this.indexeddbIndexArray[this.itemsArraysIndex];
-		arrayForInputPage.forEach(function(obj, i, array){
-			var values=Object.values(obj);
-				var index=values.indexOf(e.target.value);
-				if(index>-1){
-					var keys=Object.keys(obj);
-					var key=keys[index];					
-					this.set(["indexeddbIndexArray", this.itemsArraysIndex, key],e.target.value);
-					obj[keys[index]]=e.target.value;
-				}
-		}, this);
-	},
+		console.log(e, e.model.item, this.indexeddbIndexArray, e.model);
+		if(e.model.item){
+    var keys=Object.keys(this.valueObject);
+      console.log(keys, e.model.item.nameA, e.model.item.nameB);
+    }
+		// var inputSet=e.model.item;
+		// var arrayForInputPage=this.indexeddbIndexArray[this.itemsArraysIndex];
+		// arrayForInputPage.forEach(function(obj, i, array){
+		// 	var values=Object.values(obj);
+		// 		var index=values.indexOf(e.target.value);
+		// 		if(index>-1){
+		// 			var keys=Object.keys(obj);
+		// 			var key=keys[index];					
+		// 			this.set(["indexeddbIndexArray", this.itemsArraysIndex, key],e.target.value);
+		// 			obj[keys[index]]=e.target.value;
 
+		// 		}
+		// }, this);
+	 
+
+  },
 
    submitHandler(event){
-   		if(this.arrayIndex===this.tagIndex){this.set("sameThing", true);}
+   		if(this.arrayIndex===this.tagIndex)
+   			{
+   				this.set("sameThing", true);
+   			}
         this.set("formSubmitOne", true);
           var formResults = this.$.callIntakeForm.serialize();
-            var d = new Date();
-            var n = -d.getTime();
-            var readableTime=new Date().toLocaleString();
-         
-          	this.gridMakerFunction(this.apiChoices[this.selectedApiIndex].apiName);
+          	this.gridMakerFunction(this.apiChoices[this.selectedApiIndex].apiName, formResults);
            		this.wipeCleanInputs();
           			// var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
 			},
 
-wipeCleanInputs(){this.set("counter", 0); this.initializeHelper();this.set("student",{});},
+wipeCleanInputs(){this.set("counter", 0);},
 
+observeSelectedApiIndex(nv, ov){ if(nv&&nv!==ov){var changeThePage="dosomething";}},
 
 computeItemHeaderHidden(header){
     if(header){return false;}
@@ -204,4 +301,4 @@ observeChangeA(event, value, name){
 
 });
 </script>
-</dom-module>
+
