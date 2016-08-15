@@ -15,18 +15,9 @@ if (!window.indexedDB) {
 window.FCBehaviors = window.FCBehaviors || {};
 FCBehaviors.FcGridInitializerBehavior = {
 	
-  observers:["observeDataArrays(dataArrays.*)"],
+ 
   properties: {
-     selectedArraySet:{
-        type:Array,
-        value:function(){return [];},
-        notify: true
-    },
-    dataArrays:{
-        type:Array,
-        value:function(){return [];},
-        notify: true,
-    },
+     
     fromDb:{
     	type: Boolean, 
     	value:function(){return false;},

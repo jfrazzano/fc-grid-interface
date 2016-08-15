@@ -1,5 +1,7 @@
 
 <link rel="import" href="FC_frontpage_logo.png">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <dom-module id="fc-call-center-form-one">
 <template id="fc-call-center-form-one-template">
 <style>
@@ -136,14 +138,14 @@
     font-size: 12px;
     padding: 8px 8px 8px 2px;
     float: left;
-    margin-top: -30px;
+    margin-top: -26px;
     margin-left: 5px;
 
   }
   .pageNumbers{
     position: absolute; 
     right: 48px; 
-    top: 38px;
+    top: 20px;
     font-size: 16px;
   }
   
@@ -152,7 +154,7 @@
     color: brown;
     font-family: times;
     float: right;
-    top: 20px;
+    top: 12px;
     padding: 3px;
     }
  
@@ -193,7 +195,21 @@
 		}
 		.radioGroupBlock{
 			padding: 4px;
-		},
+		}
+    .bar{
+    
+      min-width:180px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 54px;
+
+    }
     paper-radio-button{margin-top:-4px;}
    
 		.importantNote{
@@ -226,11 +242,10 @@
     };
   }
 </style>
-<form>
+<form is="iron-form" id="splashPageForm" method="get" action="/">
   <!-- <img src="FC_frontpage_logo.png" height="52" width="110"> -->
-  <paper-card class="intakeForm vertical layout" src="FC_frontpage_logo.png" on-tap="getfunction">
-
-    <span style="position: absolute; font-size: 15px; right: 16px; top: 85px;">Page 1 of <content select=".pageTotal"></content></span> 
+  <div class="intakeForm vertical layout" src="FC_frontpage_logo.png" on-tap="getfunction">
+    <span style="position: absolute; font-size: 15px; right: 16px; top: 5px;">Page 1 of <content select=".pageTotal"></content></span> 
     <section>        
       <span class="timestamp">
         [[time]], on [[date]]
@@ -239,8 +254,138 @@
         * Indicates a Required Field
       </span>
     </section>
+    <section class="bar"></section>
   <div class="card-content">
-    <details>
+    <fc-dropdown-libre check-event="{{checkEvent}}"></fc-dropdown-libre>
+   
+   <paper-status></paper-status>
+              
+                <div on-tap="submitFirstPage">
+<content select=".next"></content>
+              
+                </div>
+              
+              </div>
+              </div>
+              </form>
+   	</template>
+ 	<script>
+FcCallCenterFormOne=Polymer({
+    is:"fc-call-center-form-one",
+    properties:{
+    	time:{
+			type:Date,
+			value:function(){
+					var time=new Date().toLocaleTimeString();
+					console.log(time);
+					return time;
+			},
+			notify: true
+		},
+    checkEvent:{
+      type: Object, 
+      value: function(){return {};},
+      notify: true,
+      observer: "observeCheckEvent",
+
+    },
+    radioOther:{
+      type: Boolean,
+      value:function(){return false;},
+      notify: true
+    },
+    pageIndex:{
+      type:Number,
+      value: function(){return 0;},
+      notify: true,
+    },
+    currentHeight:{
+      type: String,
+      notify: true,
+    },
+    searchOff:{
+      type: Boolean, 
+      value: function(){return false;},
+      notify: true 
+    },
+
+		date:{
+				type: Date,
+				value: function(){
+          var date=new Date().toLocaleDateString();
+					return date;
+            },
+				notify: true,
+		    },
+    valueObject:{
+      type: Object, 
+      value:function(){return {};},
+        notify: true,
+      },
+    inquiry:{
+      type: Object, 
+      value:function(){return {};},
+        notify: true,
+      }
+    },
+    observeCheckEvent(newVal, oldVal){
+      if(newVal){console.log(newVal, oldVal);
+       var setSearch= (newVal.value==="noSearch")?true:false;
+       this.set("searchOff", setSearch);
+       console.log(setSearch);
+      var frankenObject= "valueObject."+"newProfile";
+       this.set(frankenObject, setSearch);
+      }
+    },
+
+      getfunction(e){
+       var setValue= (e.target.checked===true && e.targetname!=undefined)?{value: e.target.name, name: e.target.class}:null; 
+       console.log(e.target.class, e.target.name, e.target.checked, console.log(setValue));
+         if(Polymer.dom(e.target).classList.contains("callerType")){
+                   var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
+                   var two=(e.target.name==="currentClient")?true: false;
+                   this.set("inquiry.isPreviousCaller", one);
+                   if(e.target.name!=undefined){
+                   this.set("inquiry.callerType", e.target.name);
+                    }
+                   this.set("inquiry.isCurrentClient", two)
+           }
+         else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
+                       // this.set("radioOther", true);
+                       this.set("inquiry.callerRole", "other");
+         
+           }
+         if(e.target.name!=undefined&&Polymer.dom(e.target).classList.contains("callerRole")){
+               this.set("inquiry.callerRole", e.target.name); 
+               this.set("valueObject.callerRole", e.target.name);
+            
+           }
+        
+         this.set("valueObject", this.inquiry);
+         this.inputsDisplayArray
+                     console.log(this.inquiry, this.valueObject,this.inputsDisplayArray);
+       },
+       submitFirstPage(e){
+        var formResults =  this.$.splashPageForm.serialize();     
+          console.log(formResults);
+
+       },
+
+
+     });
+</script>
+</dom-module>
+<!--
+
+<<!-- 
+
+
+
+
+
+
+
+<details>
   <summary class="sumTag">     <label id="label3" class="isPreviousCaller" name="isPreviousCaller">Caller Type:</label><span style="color: brown;">  *</summary>
   <section class="detTag"> 
   <span class="instruction">Begin the call:</span><section style="color: #009; font-size: 13; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
@@ -249,9 +394,9 @@
   &nbsp;&nbsp;&nbsp;&nbsp;[PAUSE].<br>
   <span class="instruction">Then ask:</span><br>
   &nbsp;&nbsp;&nbsp;&nbsp;"Are you a returning caller? Or is this your first time contacting Focused?"
-  <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]  		
+  <br>&nbsp;&nbsp;&nbsp;&nbsp;[PAUSE]     
   <br><span class="instruction">Now, record the caller's response below.</span>
-  	<section class="detailPads">
+    <section class="detailPads">
       <details>
         <summary class="sumTag">DEFINITIONS: Focused Caller Types</summary>
           <section class="detTag"> 
@@ -260,21 +405,21 @@
       </details>
     </section>
   </section>
-    </details>
-     <section class="radioGroupBlock">
+    </details> -->
+<!--      <section class="radioGroupBlock">
      <label id="label3" class="callerType" name="callerType"></label>
           <paper-radio-group id="callerType" activate-event="getfunction"  aria-labelledby="label3">
               <paper-radio-button class="callerType" name="newClient">This is a <a><u>New Caller</u></a>!</paper-radio-button>
               <paper-radio-button class="callerType" name="repeatCaller">This is a <a><u>Repeat Caller</u></a>, who has yet to become a client.</paper-radio-button>
-              <paper-radio-button class="callerType" name="activeClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
+              <paper-radio-button class="callerType" name="currentClient">This is a <a><u>Current, Active Client</u></a>.</paper-radio-button>
               <paper-radio-button class="callerType" name="inactiveClient">This is a <a><u>Past Client</u></a>.</paper-radio-button>
               <paper-radio-button class="callerType" name="nonClient">This is a <a><u>Non-Client Caller</u></a>.</paper-radio-button>
           </paper-radio-group>
-        </section>
+        </section> 
 
-    <section class="radioGroupBlock">
+ <section class="radioGroupBlock">
     <details>
-      <summary class="sumTag"><label id="label4" class="callerRole">Caller Role:</label>  <span style="color: brown;">  *</summary></summary>
+      <summary class="sumTag"><label id="label4" class="callerRole">Caller Role:</label>  <span style="color: brown;">  *</summary>
         <section class="detTag"> 
           <span class="instruction">Identifying Caller Makes the Calls Faster and Easier to Handle</span>
           <section style="color: #009; font-size: 14; float: right; text-align: margin-left: 70%; max-width: 110px; padding: 4px; background: white; border: double blue 6px;">Call Tip #1</section>
@@ -304,89 +449,7 @@
         <label for="callerRoleOther" value="Below, Attempt a Brief Categorization of the 'OTHER' Caller--All previous categorizations will be selectable from a dropdown as you type."></label>
         <fc-iss-input item-select-property="" iss-label="Caller Role:Other" iss-value="{{other}}" iss-name="other"></fc-iss-input>
    </section>
-   <paper-status></paper-status>
-              
-                </div>
-<content select=".next"></content>
-              
-                </div>
-            </paper-card>
-            </form>
-   	</template>
- 	<script>
-FcCallCenterFormOne=Polymer({
-    is:"fc-call-center-form-one",
-    properties:{
-    	time:{
-			type:Date,
-			value:function(){
-					var time=new Date().toLocaleTimeString();
-					console.log(time);
-					return time;
-			},
-			notify: true
-		},
-    radioOther:{
-      type: Boolean,
-      value:function(){return false;},
-      notify: true
-    },
-    pageIndex:{
-      type:Number,
-      value: function(){return 0;},
-      notify: true,
-    },
-    currentHeight:{
-      type: String,
-      notify: true,
-    },
-
-		date:{
-				type: Date,
-				value: function(){
-          var date=new Date().toLocaleDateString();
-					return date;
-            },
-				notify: true,
-		    },
-    inquiry:{
-      type: Object, 
-      value:function(){return {};},
-        notify: true,
-      }
-    },
-
-      getfunction(e){
-       var setValue= (e.target.checked===true && e.targetname!=undefined)?{value: e.target.name, name: e.target.class}:null; 
-       console.log(e.target.class, e.target.name, e.target.checked, console.log(setValue));
-         if(Polymer.dom(e.target).classList.contains("callerType")){
-                   var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
-                   var two=(e.target.name==="activeClient")?true: false;
-                   this.set("inquiry.isPreviousCaller", one);
-                   this.set("inquiry.callerType", e.target.name);
-                   this.set("inquiry.isActiveClient", two)
-           }
-         else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
-                       // this.set("radioOther", true);
-                       this.set("inquiry.callerRole", "other");
-             //            var pack=new FcInquiry(this.inquiry);
-             // this.set("inquiry",pack);
-           }
-         else{
-               this.set("inquiry.callerRole", e.target.name); 
-            
-             // var pack=new FcInquiry(this.inquiry);
-      //       // this.set("inquiry",pack);
-           }
-         if(this.inquiry.callerRole!=undefined&& this.inquiry.isPreviousCaller===true){
-         this.set("valueObject.callerRole", this.inquiry.calllerRole);
-         this.set("valueObject.callerType", this.inquiry.callerType);
-          }
-
-       }
 
 
-     });
-</script>
-</dom-module>
+        -->
 

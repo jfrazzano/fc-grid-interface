@@ -10,6 +10,8 @@ importScripts("bower_components/firebase/firebase.js");
 					this.calls=null;
 					this.args=null;
 					this.cells=null;
+					this.gridsHolder={};
+					
 					// this.dataProperties={};
 					// this.extraProperties();
 					// this.dataProperties
@@ -36,7 +38,334 @@ importScripts("bower_components/firebase/firebase.js");
 					argRequest.data.status = "complete";
 				}
 				setDatabaseInitialIndex(){}
-				getAllProfiles(argRequest)
+			
+
+
+
+			updateObjectStoreWithNewObjects(args){
+				var dbName=args.dbName; var storeName=args.storeName; var version=args.version; var data=args.data;
+
+				      	var request=indexedDB.open(dbName, version);
+				      	console.log(storeName, dbName, version, data);
+				      	request.onerror = (e)=>{
+				                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+				                  e.stopPropogation();
+				                  var request=indexedDB.open(dbName, undefined);
+				                  request.onerror = (ev)=>{ 
+				                          console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
+				                  };
+				                  request.onsuccess =(event)=>{
+				                          var db = event.target.result;
+				                          var transaction = db.transaction([storeName], "readwrite");
+				                          var objectStore = transaction.objectStore([storeName]);
+				                         if(Array.isArray(data)){
+				                          data.forEach(function(ref){
+				                                  objectStore.put(ref);
+				                            });
+				                          console.log("SUCCESS!!");
+				                  			}
+				                  		else{objectStore.put(data);}
+				                  };
+				              };//end request on error closure
+				        request.onsuccess =(event)=>{
+				            var db = event.target.result;
+				            console.log(storeName);
+				            var transaction = db.transaction(storeName, "readwrite");
+				            var objectStore = transaction.objectStore(storeName);
+				            if(Array.isArray(data)){
+				                          data.forEach(function(ref){
+				                                  objectStore.put(ref);
+				                            });
+				                          console.log("SUCCESS!!");
+				                  			}
+				                  		else{objectStore.put(data);
+				                  		 if(this.gridsHolder[dbName]){
+			            	var keys=Object.keys(data);
+				                  		keys.forEach((cell,i)=>{this.gridsHolder[dbName][i].splice(1,0,cell);});
+			            	var newGrid=this.gridsHolder[dbName];
+			            	self.postMessage({returnMessage: "gridToBePlaced", dbName: dbName, data: newGrid, version: version, storeName: storeName});
+
+				            console.log("SUCCESS!! FIRST TRY!!");
+				        }}
+				        };
+				    }	
+
+
+
+
+				updateValuesWithCursor(args){
+					var dbName=args.dbName;
+					var storeName=args.storeName;
+					var version=args.version;
+					var prop=args.prop;
+					var key=args.key;
+					var fcidVal=args.fcidVal;
+					var propToUpdate=args.propToUpdate;
+					var updateValue=args.updateValue;
+
+					 var request = indexedDB.open(dbName,version);
+					 var query;
+
+					 request.onerror = (event)=>{
+                		console.log(dbName, version, "db error");
+                		// request=indexedDB.open(dbName, storeName, undefined);
+                		};
+                	request.onsuccess=(e)=>{  
+                			console.log("success");
+                			var db = event.target.result;
+                			var transaction = db.transaction([storeName], "readonly");
+                			var objectStore = transaction.objectStore([storeName]);
+					
+					objectStore.openCursor().onsuccess = function(event) {
+      						var cursor = event.target.result;
+      						if(cursor) {
+        					if(cursor.value[key] === fcidVal) {
+          					var updateData = cursor.value;
+          
+          					updateData[propToUpdate] = updateValue;
+          				var request = cursor.update(updateData);
+          					request.onsuccess = function() {
+           							 console.log('ThisExampleSucks');
+          									};
+                						};
+                			};
+
+                		};
+
+                	};
+
+
+				}
+
+				createIndexedDb(e){
+					console.log(e);
+					var dbName=e.data.dbName;
+					var version=e.data.version;
+					var indicies=e.data.indicies;
+					var data=e.data.data;
+					var storeName=e.data.storeName;
+					var key=e.data.key;
+					var bitVal=(e.data.bitVal)?e.data.bitVal: false
+
+			       	var request = indexedDB.open(dbName, version);
+            		console.log(dbName, version, data, "db");
+              
+            		request.onerror = function(event){
+                		console.log(dbName, version, data, "db error");
+              			};
+            		request.onupgradeneeded = (event)=>{
+                		var db = event.target.result;
+                		console.log("we are creating it");
+                		var objectStore = db.createObjectStore([storeName], { keyPath: key, autoIncrement:bitVal});
+                		console.log("created store");
+                		objectStore.createIndex([key], [key], {unique: true });
+                		if(Array.isArray(indicies)){
+                		indicies.forEach(function(elem,index){
+                			if(elem.match(key))
+                			{
+
+                			}
+   							else{
+   								objectStore.createIndex([elem], [elem], {unique: false });}
+                							});
+                			}
+                			console.log("completed the indicies");
+                		if(Array.isArray(data)){
+                    		data.forEach(function(data,i,a){
+                    			// var keys=Object.keys(profile);
+                    			// keys.forEach
+                          			objectStore.put(data);
+          
+                 			 });
+                    	  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, indicies: indicies, key: key, data: data});
+                    	}
+                    else{
+                    	objectStore.put(data);
+                            self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, indicies: indicies, key: key, data: data});
+                		}//end on upgradeneeded
+         		
+
+         	};//onsuccess
+         }
+         		deleteDatabase(names){
+         			 console.log("CALL deleteDatabase");
+								if(Array.isArray(names))
+								{
+									names.forEach((name)=>{
+													indexedDB.deleteDatabase(name);
+												});
+									self.postMessage(['yourdirtyworkisdone on databases', names]);
+								}
+								else{indexedDB.deleteDatabase(names);}
+				}
+
+				getDatabase(args){
+						var dbName=args.dbName;
+						var storeName=args.storeName;
+						var version=args.version;
+						console.log(dbName, storeName, version);
+					 var request = indexedDB.open(dbName,version);
+					 var query;
+            		
+            		request.onerror = (event)=>{
+                		console.log(dbName, version, "db error");
+                		request=indexedDB.open(dbName, storeName, undefined);
+                		request.onerror=(ev2)=>{
+                			console.log("second fail review data and try again after adjusting code");
+                		};
+                		request.onsuccess=(e)=>{  
+                			console.log("success");
+                			var db = event.target.result;
+                			var transaction = db.transaction([storeName], "readonly");
+                			var objectStore = transaction.objectStore([storeName]);
+                			query = objectStore.getAll();
+
+                
+                			query.onerror=(quev)=>{
+                    			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
+                			};
+                			query.onsuccess =(queryEvent)=>{
+                  				// if(asGrid===true){
+                   					var cells = queryEvent.target.result;
+                   					console.log(cells);
+                   					this.cells=cells;
+                   				
+                   					console.log(args.data.name, args.data);
+                   					var orderedCells=cells.map((cell,i)=>{
+                   					  var newKvPairs =args.data[0].name.reduce((kvpair,property,i)=>{
+                   					  	kvpair.push([property, args.data[0].label[i], cell[property]]);
+                   					  	return kvpair;
+                   					  }, []);
+                   					  return newKvPairs;
+                   					});
+                   					console.log(orderedCells);
+                   					var rev=orderedCells;
+                   					var counter=rev.length;
+                   					for(var o=0;o<counter;o++){
+				                   		var newGrid=args.data[1].map((column, i, arr)=>{
+				                   			var z=0;
+                   							while(rev[o][z]!=undefined&&column[0].value!=rev[o][z][1]&&rev[o][z][1]!=undefined){
+                   								z++;}
+                   								if(rev[o][z]!=undefined&&column[0].value==rev[o][z][1]){
+                   								 var objA={};
+                   								 objA=Object.assign(objA, column[1]);
+                   								 objA.value=rev[o][z][2];
+                   								column.splice(1,0, objA);
+                   							}
+                   							return column;
+                   					});
+				                   	}
+				                   	
+                   					self.postMessage(["databaseReturn", newGrid]);
+                   					console.log("i left line 264");
+                   					console.log(newGrid);
+                   					this.gridsHolder[dbName]=newGrid;
+                   					self.postMessage({returnMessage: "databaseReturn", dbName: dbName, data: newGrid, version: version, storeName: storeName});
+                   					  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, version: version,data: newGrid});
+                			};
+            			};
+         	 		};
+         	 		request.onsuccess=(e)=>{  
+            			console.log("success");
+            			var db = e.target.result;
+            			console.log(dbName, version, storeName);
+            			var transaction = db.transaction([storeName], "readonly");
+            			var objectStore = transaction.objectStore([storeName]);
+            			query = objectStore.getAll();
+            
+            			query.onerror=(quev)=>{
+                			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
+            			};
+            			query.onsuccess =(queryEvent)=>{
+              				
+               					var cells = queryEvent.target.result;
+               					console.log(cells);
+               					console.log(args.data.name, args.data);
+                   					var orderedCells=cells.map((cell,i)=>{
+                   					  var newKvPairs =args.data[0].name.reduce((kvpair,property,i)=>{
+                   					  	kvpair.push([property, args.data[0].label[i], cell[property]]);
+                   					  	return kvpair;
+                   					  }, []);
+                   					  return newKvPairs;
+                   					});
+                   					console.log(orderedCells);
+                   					var rev=orderedCells;
+                   					var counter=rev.length;
+                   					for(var o=0;o<counter;o++){
+				                   		var newGrid=args.data[1].map((column, i, arr)=>{
+				                   			var z=0;
+
+                   							while(rev[o][z]!=undefined&&column[0].value!=rev[o][z][1]&&rev[o][z][1]!=undefined){
+                   								z++;}
+                   								if(rev[o][z]!=undefined&&column[0].value==rev[o][z][1]){
+                   								 var objA={};
+                   								 var ro=o+1;
+                   								 var obk={storeName:storeName, version: version}
+                   								 objA=Object.assign(objA, column[ro], obk);
+                   								 objA.value=rev[o][z][2];
+
+                   								 objA.name=rev[o][z][0];
+                   								 objA.label=rev[o][z][1];
+                   								 objA[objA.name]=objA.value;
+                   								  if(objA.name=="fcid"){objA.valueObject=cells[o]; console.log(cells[ro], objA.value, objA.name);}
+                   								column.splice(ro,1, objA);
+                   							}
+                   							return column;
+                   					});
+				                   	}
+				                   		console.log(newGrid, newGrid);
+                   					self.postMessage(["databaseReturn", newGrid]);
+                   					console.log("i left line 264");
+                   					this.gridsHolder[dbName]= newGrid;
+                   					console.log(this.gridsHolder[dbName]);
+                   					self.postMessage({returnMessage: "databaseReturn", dbName: dbName, data: newGrid, version: version, storeName: storeName});
+                   					  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, version: version,data: newGrid});
+            			};
+        			};	          
+				}
+				getIndex(){
+					this.getDatabase("Index", "Index", 1);
+				}
+				addObjectToObjectStore(dbName, storeName, version,indicies,data, key, context){
+			      	var request=indexedDB.open(dbName, version);
+			      	request.onerror = (e)=>{
+			                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+			                  e.stopPropogation();
+			                  var request=indexedDB.open(dbName, undefined);
+			                  request.onerror = (ev)=>{ 
+			                          console.log("This is the second failed ATTEMPT.  As a result a new database with the specified database and substore names and versions will be created at this time.");
+			                         var e={}
+			                         // e.data={"dbName":dbName,"storeName": storeName,"version":1,"indicies": indicies,"data": ref,"key": fcid};
+			                         //  upgradeIndexedDb(e);
+			                          e.stopPropogation();
+			                  };
+			                  request.onsuccess =(event)=>{
+			                          var db = event.target.result;
+			                          var transaction = db.transaction([storeName], "readwrite");
+			                          var objectStore = transaction.objectStore([storeName]);
+			                            objectStore.put(ref);
+			                          console.log("SUCCESS!!");
+			                  };
+			              };//end request on error closure
+			        request.onsuccess =(event)=>{
+			            var db = event.target.result;
+			            var transaction = db.transaction([storeName], "readwrite");
+			            var objectStore = transaction.objectStore([storeName]);
+			                    objectStore.put(ref);
+			            console.log("SUCCESS!! FIRST TRY!!");
+			            if(this.gridHolder[dbName]){
+			            	var keys=Object.keys(ref);
+			            	keys.forEach((cell,i)=>{this.gridHolder[dbName][i].splice(1,0,cell);});
+			            	var newGrid=this.gridHolder[dbName];
+			            	self.postMessage({returnMessage: "gridToBePlaced", dbName: dbName, data: newGrid, version: version, storeName: storeName});
+
+
+
+			            }
+			        };
+			    }
+
+			   getAllProfiles(argRequest)
 				{
 					console.log("Data Manager Worker received getAllCalls Request");
 					this.request = argRequest;
@@ -135,7 +464,7 @@ importScripts("bower_components/firebase/firebase.js");
 							dbName:"callCenter",
 							storeName:"allMessages",
 							version:4,
-							indicies:["callerRole", "callerType", "messageNumber", "isClosed", "timestamp","callerFullName", "fcid", "relatedStudent"],
+							indicies:["callerRole", "callerType", "messageNumber", "isClosed", "timestamp","callerFullName", "fcid", "relatedStudent", "timestamp", "date"],
 							data: datum, 
 							bitVal: true
 							
@@ -147,152 +476,7 @@ importScripts("bower_components/firebase/firebase.js");
 					});
 
 				}
-				createIndexedDb(e){
-					console.log(e);
-					var dbName=e.data.dbName;
-					var version=e.data.version;
-					var indicies=e.data.indicies;
-					var data=e.data.data;
-					var storeName=e.data.storeName;
-					var key=e.data.key;
-					var bitVal=(e.data.bitVal)?e.data.bitVal: false
 
-			       	var request = indexedDB.open(dbName, version);
-            		console.log(dbName, version, data, "db");
-              
-            		request.onerror = function(event){
-                		console.log(dbName, version, data, "db error");
-              			};
-            		request.onupgradeneeded = (event)=>{
-                		var db = event.target.result;
-                		console.log("we are creating it");
-                		var objectStore = db.createObjectStore([storeName], { keyPath: key, autoIncrement:bitVal});
-                		console.log("created store");
-                		objectStore.createIndex([key], [key], {unique: true });
-                		if(Array.isArray(indicies)){
-                		indicies.forEach(function(elem,index){
-                			if(elem.match(key))
-                			{
-
-                			}
-   							else{
-   								objectStore.createIndex([elem], [elem], {unique: false });}
-                							});
-                			}
-                			console.log("completed the indicies");
-                		if(Array.isArray(data)){
-                    		data.forEach(function(data,i,a){
-                    			// var keys=Object.keys(profile);
-                    			// keys.forEach
-                          			objectStore.put(data);
-          
-                 			 });
-                    	  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, indicies: indicies, key: key, data: data});
-                    	}
-                    else{
-                    	objectStore.put(data);
-                            self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, indicies: indicies, key: key, data: data});
-                		}//end on upgradeneeded
-         		
-
-         	};//onsuccess
-         }
-         		deleteDatabase(names){
-         			 console.log("CALL deleteDatabase");
-								if(Array.isArray(names))
-								{
-									names.forEach((name)=>{
-													indexedDB.deleteDatabase(name);
-												});
-									self.postMessage(['yourdirtyworkisdone on databases', names]);
-								}
-								else{indexedDB.deleteDatabase(names);}
-				}
-
-				getDatabase(args){
-						var dbName=args.dbName;
-						var storeName=args.storeName;
-						var version=args.version;
-						console.log(dbName, storeName, version);
-					 var request = indexedDB.open(dbName,version);
-					 var query;
-            		
-            		request.onerror = (event)=>{
-                		console.log(dbName, version, "db error");
-                		request=indexedDB.open(dbName, storeName, undefined);
-                		request.onerror=(ev2)=>{
-                			console.log("second fail review data and try again after adjusting code");
-                		};
-                		request.onsuccess=(e)=>{  
-                			console.log("success");
-                			var db = event.target.result;
-                			var transaction = db.transaction([storeName], "readonly");
-                			var objectStore = transaction.objectStore([storeName]);
-                			query = objectStore.getAll();
-                
-                			query.onerror=(quev)=>{
-                    			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
-                			};
-                			query.onsuccess =(queryEvent)=>{
-                  				// if(asGrid===true){
-                   					var cells = queryEvent.target.result;
-                   					console.log(cells);
-                   					this.cells=cells;
-                   					self.postMessage({returnMessage: "databaseReturn", dbName: dbName, data: cells, version: version, storeName: storeName});
-                			};
-            			};
-         	 		};
-         	 		request.onsuccess=(e)=>{  
-            			console.log("success");
-            			var db = e.target.result;
-            			console.log(dbName, version, storeName);
-            			var transaction = db.transaction([storeName], "readonly");
-            			var objectStore = transaction.objectStore([storeName]);
-            			query = objectStore.getAll();
-            
-            			query.onerror=(quev)=>{
-                			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
-            			};
-            			query.onsuccess =(queryEvent)=>{
-              				
-               					var cells = queryEvent.target.result;
-               					console.log(cells);
-                   					self.postMessage(["databaseReturn", cells]);
-            			};
-        			};	          
-				}
-				getIndex(){
-					this.getDatabase("Index", "Index", 1);
-				}
-				addObjectToObjectStore(dbName, storeName, version,indicies,data, key, context){
-			      	var request=indexedDB.open(dbName, version);
-			      	request.onerror = (e)=>{
-			                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
-			                  e.stopPropogation();
-			                  var request=indexedDB.open(dbName, undefined);
-			                  request.onerror = (ev)=>{ 
-			                          console.log("This is the second failed ATTEMPT.  As a result a new database with the specified database and substore names and versions will be created at this time.");
-			                         var e={}
-			                         // e.data={"dbName":dbName,"storeName": storeName,"version":1,"indicies": indicies,"data": ref,"key": fcid};
-			                         //  upgradeIndexedDb(e);
-			                          e.stopPropogation();
-			                  };
-			                  request.onsuccess =(event)=>{
-			                          var db = event.target.result;
-			                          var transaction = db.transaction([storeName], "readwrite");
-			                          var objectStore = transaction.objectStore([storeName]);
-			                            objectStore.put(ref);
-			                          console.log("SUCCESS!!");
-			                  };
-			              };//end request on error closure
-			        request.onsuccess =(event)=>{
-			            var db = event.target.result;
-			            var transaction = db.transaction([storeName], "readwrite");
-			            var objectStore = transaction.objectStore([storeName]);
-			                    objectStore.put(ref);
-			            console.log("SUCCESS!! FIRST TRY!!");
-			        };
-			    }
 				constructAndRecordInquiry(args){
 					this.deleteDatabase("object Object");
 					var data=args.data;
@@ -304,8 +488,7 @@ importScripts("bower_components/firebase/firebase.js");
 
 
 				}
-				handleEvents(argSnapshot)
-				{
+				handleEvents(argSnapshot){
 				// console.log("Data Manager Worker", argSnapshot.val());
 				// this.request.data.data = argSnapshot.val();
 				// this.request.data.status = "complete";
@@ -644,35 +827,35 @@ class FoCoInquiry{
 
 
 
-								// 	self.updateObjectStoreWithNewObjects=(name, version,replacementArray)=>{
-								// 						      	var request=indexedDB.open(name, version);
-								// 						      	request.onerror = (e)=>{
-								// 						                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
-								// 						                  e.stopPropogation();
-								// 						                  var request=indexedDB.open(name, undefined);
-								// 						                  request.onerror = (ev)=>{ 
-								// 						                          console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
-								// 						                  };
-								// 						                  request.onsuccess =(event)=>{
-								// 						                          var db = event.target.result;
-								// 						                          var transaction = db.transaction("cell", "readwrite");
-								// 						                          var objectStore = transaction.objectStore("cell");
-								// 						                          replacementArray.forEach(function(ref){
-								// 						                                  objectStore.put(ref);
-								// 						                            });
-								// 						                          console.log("SUCCESS!!");
-								// 						                  };
-								// 						              };//end request on error closure
-								// 						        request.onsuccess =(event)=>{
-								// 						            var db = event.target.result;
-								// 						            var transaction = db.transaction("cell", "readwrite");
-								// 						            var objectStore = transaction.objectStore("cell");
-								// 						            replacementArray.forEach(function(ref){
-								// 						                    objectStore.put(ref);
-								// 						              });
-								// 						            console.log("SUCCESS!! FIRST TRY!!");
-								// 						        };
-								// 						    };										
+									updateObjectStoreWithNewObjects=(name, version,replacementArray)=>{
+														      	var request=indexedDB.open(name, version);
+														      	request.onerror = (e)=>{
+														                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+														                  e.stopPropogation();
+														                  var request=indexedDB.open(name, undefined);
+														                  request.onerror = (ev)=>{ 
+														                          console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
+														                  };
+														                  request.onsuccess =(event)=>{
+														                          var db = event.target.result;
+														                          var transaction = db.transaction("cell", "readwrite");
+														                          var objectStore = transaction.objectStore("cell");
+														                          replacementArray.forEach(function(ref){
+														                                  objectStore.put(ref);
+														                            });
+														                          console.log("SUCCESS!!");
+														                  };
+														              };//end request on error closure
+														        request.onsuccess =(event)=>{
+														            var db = event.target.result;
+														            var transaction = db.transaction("cell", "readwrite");
+														            var objectStore = transaction.objectStore("cell");
+														            replacementArray.forEach(function(ref){
+														                    objectStore.put(ref);
+														              });
+														            console.log("SUCCESS!! FIRST TRY!!");
+														        };
+														    };										
 
 
 

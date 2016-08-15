@@ -1,25 +1,89 @@
 
+<link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
+
+<link rel="import" href="../fc-call-center/fc-calendar-list-widget-behavior.html">
+<link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <dom-module id="fc-dropdown-libre">
 <template id="fc-dropdown-libre-template">
-<style></style>
- <textarea contenteditable style="resize: none; outline: 0px solid;" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
-    <paper-listbox id="myFreeDropdown"  drpdwn-free={{hidden}} >
-        <template is="dom-repeat"  items="{{_computeDropDownItems(focused, clicked, quant, item.dropdownItems)}}" as="category" index-as="categoryIndex">
-            <paper-item value="{{category.title}}" filter="{{createFilter(issValue, searchOff)}}" onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}" btn-args="{{item.dataArgs}}"style$="padding: 0px; margin: 0px; font-size: 18px; font-weight: 700; font-family: merriweather; color: #009;{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" btn-property="{{item.dataProperty}}" class="block" style="border: 1px silver solid;margin-top: 3px; min-width: 180px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">  {{item.label}}
-                                    <span hidden="{{!item.selectCheck}}" class="check">&#10148;</span>
+<style>
+    paper-item{
+        padding: 12px; 
+        margin: 0px; 
+        font-size: 12px; 
+        font-weight: 300; 
+        font-family: merriweather; 
+        color: #009;
+        margin-top: 3px; min-width: 180px; 
+        text-align: left;
+            --paper-item-selected: {
+                background-color: #FFFFFF;
+                border: 1px silver solid;
+            };
+            --paper-item-focused:{
+              background-color: #FFFFFF; 
+                border: 1px silver solid;       
+            };
+    }
+    section{
+            padding: 0px 24px; 
+        text-align: left;
+        font-size: 14px;
 
+    }
+    .check{
+        position: absolute;
+        left: 12px;
+        font-size: 1.3em;
+        cursor: pointer;
+
+    }
+    .checkMinus{
+        position: absolute;
+        left: 12px;
+        font-size: 1.8em;
+        cursor: pointer;
+    }
+    .label{
+        color: #005c00;
+       text-decoration-style:underline;
+    }
+
+</style>
+       <template is="dom-repeat"  items="{{array}}" as="arr"id="pageRepeater" filter="{{createFilter(taValue, searchOff)}}">
+ 
+ <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
+    <paper-listbox id="myFreeDropdown">
+        <template is="dom-repeat"  items="{{arr}}" id="optionsRepeater" filter="{{createFilter(issValue, searchOff)}}">
+            <paper-item 
+                onclick="{{item.myFunction}}" 
+                btn-set-value="{{item.dataSetValue}}" 
+                btn-text="{{item.text.0}}" 
+                btn-args="{{item.dataArgs}}"
+                style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" 
+                btn-property="{{item.dataProperty}}" 
+                class="block"
+                on-tap="makeSelection" 
+                name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" 
+                value-object="{{item}}" 
+                value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" 
+                on-up="toggleSelection">  
+                                     <section class="label"> {{item.label}} </section>
+                                    <span  class$="unchecked {{computeCheckedClass(selectCheck, item.ind)}}">{{_computeChecked(item.ind, selectCheck)}}</span>
+                                   <section>[[item.text]]</section>
                                     <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
              </paper-item>
         </template>
-    </paper-listbox>              
+    </paper-listbox>      
+    </template>        
  </template> 
- </dom-module>
+
  <script>
  FcDropDownLibre=Polymer({
     is:"fc-dropdown-libre",
-    listeners:{'openDropdown': 'setGetAndScroll'}
+    behaviors:[FCBehaviors.FcCalendarOptionsSelectorBehavior, FCBehaviors.FcCalendarListWidgetBehavior],
+    listeners:{'openDropdown': 'setGetAndScroll'},
     properties:{
         arrayDropdown:{
             type: Array, 
@@ -30,18 +94,113 @@
             },
             notify: true,
         },
+        array:{
+            type: Array, 
+            value: function(){return[[
+                {name: "newProfile", value: "noSearch", selectCheck: false, text: "Does a Focused Profile Already Exist for the Person You are Looking up?", label: "New Profile",ind: 0 }, 
+                {name: "profileLookup", value: "search", label: "Profile Lookup", selectCheck: false, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1}, 
+                {name: "comparingProfiles", value: "search", selectCheck: false, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2}, 
+                {name: "educatingWithData", value: "search", selectCheck: false, label: "Using Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3}, 
+                {name: "searchReminder", value: "noSearch", selectCheck: false, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4}]];
+            },
+            notify: true
+        },
+        textareaHidden:{
+            type: Boolean, 
+            value: true, 
+            notify: true,
+        },
+        selectCheck:{
+            type: Number,
+            value: function(){return -1;},
+            notify: true,
+        },
+        checkEvent:{
+            type: Object,
+            value:function(){return{};},
+            notify: true,
+        },
 
 
 
 
     },
-    _computeDropDownItems(focused, clicked, quant, dropdownItems);
-    _computeItemSelectedPropValue(item,index, itemSelectProperty);
-    _computeItemSelectedPropertyName(item, index,itemSelectedProperty);
-    createFilter(issValue, searchOff);
-    _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText);
+    toggleSelection(e){},
+    _computeDropDownItems(focused, clicked, quant, dropdownItems){},
+    _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
+    _computeItemSelectedPropertyName(item, index,itemSelectedProperty){},
+    createFilter(issValue, searchOff){},
+    _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText){},
+    makeSelection(e){ var children =Polymer.dom(this.$.optionsRepeater).children; 
+        console.log(e, children, e.target);
+       this.set("selectCheck", e.model.item.ind);
+       this.set("checkEvent", e.model.item);
+
+
+    },
+    _computeChecked(ind, selectCheck){
+        if(ind===selectCheck){return '\✅';}else{return '\☐';}
+    },
+    computeCheckedClass(selectCheck, ind){
+        var retVal=(selectCheck===ind)?"check": "checkMinus";
+        
+
+        return retVal;
+    },
+
+    attached(){
+        this._computeInputArrays(this.inputs);
+        // var keys=Object.keys(this.__data__);
+        // console.log(keys);   
+        
+    },
+    _handleTaps: function(e){
+        console.log(e,
+        e.target );
+        var target=e.target;
+                while(target.nodeName!=="PAPER-BUTTON" && target.nodeName!=="PAPER-ICON-BUTTON" && target.nodeName!=="FC-CALL-CENTER-DIALOG")
+                    {target=target.parentElement;}
+                    if(target.nodeName=="PAPER-BUTTON" || target.nodeName=="PAPER-ICON-BUTTON"){
+                        this[target.btm]();
+                    }
+                        else{
+                            var j=e;
+                            this.soSelected(j);
+                        }
+            },
+ 
+    confirmCalculate(){
+        console.log(this.fcCourse);
+        this.fcCourse.save();
+        this.fire("catchTheCourse", {theCourse: this.fcCourse});
+        event = JSON.stringify(this.fcCourse);
+        console.log(event);
+        localStorage.setItem("New_Course", event); 
+    },
 
 
 
 
- })      
+
+ });
+ </script>
+ </dom-module>     
+<!-- 
+
+    <div 
+                                        class="primary">
+                                        {{course.coach}} {{course.fcid}}
+                                    </div>
+                                    <div 
+                                        class="secondary">
+                                        [[course.courseMeetingSets]], {{course.numberOfMeetings}} Classes<br>
+                                        Test:{{course.testDate}}, {{course.programLength}}, {{course.price}}
+                                    </div>
+                                </paper-item-body>      
+                                <paper-icon-button 
+                                        icon="star" 
+                                        style="color: {{course.coachObject.color}}"
+                                        alt="favourite this!">
+                                </paper-icon-button>
+                            </paper-item>
+                        </template> -->

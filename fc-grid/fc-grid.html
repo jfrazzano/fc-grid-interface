@@ -224,7 +224,8 @@
                             id$="template_{{columnIndex}}" 
                             filter="{{_myStupidFilter(item)}}"
                             class="vertical flex layout"
-                            items="{{col}}">
+                            items="{{col}}"
+                            initial-count="30">
                            <!--begin cell repeats--> 
                             <textarea        
                                 input-type="text" 
@@ -271,8 +272,7 @@
     <!--end grid-->
     <paper-listbox id="myContextMenu"  hidden>
         <paper-item class="around-justified">
-            <paper-swatch-picker>
-            </paper-swatch-picker><span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
+           <!--  --><span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
             <input type="color" value="{{background::input}}"> Background Color
         </paper-item>
         <template is="dom-repeat"  items="{{contextMenuCategories}}" as="category" index-as="categoryIndex">
@@ -501,20 +501,20 @@
         }
         else{ return "background: gold";}
       },
-      arraySwap(e){
-           var maxNum=this.dataArrays.length;
-            maxNum=maxNum-1;
-            var newIndex=(this.arrayIndex!=maxNum)?parseInt(this.arrayIndex)+1:0;
-            this.set("arrayIndex", newIndex);
-            this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
-      },
-      arraySwapBack(e){
-        var maxNum=this.dataArrays.length;
-        maxNum=maxNum-1;
-        var newIndex=(this.arrayIndex!=0)?parseInt(this.arrayIndex)-1:maxNum;
-            this.set("arrayIndex", newIndex);
-            this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
-      },
+      // arraySwap(e){
+      //      var maxNum=this.dataArrays.length;
+      //       maxNum=maxNum-1;
+      //       var newIndex=(this.arrayIndex!=maxNum)?parseInt(this.arrayIndex)+1:0;
+      //       this.set("arrayIndex", newIndex);
+      //       this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
+      // },
+      // arraySwapBack(e){
+      //   var maxNum=this.dataArrays.length;
+      //   maxNum=maxNum-1;
+      //   var newIndex=(this.arrayIndex!=0)?parseInt(this.arrayIndex)-1:maxNum;
+      //       this.set("arrayIndex", newIndex);
+      //       this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
+      // },
     loadPresets(e){
       this.gridPresets.forEach(function(gridParams, index, arrayOfGrids){
           this.gridConstructor(gridParams);

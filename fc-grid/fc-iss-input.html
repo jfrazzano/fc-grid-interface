@@ -123,7 +123,7 @@ input.question + label > span{
   position: absolute;
   font-size: 16px;
   top: -26px;
-  color: brown;
+  color: MidnightBlue;
   left: 0px;
   z-index: 0;
   -webkit-transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
@@ -438,21 +438,25 @@ FcIssInput=Polymer({
     this.set("toggleClassOff", "toggleOff");
     this.toggleToggleButton();
    // this.$.dropdownbutton.toggleClass(this.toggleClassOff,!this.toggleOn);
-    this.set("searchOff",true);
+    //this.set("searchOff",true);
     }
  
  },
  setValueItem(e){
-    console.log(e);
+    console.log(e, this.valueObject);
     var input=this.$.issInput;
   this.set([input,"value"], e.target.value);
   console.log(e.target.value, e.target);
-  this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
-  if(e.model||e._templateInstance){
-    var model=e._templateInstance;
-    console.log(model);
-    model.set("item.value", e.target.value);
-    }
+  var valConstruct="valueObject."+e.target.name;
+  console.log(valConstruct);
+  this.set(valConstruct, e.target.value);
+  //this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
+  //if(e.model||e._templateInstance){
+   // var model=e._templateInstance;
+    //console.log(model);
+   // model.set("item.value", e.target.value);
+   // }
+    //this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
   },
  _computeLabelSpanClass(isToggle,toggleClass,issClass){
         return this.issClass;
@@ -466,11 +470,11 @@ FcIssInput=Polymer({
        return retval;
 	 },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
    _computeItemSelectedPropertyName(item, index,isp){
-    var retVal=(isp===""&& item.name==null)?"value":item.name;
+    var retVal=(isp==""&& item.name==undefined)?"value":item.name;
     return retVal;
    },
   observeDropdownItems(newVal,oldVal){
-    if(newVal&&newVal.length>0){
+    if(newVal&&newVal.length>0){console.log(newVal);
     }
   }, 
   observeIssClass(nv,ov){
@@ -550,10 +554,10 @@ FcIssInput=Polymer({
       }
   },
   _computedSetterForIndex(multi, ddo){
-     // console.log("insetter for index",ddo, multi);
-   		// var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
-   		// this.set("itemKeyStrokeIndex", setVal);
-   		// return setVal;
+     console.log("insetter for index",ddo, multi);
+   		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
+   		this.set("itemKeyStrokeIndex", setVal);
+   		return setVal;
    	},
   getDropdownChildren(){
     var children=Polymer.dom(this.$.dropdownlist).children;
@@ -582,7 +586,8 @@ FcIssInput=Polymer({
     var model=this.$.controllerList.modelForElement(e.target);
     console.log(model, e, " I am in the tap",model );
     console.log(item," I am in the tap", item);
-    this.set("valueObject", item);
+    var frankenInput="valueObject." + this.$.issInput.namel;
+    this.set(frankenInput, item);
     var property= model._rootDataHost.__data__.issName;
 
     var value=item.value;
@@ -691,9 +696,14 @@ FcIssInput=Polymer({
       },
   onEnter(e){
     console.log(e);
-       var children=this.getDropdownChildren();
-     this.set("valueObject",children[this.itemKeyStrokeIndex]._templateInstance.item);   
-   
+    if(this.$.issInput.value!=undefined&&this.searchOff===true){
+      this.set("issValue", this.$.issInput.value); 
+    }
+      else{
+        var children=this.getDropdownChildren();
+        var fvali="valueObject."+this.$.issInput;
+        this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item);   
+        
       if(this.searchOff===true){
         this.removeColorFromChildren(children);
       }
@@ -738,6 +748,7 @@ FcIssInput=Polymer({
           console.log(this.changeEvent);
         this.set("issValue", value); 
       }
+    }
       this.blurInput();
     },
   

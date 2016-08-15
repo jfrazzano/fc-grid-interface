@@ -1,8 +1,5 @@
-<link rel="import" href="../fc-grid/fc-grid-initializer-behavior.html">
-<link rel="import" href="../fc-grid/fc-indexed-db-behavior.html">
 <link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
 <link rel="import" href="../fc-grid/fc-indexed-db-helper.html">
-<link rel="import" href="../fc-grid/fc-indexed-database.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html"> 
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -11,7 +8,6 @@
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../bower_components/iron-icons/communication-icons.html">
 <link rel="import" href="../fc-call-center/fc-grid-cell.html">
-<link rel="import" href="../fc-grid/data-manager.html">
 <link rel="import" href="../fc-grid/data-manager.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <link rel="import" href="../fc-call-center/fc-call-center-dialog.html">
@@ -179,13 +175,13 @@
           z-index:222800;
         }
     </style>
-    <array-selector 
+ <!--    <array-selector 
         id="columnSelector" 
         items="{{dataArrays}}" 
         multi toggle 
         selected="{{selectedArraySet}}">
     </array-selector>
-    <!--begin grid-->
+  -->   <!--begin grid-->
    
     <div on-mousedown="closemenu" class="layout horizontal" style="position: relative; width: 100%;">
         
@@ -207,7 +203,8 @@
                     class="horizontal layout flex self-stretch" 
                     id="template" 
                     index-as="columnIndex" 
-                    items="{{selectedArraySet}}" 
+                    items="{{gridDisplayArray}}"
+                     initial-count="40" 
                     as="col"><!--begin columns-->
                     <div 
                         id$="divCol_[[columnIndex]]" 
@@ -216,9 +213,11 @@
                         <template 
                             is="dom-repeat" 
                             id$="template_{{columnIndex}}" 
-                            filter="{{_myStupidFilter(item, propertyNames, selectedApi)}}"
+                            filter="{{_myStupidFilter(item, item.name, item.label, item.value, propertyName, valueObject, inputsDisplayArray)}}"
                             class="vertical flex layout"
-                            items="{{col}}">
+                            items="{{col}}"
+                            initial-count="100"
+                            >
                            <!--begin cell repeats--> <!-- 
                             on-keydown="valueChangeRecord" -->
                             <textarea        
@@ -241,33 +240,22 @@
                     </div><!--end column div-->
                 </template><!--end column repeater-->
             </div><!-- end grid div-->
-             <fc-indexed-db-helper grid-worker="{{gridWorker}}" value-object="valueObject" selected-api="{{selectedApi}}" data-arrays="{{dataArrays}}" id="interface"></fc-indexed-db-helper>
+             <fc-indexed-db-helper value-object="valueObject" id="interface"></fc-indexed-db-helper>
         </div><!--end center grid scroll container-->
         <!--begin Right control panel-->
-      <fc-call-center-dialog data-arrays="{{dataArrays}}" value-object="{{valueObject}}" selected-api="{{selectedApi}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
+      <fc-call-center-dialog value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
        <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-            <fc-indexed-database 
-                style="position: fixed; top: -400px; left: -300px width: 2px; height: 2px; opacity:0;"
-         
-                indexed-databases="{{indexedDatabases}}" 
-                database-changed="{{databaseChanged}}" 
-                data-arrays="{{dataArrays}}"
-                selected-array-set="{{selectedArraySet}}"
-                array-index="{{arrayIndex}}">
-            </fc-indexed-database>
         </section>
         <!--end Right Panel-->
     </div>
     <!--end grid-->
-    <fc-dropdown-libre></fc-dropdown-libre>åß
-  <!--   <fc-singleton-dropdown-box dropdown-item={{drowpdownItemsProxy}} is-multiselect="true"></fc-singleton-dropdown-box> -->
     <paper-listbox id="myContextMenu"  hidden>
         <paper-item class="around-justified">
             <paper-swatch-picker>
             </paper-swatch-picker><span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
             <input type="color" value="{{background::input}}"> Background Color
         </paper-item>
-        <fc-dropdown-libre></fc-dropdown-libre>
+     
         <template is="dom-repeat"  items="{{contextMenuCategories}}" as="category" index-as="categoryIndex">
             <paper-item on-blur="detailOpenListener" value="{{category.title}}">
                 <details on-blur="detailOpenListener" open="{{detailOpen}}">
@@ -289,7 +277,7 @@
  
   FcGrid=Polymer({
 	      is:"fc-grid",
-      behaviors:[FCBehaviors.FcGridStyleBehavior],
+      behaviors:[FCBehaviors.FcGridStyleBehavior, FCBehaviors.FocusedDataManagerBehavior],
       listeners: {"color-picker-selected":"getcolor"},
      	properties: { 
         format:{
@@ -305,6 +293,7 @@
           type: Array,
           notify:true, 
         },
+       
         data:{
           type: Array,
           value: function(){return [];},
@@ -319,21 +308,28 @@
             type:Object,
             value: function(){return {};},
             notify: true,
-
-
           },
+          selectedArraySet:{
+          type: Array,
+          value: function(){return [];},
+          notify: true
+        },
+        arrayIndex:{
+          notify: true,
+          value: 0,
+
+        }
        
      	},
+
 
     
       registered(){
       // this.getAllObjectStoresAtInit();
       },
       attached(){
-            
-      var args= this.display();
-      console.log(drays.displayArrays, "draysStrays");
-    this.set("dataArrays", drays.displayArrays);
+            this.set("interfaceType", "grid");
+  
       },
 
        display(){
@@ -474,20 +470,7 @@
         }
         else{ return "background: gold";}
       },
-      arraySwap(e){
-           var maxNum=this.dataArrays.length;
-            maxNum=maxNum-1;
-            var newIndex=(this.arrayIndex!=maxNum)?parseInt(this.arrayIndex)+1:0;
-            this.set("arrayIndex", newIndex);
-            this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
-      },
-      arraySwapBack(e){
-        var maxNum=this.dataArrays.length;
-        maxNum=maxNum-1;
-        var newIndex=(this.arrayIndex!=0)?parseInt(this.arrayIndex)-1:maxNum;
-            this.set("arrayIndex", newIndex);
-            this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
-      },
+
     loadPresets(e){
       this.gridPresets.forEach(function(gridParams, index, arrayOfGrids){
           this.gridConstructor(gridParams);
@@ -495,8 +478,8 @@
 
     },
     getFocusedInput(){},
-    _myStupidFilter(item, value1, value2, value3){
-      console.log(item, value1,value2, value3);
+    _myStupidFilter(item, name, label, value, pname, valObj, ida){
+      console.log(item, name, label, value, pname, valOb, ida);
       return function(){
 
         return true;

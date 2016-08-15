@@ -57,12 +57,12 @@ fc-iss-input{
 <!-- <firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerRole" order-by-value="{{inquiry.callerRole}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection> -->
 <paper-dialog id="idbHelper"  draggable drags no-cancel-on-outside-click always-on-top >
 <section class="horizontal flex layout around-justified" style="max-height: 28px!important;">
-       <span on-tap="_back">&#9664;</span> <paper-button>{{chosen}}</paper-button><span on-tap="_forward">&#9654;</span>
+       <span on-tap="_back">&#9664;</span> <paper-button on-tap="changeAppInterfaceForInputs">{{chosen}}</paper-button><span on-tap="_forward">&#9654;</span>
     </section>
         <paper-dialog-scrollable>
         <form  id="callIntakeForm" method="get" action="/" is="iron-form">
           <p>
-          <template is="dom-repeat" id="inputTemplate" items="{{selectedApiView}}">
+          <template is="dom-repeat" id="inputTemplate" items="{{inputsView}}">
         	<section class="horizontal layout container"> 
         		<span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
       		</section>
@@ -130,7 +130,7 @@ FcIndexedDbHelper=Polymer({
     	value: function(){return [];},
     	notify: true,
     },
-   
+    
    
 		apiLinked:{
 			type: Object,
@@ -155,7 +155,7 @@ FcIndexedDbHelper=Polymer({
 	},
 
 ready(){
-      
+                 this.set("interfaceType", "inputs"); 
   },
 
 	_computeDropDownItems(items, calls,name, value){

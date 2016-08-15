@@ -1,8 +1,11 @@
+<link rel="import" href="fc-course-calendar-creation-behavior.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
-<link rel="import" href="fc-calendar-behavior-beta-prime.html">
+ <link rel="import" href="fc-calendar-behavior-beta-prime.html"> 
 <link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
 <link rel="import" href="../fc-grid/fc-draggable-behavior.html">
 <link rel="import" href="fc-profile-class.html">
+<link rel="import"  href="fc-calendar-controller-behavior.html">
+
 
 
 
@@ -232,8 +235,6 @@
 		.radioGroupBlock{
 			padding: 12px;
 
-
-
 		},
 		.importantNote{
 				color: black;
@@ -248,6 +249,10 @@
 				margin-top: 24px;
 
 		}
+    .headerCenter{
+      font-size: 12px;
+      font-weight: 300;
+    }
 
 		.show {display:block; z-index: 45; right: 0;}
   @media(max-width: 687px){
@@ -255,21 +260,23 @@
   		@apply(--layout-vertical);
   		@apply(--layout-center);
   	}
+
   	/*add more here*/
   }
   </style>
 <form is="iron-form" id="callIntakeForm" method="get" action="/">
-  <fc-ddr-card id="focusedCallInterface"  waterfall header-set-height="125px" head-class="darkBlue" header-title="{{chosen}}" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
+  <fc-ddr-card id="focusedCallInterface"  waterfall head-class="darkBlue" header-title="{{chosen}}" class="vertical layout flex nowrap self-stretch" on-tap="_tapHandler" style="padding-right:2px; margin: 4px 0px 4px 0px; min-width: 100%!important;">
 
 
   <div class="dropdown headerLeft horizontal layout">
    <span btn="leftClick" style="position: absolute; left: -30px; top: 8px; font-size: 18px; cursor: pointer;">&#8678;</span>
-     <span style="cursor: pointer;">&#9994;</span>
+   <!--   <span style="cursor: pointer;">&#9994;</span> -->
   </div>
+  <div class="headerCenter" on-tap="changeAppInterfaceForInputs">Tap Here </div>
 
      <div class="dropdown headerRight">
           <span btn="rightClick" style="position: absolute; right: -30px; top: 8px; font-size: 18px; cursor: pointer;">&#8680;</span>
-          <span style="cursor: pointer; font-size:28px;">&#9995;</span>
+         <!--  <span style="cursor: pointer; font-size:28px;">&#9995;</span> -->
 
     </div>
  	<div class="flex layout horizontal center-justified">
@@ -277,19 +284,17 @@
     
         <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
             <div id="container1">
-                <fc-call-center-form-one page-index="{{selected}}" inquiry="{{inquiry}}"  id="childOne" current-height="{{childHeight}}">
+                <fc-call-center-form-one style="padding: 22px;" page-index="{{selected}}" search-off="{{searchOff}}" inquiry="{{inquiry}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}">
                         <span class="pageTotal">{{shadowIndex}}</span>
                         <section class="next" style="color: brown; font-size:  20px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
                 </fc-call-center-form-one>
             </div>
-            <!-- <div> -->
-              <!--       <fc-textarea-buttons-form page-index="{{selected}}" inquiry="{{inquiry}}" ><span class="pageTotal">{{shadowIndex}}</span></fc-textarea-buttons-form> -->
-            <!-- </div> -->
-            <template is="dom-repeat" items="{{selectedApi}}">
+        
+            <template is="dom-repeat" items="{{inputsDisplayArray}}">
                 <div>
-                    <fc-call-center-form value-object="{{valueObject}}" inquiry="{{inquiry}}" input-array="{{item}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
+                    <fc-call-center-form value-object="{{valueObject}}" search-off="{{searchOff}}" focused-manager="{{focusedManager}}" input-array="{{item}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
                         <span class="pageTotal" on-tap="openCollapse">{{_computePageTotal(selectedApi, index)}}</span>  <span class="pageTotal">{{shadowIndex}}</span>
-                        <section class="next" style="color: brown; padding: 12px 28px; font-size: 20px; float: right; text-align: right;" btn="rightClick">NEXT PAGE &#10148</section>
+                        <section class="next" style="color: brown; padding: 12px 28px; font-size: 20px; float: right; text-align: right; " btn="rightClick">NEXT PAGE &#10148</section>
                         
                         <section class="horizontal layout flex buttons"><paper-button class="flex-1" btn="leftClick">back</paper-button>
                         <paper-button class="flex-1" id="one" btn="rightClick">CONTINUE</paper-button>
@@ -312,14 +317,15 @@ FcCallCenterDialog=Polymer({
 		 behaviors:[Polymer.NeonAnimatableBehavior,
                 Polymer.NeonAnimationBehavior,
                 Polymer.NeonAnimationRunnerBehavior,
-                FCBehaviors.FcCalendarBehaviorPrime,
+                FCBehaviors.FcCalendarOptionsSelectorBehavior,
                 FCBehaviors.FcGridStyleBehavior, 
                 FCBehaviors.DraggableBehavior,
-                FCBehaviors.FocusedDataManagerBehavior],
+                FCBehaviors.FocusedDataManagerBehavior,
+                FCBehaviors.FcCalendarControllerBehavior],
           
         listeners: {"onload":"doStuffOnLoad",
                         },
-        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)'],
+        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)', 'observeInputsDisplayArray(inputsDisplayArray)','deepObserveValueObject(valueObject.*)'],
     properties: {
 
       entryAnimation: {
@@ -336,44 +342,19 @@ FcCallCenterDialog=Polymer({
             value: function(){return "";},
             notify: true
         },
-        asyncedPropertyObjects:{
-          type: Map,
-          value: function(){var map=new Map()},
-          notify: true,
-        },
  
     valueObject:{
       type: Object,
-      value: function(){return new FocusedProfile({});}, 
+      value: function(){return {};}, 
       notify: true,
-      observer:"observeValueObject",
+    },
+    superValue:{
+      type: Object,
+      value: function(){return {};},
+      notify: true,
+
     },
  
-    inquiry:{
-      type: Object,
-      value:function(){ var obj={
-                                 "isPreviousCaller": false,
-                                  "isCurrentClient":undefined,
-                                  "callerType": "",
-                                  "callerRole": "",
-                                  "callerFirstName": "",
-                                  "callerLastName": "",
-                                  "callerTelephone": "",
-                                  "inquirerFcid":"",
-                                  "relatedStudent": "",
-                                "date":"",
-                                "time":"",
-                                "message": "",
-                                 "request": "",
-                                "handler": "",
-                                "isClosed": ""
-                              };
-                      return obj;
-                    },
-      notify: true,
-    },
-   
-  
     childHeight:{
         type: String,
         notify: true,
@@ -383,27 +364,25 @@ FcCallCenterDialog=Polymer({
         computed: "_computeSiblingHeight(childHeight)",
         notify: true,
     },
-    isSearchRequired:{
-      type: Object, 
-      //observer:"observeIsSearchRequired",
-      notify: true,
+    searchOff:{
+      type: Boolean,
+      notify: true, 
+      observer:"observeSearchOff",
+     
     },
 
-    pageTotal:{
-          type: Number,
-          notify: true
-        },
     selected: {
           type: Number,
           value: function(){return 0;},
-          notify: true
+          notify: true,
+          observer: "observeSelected",
         },
-    inputArraysAb:{
-        type: Array,
-        value:function(){return[];},
-        notify: true
+    hasFocusedProfile:{
+      type: Boolean,
+      value: function(){return false;},
+      notify: true,
     },
-  
+     
     currentPage:{
       type: Number,
       computed:"computePageNumber(selected)",
@@ -418,109 +397,133 @@ FcCallCenterDialog=Polymer({
   },//end of properties
 		
   ready(){
-    this.initializeApiArrays();
-    (this.selectedApi, this.selectedApiIndex, this.chosen, this.selectedApiViewIndex);
-  var inputs = Polymer.dom(this.root).querySelectorAll("fc-iss-input");
-  console.log(inputs, "INPUTS ARE HERE HERE", this.selected);
+   
   },
-    observeValueObject(nv, ov)
-    {
-      if(nv)
-      {console.log(nv.FocusedProfile,nv, ov, nv.fcProfile);
-        console.log(nv, ov);
-          if(nv.fcProfile!=undefined)
+  observeSelected(nv, ov){
+    if(nv){console.log(nv,ov);}
+
+
+  },
+  computeIsSearchRequired(hasFocusedProfile){},
+  observeSearchOff(nv, ov){if(nv){
+      console.log(nv);}},
+    deepObserveValueObject(nv){ 
+      if(nv&&nv.value){
+       var keys =Object.keys(nv.value);
+       console.log(nv.value, nv.base);
+       var retVal =this.searchMatchSet(nv.value, nv.base);
+        if(retVal!=undefined){
+            var count =this.inputsDisplayArray.length;
+        console.log(count);
+          for(var i=0;i<count;i++)
           {
-            var count =this.selectedApi.length;
-            console.log(count);
-            for(var i=0;i<count;i++)
-            {
-              var pageInputArray=this.selectedApi[i];
-              console.log(pageInputArray);
+              var pageInputArray=this.inputsDisplayArray[i];
               var inputSetCount=pageInputArray.length;
-              console.log(inputSetCount);
-              for(var j=0; j<inputSetCount;j++)
-              {
-                var inputOfSet=pageInputArray[j];
-                console.log(inputOfSet);
-                console.log(nv.fcProfile[inputOfSet.nameA], nv.fcProfile[inputOfSet.nameB]);
-                if(nv.fcProfile[inputOfSet.nameA]!=undefined){this.set(["selectedApi",i,j,"valueA"], nv.fcProfile[inputOfSet.nameA]); }
-                if(nv.fcProfile[inputOfSet.nameB]!=undefined){this.set(["selectedApi",i, j,"valueB"], nv.fcProfile[inputOfSet.nameB]);console.log(this.selectedApi[i][j].valueA, this.selectedApi[i][j].valueB);}
-                console.log(nv.fcProfile, this.valueObject);
-              }
-            }
+               this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+                    if(nv.base[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],nv.value[val.nameA]);}
+                    if(nv.base[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],nv.value[val.nameB]);} 
+               });
           }
-      } 
+
+        }}
     }, 
-   observeSelectedApiIndex(nv, ov){},
-    doStuffOnLoad(e){
-        this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");console.log(ht, wt);this.style.width="440px"; this.style.height="660px";}, 4400);
+
+  doStuffOnLoad(e){
+         this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");//console.log(ht, wt);
+          this.style.width="440px"; this.style.height="660px";}, 4);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
-    },
-  _computeSiblingHeight(childHeight){
-    //console.log(childHeight, childHeight);
-    return childHeight;
+     },
+searchMatchSet(valz, base){
+if(this.superValue){
+        this.valueObject[base.name]=base.value;
+        //console.log(this.valueObject);
+        this.superValue=Object.assign(this.superValue, this.valueObject);
+        //console.log(this.valueObject, this.superValue, base.name, base.value, val.value, val.name, this.selectedStoreNumber);
+     console.log(this.selectedStoreNumber);
+      var io=this.focusedManager.dashboardMap.get(this.selectedStoreNumber);
+      var array=[];
+      
 
+      var possibilities=io.gridArray[0].filter((entry, index)=>{if(entry.value==base.value||entry.value==valz.value){ array.push(index, entry.value); return entry.value;}else{return false;}}); 
+if(possibilities!=undefined&&possibilities[0]!=undefined&&possibilities.length!=0)
+{
+var keys=possibilities[0].key.split("_"); var row =parseInt(keys[2]);
+    var valueObject=io.gridArray[15][row].valueObject;
+    var keyz=Object.keys(valueObject);
+    keyz.forEach((prop,i, arr)=>{if(valueObject[prop]=="--"){valueObject[prop]="";}});
+    this.set("valueObject", valueObject);
+    //console.log(this.valueObject);
+    this.superValue=Object.assign(this.superValue, this.valueObject);
+    console.log(this.superValue, this.valueObject);
+         var count =this.inputsDisplayArray.length;
+        console.log(count);
+          for(var i=0;i<count;i++)
+          {
+            
+               this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+                    if(this.superValue[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],this.superValue[val.nameA]);}
+                    if(this.superValue[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],this.superValue[val.nameB]);} 
+               });
+          }
+
+
+  }
+}
+},
+
+  observeInputsDisplayArray(inputs){
+      var vo={}, triple=this.focusedManager.propertiesLabelsAndValuesFromInputs(inputs);
+      var valueObject=triple.name.reduce((vo, val,i)=>{ 
+                    vo[val]="";
+                    return vo;}, vo);
+      this.set("valueObject", valueObject);
   },
-  
- 
-  observeDataArrays(news,olds){
-      if(news){
-        //console.log(news, olds, "observing the arrays");
-        if(news.value=2){this.set("selectedArraySet", this.dataArrays[0]); this.set("arrayIndex", 0);}
-             }
+  _computeSiblingHeight(childHeight){
+    return childHeight;
+       },
 
-            },
   attached(){
     var childHt= this.$.container1;
-    this.root.addEventListener('dom-change', function() { var ht=window.getComputedStyle(childHt,null).getPropertyValue("height");
-      //console.log('ht', ht);
-    }, this);
+    this.root.addEventListener('dom-change', function() { var ht=window.getComputedStyle(childHt,null).getPropertyValue("height");}, this)
+    this.set("interfaceType", "inputs");
     this.async(this.openDdr, 100);
-    this.doStuffOnLoad();
-
-  
+    this.doStuffOnLoad(); 
   },
 
-   submitHandler(event){
-      if(this.arrayIndex===this.tagIndex){this.set("sameThing", true);}
-        this.set("formSubmitOne", true);
-            var formResults = this.$.callIntakeForm.serialize();
-            console.log(formResults, this.tagIndex);
+    submitHandler(event){
+      //console.log(event, this.selectedStore)
+  if(this.selectedStoreNumber==2){this.focusedManager.createIndexedDatabase(2);}
+    else{
+          var formResults = this.$.callIntakeForm.serialize();
             var keys=Object.keys(formResults);
-            var trueForm={"callerType": keys[0], "callerRole": keys[1]};
-            console.log(trueForm, this.apiChoices[this.selectedApiIndex].apiName);
-            console.log("here is the global array holder variable", arraysVal);
-            this.gridMakerFunction(this.apiChoices[this.selectedApiIndex].apiName, trueForm, arraysVal);
+            var trueForm=keys;
+         var val=this.superValue;
+         console.log(this.selectedStoreNumber);
+            this.gridMakerFunction(this.chosen, trueForm, val, this.selectedStoreNumber);
               this.wipeCleanInputs();
-                // var objectTostore={"gridName": gridname, "api":"whateverTheInterfaceSays", "currentrow": Number};
-},
-wipeCleanInputs(){this.set("counter", 0); this.initializeApiArrays();this.set("student",{});},
+            }
+    },
+    wipeCleanInputs(){
+       var keyz=Object.keys(this.valueObject);
+    keyz.forEach((prop,i, arr)=>{this.set(["valueObject",prop],"");});
+        var keys=Object.keys(this.superValue);
+    keys.forEach((prop,i, arr)=>{this.set(["superValue",prop],"");});
+    },
 
-computePageNumber(selected){ return this.selected+1;},
 
-  _computePageTotal(selectedApi, index){
-     var pageTotal=(this.selectedApi.length+2);
-     console.log(this.intakeInputs);
+    computePageNumber(selected){ return 2;},
+
+    _computePageTotal(inputsDisplayArray, index){
+     var pageTotal=(this.inputsDisplayArray.length+1);
+   
      this.set("pageTotal", pageTotal);
-     this.set("shadowIndex", pageTotal);
+     this.set("shadowIndex", this.selected+1);
+    },
 
 
-},
+    observeChangeB(event, value, name){},
 
-
-   observeChangeB(event, value, name){
-   // console.log(event, value, name);
-     this.set(["student",name], value);
-     console.log(this.student[name], this.student);
-
-  },
-
-observeChangeA(event, value, name){
-    //console.log(event, value, name);
-    this.set(["student",name], value);
-    console.log(this.student[name], this.student);
-
-  },
+    observeChangeA(event, value, name){},
 
 
 	_tapHandler(e){
@@ -538,8 +541,8 @@ observeChangeA(event, value, name){
 		this.$.focusedCallInterface.falseClose();
 	},
    _computePageNumber(index){
-    // console.log(index); 
-    var retVal = parseInt(index)+2;
+    // // console.log(index); 
+    // var retVal = parseInt(index)+2;
   },
 	
 
@@ -548,13 +551,15 @@ observeChangeA(event, value, name){
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         
-       this.selected = (this.selected === (this.selectedApi.length))? 0 : (this.selected + 1);
+        
+       this.selected = (this.selected === (this.inputsDisplayArray.length))? 0 : (this.selected + 1);
        
       },
       leftClick: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
-       this.selected = this.selected === 0 ?(this.selectedApi.length-1): (this.selected - 1);
+        console.log(this.inputsDisplayArray, "look here");
+       this.selected = this.selected === 0 ?(this.inputsDisplayArray.length-1): (this.selected - 1);
          
       },
       observerForSearch(isPreviousCaller, callerRole){
@@ -574,4 +579,17 @@ _computeTimeStampUseful: function(timeStamp, callLogFormOneObject){
 });
 
 </script>
+
+<!--
+        // var count =this.inputsDisplayArray.length;
+        // console.log(count);
+        //   for(var i=0;i<count;i++)
+        //   {
+        //       var pageInputArray=this.inputsDisplayArray[i];
+        //       var inputSetCount=pageInputArray.length;
+        //        this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+        //             if(nv.base[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],nv.value[val.nameA]);}
+        //             if(nv.base[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],nv.value[val.nameB]);} 
+        //        });
+        //   }
 </dom-module>

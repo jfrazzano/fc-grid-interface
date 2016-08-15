@@ -107,7 +107,7 @@
 <content select=".headerLeft">
 </content>
 </section>
-<section class="headerCenter layout vertical" style="{{headerStyle}}"">
+<section class="headerCenter layout vertical" style="{{headerStyle}}">
      [[_computeHeader(headerTitle)]]
      <content select=".headerCenter">
      </content>
@@ -154,6 +154,10 @@ FcDdrCard=Polymer({
       type:Boolean,
       value:function(){return false;},
       notify:true,
+    },
+    boundFunction:{
+      type: Function, 
+      notify: true,
     },
     toDoList:{
       type:Boolean,
