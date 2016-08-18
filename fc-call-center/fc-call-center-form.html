@@ -86,44 +86,8 @@
         height: 24px;
     }
 
-  .timestamp{
-  	font-weight: 300;
-    color: #009;
-
-    font-family: merriweather;
-   font-size: 13px;
-    position: absolute;
-    color: brown;
-    font-family: times;
-   top: 36px;
-   left: 23px;
-    }
-
-  .subheading {
-    font-size: 13px;
-    position: absolute;
-    color: brown;
-    font-family: times;
-   top: 36px;
-   right: 23px;
-    }
-     .bar{
-    
-      min-width:180px; 
-      height: 2px;
-      background:silver;
-      @apply(--vertical-layout);
-      @apply(--layout-flex);
-      @apply(--layout-self-stretch);
-      position: absolute;
-      left: 22px;
-      right: 22px;
-      top: 54px;
-
-    }
   
 
-  
 		.check{
 			font-size:26px;
 			color: green;
@@ -167,27 +131,6 @@
   }
 
 </style>
-
-  <div class="intakeForm vertical layout form-content">
-        
-<div class="vertical layout flex" style="margin-bottom: 36px;"">
-    <section class="bar"></section>
-      <section class="horizontal layout flex">
-        <span class="timestamp">
-        [[time]] on [[date]]
-        </span>
-         <span class="subheading">
-           Page <content select=".pageTotal"></content>
-        <!-- * Indicates a Required Field -->
-        </span>
-    </section>
-</div>
-
- <!--  <div class="form-content" class="fit"> -->
-  <form>
-    <div class="vertical layout self-stretch nowrap topPad form-content">
-     <!-- search was here -->
-        
       <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
         <section class="horizontal layout flex"> 
         <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
@@ -202,15 +145,7 @@
           </fc-iss-input>
         </section>  
     </div>
-    
   </template>
-  </div>  
-  </form>   
-<content select=".next"></content>
-    <div class="card-actions horizontal layout flex container center-justified" style="min-height: 18%;">
-          <content select=".buttons"></content>
-    </div>
-  </div>
 </template>
 <script>
 FcCallCenterForm=Polymer({

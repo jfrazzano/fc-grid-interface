@@ -17,9 +17,7 @@
 <dom-module id="fc-iss-input">	
 <template>
 <style>
-/*root{--label-position-top:-53px;
-  --label-position-bottom:3px;
- }*/
+
 :host{background:"";
 margin-left: 28px;
   @apply(--layout-flex);
@@ -60,7 +58,7 @@ input.question + label{
   padding: 0;
   margin: 0;
 width: 90%;
-  border-top: 1px solid red;
+  border-top: 1px solid brown;
   -webkit-transition: width 0.4s ease;
   transition: width 0.4s ease;
   height: 0px;
@@ -152,7 +150,7 @@ paper-listbox{
 min-width: 210px;
 
 
-} .inputcontainer{margin-left: 6px;}
+} .inputcontainer{margin-left: 7px;}
 .dropbtn{
  margin: 0px;
  padding: 0px   ;
@@ -160,9 +158,10 @@ min-width: 210px;
 }
 .dropbtn.menuItem{}
  .dropbtn:hover, .dropbtn:focus{
+  color: #005c00;
   
   }
-  .dropbtn:valid{}
+  .dropbtn:valid{color: #005c00;}
   .defaultToggleButtonClass{background: gold; border-radius: 50%;}
   .toggleOff{color: silver; border-radius: 50%; background: white; @apply(--layout-horizontal);} 
   .toggleOn{color: #005c00; border-radius: 50%; background: white; @apply(--layout-horizontal); }
@@ -210,13 +209,13 @@ min-width: 210px;
     border: 0px;}
 
   iron-icon{
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     padding: 0px;
   
   }
-  paper-icon-button{ width: 24px; height: 24px;  position: static; } 
-  .wrapper{width: 95%; position:relative; margin-top: 16px;}
+  paper-icon-button{ width: 28px; height: 28px; padding-bottom: 6px; color: silver;position: static; } 
+  .wrapper{width: 95%; position:relative; margin-top: 16px; margin-left: 4px;}
 </style>
 <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
 <iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
@@ -226,8 +225,6 @@ min-width: 210px;
 
 
 <div class="horizontal layout flex self-stretch wrapper">
-{{issValueArray}}
-<!-- <paper-menu-button id="dropdownMenuButton" class="vertical layout dropdown">-->
     <paper-icon-button id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" hidden="{{!showDropButton}}" icon="{{issIcon}}" on-tap="inputToggle"> 
     </paper-icon-button>
 <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
@@ -244,7 +241,7 @@ min-width: 210px;
 		 	</paper-listbox>
 		</div>
 	</div>
-
+<!--⛔ usee this ✪ 10026 272A, ❓ 10067 2753   ❗  10071 2757  -->
 	</template>
 <script>
 FcIssInput=Polymer({

@@ -186,37 +186,52 @@
     padding: 4px;
   }
   
-  .timestamp{
-  	font-weight: 600;
-  	font-size: 16px;
-  	padding: 8px;
-  	float: left;
 
-  }		
-  .check{
+.timestamp{
+    font-weight: 300;
+    color: #009;
+
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 60px;
+   left: 20px;
+    }
+
+  .subheading {
+    font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 36px;
+   right: 14px;
+   margin-right: 0px;
+    }
+     .bar{
+    
+      min-width:180px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 54px;
+
+    }
+
+    .check{
 			font-size:26px;
 			color: green;
 			position: absolute;
 			left: 5px;
 		}
-		.instruction{
-			color:#009;
-			font-weight:700;
-		}
 	
-		.importantNote{
-				color: black;
-				font-weight: 600;
-				padding: 8px;
-				margin: 4px;
-				margin-bottom: 26px;
-
-		},
-		.detailPads{
-				margin:12px;
-				margin-top: 24px;
-
-		}
+	
     .headerCenter{
       font-size: 12px;
       font-weight: 300;
@@ -231,37 +246,52 @@
 
   	/*add more here*/
   }
+  .innerContainer{
+    max-height: 680px!important;
+    height: 680px;
+    overflow-y: scroll;
+  }
   </style>
- <div hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"style="margin: 30px 0px -40px 20px; padding-bottom: 10px; z-index; 4; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300;"> <span  on-tap="changeAppInterfaceForInputs" >{{chosen}}</span></div>
-<form is="iron-form" id="callIntakeForm" method="get" action="/">
- <div class="flex layout vertical center-justified" style$="width:{{currentInnerWidth}}" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+  <form is="iron-form" id="callIntakeForm" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+ <div style="margin: 30px 0px -40px 20px; padding-bottom: 10px; z-index; 5; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300;"> <span  style="padding-bottom:2px;" on-tap="changeAppInterfaceForInputs" >{{chosen}}</span>
+ 
+ <div class="vertical layout flex" style="margin-bottom: 48px;"">
+    <section class="bar"></section>
+      <section class="horizontal layout flex">
+        <span class="timestamp">
+        [[time]] on [[date]]
+        </span>
+       <span btn="leftClick" class="subheading">Page {{shadowIndex}} of {{pageTotal}}</span>
+    </section>
+</div>
+</div>
+
+ <div class="flex layout vertical center-justified innerContainer" style$="width:{{currentInnerWidth}}" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
 
         <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 
             <div id="container1">
-                <fc-call-center-form-one style="padding: 12px 18px;" forms="{{forms}}" form-selected="{{formSelected}}" page-index="{{selected}}" search-off="{{searchOff}}" inquiry="{{inquiry}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}">
-                        <span btn="leftClick" class="pageTotal">{{shadowIndex}} of {{pageTotal}}</span>
-                        <section class="next" style="color: brown; font-size:  20px; float: right; text-align: right;" on-tap="rightClick">NEXT PAGE &#10148</section>
+                <fc-call-center-form-one style="padding: 6px 18px 14px 18px; max-height: 640px; overflow-y: scroll;"  page-index="{{selected}}" search-off="{{searchOff}}" inquiry="{{inquiry}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}">
                 </fc-call-center-form-one>
             </div>
         
             <template is="dom-repeat" items="{{inputsDisplayArray}}">
                 <div>
-                    <fc-call-center-form value-object="{{valueObject}}" id="generalForm" first-free-row="{{rowIndex}}" search-off="{{searchOff}}" id="ioForm" grid-display-array="{{gridDisplayArray}}" focused-manager="{{focusedManager}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
-                        <span class="pageTotal">{{shadowIndex}}</span>  <span class="pageTotal"> of {{pageTotal}}</span>
-                        <section class="next" style="color: brown; padding: 12px; font-size: 20px; float: right; text-align: right; " on-tap="rightClick">NEXT PAGE &#10148</section>
-                        
-                        <section class="horizontal layout flex buttons" on-tap="layWaste"><paper-button class="flex-1" btn="leftClick">refit</paper-button>
-                        <paper-button class="flex-1 red" id="one" btn="wipeInputs">clear</paper-button>
-                      
-                              <paper-button class="darkblue" on-tap="submitHandler">Submit</paper-button>
-                                </section>
+                    <fc-call-center-form value-object="{{valueObject}}" forms="{{forms}}" form-selected="{{formSelected}}"id="generalForm" style="max-height: 640px; overflow-y: scroll;" first-free-row="{{rowIndex}}" search-off="{{searchOff}}" id="ioForm" grid-display-array="{{gridDisplayArray}}" focused-manager="{{focusedManager}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
                     </fc-call-center-form>
                 </div>
             </template>
-
         </neon-animated-pages>
- </div>
+    </div>
+         
+              <div style="border-top: solid 1px silver; width: 92%; overflow-x: hidden;" class="vertical layout flex center-justified">
+                  <section class="next" style="color: brown; padding: 4px; font-size: 20px; float: right; text-align: right; " on-tap="rightClick">NEXT PAGE &#10148</section>
+                        <section class="horizontal layout flex buttons" on-tap="changeAppInterfaceForInputs">
+                     <!--  <paper-button class="flex-1 red" id="one" btn="wipeInputs">clear</paper-button>
+                      
+                              <paper-button class="darkblue" on-tap="submitHandler">Submit</paper-button> -->
+                                </section>
+              </div>
           </form>
    
     
@@ -283,6 +313,23 @@ FcInputsInterface=Polymer({
                         },
         observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)', 'observeInputsDisplayArray(inputsDisplayArray)','deepObserveValueObject(valueObject.*)'],
     properties:{
+      time:{
+      type:Date,
+      value:function(){
+          var time=new Date().toLocaleTimeString();
+          console.log(time);
+          return time;
+      },
+      notify: true
+    },
+    date:{
+        type: Date,
+        value: function(){
+          var date=new Date().toLocaleDateString();
+          return date;
+            },
+        notify: true,
+        },
       entryAnimation:{
           type: String,
           value: function(){ return "";},

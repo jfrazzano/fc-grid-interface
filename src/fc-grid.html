@@ -176,29 +176,19 @@
           z-index:222800;
         }
     </style>
- <!--    <array-selector 
-        id="columnSelector" 
-        items="{{dataArrays}}" 
-        multi toggle 
-        selected="{{selectedArraySet}}">
-    </array-selector>
-  -->   <!--begin grid-->
    
     <div on-mousedown="closemenu" class="layout horizontal" style="position: relative; width: 100%;">
         
-        <div 
-            is-gridbox="true"  
+        <div is-gridbox="true"  
             id="mappedGridContainer" 
             class="horizontal layout reverse flex-8" 
             style="position: relative; overflow: scroll;">
             <!--interior of scroll div for grid-->
             <!--begin grid div below-->
-            <div 
-                id="polymerGrid" 
+            <div id="polymerGrid" 
                 on-contextmenu="mycontextMenu" 
                 class="horizontal layout flex-9 self-stretch reverse">
-                <template 
-                    is="dom-repeat"  
+                <template is="dom-repeat"  
                     id="mappedGridRepeater" 
                     observe="data selected" 
                     class="horizontal layout flex self-stretch" 
@@ -207,8 +197,7 @@
                     items="{{gridDisplayArray}}"
                      initial-count="40" 
                     as="col"><!--begin columns-->
-                    <div 
-                        id$="divCol_[[columnIndex]]" 
+                    <div id$="divCol_[[columnIndex]]" 
                         class="vertical layout container columnHeader self-stretch" 
                         style="position: relative;overflow:hidden;">
                         <template 
@@ -221,8 +210,7 @@
                             initial-count="100">
                            <!--begin cell repeats--> <!-- 
                             on-keydown="valueChangeRecord" -->
-                            <textarea        
-                                input-type="text" 
+                            <textarea input-type="text" 
                                   inputs-display-array="{{inputsDisplayArray}}"
                                 id$="{{item.id}}" 
                                 value="{{item.value::input}}"
@@ -241,13 +229,7 @@
                     </div><!--end column div-->
                 </template><!--end column repeater-->
             </div><!-- end grid div-->
-          <!--    <fc-indexed-db-helper value-object="valueObject" grid-display-array="{{gridDisplayArray}}" id="interface"></fc-indexed-db-helper> -->
         </div><!--end center grid scroll container-->
-        <!--begin Right control panel-->
-      <fc-call-center-dialog grid-display-array="{{gridDisplayArray}}" forms="{{forms}}" form-selected="{{formSelected}}" super-value="{{superValue}}" inputs-display-array="{{inputsDisplayArray}}" value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
-       <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-        </section>
-        <!--end Right Panel-->
     </div>
     <!--end grid-->
     <paper-listbox id="myContextMenu"  hidden>
@@ -496,5 +478,12 @@
   });
   </script>
   </dom-module>
-  </
+  <!--<fc-call-center-dialog grid-display-array="{{gridDisplayArray}}" forms="{{forms}}" form-selected="{{formSelected}}" super-value="{{superValue}}" inputs-display-array="{{inputsDisplayArray}}" value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
+       <paper-fab on-tap="openit" class="interface">interface</paper-fab>
+   <fc-indexed-db-helper value-object="valueObject" grid-display-array="{{gridDisplayArray}}" id="interface"></fc-indexed-db-helper>
+        begin Right control panel-->
+     <!--  <fc-call-center-dialog grid-display-array="{{gridDisplayArray}}" forms="{{forms}}" form-selected="{{formSelected}}" super-value="{{superValue}}" inputs-display-array="{{inputsDisplayArray}}" value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
+       <paper-fab on-tap="openit" class="interface">interface</paper-fab>
+    
+        end Right Panel-->
 

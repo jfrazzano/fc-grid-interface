@@ -8,7 +8,7 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
-
+<link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html">
 <link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html">
 <link rel="import" href="../fc-grid/data-manager.html">
 
@@ -20,7 +20,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html">
+<!-- <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html"> -->
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
@@ -28,8 +28,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
-
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+<!-- <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> -->
 <link rel="import" href="../fc-call-center/fc-inputs-interface.html">
 <link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
@@ -95,11 +96,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-drawer-layout fullbleed>
 
     
-      <app-drawer id="dashboardLeftDrawer"  drawer-current-width="{{leftCurrentWidth}}" swipe-open align="left">
+    <fc-app-drawer id="dashboardLeftDrawer" style="z-index: 8" drawer-current-width="{{leftCurrentWidth}}" opened swipe-open align="left">
             <fc-inputs-interface current-inner-width="{{leftCurrentWidth}}" chosen="{{inputsChosen}}" style="margin-top: 40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;"></fc-inputs-interface>
-  
-     
-      </app-drawer>
+      </fc-app-drawer>
       
       <!-- Main content -->
       <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
@@ -174,9 +173,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </iron-pages>
 
       </app-header-layout>
- <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
+         <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
        
-        </app-drawer>
+        </fc-app-drawer>
   
     </app-drawer-layout>
 

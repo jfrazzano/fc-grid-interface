@@ -94,45 +94,7 @@
         width: 36px;
         height: 36px;
     }
-   
-
-  .detTag{
-  		font-weight: 300;
-  		font-size: 16px;
-  		margin: 12px 6px;
-  		padding: 2px;
-  		color: brown;
-  		border: silver solid 2px;
-  		background: #efefef;
-  		box-shadow: 3px 5px 11px 3px #afafaf;
-
-  }
-    .timestamp{
-    font-weight: 300;
-    color: #009;
-    font-family: merriweather;
-    font-size: 12px;
-    padding: 8px 8px 8px 2px;
-    float: left;
-    margin-top: -26px;
-    margin-left: 5px;
-
-  }
-  .pageNumbers{
-    position: absolute; 
-    right: 48px; 
-    top: 20px;
-    font-size: 16px;
-  }
-  
-  .subheading {
-    font-size: 13px;
-    color: brown;
-    font-family: times;
-    float: right;
-    top: 12px;
-    padding: 3px;
-    }
+ 
  
   .dropbtn:hover, .dropbtn:focus{
 		    background-color: #3e8e41;
@@ -164,25 +126,7 @@
 			left: 5px;
 		}
   
-		.instruction{
-			color:#009;
-			font-weight:300;
-		}
 	
-    .bar{
-    
-      min-width:180px; 
-      height: 2px;
-      background:silver;
-      @apply(--vertical-layout);
-      @apply(--layout-flex);
-      @apply(--layout-self-stretch);
-      position: absolute;
-      left: 22px;
-      right: 22px;
-      top: 54px;
-
-    }
   
   @media(max-width: 570px){
     .container{
@@ -197,30 +141,11 @@
   }
 </style>
 <form is="iron-form" id="splashPageForm" method="get" action="/">
-  <!-- <img src="FC_frontpage_logo.png" height="52" width="110"> -->
-  <div class="intakeForm vertical layout" src="FC_frontpage_logo.png" on-tap="getfunction">
-    <span style="position: absolute; font-size: 15px; right: 16px; top: 5px;">Page <content select=".pageTotal"></content></span> 
-    <section>        
-      <span class="timestamp">
-        [[time]], on [[date]]
-      </span>
-      <span class="subheading">
-        * Indicates a Required Field
-      </span>
-    </section>
-    <section class="bar"></section>
   <div class="card-content">
+
     <fc-dropdown-libre form-selected="{{formSelected}}" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
-   
-   <paper-status></paper-status>
-              
-                <div on-tap="submitFirstPage">
-<content select=".next"></content>
-              
-                </div>
-              
               </div>
-              </div>
+             
               </form>
    	</template>
  	<script>
@@ -228,21 +153,12 @@ FcCallCenterFormOne=Polymer({
     is:"fc-call-center-form-one",
     behaviors:[FCBehaviors.FcFormDataRoutingBehavior],
     properties:{
-    	time:{
-			type:Date,
-			value:function(){
-					var time=new Date().toLocaleTimeString();
-					console.log(time);
-					return time;
-			},
-			notify: true
-		},
+    
     checkEvent:{
       type: Object, 
       value: function(){return {};},
       notify: true,
       observer: "observeCheckEvent",
-
     },
     radioOther:{
       type: Boolean,
@@ -265,14 +181,7 @@ FcCallCenterFormOne=Polymer({
       notify: true 
     },
 
-		date:{
-				type: Date,
-				value: function(){
-          var date=new Date().toLocaleDateString();
-					return date;
-            },
-				notify: true,
-		    },
+		
     valueObject:{
       type: Object, 
       value:function(){return {};},
@@ -332,13 +241,28 @@ FcCallCenterFormOne=Polymer({
 </script>
 </dom-module>
 <!--
+ 
+ .timestamp{
+    font-weight: 300;
+    color: #009;
 
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 36px;
+   left: 23px;
+    }
 
-
-
-
-
-
+  .subheading {
+    font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 36px;
+   right: 23px;
+    }
 
 <details>
   <summary class="sumTag">     <label id="label3" class="isPreviousCaller" name="isPreviousCaller">Caller Type:</label><span style="color: brown;">  *</summary>
