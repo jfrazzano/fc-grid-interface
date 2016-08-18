@@ -1,0 +1,64 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcFormDataRoutingBehavior= {
+	properties: {
+		formSelected:{
+ 			type: String,
+ 			value: "studentProfiles",
+ 			notify: true, 
+
+ 		},
+ 		selectedFormArray:{
+ 			type:Array,
+ 			notify: true,
+
+ 		},
+ 		forms:{
+			type: Object, 
+			value:function(){return {	
+				studentProfiles:[
+							{name: "newProfile", value: "noSearch", selectCheck: false, text: "Does a Focused Profile Already Exist for the Person You are Looking up?", label: "New Profile",ind: 0 }, 
+		                	{name: "profileLookup", value: "search", label: "Profile Lookup", selectCheck: false, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1}, 
+		                	{name: "comparingProfiles", value: "search", selectCheck: false, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2}, 
+		                	{name: "educatingWithData", value: "search", selectCheck: false, label: "Using Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3}, 
+		 	               {name: "searchReminder", value: "noSearch", selectCheck: false, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4}
+		 	               ],
+		 	   	callIntakes:[
+		 	   				{name: "newCaller", value: "newClient", selectCheck: false, text: "This caller is a new client, who has never contacted Focused before.", label: "New Caller", script: "Hello, and Welcome to Focused Coaching. Have you contacted Focused previously?" ,ind: 0 }, 
+		                	{name: "previousCaller", value: "potentialClient", label: "Previous Caller", selectCheck: false, text: "This caller has contacted Focued previously, but has yet to enroll in a Focused Program.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?",  ind: 1}, 
+		                	{name: "currentClient", value: "currentClient", selectCheck: false, text: "This caller is currently enrolled in an ongoing Focused Educational Program.  The client likely needs information related to his or her current course.", label: "Current Client", script:"Welcome back to Focused.  How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ", ind: 2}, 
+		                	{name: "clientSeekingAdditionalServices", value: "inactiveSameProfile", selectCheck: false, label: "Client Seeking Additional Services", script: "Welcome back to Focused ${1}... etc", ind: 3},
+		                	{name: "pastClientEnrollingNewStudent", text: "This caller is a past client, now seeking services or advice for a differnt child.", value: "clientEnrollingNewStudent", selectCheck: false, label: "Past Client Enrolling New Student", script:"Welcome back to Focused ${2 references former student}, etc...", ind: 4},
+		                	{name: "other", "value": "dropdownList", text: "This caller is not interested in Focused Services, please select from the drop down menu to categorize this caller after checking the box marked other.", label: "Non-Service Seeking Caller (Other)", script: "TBD",  ind: 5}
+		 	            	], 
+		 	    callIntakesTwo:[
+		 	        		{name: "parent1", value: "parent1", selectCheck: false, text: "This caller is the primary parent contact for a Focused Student. Usually, 'Parent One' is a Focused Student's mother", label: "Parent One", script: "GET OLD SCRIPT", ind: 0 }, 
+		                	{name: "parent2", value: "parent2", label: "Parent Two", selectCheck: false, text: "This caller is the secondary parental contact for a Focused Student.  In subsequent portions of the Focused Profile Builder, Parent Two contact information is optional.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?",  ind: 1}, 
+		                	{name: "student", value: "student", selectCheck: false, text: "The caller is the actual Focused Student. We find that students who seek out Focused on their own often have a better experience and increased performance.", label: "Student", script:"Welcome back to Focused. How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ", ind: 2}, 
+		                	{name: "relatedContact", value: "relatedContact", selectCheck: false, label: "Related Contact", text:"This caller has some relationship to a Focused Student. She could be a student's aunt, grandmother, neighbor, etc.  The relationship is important as this caller is responsible for the Student's participation in the Focused Program.  A text area will appear if you select this option, which will allow you to add the specific relationship.", ind: 3},
+		                	{name: "other", text: "This caller is a past client, now seeking services or advice for a differnt child.", value: "nonServiceSeeker", selectCheck: false, label: "Other", text: "This caller has no direct relationship to a Focused Student and is not interested in Focused Services. As above, if you please select this option, a dropdown and text area will appear which will allow you to specify relevant details regarding this caller.", ind: 4}
+		 	        		]
+		    	};
+		    },
+		 	notify: true,
+ 		}, 
+ 	
+
+
+ 	},
+ 	ready(){
+ 		this.selectedFormArraySetter(this.formSelected);
+ 	},
+	
+
+	selectedFormArraySetter(sf){
+		var form=this.forms;
+		var selectedArray=form[sf];
+		this.set("selectedFormArray", selectedArray);
+	},
+
+
+
+
+};
+</script>

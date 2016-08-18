@@ -7,8 +7,11 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
+
 <link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html">
 <link rel="import" href="../fc-grid/data-manager.html">
+
 <link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
@@ -27,6 +30,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../fc-call-center/fc-inputs-interface.html">
 <link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
 
@@ -41,7 +45,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         max-width: 102vw;
         @apply(--vertical-layout);
         @apply(--flex-layout);
-        @apply(--layout-self-stretch);
+        /*@apply(--layout-self-stretch);*/
       }
       .longest{display: flex; flex: row; width: 84px; height: 42px; border: 1px solid #aedefe;} 
    .link{   
@@ -91,21 +95,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <app-drawer-layout fullbleed>
 
     
-      <app-drawer id="dashboardLeftDrawer" drawer-current-width="{{leftCurrentWidth}}" swipe-open align="left">
-
+      <app-drawer id="dashboardLeftDrawer"  drawer-current-width="{{leftCurrentWidth}}" swipe-open align="left">
+            <fc-inputs-interface current-inner-width="{{leftCurrentWidth}}" chosen="{{inputsChosen}}" style="margin-top: 40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;"></fc-inputs-interface>
   
      
- </app-drawer>
-       <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
-       
-        </app-drawer>
+      </app-drawer>
+      
       <!-- Main content -->
       <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
         <app-header condenses reveals effects="waterfall" style="position: relative;">
-        <span on-tap="backOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; left:106px;">&#8678;</span><span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%;">{{nowChosen}}</span>
-         <span on-tap="forwardOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 106px;">&#8680;</span>
-        }
-        }
+        <span on-tap="backOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; left:106px;">&#8678;</span>
+
+        <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>
+        <span style="cursor: pointer; font-size: 20px; color: white; position: absolute; bottom: 2%; right: 45%; left: 45%;">{{_computeView(interfaceView.storeName)}}</span>
+         
+         
+  
+  <span on-tap="forwardOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 106px;">&#8680;</span>
       <app-toolbar>
            <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
                <fc-drag-header-menu
@@ -163,12 +169,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
-          <fc-grid id="liveGrid" chosen="{{nowChosen}}" grid-display-array="{{gridDisplayArray}}" name="grid"></fc-grid>
+          <fc-grid id="liveGrid" chosen="{{nowChosen}}" forms="{{forms}}" forms="{{forms}}" form-selected="{{formSelected}}" focused-manager="{{focusedManager}}" interface-object="{{interfaceView}}" grid-display-array="{{gridDisplayArray}}" name="grid"></fc-grid>
          
         </iron-pages>
 
       </app-header-layout>
-
+ <app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
+       
+        </app-drawer>
   
     </app-drawer-layout>
 
@@ -179,7 +187,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
 
       is: 'my-app',
-       behaviors:[FCBehaviors.FocusedDataManagerBehavior],
+       behaviors:[FCBehaviors.FcFormDataRoutingBehavior, FCBehaviors.FocusedDataManagerBehavior],
 
       properties: {
         nowChosen:{
@@ -187,6 +195,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
         },
 
+        interfaceView:{
+          type:Object, 
+          value: function(){return {};},
+          notify: true,
+        },
+        focusedManager:{
+          type: Object, 
+          notify: true,
+        },
+        inputsChosen:{
+          type:String,
+          notify: true,
+        },
         page: {
           type: String,
           reflectToAttribute: true,
@@ -242,10 +263,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       backOne(e){
              this.$.liveGrid.minusArrowForGrids(e);
-
-
-
       },
+
+      _computeView(storeName){
+        if(storeName!=undefined){
+        var label= this.focusedManager.propertyNameToLabel(storeName);
+        return label;
+        }
+      },
+
       forwardOne(e){
         this.$.liveGrid.plusArrowForGrids(e);
 

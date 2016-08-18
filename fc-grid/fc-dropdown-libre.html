@@ -1,6 +1,6 @@
 
 <link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
-
+<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
 <link rel="import" href="../fc-call-center/fc-calendar-list-widget-behavior.html">
 <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -9,18 +9,21 @@
 <template id="fc-dropdown-libre-template">
 <style>
     paper-item{
-        padding: 12px; 
-        margin: 0px; 
+        padding: 12px 20px; 
+        margin: 6px 18px; 
         font-size: 12px; 
         font-weight: 300; 
         font-family: merriweather; 
         color: #009;
         margin-top: 3px; min-width: 180px; 
         text-align: left;
+
+
             --paper-item-selected: {
                 background-color: #FFFFFF;
                 border: 1px silver solid;
             };
+
             --paper-item-focused:{
               background-color: #FFFFFF; 
                 border: 1px silver solid;       
@@ -51,11 +54,11 @@
     }
 
 </style>
-       <template is="dom-repeat"  items="{{array}}" as="arr"id="pageRepeater" filter="{{createFilter(taValue, searchOff)}}">
+       <!-- <template is="dom-repeat"  items="{{displayedFormArray}}" as="arr" id="pageRepeater" filter="{{createFilter(taValue, searchOff)}}"> -->
  
  <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
     <paper-listbox id="myFreeDropdown">
-        <template is="dom-repeat"  items="{{arr}}" id="optionsRepeater" filter="{{createFilter(issValue, searchOff)}}">
+        <template is="dom-repeat"  items="{{selectedFormArray}}" id="optionsRepeater" filter="{{createFilter(issValue, searchOff)}}">
             <paper-item 
                 onclick="{{item.myFunction}}" 
                 btn-set-value="{{item.dataSetValue}}" 
@@ -76,13 +79,17 @@
              </paper-item>
         </template>
     </paper-listbox>      
-    </template>        
+    <!-- </template>         -->
  </template> 
 
  <script>
  FcDropDownLibre=Polymer({
     is:"fc-dropdown-libre",
-    behaviors:[FCBehaviors.FcCalendarOptionsSelectorBehavior, FCBehaviors.FcCalendarListWidgetBehavior],
+    behaviors:[
+            FCBehaviors.FcCalendarOptionsSelectorBehavior, 
+            FCBehaviors.FcFormDataRoutingBehavior,
+            //FCBehaviors.FcCalendarListWidgetBehavior],
+    ],
     listeners:{'openDropdown': 'setGetAndScroll'},
     properties:{
         arrayDropdown:{
@@ -94,17 +101,7 @@
             },
             notify: true,
         },
-        array:{
-            type: Array, 
-            value: function(){return[[
-                {name: "newProfile", value: "noSearch", selectCheck: false, text: "Does a Focused Profile Already Exist for the Person You are Looking up?", label: "New Profile",ind: 0 }, 
-                {name: "profileLookup", value: "search", label: "Profile Lookup", selectCheck: false, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1}, 
-                {name: "comparingProfiles", value: "search", selectCheck: false, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2}, 
-                {name: "educatingWithData", value: "search", selectCheck: false, label: "Using Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3}, 
-                {name: "searchReminder", value: "noSearch", selectCheck: false, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4}]];
-            },
-            notify: true
-        },
+
         textareaHidden:{
             type: Boolean, 
             value: true, 
@@ -125,6 +122,7 @@
 
 
     },
+    ready(){console.log(this.forms, this.formSelected, "hello?"); },
     toggleSelection(e){},
     _computeDropDownItems(focused, clicked, quant, dropdownItems){},
     _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
@@ -138,6 +136,12 @@
 
 
     },
+    // _computeFormsArray(forms, formSelected){
+    //     var innerArray=this.forms[formSelected];
+    //     console.log(innerArray);
+    //     return [innerArray];
+
+    // },
     _computeChecked(ind, selectCheck){
         if(ind===selectCheck){return '\✅';}else{return '\☐';}
     },
@@ -147,7 +151,7 @@
 
         return retVal;
     },
-
+   
     attached(){
         this._computeInputArrays(this.inputs);
         // var keys=Object.keys(this.__data__);

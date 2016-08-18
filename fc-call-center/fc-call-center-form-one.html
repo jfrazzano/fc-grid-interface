@@ -2,24 +2,18 @@
 <link rel="import" href="FC_frontpage_logo.png">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
+<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
 <dom-module id="fc-call-center-form-one">
 <template id="fc-call-center-form-one-template">
 <style>
-:host{margin: 1px;}
-       paper-card{
-        width: 99%;
-        padding: 12px 4px 12px 2px;
-        margin: 12px 12px 12px 4px;
-        margin-top: -16px;
-        z-index:1;
-        --paper-card-header-image: {width: 138px; height: 90px; position: absolute: top: 0px left: 8px; margin: 2px 16px 16px 8px;}
-        --paper-card-header:{height: 95px; border-bottom: solid 1px silver;}
-  
-    }
+:host{position: static; margin: 1px;}
+     
     *{font-family: merriweather;
       color: #009;}
     .container{
         width: 99%;
+        padding: 12px 24px;
+        margin: 4px 19px;
         @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--layout-self-stretch);
@@ -88,37 +82,19 @@
         margin: 0px;
         padding: 0px;
       }
-    paper-radio-button{
-    		font-size: 14px;
-        color: #005c00;
-    		font-weight: 400;
-    		size: var(--paper-radio-size, 18px);
-    		 /*  --paper-radio-button-label-color: var(--my-blue-009, #000099);*/
-    		   --paper-radio-button-checked-color: var(--paper-green-900);
-    }
-    .card-actions{
-    	padding: 4px;
-    }
+   
     label.returningCaller{
     	color: black;
-    	font-size: 15ßpx;
+    	font-size: 15px;
     /*	font-style: italic;*/
     	font-weight: 700;
     }
-    paper-radio-group.tallbox{
-    	@apply(--layout-vertical);
-    	 --paper-radio-group-padding: var(--too-much-padding, 0px);
-
-    }
+ 
     iron-icon{ 
         width: 36px;
         height: 36px;
     }
-    p{
-    	text-indent: 36px;
-    	font-size: 12px;
-    	font-weight: 400;
-    		}
+   
 
   .detTag{
   		font-weight: 300;
@@ -187,15 +163,12 @@
 			position: absolute;
 			left: 5px;
 		}
-    u{color: black;
-      font-weight: 500;}
+  
 		.instruction{
 			color:#009;
 			font-weight:300;
 		}
-		.radioGroupBlock{
-			padding: 4px;
-		}
+	
     .bar{
     
       min-width:180px; 
@@ -210,26 +183,7 @@
       top: 54px;
 
     }
-    paper-radio-button{margin-top:-4px;}
-   
-		.importantNote{
-				color: black;
-				font-weight: 600;
-				padding: 8px;
-				margin: 4px;
-				margin-bottom: 26px;
-
-		},
-		.detailPads{
-				margin:24px 12px 12px 0px;
-			
-
-		}
-    summary{margin-left: -8px;}
-    .afterNote{
-      display: block;
-    }paper-card{line-height: .95;}
-
+  
   @media(max-width: 570px){
     .container{
         width: 99%;
@@ -245,7 +199,7 @@
 <form is="iron-form" id="splashPageForm" method="get" action="/">
   <!-- <img src="FC_frontpage_logo.png" height="52" width="110"> -->
   <div class="intakeForm vertical layout" src="FC_frontpage_logo.png" on-tap="getfunction">
-    <span style="position: absolute; font-size: 15px; right: 16px; top: 5px;">Page 1 of <content select=".pageTotal"></content></span> 
+    <span style="position: absolute; font-size: 15px; right: 16px; top: 5px;">Page <content select=".pageTotal"></content></span> 
     <section>        
       <span class="timestamp">
         [[time]], on [[date]]
@@ -256,7 +210,7 @@
     </section>
     <section class="bar"></section>
   <div class="card-content">
-    <fc-dropdown-libre check-event="{{checkEvent}}"></fc-dropdown-libre>
+    <fc-dropdown-libre form-selected="{{formSelected}}" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
    
    <paper-status></paper-status>
               
@@ -272,6 +226,7 @@
  	<script>
 FcCallCenterFormOne=Polymer({
     is:"fc-call-center-form-one",
+    behaviors:[FCBehaviors.FcFormDataRoutingBehavior],
     properties:{
     	time:{
 			type:Date,
@@ -294,6 +249,7 @@ FcCallCenterFormOne=Polymer({
       value:function(){return false;},
       notify: true
     },
+
     pageIndex:{
       type:Number,
       value: function(){return 0;},
@@ -377,7 +333,6 @@ FcCallCenterFormOne=Polymer({
 </dom-module>
 <!--
 
-<<!-- 
 
 
 

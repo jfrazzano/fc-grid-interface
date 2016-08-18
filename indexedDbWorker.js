@@ -139,14 +139,14 @@ importScripts("bower_components/firebase/firebase.js");
 
 				createIndexedDb(e){
 					console.log(e);
-					var dbName=e.data.dbName;
-					var version=e.data.version;
-					var indicies=e.data.indicies;
-					var data=e.data.data;
-					var storeName=e.data.storeName;
-					var key=e.data.key;
-					var bitVal=(e.data.bitVal)?e.data.bitVal: false
-
+					var dbName=e.dbName;
+					var version=e.version;
+					var indicies=e.indicies;
+					var data=e.data;
+					var storeName=e.storeName;
+					var key=e.key;
+					var bitVal=(e.bitVal)?e.bitVal: false
+					console.log(bitVal, key, storeName, data, indicies, version, dbName);
 			       	var request = indexedDB.open(dbName, version);
             		console.log(dbName, version, data, "db");
               
@@ -156,8 +156,10 @@ importScripts("bower_components/firebase/firebase.js");
             		request.onupgradeneeded = (event)=>{
                 		var db = event.target.result;
                 		console.log("we are creating it");
+                			console.log(bitVal, key, storeName, data, indicies, version, dbName);
                 		var objectStore = db.createObjectStore([storeName], { keyPath: key, autoIncrement:bitVal});
                 		console.log("created store");
+                			console.log(bitVal, key, storeName, data, indicies, version, dbName);
                 		objectStore.createIndex([key], [key], {unique: true });
                 		if(Array.isArray(indicies)){
                 		indicies.forEach(function(elem,index){
@@ -169,7 +171,7 @@ importScripts("bower_components/firebase/firebase.js");
    								objectStore.createIndex([elem], [elem], {unique: false });}
                 							});
                 			}
-                			console.log("completed the indicies");
+                			console.log("completed the indicies", data);
                 		if(Array.isArray(data)){
                     		data.forEach(function(data,i,a){
                     			// var keys=Object.keys(profile);

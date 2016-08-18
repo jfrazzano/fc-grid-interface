@@ -3,19 +3,17 @@
 <dom-module id="fc-call-center-form">
 <template id="fc-call-center-form-template">
 <style>
-:root{
 
-  }
-:host{margin-top: 2px;
-  padding: 16px;
+:host{
+  padding: 2px 4px 2px 32px;
+  margin-right: -12px;
+  border-left: 16px;
 }
   
     *{font-family: merriweather;
       color: #009;}
 
-      fc-iss-input{
-        margin-left:-34px;
-      }
+     
     fc-iss-input >label{
       width: 82%;
 
@@ -29,17 +27,11 @@
       }
     fc-iss-input.left{
       padding: 4px 4px 6px 0px;
-        margin: 12px 6px 4px -12px;
+        margin: 12px 6px 4px 12px;
         max-width: 660px;
         width: 80%;
     }
-    #iron-form{
-
-      margin:24px;
-
-
-
-    }
+   
     paper-button{
 		 	 width: 50%;
 		 	 min-width: 147px;
@@ -82,70 +74,31 @@
 			padding: 2px;
 		}
 
-   
-    paper-radio-button{
-    		font-size: 16px;
-    		font-weight: 600;
-    		size: var(--paper-radio-size, 24px);
-    		  --paper-radio-button-label-color: var(--my-blue-009, #000099);
-    		   --paper-radio-button-checked-color: var(--paper-green-900);
-
-
-    }
-    
     label.returningCaller{
     	color: black;
     	font-size: 16px;
     /*	font-style: italic;*/
     	font-weight: 500;
     }
-    paper-radio-group.tallbox{
-    	@apply(--layout-vertical);
-    	 --paper-radio-group-padding: var(--too-much-padding, 6px);
-
-    }
+ 
     iron-icon{ 
         width: 24px;
         height: 24px;
     }
 
-  .sumTag{
-  	font-weight: 500;
-  	font-size: 14px;
-  	margin-left: 3px;
-  	outline: 0px white solid;
-  }
-  .detTag{
-  		font-weight: 400;
-  		font-size: 16px;
-  		margin: 10px 16px;
-  		padding: 12px;
-  		color: brown;
-  		border: silver solid 1px;
-  		background: #efefef;
-  		box-shadow: 3px 5px 11px 3px #afafaf;
-
-  }
-
-
   .timestamp{
   	font-weight: 300;
     color: #009;
-    font-family: merriweather;
-  	font-size: 12px;
-  	padding: 8px;
-  	float: left;
-    margin-top: -11px;
-    margin-left: 10px;
 
-  }
-  .pageNumbers{
-    position: absolute; 
-    right: 32px; 
-    top: 12px;
-    font-size: 13px;
-  }
-  
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 36px;
+   left: 23px;
+    }
+
   .subheading {
     font-size: 13px;
     position: absolute;
@@ -170,67 +123,23 @@
     }
   
 
-  .dropbtn:hover, .dropbtn:focus{
-		    background-color: #3e8e41;
-		}
-		/* The container <div> - needed to position the dropdown content */
-		.dropdown {
-		    position: relative;
-		    display: inline-block;
-		}
-		/* Dropdown Content (Hidden by Default) */
-		.dropdown-content {
-		    display: none;
-		    position: absolute;
-		    background-color: #f9f9f9;
-		    min-width: 120px;
-		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-		}
-		/* Links inside the dropdown */
-		.dropdown-content a {
-		    color: black;
-		    /*padding: 5px 8px;*/
-		    text-decoration: none;
-		    display: block;
-		}
+  
 		.check{
 			font-size:26px;
 			color: green;
 			position: absolute;
 			left: 5px;
 		}
-		.instruction{
-			color:#009;
-			font-weight:700;
-		}
-		.radioGroupBlock{
-			padding: 12px;
-    }
-      .questionHeader{
+		
+		  .questionHeader{
         padding: 8px;
         margin: 12px;
       }
 
-		.importantNote{
-				color: black;
-				font-weight: 400;
-				padding: 8px;
-				margin: 4px;
-				margin-bottom: 26px;
-
-		},
-		.detailPads{
-				margin: 8px;
-
-		}
-    .topPad{
-      padding-top: 12px;
-      margin-top: 16px;
-    }
-  
+		
     @media(max-width: 620px){
     .container{
-        width: 110%;
+        width: 95%;
         @apply(--layout-vertical);
         @apply(--layout-flex);
         @apply(--layout-self-stretch);
@@ -241,47 +150,55 @@
     fc-iss-input:{
       width: 45%;
       height: 80%;
-      font-size:.8em;
+      font-size:1em;
       margin: 24px;
 
     }
-    form-content:{
+    .topPad:{
+        margin-top: 36px;
+        padding-top: 32px;
+
+
+    }
+  .form-content:{
       margin: 24px;
       padding: 16px;
     }
   }
 
 </style>
-<!-- <firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerFullName" order-by-value="{{inquiry.callerFullName}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection> -->
-<array-selector ></array-selector>
-  <div class="intakeForm vertical layout">
-        <span class="pageNumbers">Page {{pageNumber}} of <content select=".pageTotal"></content></span>
-               <section>
+
+  <div class="intakeForm vertical layout form-content">
+        
+<div class="vertical layout flex" style="margin-bottom: 36px;"">
+    <section class="bar"></section>
+      <section class="horizontal layout flex">
         <span class="timestamp">
         [[time]] on [[date]]
         </span>
          <span class="subheading">
-        * Indicates a Required Field
+           Page <content select=".pageTotal"></content>
+        <!-- * Indicates a Required Field -->
         </span>
-        </section>
-    
-    <section class="bar"></section>
-  <div class="form-content" class="fit">
+    </section>
+</div>
+
+ <!--  <div class="form-content" class="fit"> -->
   <form>
-    <div class="vertical layout self-stretch nowrap topPad">
+    <div class="vertical layout self-stretch nowrap topPad form-content">
      <!-- search was here -->
         
       <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
         <section class="horizontal layout flex"> 
         <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
       </section>
-      <div class="horizontal layout flex wrap around-justified">
+      <div class="horizontal layout flex wrap center-justified" style="margin-right: -18px;">
         <section class="container holderClass">
-          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA)}}" select-index="{{item.selectIndex}}" hange-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
           </fc-iss-input>
         </section>
         <section class="container holderClass">
-          <fc-iss-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB)}}" multi-select="{{item.isMultiSelectB}}">
+          <fc-iss-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
           </fc-iss-input>
         </section>  
     </div>
@@ -289,7 +206,6 @@
   </template>
   </div>  
   </form>   
-</div>
 <content select=".next"></content>
     <div class="card-actions horizontal layout flex container center-justified" style="min-height: 18%;">
           <content select=".buttons"></content>
@@ -363,6 +279,7 @@ FcCallCenterForm=Polymer({
       itemObject:{
         type:Array,
         notify: true,
+        // observer:"observeItemObjects(newv, oldv)",
       },
    
       currentHeight:{
@@ -379,15 +296,43 @@ FcCallCenterForm=Polymer({
         type: Object,
         computed:"setSearchDropdowns(searchOff)",
         notify: true,
-      }
+      },
+      firstFreeRow:{
+        type: Number,
+        notify: true
+
+      },
       
       },
       ready(){
 
       },
       attached(){
-          this.set("searchOff", false);        
-
+        var index;
+        var children=[];
+       this.async(function(){var children = Polymer.dom(this.$.inputTemplate).children; 
+        console.log(children);
+            var gridPointerObject={};
+            children.forEach((elem)=>{
+                var index=  elem.dropdownItems.indexOf("--");
+                this.push("firstFreeRow", index);
+                console.log(index, children, this.firstFreeRow, "herehererereoiq yu o89");
+                } );
+      }, 15500);
+     
+       
+      },
+      computePageNumber(e){
+        return 2;
+      },
+     
+      wipeInputsClean(e){
+        var count=this.itemObject.length;
+        for(var j=0;j<count;j++){
+              var objects=this.itemObject[j].forEach((obj)=>{
+                obj.value=null;
+              });
+        }
       },
       setSearchDropdowns(searchOff){
         console.log(searchOff);
@@ -411,10 +356,6 @@ FcCallCenterForm=Polymer({
        var k=0;
        for(var p=0;p<2;p++){
           for(var q=0;q<4;q++){
-            //             this.itemObject[p][q].dropdownItemsB=[];
-            // this.itemObject[q].dropdownItemsB=false;
-            // this.itemObject[q].dropdownItemsA=[];
-            // this.itemObject[q].dropdownItemsA=false;
               oi.inputsArray[p][q].dropdownItemsA=[];
               oi.inputsArray[p][q].dropdownItemsA=false;//add falses here for the ddi values they must be false to set them to search arrays
               k++;
@@ -425,14 +366,21 @@ FcCallCenterForm=Polymer({
          this.focusedManager.dashboardMap.set(0, oi);
       }
       },
-     
+    observeItemObjects(newv, oldv){
+      if(newv){
 
+        console.log(newv,oldv);
+      }
+
+
+    },
+    
   changeEventBObserve(nv,ov){
      
     if(nv&& nv.name && nv.value){
       console.log(nv);
-
-      this.set(["valueObject", nv.name], nv.value);
+      var frank="valueObject."+nv.name;
+      this.set(frank, nv.value);
       console.log(this.valueObject);
     }
   
@@ -441,20 +389,22 @@ FcCallCenterForm=Polymer({
     
     if(nv&& nv.name && nv.value){
       console.log(nv);
-
-     this.set(["valueObject", nv.name], nv.value);
+       var frank="valueObject."+nv.name;
+      this.set(frank, nv.value);
     }    
   },   
 observeChangeB(event, value, name){ //console.log(event, name, value);
- this.set(["valueObject", name], value); 
+  var frank="valueObject."+ name;
+      this.set(frank, value);
  console.log(this.valueObject[name]);},
 observeChangeA(event, value, name){
   //console.log(event, name, value); 
-  this.set(["valueObject", name], value);},
-
+   var frank="valueObject."+ name;
+      this.set(frank, value);
+    },
   
-  _computeShowDropButton(dropItems){
-    var retVal=(dropItems!==false)?true: false;
+  _computeShowDropButton(dropItems, dropdowns){
+    var retVal=(dropItems!==false||dropdowns!==false)?true: false;
     return retVal;
   },
 
@@ -483,6 +433,16 @@ observeChangeA(event, value, name){
     this.searchVals[name]=target.value;
   },
   findColumns(){},
+
+
+setBackgroundAndBlink(){
+  this.children
+
+
+
+},
+
+
  
 });
 
@@ -495,7 +455,8 @@ observeChangeA(event, value, name){
 <!--
 
  _computeDropdownItems(dropdownItems, dropdownPair, nameB){var retVal;
-    
+    <!-- <firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerFullName" order-by-value="{{inquiry.callerFullName}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection> 
+
 
     if(nameB.match("LastName")!=true && nameB.match("FirstName")!=true){retVal= dropdownItems;}
     else if(nameB.match("LastName")==true&&dropdownPair.lastNames){retVal= dropdownPair.lastNames;}

@@ -419,17 +419,17 @@ notifygrids(e){
   var gridNodes= document.querySelectorAll("FC-GRID");
       console.log(gridNodes, "see who the nodes are");
       var myHelperArray=[];
-       var changeArr=e.detail.context.dataArrays[e.detail.context.arrayIndex];
+       var changeArr=e.detail.context.gridDisplayArray;
       var counter=gridNodes.length;
       for(var i=0; i<counter;i++){
           if(gridNodes[i]&&gridNodes[i]!==e.target){
-            var index=e.detail.arrayIndex;
+            var index=e.detail.selectedStoreNumber;
             var unitArray=e.detail.spliceArray.reduce(function(pre, val, ind, arr){
               pre=pre.concat(val);
               return pre;
             }, []);
             console.log(unitArray);
-            gridNodes[i].chunkMutationForMultiDimensionalArrays(gridNodes[i].dataArrays[index],e.detail.property, e.detail.fullvalue, gridNodes[i],index, false,unitArray);
+            gridNodes[i].chunkMutationForMultiDimensionalArrays(gridNodes[i].gridDisplayArray,e.detail.property, e.detail.fullvalue, gridNodes[i],index, false,unitArray);
 
           }
         }
@@ -437,30 +437,32 @@ notifygrids(e){
 
   alternatingHighlighter(e){
     var keys=this.gridEvent.target.id.split("_");
+    console.log(keys, this.gridEvent, this.gridEvent.target);
     var mapName="m"+keys[0],arrayName=keys[0];
+    console.log(arrayName, arrayName, "this is arrayNAME");
     var p=0, btn=e.target,arr=[];
     var text=btn.btnText;
     var property=btn.btnProperty;
     var setValue =(property.match("color")&&text.match("This"))?this.color+";" + " ":(property.match("color")&&text.match("Base"))?this.defaultFormat.color+";" + " ":(property.match("background")&&text.match("Remove"))?this.defaultFormat.background+";" + " ":(property.match("background"))?this.background+";" + " ": e.target.btnSetValue + " ";
     var kp=(text.match("Column"))?1:text.match("Row")?2:-1;
     var modEven=(text.match("Odd"))?false: true;
-      var cellClass="." + keys[0];
+      // var cellClass="." + keys[0];
       var nodelist;
         if(kp===1 && modEven===false){
-          var twoClass=cellClass  + ".oddColumn";
+          var twoClass=".oddColumn";
            nodelist=Polymer.dom(this.root).querySelectorAll(twoClass);
            console.log(nodelist);
            }
         else if(kp===1&&modEven===true){
-            var twoClass=cellClass  + ".evenColumn";
+            var twoClass=".evenColumn";
             nodelist=Polymer.dom(this.root).querySelectorAll(twoClass);
         }
         else if(kp===2&&modEven===true){
-              var twoClass=cellClass  + ".evenRow";
+              var twoClass= ".evenRow";
             nodelist=Polymer.dom(this.root).querySelectorAll(twoClass);
         }
         else{
-            var twoClass=cellClass  + ".oddRow";
+            var twoClass=".oddRow";
             nodelist=Polymer.dom(this.root).querySelectorAll(twoClass);
         }
         var fullVal=property+setValue;
@@ -482,13 +484,15 @@ notifygrids(e){
             keys=key.split("_");
             var col=keys[1];
             var row=keys[2];
-            this.set([arrayName, col, row,".style"],cellStyle);
-          
-            this.updateObjectStores(arrayName, undefined , key, "style", cellStyle);
+            this.set([arrayName, col, row,".style"],cellStyle); 
+            //ARRAYNAME IS EMPTY HERE... SHOULD BE SWITCHED TO this.selectedStoreName//
+            //that is: dbName +"_"+ storeName
+            //this.gridDisplayArrayfocusedManager.dashboardMap.get()
+            //this.updateObjectStores(arrayName, undefined , key, "style", cellStyle);
           }
           var e={};
             e.detail={"namesArray":[[arrayName,1]],"context":this,"isInit":false,
-              "arrayIndex": this.arrayIndex, "spliceArray": this[arrayName], "property": property, "fullvalue": fullVal};
+              "arrayIndex": this.arrayIndex, "spliceArray": this[arrayName], "property": property, "fullvalue": fullVal}; //change array index to selectedStoreNumber or selectedStoreName
           this.notifygrids(e);
           return this[arrayName];
       },

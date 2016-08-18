@@ -21,6 +21,7 @@
   --label-position-bottom:3px;
  }*/
 :host{background:"";
+margin-left: 28px;
   @apply(--layout-flex);
   @apply(--layout-start)
   @apply(--layout-vertical);
@@ -151,7 +152,7 @@ paper-listbox{
 min-width: 210px;
 
 
-}
+} .inputcontainer{margin-left: 6px;}
 .dropbtn{
  margin: 0px;
  padding: 0px   ;
@@ -211,10 +212,10 @@ min-width: 210px;
   iron-icon{
     width: 24px;
     height: 24px;
-    padding: 0px 4px;
+    padding: 0px;
   
   }
-  paper-icon-button{ width: 24px; height: 24px;  position: relative; left: -8px;} 
+  paper-icon-button{ width: 24px; height: 24px;  position: static; } 
   .wrapper{width: 95%; position:relative; margin-top: 16px;}
 </style>
 <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
@@ -354,13 +355,18 @@ FcIssInput=Polymer({
         type: Array,
         notify: true
       },
+      dropDownChildren:{
+        type:Array, 
+        value:function(){return [];},
+        notify: true,
+      },
     
         shadowIndex:{
         		type:Object,
         		computed:"_computedSetterForIndex(multiSelect, dropdownOpen)",
         		notify: true,
         },
-          showDropButton:{
+      showDropButton:{
       type:Boolean,
       value:function(){return false;},
       notify: true,
@@ -427,7 +433,8 @@ FcIssInput=Polymer({
     this.set("selected.type", retVal);
      },
  attached(){
-  //console.log(this.$.dropdownlist.scrollTop);
+    var children = this.getDropdownChildren();
+    this.set("dropdownChildren",children);
   console.log(this.onChange, this.onChange,this.onChange);
   this.set("startScrollTop",this.$.dropdownlist.scrollTop);
   this.set("baseScrollTop",this.$.dropdownlist.scrollTop);
@@ -446,17 +453,18 @@ FcIssInput=Polymer({
     console.log(e, this.valueObject);
     var input=this.$.issInput;
   this.set([input,"value"], e.target.value);
+  this.$.issInput.value=e.target.value;
   console.log(e.target.value, e.target);
   var valConstruct="valueObject."+e.target.name;
   console.log(valConstruct);
   this.set(valConstruct, e.target.value);
-  //this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
+  this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
   //if(e.model||e._templateInstance){
    // var model=e._templateInstance;
     //console.log(model);
    // model.set("item.value", e.target.value);
    // }
-    //this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
+    this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
   },
  _computeLabelSpanClass(isToggle,toggleClass,issClass){
         return this.issClass;
@@ -541,7 +549,7 @@ FcIssInput=Polymer({
         this.set("issLabel", " OFF");
       }
     },
-	createFilter(issValue, searchOff){
+createFilter(issValue, searchOff){
     if(searchOff)return function(item){return true;}
     else{
       var jason=this, isp=jason.itemSelectProperty;
@@ -553,7 +561,7 @@ FcIssInput=Polymer({
         };
       }
   },
-  _computedSetterForIndex(multi, ddo){
+_computedSetterForIndex(multi, ddo){
      console.log("insetter for index",ddo, multi);
    		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
    		this.set("itemKeyStrokeIndex", setVal);
@@ -653,6 +661,7 @@ FcIssInput=Polymer({
           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
       	 var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
+         console.log(this.itemKeyStrokeIndex);
          var bool=children[last]._templateInstance.item.selectCheck;
          var element=children[oneMore]; 
          var preSib=children[setterBase];
@@ -698,59 +707,69 @@ FcIssInput=Polymer({
     console.log(e);
     if(this.$.issInput.value!=undefined&&this.searchOff===true){
       this.set("issValue", this.$.issInput.value); 
+      var nom="valueObject."+this.issName;
+      this.set(nom, this.issValue);
     }
       else{
         var children=this.getDropdownChildren();
-        var fvali="valueObject."+this.$.issInput;
-        this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item);   
-        
-      if(this.searchOff===true){
-        this.removeColorFromChildren(children);
-      }
-      if(this.itemSelectProperty===""){
-        this.set("issValue",children[this.itemKeyStrokeIndex]._templateInstance.item);   
-        var elem=children[0];
-        Polymer.dom(elem).classList.add("selectColor"); 
-      }
-      else if(this.multiSelect===false && this.searchOff===true){
-        var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-        this.set("issValue", value);
-        }
-      else if(this.multiSelect==false && this.searchOff==false){
-        console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
-          var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-        this.set("issValue", value); 
-      }
-      else if(this.multiSelect===true){
-         var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-        var model=children[this.itemKeyStrokeIndex]._templateInstance;
-         this.set("issValue","");
-        if(children[this.itemKeyStrokeIndex]._templateInstance.item.selectCheck===true){
-          model.set("item.selectCheck", false);
-          var index = this.issValueArray.indexOf(value);
-          this.splice("issValueArray",index, 1);
-          var newVal=this.issValueArray.toString();
-          this.set("issValue", newVal);
-        }
-        else{ 
-              model.set("item.selectCheck", true);
-              this.push("issValueArray", value);
-               var newVal=this.issValueArray.toString();
-              this.set("issValue", newVal);
-            }
-      }
-       else if(children[this.itemKeyStrokeIndex]){ 
-          var value=children[this.itemKeyStrokeIndex].value;
-          var elem=children[this.ItemKeyStrokeIndex];
-          var name=this.$.issInput.name;
-          console.log(value, this.$.issInput.name);
-          this.set("changeEvent", {"event":e, "model": null, "target": null, "name": name, "value": value});
-          console.log(this.changeEvent);
-        this.set("issValue", value); 
-      }
-    }
-      this.blurInput();
-    },
+        var fvali="valueObject."+this.$.issInput.name;
+        console.log(this.itemKeyStrokeIndex, "the mythic power if the index");
+               if(children[this.itemKeyStrokeIndex]!=undefined&&children[this.itemKeyStrokeIndex]._templateInstance!=undefined){
+                                   this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item); 
+                    } 
+               if(this.$.issInput.value!=undefined){
+                         this.set("issValue", this.$.issInput.value); 
+                         var nom="valueObject."+this.issName;
+                         this.set(nom, this.issValue);
+                    } 
+                     if(this.searchOff===true){
+                       this.removeColorFromChildren(children);
+                     }
+                     if(this.itemSelectProperty===""){
+                       this.set("issValue",children[this.itemKeyStrokeIndex]._templateInstance.item);   
+                       var elem=children[0];
+                       Polymer.dom(elem).classList.add("selectColor"); 
+                     }
+                     else if(this.multiSelect===false && this.searchOff===true){
+                       var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+                       this.set("issValue", value);
+                       }
+                     else if(this.multiSelect==false && this.searchOff==false){
+                       console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
+                         var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+                       this.set("issValue", value); 
+                     }
+                     else if(this.multiSelect===true){
+                        var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+                       var model=children[this.itemKeyStrokeIndex]._templateInstance;
+                        this.set("issValue","");
+                       if(children[this.itemKeyStrokeIndex]._templateInstance.item.selectCheck===true){
+                         model.set("item.selectCheck", false);
+                         var index = this.issValueArray.indexOf(value);
+                         this.splice("issValueArray",index, 1);
+                         var newVal=this.issValueArray.toString();
+                         this.set("issValue", newVal);
+                       }
+                       else{ 
+                             model.set("item.selectCheck", true);
+                             this.push("issValueArray", value);
+                              var newVal=this.issValueArray.toString();
+                             this.set("issValue", newVal);
+                           }
+                     }
+                      else if(children[this.itemKeyStrokeIndex]){ 
+                         var value=children[this.itemKeyStrokeIndex].value;
+                         var elem=children[this.ItemKeyStrokeIndex];
+                         var name=this.$.issInput.name;
+                         console.log(value, this.$.issInput.name);
+                         this.set("changeEvent", {"event":e, "model": null, "target": null, "name": name, "value": value});
+                         console.log(this.changeEvent);
+                       this.set("issValue", value); 
+                     }
+                   }
+                     this.blurInput();
+                     console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
+                   },
   
 });
 </script>

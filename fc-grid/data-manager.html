@@ -52,12 +52,13 @@ function DataManager(user){
 	this.dataManagerProfile={};
   
     this.arrayWorker=new Worker("indexedDbWorker.js");
-   
+       var addOns=this.getAddOns(); 
+    this.profileConstructorArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics];
     this.courseCalendarInputs=this.courseInputGetter();
+     // this.getIdbProfiles();
     //console.log("courseCalendarInputs", this.courseCalendarInputs, "this should be the course calendar input set from teh static getters in the course calendaring class");
     //Below I strip profile properties from the three profile classes; I use the "addOns", to fix some mistakes made in early design related to multiselect in the dropddowns
-    var addOns=this.getAddOns(); 
-    this.profileConstructorArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics];
+
     this.profileInputs=this.setPropertiesFromConstructorsToInitializeInputsForAnApi(this.profileConstructorArray, this.profileInputs, addOns);
     //console.log(this.profileInputs, "these should be the profile inputs");
     //good to here
@@ -73,14 +74,14 @@ function DataManager(user){
   
     //issues with map consider plain object-- or object with array in it
     //fix dropdowns you tried to make more efficient
-  
+  console.log(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs);
     this.multiGridArray=this.buildGridFromInputs(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs, this.inputsIndex);
     var updater=this.multiGridArray;
     var keys=[0,1,2];
     var propertiesToUpdateForEachKey=["gridArray", "gridArray", "gridArray"];
     this.updateMappedDashboardDataset(updater, keys, propertiesToUpdateForEachKey);
     //console.log(this.dashboardMap); 
-     this.getIdbProfiles();
+    this.getIdbProfiles();
 
        
         var databasesIndex={
@@ -189,6 +190,24 @@ function DataManager(user){
         
            return retArray;
 }
+DataManager.prototype.propertyNameToLabel=function(propertyName){
+    var label =propertyName;
+            label=label.replace(/([A-Z])/g, ' $1'),  
+            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+            label=label.replace("1", " One"),
+            label=label.replace("2", " Two");
+            return label;
+}
+DataManager.prototype.labelToPropertyName=function(label){
+    var propertyName=label;        
+        propertyName = propertyName.replace(" ", "");
+        propertyName[0] = propertyName[0].toLowerCase();
+        propertyName = propertyName.replace("one", "1");
+        propertyName = propertyName.replace("One", "1");
+        propertyName = propertyName.replace("two", "2");
+        propertyName = propertyName.replace("Two", "2");
+        return propertyName;
+}
 
   DataManager.prototype.getAddOns=function(valuesFromInputs){
         if(valuesFromInputs!=undefined){/*do stuff*/}
@@ -215,7 +234,7 @@ DataManager.prototype.mappedDashboardDataset=function(args){
     if(args==undefined || args==null){
         //console.log(this.courseCalendarInputs, this.profileInputs, this.inquiryInputs);
         var array=[ 
-                    {"value": "Profiles","dbName": "Profiles",version: 2,  "storeName":"basicProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":1, inputsArray:this.profileInputs, gridArray:[], archive: []},
+                    {"value": "Profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":1, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: []},
                     {"value": "Course Calendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 2, inputsArray: this.courseCalendarInputs, gridArray:[], archive: []},
                     {"value": "All Messages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayedIndex": `0 through 6`, inputsArray: this.inquiryInputs, gridArray:[], archive: []},
                     {"value": "Student Homework Results", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: []},
@@ -231,6 +250,39 @@ DataManager.prototype.mappedDashboardDataset=function(args){
     }
     return myMap;
 }
+DataManager.prototype.getReviseResaveAllBasicProfiles=function(key, reactionFunction, reactFunction){
+    var dbm=this.dashboardMap.get(key);
+    var grid=dbm.gridArray;
+
+    console.log(grid);
+    var theProfiles=grid[15].map((cel, index)=>{ 
+if(index>0&&cel.valueObject){
+    var profile= new ProfileReformer(cel.valueObject);
+        return profile;}}); 
+    var array=[]; 
+    var k = theProfiles.filter((pro, index)=>{var retVal=(pro==undefined||!pro.studentFirstName||pro.studentFirstName=="" || pro.studentFirstName==undefined||pro.studentFirstName==" " || pro.studentLastName==" "||pro.studentLastName==undefined|| pro.studentLastName=="" || pro.fcid=="" || pro.fcid==undefined || pro.fcid==="00001")?false: true; 
+        if(retVal===false){return false;}else{
+            if(index===0){console.log("useless?"); return false;}
+            if(array&&pro){
+                var dex=array.indexOf(pro.fcid); 
+                if(dex>=0){retVal=false;
+                }
+                else{ array.push(pro.fcid);
+                  console.log(array);
+                  return true;
+                } 
+              }
+            } 
+         });
+            console.log(k, theProfiles, "right here is where you check then you set key")
+        var noms=["Course", "[object, Object]", "indexOfDatabases"];
+        var obj={"requestType":"deleteDatabase", "names":noms};
+        this.createIndexedDatabase(key,k, this.arrayWorker, "postMessage", obj, "build");
+}
+
+
+
+
 DataManager.prototype.getShorthandIndex=function(){
     var counter=0;
     var holderArray=[];
@@ -308,9 +360,9 @@ DataManager.prototype.propertiesLabelsAndValuesFromInputs=function(inputs, type)
  }
 
  DataManager.prototype.getIdbProfiles=function(){
-        // this.propertiesLabelsAndValuesFromInputs()
+        //  this.propertiesLabelsAndValuesFromInputs()
         var profileData=[this.profilesSerialized, this.multiGridArray[0]];
-    this.arrayWorker.postMessage({data:profileData, requestType: "getDatabase", dbName: "Profiles", storeName: "basicProfiles", version: 2} );
+    this.arrayWorker.postMessage({data:profileData, requestType: "getDatabase", dbName: "Profiles", storeName: "studentProfiles", version: 3} );
     this.arrayWorker.onmessage=(e)=>{
      if(e.data.returnMessage=="databaseReturn"){
                  var req=e.data;    
@@ -351,19 +403,87 @@ DataManager.prototype.objectUpdatesToIdb=function(dashboardMapEntry, data){
 
         };
 }
-DataManager.prototype.createIndexedDatabase=function(key){
-    var io=this.dashboardMap(key)
-    this.arrayWorker.postMessage({requestType:"createIndexedDb", dbName: io.dbName, storeName: io.storeName,version: io.veriosn, indicies:io.indicies, key: fcid});
-    this.arrayWorker.onmessage=function(e){console.log(e.data, "I DID IT");};
+DataManager.prototype.createIndexedDatabase=function(key, data, context, responseFunction, responseArgObject, messageTrigger){
+    var io=this.dashboardMap.get(key)
+    this.arrayWorker.postMessage({"requestType":"createIndexedDb", "dbName": io.dbName, "storeName": io.storeName, "data": data, key: "fcid", fcid: "fcid", "version": io.version, "indicies":io.indicies, "data": data, key: "fcid"});
+    this.arrayWorker.onmessage=function(e){ 
+             if(e.data.returnMessage==messageTrigger){
+                context[responseFunction](responseArgObject);
 
+            }
+        };
 
+}
+DataManager.prototype.reformProfileObject=function(profileObject){
 
+    var tempObj=new ProfileReformer(profileObject);
+   var keys=Object.keys(tempObj);
+        var unfilled=keys.reduce((pre, key, i, array)=>{
+                tempObj[key]=="";
+                pre=pre+1;
+               // console.log("THIS "+key+ " " +tempObj[key]+ " " +pre +"MANY Properties Have Not Been Filled");
+                return pre;
+        },0);
 
-},
-
+        var retObj={"profile":tempObj,"unfilledProperties":unfilled};
+        return retObj;
+}
 
 'use strict';
-
+class ProfileReformer{
+constructor(args){
+        this.studentFirstName= args.studentFirstName ||"";
+        this.studentLastName= args.studentLastName ||"";
+        this.studentTelephone= args.studentTelephone ||"";
+        this.studentEmail= args.studentEmail || "";
+        this.parent1FirstName= args.parent1FirstName ||"";
+        this.parent1LastName= args.parent1LastName || "";
+        this.parent1Telephone= args.parent1Telephone ||"";
+        this.parent1Email= args.parent1Email ||"";
+        this.parent2FirstName= args.parent2FirstName ||"";
+        this.parent2LastName=args.parent2LastName || "";
+        this.parent2Telephone= args.parent2Telephone ||"";
+        this.parent2Email= args.parent2Email ||"";
+        this.addressLine1= args.addressLine1 ||"";
+        this.addressLine2= args.addressLine2 ||"";
+        this.studentFullName=args.studentFirstName + " " + this.studentLastName  || "";
+        this.parent1FullName=args.parent1FirstName + " " + this.parent1LastName || "";
+        this.parent2FullName=args.parent2FirstName + " " + this.parent2LastName || "";
+        this.fcid= args.fcid || args.studentLastName + this.studentFirstName + "_00001"; 
+        this.completedMathCourses = args.completedMathCourses || "";
+        this.completedEnglishCourses = args.completedEnglishCourses || "";
+        this.completedScienceCourses= args.completedScienceCourses || "";
+        this.completedHistoryCourses = args.completedHistoryCourses || "";
+        this.gradeLevel = args.gradeLevel||"";
+        this.currentSchool = args.currentSchool ||"";
+        this.previousEducation = args.previousEducation || "";
+        this.educationalAspirations = args.educationalAspirations || "";
+        this.startMathScore = args.startMathScore  || "";
+        this.startReadingScore = args.startReadingScore  || "";
+        this.startTotalScore = args.startTotalScore  || "";
+        this.goalTotalScore = args.goalTotalScore || "";
+    }
+}
+class Person{
+    constructor(args){
+     this.personFirstName= args.personFirstName ||"";
+        this.personLastName= args.personLastName ||"";
+        this.personTelephone= args.personTelephone ||"";
+        this.personEmail= args.personEmail || "";           
+        this.personFullName=this.personFirstName + " " + this.personLastName  || "";
+        this.personFcid=this.personLastName+this.personFirstName+"_00001";
+    }
+    personToUserTypeConvertor(userType, studentFcidIfAvailable){
+        var keys=Object.keys(this),type=userType, replacer="", typedKey="", a=(type!=="student"), b=true;
+        var typedObject=keys.reduce((obj,key)=>{
+                                    b=(a||key!=="personFcid");
+                                    replacer=b?type:key.toLowerCase(), replacer;
+                                    typedKey=key.replace("person", replacer);
+                                    obj[typedKey]=this[key];
+                                    return obj;
+                        }, {});//this creates the typedObject to be inserted in an arg[property]--constructor or reformer;
+        }
+}
 class DataGrids{
   constructor(bindTo){
     this.firstLoad=true;
@@ -1177,7 +1297,7 @@ addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
     //co.log(this.arrayIndex, this.tagIndex);
     if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
     
-    for(var i=0;i<this.dataArrays[this.tagIndex].length;i++)
+    for(var i=0;i<this.gridDisplayArray.length;i++)
     {
           var str="00000";
               var co=(str+i).slice(-5);
