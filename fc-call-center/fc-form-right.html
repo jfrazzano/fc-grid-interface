@@ -1,0 +1,448 @@
+
+<link rel="import"  href="fc-form-routing-behavior.html">
+
+<link rel="import" href="../fc-grid/data-manager.html">
+<link rel="import" href="fc-course-calendar-creation-behavior.html">
+
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+ <link rel="import" href="fc-calendar-behavior-beta-prime.html"> 
+
+<link rel="import" href="fc-profile-class.html">
+<link rel="import"  href="fc-calendar-controller-behavior.html">
+
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+<link rel="import" href="../fc-grid/fc-iss-input.html">
+
+<link rel="import" href="fc-call-center-form-one.html">
+<link rel="import" href="fc-call-center-form.html">
+<link rel="import" href="../src/fc-grid.html">
+<link rel="import" href="../fc-grid/fc-search-input.html">
+<dom-module id="fc-form-right">
+<template id="fc-form-right-template">
+<style>
+
+:host{
+
+  margin-right: -120px; 
+  position: absolute;
+  overflow-x: hidden;
+  border: red 5em dashed;
+  min-height: 120vh;
+  top-margin:-120px
+  z-index:8;
+  background: white;
+}
+  
+    *{font-family: merriweather;
+      color: #009;}
+
+     
+    fc-search-input >label{
+      width: 82%;
+        max-width: 540px;
+        width: 80%;
+      padding: 4px 4px 6px 0px;
+        margin: 12px 6px 4px 12px;
+        max-width: 660px;
+        width: 80%;
+    }
+   
+
+    label.returningCaller{
+    	color: black;
+    	font-size: 16px;
+    /*	font-style: italic;*/
+    	font-weight: 500;
+    }
+ 
+
+		.check{
+			font-size:26px;
+			color: green;
+			position: absolute;
+			left: 5px;
+		}
+		
+.timestamp{
+    font-weight: 300;
+    color: #009;
+
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 60px;
+   left: 20px;
+    }
+
+  .subheading {
+    font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 36px;
+   right: 14px;
+   margin-right: 0px;
+    }
+     .bar{
+    
+      min-width:180px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 54px;
+
+    }
+    @media(max-width: 520px){
+      :host{
+        width: 95%;
+        @apply(--layout-vertical);
+        @apply(--layout-flex);
+        @apply(--layout-self-stretch);
+        @apply(--layout-wrap);
+        @apply(--layout-flex-grow);
+        @apply(--flex-grow);
+        @apply(--layout-center-justified);
+      }
+    }
+  
+    .topPad:{
+        margin-top: 36px;
+        padding-top: 32px;
+
+
+    }
+  .form-content:{
+      margin: 24px;
+      padding: 16px;
+    }
+  }
+
+</style>
+<form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+ <div class="header" style="margin: -230px 20px -40px 0; padding-bottom: 10px; z-index; 5; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300;"> <span  style="padding-bottom:2px;" btn="changeAppInterfaceForInputs" >{{chosen}}</span>
+ 
+ <div class="vertical layout flex" style="margin-bottom: 48px;"">
+    <section class="bar"></section>
+      <section class="horizontal layout flex">
+        <span btn="leftClick" class="timestamp">
+        [[time]] on [[date]]
+        </span>
+       <section btn="rightClick" class="subheading">Page {{shadowIndex}} of {{pageTotal}}</section>
+    </section>
+</div>
+</div>
+
+ <div class="flex layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+
+        <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+
+
+
+      <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
+        <section class="horizontal layout flex"> 
+        <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+      </section>
+      <div class="horizontal layout flex wrap center-justified" style="margin-right: -18px;">
+        <section class="container">
+          <fc-search-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          </fc-search-input>
+        </section>
+        <section class="container">
+          <fc-search-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
+          </fc-search-input>
+        </section>  
+    </div>
+  </template>
+<div id="ittleImAndShellveeFin">
+<template id="fc-dropmemnu">
+ 
+    <fc-dropdown-libre form-selected="{{formSelected}}" position="fixed" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
+    </template></div>
+  </neon-animated-pages>
+  </div>
+<script>
+FcFormRight=Polymer({
+    is:"fc-form-right",
+    behaviors:[FCBehaviors.FocusedDataManagerBehavior],
+    observers:["observeChangeB(changeEventB.event, changeEventB.value, changeEventB.name)", "observeChangeA(changeEventA.event, changeEventA.value, changeEventA.name)"],
+    properties:{
+    	time:{
+		    type:Date,
+        value:function(){
+  					var time=new Date().toLocaleTimeString(),
+            spliceLocation =(time.charAt(1)===":")?4:5;
+            time=time.split("")
+            time.splice(spliceLocation,3)
+            time=time.toString().replace(/,/g,"")
+					return time;
+			},
+			notify: true
+		},
+    focusedManager:{
+      type: Object, 
+      notify: true,
+
+    },
+    searchOff:{
+      type: Boolean,
+      notify: true
+    },
+    pageNumber:{
+      type:Number,
+      value: function(){return 2;},
+      notify: true,
+    },
+		date:{
+				type: Date,
+				value: function(){var date=new Date().toLocaleDateString();
+					return date;},
+				notify: true,
+		},
+    searchVals:{
+      type: Object,
+      value: function(){return {};},
+      notify: true
+    },
+    valueColumns:{
+      type: Array, 
+      value:function(){return [];},
+      notify: true,
+    },
+  
+    changeEventA:{
+      type:Object,
+      value:function(){return {};},
+      observer: "changeEventAObserve",
+      notify: true,
+    },
+    changeEventB:{
+      type:Object,
+      value:function(){return {};},
+       observer: "changeEventBObserve",
+      notify: true,
+      },
+      itemObject:{
+        type:Array,
+        notify: true,
+        observer:"observeItemObjects(newv, oldv)",
+      },
+   
+      currentHeight:{
+        type: String,
+        notify: true
+      },
+      valueObject:{
+        type: Object,
+        value: function(){return {};},
+        notify: true,
+        observer:"observeValueObject",
+      },
+      searchDropdowns:{
+        type: Object,
+        computed:"setSearchDropdowns(searchOff)",
+        notify: true,
+      },
+     
+
+},
+     
+      wipeInputsClean(e){
+        var count=this.itemObject.length;
+        for(var j=0;j<count;j++){
+              var objects=this.itemObject[j].forEach((obj)=>{
+                obj.value=null;
+              });
+        }
+      },
+     
+    observeItemObjects(newv, oldv){
+      if(newv){
+
+        console.log(newv,oldv);
+      }
+    },
+    
+  changeEventBObserve(nv,ov){  
+    if(nv&& nv.name && nv.value){
+      console.log(nv);
+      var frank="valueObject."+nv.name;
+      this.set(frank, nv.value);
+      console.log(this.valueObject);
+    }
+  
+  },
+   changeEventAObserve(nv, ov){
+    
+    if(nv&& nv.name && nv.value){
+      console.log(nv);
+       var frank="valueObject."+nv.name;
+      this.set(frank, nv.value);
+    }    
+  },   
+observeChangeB(event, value, name){ //console.log(event, name, value);
+  var frank="valueObject."+ name;
+      this.set(frank, value);
+ console.log(this.valueObject[name]);
+},
+observeChangeA(event, value, name){
+  //console.log(event, name, value); 
+   var frank="valueObject."+ name;
+      this.set(frank, value);
+    },
+  
+  computeItemHeaderHidden(header){
+    if(header){return false;}else{return true;}
+  },
+  _passSearchVals: function(e, detail){
+    //  console.log(e.detail.value, e.detail.name, "take Note here");
+      var name = e.detail.name;
+      var val = e.detail.value;
+       this.set(["searchVals", name], val);
+      //this.$.callList.updateSearchVals(this.searchVals, name, val);
+    },
+  
+    observeDropdownPair(nv, ov){
+  
+},
+    
+  _sendInputChanged: function(e, detail){
+    //console.log(e,e.target, detail);
+    var target=e.target;
+    //console.log(e.model.item);
+    var name=target.name;
+    //this.set(["valueObject", name],target.value); 
+    this.fire("sendInputVal", {property: target.value});
+    this.searchVals[name]=target.value;
+  },
+  
+
+  _computeCurrentWidth(ciw){
+    var retVal=ciw>=510?510:ciw;
+    return retVal;
+  },
+  observeSelected(nv, ov){
+    if(nv){console.log(nv,ov);}
+
+
+  },
+  _computeShadowIndex(selected){
+    return selected+1;
+  },
+  _computePageTotal(inputsDisplayArray){
+    var retVal=inputsDisplayArray.length+1;
+    return retVal;
+
+  },
+  _computeMinWidthHidden(cwidth){
+      var retVal=(cwidth-20<215)?true: false;
+      return retVal;
+  },
+  _modifySizeRatio(ciw){
+    var r=(ciw>520)?.9454:(ciw/520)>.8125?(ciw/480):.723;
+   var retVal=Math.ceil(r*22);
+    console.log(r, retVal);
+    return retVal; 
+  },
+
+  computePageNumber(){},
+  computeIsSearchRequired(hasFocusedProfile){},
+  observeSearchOff(nv, ov){if(nv){
+      console.log(nv);}},
+  observeCurrentWidth(newVal, oldVal){
+      if(newVal){
+        console.log(newVal, oldVal);
+
+      }
+
+
+  },
+
+    deepObserveValueObject(nv, ov){ 
+      if(nv&&nv.value&&nv.value.value){
+     
+       var frank="superValue."+ keys[0];
+       this.set(frank,nv.value.value);
+       console.log(this.superValue);
+       this.superValue=Object.assign(this.superValue,nv.base);
+       var holder=this.valueObject;
+       var sup=this.superValue;
+       var array=[holder, sup];
+       for(var i=0;i<2; i++){
+        var po=array[i];
+         
+       var retVal =this.searchMatchSet(nv.value, nv.base);
+        if(retVal!=undefined){
+            var count =this.inputsDisplayArray.length;
+        console.log(count);
+          for(var i=0;i<count;i++)
+          {
+              var pageInputArray=this.inputsDisplayArray[i];
+              var inputSetCount=pageInputArray.length;
+               this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+                    if(nv.base[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],nv.value[val.nameA]);}
+                    if(nv.base[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],nv.value[val.nameB]);} 
+               });
+          }
+
+        }
+      }
+    }
+  }, 
+
+  doStuffOnLoad(e){
+         this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");//console.log(ht, wt);
+          this.style.width="440px"; this.style.height="660px";}, 4);
+        //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
+     },
+
+
+
+ 
+});
+
+</script>
+</dom-module>
+
+
+
+
+<!--
+
+ _computeDropdownItems(dropdownItems, dropdownPair, nameB){var retVal;
+    <!-- <firebase-collection data="{{calls}}" id="FBCallReads" order-by-child="callerFullName" order-by-value="{{inquiry.callerFullName}}" location="https://focused0ne.firebaseio.com/inquiries"></firebase-collection> 
+
+
+    if(nameB.match("LastName")!=true && nameB.match("FirstName")!=true){retVal= dropdownItems;}
+    else if(nameB.match("LastName")==true&&dropdownPair.lastNames){retVal= dropdownPair.lastNames;}
+    else if(nameB.match("FirstName")==true&&dropdownPair.firstNames){retVal= dropdownPair.firstNames;}
+    else {retVal =dropdownItems;}
+    console.log(retVal, "retval");
+    return retVal;
+  }
+
+
+
+ <div class="horizontal layout flex wrap around-justified" hidden="{{!inquiry.isPreviousCaller}}">
+       
+   <section class="container holderClass">
+          <fc-iss-input class="left" id$="{{item.nameA}}_Search{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.name}}search" name="callerFullName" iss-name="callerFullName"  iss-label="Caller Full Name"  iss-value="{{inquiry.callerFullName}}"  item-select-property="callerFullName"  value="{{inquiry.callerFullName}}" value-object="{{valueObject}}" change-event="{{searchChangeEvent}}" dropdown-items="{{calls}}">
+          </fc-iss-input>
+        </section>
+       
+    </div>

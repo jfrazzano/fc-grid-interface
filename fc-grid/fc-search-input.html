@@ -1,0 +1,554 @@
+<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+
+</defs></svg>
+</iron-iconset-svg>
+<dom-module id="fc-search-input">	
+<template id="fc-search-input-template">
+<style>
+
+:host{background:"";
+margin-left: 28px;
+  @apply(--layout-flex);
+  @apply(--layout-start)
+  @apply(--layout-vertical);
+  @apply(--layout-self-stretch)
+
+  }
+paper-item{--paper-item-focused:{background: orange;};
+   @apply(--paper-item-focused);
+  }
+input{
+ display: block;
+  border: none;
+  background: "none";
+  font-size: 16px;
+}
+/
+textarea:focus,
+input:focus {
+  margin-bottom: 8px;
+}
+input.question {
+  font-size: 16px;
+  font-weight: 300;
+  margin: 0;
+  border: none;
+  opacity: 1;
+  width: 90%;
+  /*background: rgba(0, 0, 0, 0);*/
+  transition: padding-top 0.4s ease, margin-top 0.4s ease;
+  overflow-x: hidden;
+}
+input.question + label{
+  display: block;
+  position: relative;
+  white-space: nowrap;
+  padding: 0;
+  margin: 0;
+width: 90%;
+  border-top: 1px solid brown;
+  -webkit-transition: width 0.4s ease;
+  transition: width 0.4s ease;
+  height: 0px;
+}
+input.question:focus + label
+{
+  width: 90%;
+  border-top: 1.2px solid #005c00;
+   -webkit-transition: width 0.3s ease, border-top .3s ease;
+  transition: width 0.3s ease, border-top .3s ease;
+}
+input.question:focus + label > span{
+top: -53px;
+  z-index:1;
+  font-size: 14px;
+  font-family: merriweather;
+  color: #050;
+  -webkit-transition: color 0.3s ease, top .3s ease;
+  transition: color 0.3s ease, top .3s ease;
+}
+input:valid + label + paper-listbox{
+  z-index: -1; left:-8px; right:0px; top:30px; width: 210px; opacity: 0;
+         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease,z-index 0.6s ease;
+  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
+}
+input:focus + label + paper-listbox{
+  display:block; z-index: 4500; left:-8px; right:0px; top:30px; opacity: 1; margin-left:-8px;
+         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
+  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;
+}
+input.question:valid{
+  color: #009;
+  opacity: 1;
+  font-family: merriweather;
+  font-weight: 600;
+  width: 90%;
+
+}
+input.question:valid + label > span {
+  top: 1px;
+  z-index:0;
+  font-size: 12px;
+  font-family: merriweather;
+  color: #005c00;
+
+}
+
+input.question:valid + label{
+  border-color: green;
+  width: 90%;
+
+}
+input.question:invalid{
+  box-shadow: none;
+  color: red;
+  font-weight: 600;
+}
+input.question + label > span{
+  font-weight: 500;
+  margin: 0;
+  position: absolute;
+  font-size: 16px;
+  top: -26px;
+  color: MidnightBlue;
+  left: 0px;
+  z-index: 0;
+  -webkit-transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+  transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
+}
+input.question:valid  input[type="submit"], textarea.question:valid  input[type="submit"] {
+  -webkit-animation: appear 1.2s forwards;
+  animation: appear 1.2s forwards;
+}
+input.question:invalid  input[type="submit"], textarea.question:invalid  input[type="submit"] {
+  display: none;
+}
+/
+@-webkit-keyframes appear {
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes appear {
+  100% {
+    opacity: 1;
+  }
+}
+paper-listbox{
+min-width: 210px;
+
+
+} .inputcontainer{margin-left: 7px;}
+.dropbtn{
+ margin: 0px;
+ padding: 0px   ;
+ 
+}
+.dropbtn.menuItem{}
+ .dropbtn:hover, .dropbtn:focus{
+  color: red;
+  
+
+  
+  }
+  .dropbtn:valid{color: #005c00;}
+  .defaultToggleButtonClass{background: gold; border-radius: 50%;}
+  .toggleOff{color: silver; border-radius: 50%; background: white; @apply(--layout-horizontal);} 
+  .toggleOn{color: #005c00; border-radius: 50%; background: white; @apply(--layout-horizontal); }
+ 
+  .selectColor{
+   background: orange;
+  }
+  .dropbtn.cell{
+    display: none;
+  }
+  /* The container <div> - needed to position the dropdown content */
+  .dropdown {
+      position: relative;
+       min-width: 202px;
+      display: inline-block;
+  }
+ /* / Dropdown Content (Hidden by Default) /*/
+  .dropdown-content {
+     display: none;
+ 
+      /*background-color: #efefef;*/
+      width: 204px;
+      opacity: 0;
+      box-shadow: 3px 8px 16px 5px #afafaf;
+  }
+/*  / Links inside the dropdown /*/
+  .dropdown-content a {
+      color: #009;
+      /*padding: 8px 16px;*/
+      text-decoration: none;
+      display: block;
+      margin-top:32px;
+  }
+  .check{
+   font-size:24px;
+   text-align: right;
+   color: #009;
+   position: absolute;
+   left: 5px;
+  }
+  .show {/*display:block; z-index: 45; left:0px; right:0px; top:30px;*/ opacity: 1;
+         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
+  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;}
+  input{outline: 0px;
+    border: 0px;}
+
+  iron-icon{
+    width: 28px;
+    height: 28px;
+    padding: 0px;
+  
+  }
+
+  .wrapper{width: 95%; position:relative; margin-top: 16px; margin-left: 4px;}
+</style>
+<array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
+<iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
+<iron-a11y-keys id="a11y2" target="[[target]]" keys="up" on-keys-pressed="onUpArrow"></iron-a11y-keys>
+<iron-a11y-keys id="a11y3" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
+<iron-a11y-keys id="a11y4" target="[[target]]" keys="esc" on-keys-pressed="onEsc"></iron-a11y-keys>
+
+
+<div class="horizontal layout flex self-stretch wrapper">
+  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" hidden="{{!showDropButton}}" on-tap="inputToggle">{{_setUtfSymbol(dropdownItems, localPropertyValue)}}</span>
+<div class="vertical layout dropdown inputcontainer" on-down="focusInput">
+	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
+		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
+			
+
+
+
+<content select="{{}}"></content>
+		</div>
+	</div>
+	</template>
+<script>
+FcIssInput=Polymer({
+	is:"fc-search-input",
+	properties:{
+   
+    selectCheck:{
+      type: Boolean,
+      value:function(){return false;},
+      notify: true
+    },  
+    localPropertyValue:{
+        type: String, 
+        computed: "computeLocalPropertyValue(issName, valueObject.*)",
+        notify: true,
+    },
+    
+       issClass:{
+          type: String,
+          notify: true,
+          observer:"observeIssClass",
+        },
+  
+  		issId:{
+  				type: String,
+  				notify: true,
+  		},
+ 
+      issLabel:{
+          tinpiype:String,
+          value:function(){return "";},
+          notify: true
+      },
+  		issName:{
+  			type: String,
+        value:function(){return null;},
+  			notify: true
+  		},
+      issValue:{
+      type: String,
+      notify: true,
+      observer:"observeIssInput",
+    },
+      issValueArray:{
+        type:Array,
+        value:function(){return [];},
+        notify: true,
+      },
+
+   
+        multiSelect:{
+        	type:Boolean,
+        	value:function(){return false;},
+        	notify: true,
+        },
+     
+        searchOff:{
+          type: Boolean,
+          value:function(){return false;},
+          notify: true,
+        },
+          selected:{
+      notify: true,
+    },
+     selectedArray:{
+        type: Array,
+        notify: true,
+        observer:"observeSelectedArray",
+      },
+    
+      showDropButton:{
+      type:Boolean,
+      value:function(){return true;},
+      notify: true,
+    },
+   
+      searchInput: {
+        type: Object,
+        value: function() {
+          return this.$.searchInput;
+          },
+         observer:"_observeInput", 
+        notify: true
+      },
+     
+      
+      isInvalid:{
+        type: Boolean, 
+        value: function(){return false;},
+        notify: true, 
+      },
+      isCheckbox:{       
+        type: Boolean, 
+        value: function(){return false;},
+        notify: true, 
+      },
+
+      changeEvent:{
+        type:Object,
+        value:function(){return {};},
+        notify: true,
+        reflectToAttribute:true,
+
+      },
+      valueObject:{
+        type: Object,
+        value: function(){return {};},
+        notify: true,
+
+      },
+     
+	},//end properties
+     hostAttributes:{
+          value: true,
+      },
+	ready(){
+    var retVal=(this.multiSelect===true)?[]:"";
+    this.set("selected",retVal);
+    retVal=(this.multiSelect===true)?Array:String;
+    this.set("selected.type", retVal);
+},
+observeSelectedArray(nv,ov){
+    if(nv){console.log(nv, ov);}
+
+
+},
+computeLocalPropertyValue(issName, valueObject){
+    console.log(issName, valueObject);
+      if(issName!=null){
+
+        console.log(issName, valueObject);
+        if(valueObject.value && valueObject.base){
+        if(valueObject.base[issName]&&valueObject.base[issName]!=undefined)
+          {return valueObject[issName];}
+      }
+      else{return null;}
+  }
+},
+  _setUtfSymbol(dropdownItems, localPropertyValue){
+    
+                  return '\🌐';
+            
+  },
+  setValueItem(e){
+            console.log(e, this.valueObject);
+            var input=this.$.issInput;
+          this.set([input,"value"], e.target.value);
+          this.$.issInput.value=e.target.value;
+          console.log(e.target.value, e.target);
+          var valConstruct="valueObject."+e.target.name;
+          console.log(valConstruct);
+          this.set(valConstruct, e.target.value);
+          this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
+    
+    this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
+  },
+ _computeLabelSpanClass(isToggle,toggleClass,issClass){
+        return this.issClass;
+ },
+ observeIssInput(nv, ov){
+  if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="";}
+  else{this.$.dropdownlist.style.color="#009";}
+   if(nv&&nv!=undefined){this.set("iconTrigger", !this.iconTrigger);}
+ },
+ _computeItemSelectedPropValue(item, index,isp){
+	 		var retval=(isp==="")?item:item[isp];
+       return retval;
+	 },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
+   _computeItemSelectedPropertyName(item, index,isp){
+    var retVal=(isp==""&& item.name==undefined)?"value":item.name;
+    return retVal;
+   },
+  observeDropdownItems(newVal,oldVal){
+    if(newVal&&newVal.length>0){console.log(newVal);
+    }
+  }, 
+  observeIssClass(nv,ov){
+    // if(nv){console.log(nv, ov)};
+  },
+	focusInput(){
+    this.set("dropdownOpen",true);
+    this.$.issInput.focus();
+    this.async(function(){
+          this.$.issInput.focus;},50);
+  },
+   blurInput(){
+     //   this.$.dropdownMenuButton.set("opened", false);
+    this.set("dropdownOpen",false);
+         this.$.issInput.blur();
+    this.async(function(){
+          this.$.issInput.blur;},20);
+ },
+  observeDropdown(newVal,oldVal){
+    if(newVal===true){
+        var self=this;
+        this.async(function(){Polymer.dom(this.$.dropdownlist).classList.add("show");}, 320);
+      }
+    else{
+        this.async(function(){Polymer.dom(this.$.dropdownlist).classList.remove("show");}, 500);
+          }
+        },
+  inputToggle(e){
+    //console.log(this.isToggle, this.dropdownOpen, this.showDropButton);
+      var retFunc=(this.isToggle===true)?"toggleToggleButton":(this.dropdownOpen===false&&this.showDropButton===true)?"focusInput":"blurInput";
+      console.log(retFunc, this.issLabel, this.issName, this.issValue, this.value);
+      this[retFunc](e); 
+      //console.log(this.key, this.value, this.issValue,this.issValueArray, this.selected);
+  },
+  
+createFilter(issValue, searchOff){
+    if(searchOff)return function(item){return true;}
+    else{
+      var jason=this, isp=jason.itemSelectProperty;
+        var regex = new RegExp('.*' + issValue + '.*', 'i');
+        return function(item) {
+          if(jason.multiSelect===true){return true;}
+          else if(jason.itemSelectProperty!=undefined&&item[jason.itemSelectProperty]!=undefined&& typeof item[jason.itemSelectProperty]==="string"){return item[jason.itemSelectProperty].match(regex);}
+          else if(item.value){return item.value.match(regex);}
+        };
+      }
+  },
+// 
+});
+</script>
+</dom-module>
+<!--
+
+_computedSetterForIndex(multi, ddo){
+//      console.log("insetter for index",ddo, multi);
+//        var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
+//        this.set("itemKeyStrokeIndex", setVal);
+//        return setVal;
+//      },
+//   getDropdownChildren(){
+//     var children=Polymer.dom(this.$.dropdownlist).children;
+//         itemChildren=children.filter(function(val,index, array){
+//               return (val.nodeName==="PAPER-ITEM");});
+//         return itemChildren;
+//   },
+//   removeColorFromChildren(children){
+//     var retChildren=children.map(function(val,index, array){
+//       if(val.classList.contains("selectColor")){val.classList.remove("selectColor");}
+//         return val;
+//         });
+//     return retChildren;
+//     },
+//   sortArrayForMultiSelect(e){
+//     var valArr=this.issValue.split(",");
+//     console.log(valArr);
+//     var length=valArr.length;
+//     var arr=this.issValueArray;
+//     var size=arr.length;
+//     var diff=size-length;
+//     console.log(diff,valArr, arr);
+//   },
+  
+//   updateAllyKeyChangedItemInColumnPosition(dy, elem){
+//         this.trackDelta = dy || this.trackDelta || 0;
+//         //console.log(this.trackDelta);
+//         var scrollDelta = this.$.dropdownlist.scrollTop -this.startScrollTop;
+//         var pos = this.trackDelta + scrollDelta;
+//         this.translate3d(0, -pos + 'px', 0, elem);
+//     },
+//   onDownArrow(e){
+//           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
+//         var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
+//          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
+//          console.log(setterBase, this.itemKeyStrokeIndex, this.$.dropdownlist,scrollTop, this.$.dropdownlist.style.height);
+//          var bool=children[last]._templateInstance.item.selectCheck;
+//          var element=children[oneMore]; 
+//          var preSib=children[setterBase];
+//          var clas="selectColor";
+//          var func="classFollows";
+//          // //console.log(clas, bool, elem,previous);
+//           if(this.itemKeyStrokeIndex<0||this.itemKeyStrokeIndex===last){
+//             this.set("itemKeyStrokeIndex", 0);
+//             var elem=children[this.itemKeyStrokeIndex];
+//             var previous=children[last];
+//             var setVal=[func, clas,elem,previous,0];
+//             Polymer.dom(elem).classList.add(clas); 
+//             this[setVal[0]](setVal[1],setVal[2],setVal[3]);
+//             element=elem;
+//           }
+//           else{
+   
+//           var setVal=(setterBase===last&&children[last]._templateInstance.item.selectCheck===false)?["classFollows",clas, children[0],children[last],0, "ONE"]:["classFollows",clas, children[oneMore], children[setterBase],oneMore, "TWO"];
+//           //console.log("inelse else", setVal,setVal[5]);
+        
+//             this.set("itemKeyStrokeIndex",setVal[4]);
+//             this[setVal[0]](setVal[1],setVal[2],setVal[3]);
+//           }
+//             var boundRect=element.getBoundingClientRect();
+//             this.set("bound",boundRect);
+//             var delta=(Math.floor(boundRect.height)+1.6);
+//             this.$.dropdownlist.scrollTop=(this.$.dropdownlist.scrollHeight - this.$.dropdownlist.scrollTop < this.$.dropdownlist.clientHeight)?this.baseScrollTop:this.$.dropdownlist.scrollTop+delta;       
+//     },
+//   onUpArrow(e){
+//        var children=this.getDropdownChildren();
+//         var last=(children.length-1);
+//         setVal=(this.itemKeyStrokeIndex==0)?last:(this.itemKeyStrokeIndex-1);  ;   
+//         this.set("itemKeyStrokeIndex",setVal);
+//         children=this.removeColorFromChildren(children);
+//        var elem=children[this.itemKeyStrokeIndex];
+//        elem.classList.add("selectColor");
+//        var rect=elem.getBoundingClientRect(),
+//        ht=window.getComputedStyle(elem,null).getPropertyValue("height"), 
+//        height=rect.height;
+//         this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(Math.floor((height+ht)/2)+2);
+//       },
+//   onEnter(e){
+//     console.log(e);
+//     if(this.$.issInput.value!=undefined&&this.searchOff===true){
+//       this.set("issValue", this.$.issInput.value); 
+//       var nom="valueObject."+this.issName;
+//       this.set(nom, this.issValue);
+//     }
+//       else{
+//        ç≈
+//                      this.blurInput();
+//                      console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
+//                    },
+
+
+

@@ -140,12 +140,12 @@
       </section>
       <div class="horizontal layout flex wrap center-justified" style="margin-right: -18px;">
         <section class="container">
-          <fc-iss-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
-          </fc-iss-input>
+          <fc-search-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          </fc-search-input>
         </section>
         <section class="container">
-          <fc-iss-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
-          </fc-iss-input>
+          <fc-search-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
+          </fc-search-input>
         </section>  
     </div>
   </template>
@@ -354,7 +354,7 @@ observeChangeA(event, value, name){
     if(header){return false;}else{return true;}
   },
   _passSearchVals: function(e, detail){
-     console.log(e.detail.value, e.detail.name, "take Note here");
+    //  console.log(e.detail.value, e.detail.name, "take Note here");
       var name = e.detail.name;
       var val = e.detail.value;
        this.set(["searchVals", name], val);
@@ -378,7 +378,7 @@ observeChangeA(event, value, name){
 
 
 setBackgroundAndBlink(){
-  // this.children
+  this.children
 
 
 

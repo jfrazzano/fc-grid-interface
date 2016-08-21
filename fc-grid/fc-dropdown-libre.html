@@ -9,8 +9,8 @@
 <template id="fc-dropdown-libre-template">
 <style>
     paper-item{
-        padding: 12px 20px; 
-        margin: 6px 18px; 
+        padding: 12px 4px 12px 20px; 
+        margin: 6px 4px 6px 18px; 
         font-size: 12px; 
         font-weight: 300; 
         font-family: merriweather; 
@@ -19,16 +19,29 @@
         text-align: left;
 
 
-            --paper-item-selected: {
+            --paper-item-selected:{
                 background-color: #FFFFFF;
                 border: 1px silver solid;
+                @apply(--paper-item-selected);
             };
 
             --paper-item-focused:{
               background-color: #FFFFFF; 
-                border: 1px silver solid;       
+              font-weight: 600;
+              outline: 0px white solid;
+                border: #005c00 1px solid; 
+                @apply(--paper-item-focused);      
             };
+            --paper-item:{padding: 0px;
+                max-width: 480px;
+
+                @apply(--paper-item);
+            };
+
     }
+    paper-item-body{--paper-item-body-focused:{border-bottom: 1px silver}
+      textarea::focused{outline: 0px white solid;}
+      textarea{border: 11px solid green;}
     section{
             padding: 0px 24px; 
         text-align: left;
@@ -38,6 +51,7 @@
     .check{
         position: absolute;
         left: 12px;
+        color: green;
         font-size: 1.3em;
         cursor: pointer;
 
@@ -45,11 +59,14 @@
     .checkMinus{
         position: absolute;
         left: 12px;
-        font-size: 1.8em;
+        color: red;
+        font-size: 2.1em;
         cursor: pointer;
+        left:20px;
     }
     .label{
         color: #005c00;
+        font-size: 1.4em;
        text-decoration-style:underline;
     }
 
@@ -59,29 +76,17 @@
  <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
     <paper-listbox id="myFreeDropdown">
         <template is="dom-repeat"  items="{{selectedFormArray}}" id="optionsRepeater" filter="{{createFilter(issValue, searchOff)}}">
-            <paper-item 
-                onclick="{{item.myFunction}}" 
-                btn-set-value="{{item.dataSetValue}}" 
-                btn-text="{{item.text.0}}" 
-                btn-args="{{item.dataArgs}}"
-                style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" 
-                btn-property="{{item.dataProperty}}" 
-                class="block"
-                on-tap="makeSelection" 
-                name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" 
-                value-object="{{item}}" 
-                value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" 
+            <paper-item onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}"  btn-args="{{item.dataArgs}}"" style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" 
+                btn-property="{{item.dataProperty}}" class="horizontal block" on-tap="makeSelection" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}"  value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" 
                 on-up="toggleSelection">  
                                      <section class="label"> {{item.label}} </section>
-                                    <span  class$="unchecked {{computeCheckedClass(selectCheck, item.ind)}}">{{_computeChecked(item.ind, selectCheck)}}</span>
-                                   <section>[[item.text]]</section>
+                                    <span id="checkcheck" class$="checkMinus {{computeCheckedClass(selectCheck, item.ind)}}">{{_computeChecked(item.ind, selectCheck)}}</span>
+                                    <section style="display: block">[[item.text]]</section>
                                     <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
              </paper-item>
         </template>
     </paper-listbox>      
-    <!-- </template>         -->
- </template> 
-
+    </template>     
  <script>
  FcDropDownLibre=Polymer({
     is:"fc-dropdown-libre",
@@ -117,8 +122,16 @@
             value:function(){return{};},
             notify: true,
         },
-
-
+        checked: {
+            type: Boolean, 
+            value: function (){return false;}, 
+            notify: true,
+        },
+        isNotToggle:{
+            type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        }
 
 
     },
@@ -126,37 +139,36 @@
     toggleSelection(e){},
     _computeDropDownItems(focused, clicked, quant, dropdownItems){},
     _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
-    _computeItemSelectedPropertyName(item, index,itemSelectedProperty){},
+    _computeItemSelectedPropertyName(item, index,itemSelectedProperty){
+
+
+    },
     createFilter(issValue, searchOff){},
     _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText){},
-    makeSelection(e){ var children =Polymer.dom(this.$.optionsRepeater).children; 
+    makeSelection(e){ 
+        var children =Polymer.dom(this.$.optionsRepeater).children; 
         console.log(e, children, e.target);
        this.set("selectCheck", e.model.item.ind);
        this.set("checkEvent", e.model.item);
+       this.set("selected")
 
 
     },
-    // _computeFormsArray(forms, formSelected){
-    //     var innerArray=this.forms[formSelected];
-    //     console.log(innerArray);
-    //     return [innerArray];
 
-    // },
     _computeChecked(ind, selectCheck){
         if(ind===selectCheck){return '\✅';}else{return '\☐';}
     },
-    computeCheckedClass(selectCheck, ind){
-        var retVal=(selectCheck===ind)?"check": "checkMinus";
-        
-
-        return retVal;
-    },
+    computeCheckedClass(selectCheck, ind, isNotToggle){
+        if(isNotToggle===false){
+        this.set("checked",!this.checked);
+         this.toggleClass("checked",this.checked, this.$.checkcheck);
+           }
+        },
    
     attached(){
+        this.set("selectedFormArray", [this.forms.callIntakes, this.forms.callIntakesTwo]);
         this._computeInputArrays(this.inputs);
-        // var keys=Object.keys(this.__data__);
-        // console.log(keys);   
-        
+     
     },
     _handleTaps: function(e){
         console.log(e,

@@ -233,13 +233,13 @@ DataManager.prototype.labelToPropertyName=function(label){
 DataManager.prototype.mappedDashboardDataset=function(args){
     if(args==undefined || args==null){
         //console.log(this.courseCalendarInputs, this.profileInputs, this.inquiryInputs);
-        var array=[ 
-                    {"value": "Profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":1, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: []},
-                    {"value": "Course Calendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 2, inputsArray: this.courseCalendarInputs, gridArray:[], archive: []},
-                    {"value": "All Messages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayedIndex": `0 through 6`, inputsArray: this.inquiryInputs, gridArray:[], archive: []},
-                    {"value": "Student Homework Results", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: []},
-                    {"value": "Student Test Results", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 5, inputsArray:[], gridArray:[], archive: []},
-                    {"value": "Intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayindex": 6, inputsArray:[], gridArray:[], archive: []},
+var array=[ 
+            {"value": "Profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: []},
+                    {"value": "Course Calendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 1, inputsArray: this.courseCalendarInputs, gridArray:[], archive: []},
+                    {"value": "All Messages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayIndex": 2, inputsArray: this.inquiryInputs, gridArray:[], archive: []},
+                    {"value": "Homework Results", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: []},
+                    {"value": "Test Results", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 4, inputsArray:[], gridArray:[], archive: []},
+                    {"value": "Intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayIndex": 5, inputsArray:[], gridArray:[], archive: []},
                     ];
             var myMap=new Map();
             array.forEach((val, i, arr)=>{
@@ -247,6 +247,7 @@ DataManager.prototype.mappedDashboardDataset=function(args){
                 myMap.set(key,val);
                 myMap.set(i, val);
             });
+        this.databaseIndex=array;
     }
     return myMap;
 }
@@ -395,7 +396,7 @@ DataManager.prototype.getIdbDatabaseDataAndLoadToGrid=function(serialized, dashb
 DataManager.prototype.objectUpdatesToIdb=function(dashboardMapEntry, data){
              this.arrayWorker.postMessage({data:data, requestType: "updateObjectStoreWithNewObjects", dbName:dashboardMapEntry.dbName , storeName: dashboardMapEntry.storeName, version: dashboardMapEntry.version});
      this.arrayWorker.onmessage=(e)=>{
-            var arg=e.data; if(arg.returnMessage=="gridToBePlaced"){ var key=arg.dbName+"_"+arg.storeName; var oi=this.dashboardMap.get(key); oi.gridArray=arg.newGrid; this.dashboardMap.set(key, oi);
+            var arg=e.data; if(arg.returnMessage=="gridToBePlaced"){ var key=arg.dbName+"-"+arg.storeName; var oi=this.dashboardMap.get(key); oi.gridArray=arg.newGrid; this.dashboardMap.set(key, oi);
         }
         console.log("great new grid");
 
@@ -421,7 +422,7 @@ DataManager.prototype.reformProfileObject=function(profileObject){
         var unfilled=keys.reduce((pre, key, i, array)=>{
                 tempObj[key]=="";
                 pre=pre+1;
-               // console.log("THIS "+key+ " " +tempObj[key]+ " " +pre +"MANY Properties Have Not Been Filled");
+                console.log("THIS "+key+ " " +tempObj[key]+ " " +pre +"MANY Properties Have Not Been Filled");
                 return pre;
         },0);
 
@@ -909,6 +910,11 @@ class FocusedInquiry{
 var dataManager =new DataManager(user);
 
 
+
+
+
+
+
     // var entry= dataManager.dashboardMap.get(2);
     //  dataManager.getIdbDatabaseDataAndLoadToGrid(this.inquiriesSerialized,entry , 2);
 
@@ -964,6 +970,12 @@ FCBehaviors.FocusedDataManagerBehaviorImpl= {
         type: Map,
         value: dataManager.dashboardMap,
         notify: true, 
+    },
+    selectedStoreName:{
+        type: String,
+        value:"profilesStudentProfiles",
+        notify: true,
+
     },
         
     selectedStoreNumber:{
@@ -1257,7 +1269,8 @@ returnArray= valObjectArray.map((valObject)=>{
                           });
                 return baseValuesArrays;
               });
-        //co.log(returnArray);
+    var helper= "focusedManager."+ refObject.dbName +"_"+ refObj.storeName;
+    this.set(helper, returnArray);
     return returnArray;
 },
 
@@ -1292,7 +1305,7 @@ returnArray= valObjectArray.map((valObject)=>{
 },
 
 addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
-    //co.log(vals);
+    console.log(vals);
     if(this.sameThing===true){this.set("arrayIndex", this.tagIndex);}
     //co.log(this.arrayIndex, this.tagIndex);
     if(this.tagIndex===this.arrayIndex){console.log("WE ARE THE SAME YEAH YEAH YEAH");}
@@ -1348,9 +1361,9 @@ addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
             
     },
         
-    setColumnWidthToText(column){
-      var minWidth;
-      for(var i=0; i<column.length; i++){
+  setColumnWidthToText(column){
+        var minWidth;
+        for(var i=0; i<column.length; i++){
         var cell=column[i];
           var width=this.textMeasurements(cell);
           width=parseInt(width);
@@ -1364,6 +1377,90 @@ addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
     }
 
   },
+  addCallerTypeToGrids(args){                    
+            var grid = args.grid,valueObject=args.valueObject, context=args.context,keyz=Object.keys(this.valueObject), data=[];
+
+            console.log(valueObject);
+
+            var gskey=args.gridStoreKeys.dbName+"-"+args.storeName;
+                      console.log(grid, valueObject, context);     
+            var superArgs=this.getGridInsertionCoordinates(grid, valueObject, context);
+                row= superArgs.rowIndex;
+                var time=new Date().getTime();
+                var counter=grid.length
+            for(var i=0;i<counter;i++){    
+              var newCell={},nextCell={};
+              nextCell=valueObject.undefined; 
+              console.log(nextCell);
+              var str="00000";
+              var co=(str+i).slice(-5),ro=(str+row).slice(-5), gridKey=gskey+"_"+co+"_"+ro+"_";
+              var propertyName=context.focusedManager.labelToPropertyName(grid[i][0].value);
+              var fullnameprop=valueObject.role+"FullName";
+              var fullName=valueObject[fullnameprop];
+                        
+              newCell={"key":gridKey, "id": gridKey, "value":valueObject[propertyName], "contenteditable": true, "style":  nextCell.style,"class": "",name: propertyName, propertyName: propertyName, "time": time, "archive":[], "closed": false, fullName: fullName, fcid: valueObject.fcid,};
+                
+                context.splice(["gridDisplayArray",i],row, 0,newCell);
+                data.push(newCell);
+                }
+            context.set("focusedManager.arrayWorker.valueObject", context.valueObject);
+            context.set("focusedManager.arrayWorker.gridDisplayArray", context.gridDisplay);
+            //context.focusedManager.arrayWorker.postMessage({"requestType": "addStudentToProfilesGrid", valueObject: valueObject}); //this should be db worker
+            this.reorderKeys(grid);
+          },
+
+        getGridInsertionCoordinates(grid, valueObject, context){
+                var property=valueObject.role+"LastName",
+                label=context.focusedManager.propertyNameToLabel(property);
+                var i=0,columnIndex=-1, rowIndex=-1,
+                newCaller=(valueObject.type==="newCaller")?true: false;
+            while(i<length){
+                var header= grid[i][0].value;
+                if(label===header){
+                      columnIndex=i;  
+                      var newArray= grid[i];
+                      var obj={};
+                      obj.value=valueObject[property];
+                    if(newCaller===true){
+                            newArray.unshift(obj);
+                      }
+                    var valsArray=newArray.map((ob,index)=>{return ob.value}).sort((a,b)=>{var indexer=(a > b) ? 1 : ((b > a) ? -1 : 0);});
+                      rowIndex=valsArray.indexOf(valueObject[property]);
+                          break;
+                      }
+                else{i++;}
+                }
+              return {"rowIndex":rowIndex, "columnIndex": columnIndex, "valueObject":valueObject, "grid": grid};
+            }, 
+
+    reorderKeys(array){
+        var columns=array.length;
+        var rows=array[0].length;
+        var key=array[0][0].id;
+        var keys=key.split("_");
+        var name=keys[0];
+        for(var i=0;i<columns;i++){
+          columnArray=[];
+          for(var j=0; j<rows;j++){
+            var str="00000";
+            var col=(str+i).slice(-5);
+            var row=(str+j).slice(-5);
+            var nkey=name+"_"+col+"_"+row+"_";
+            this.set(["gridDisplayArray", i, j, "id"],nkey);
+            this.set(["gridDisplayArray", i, j, "key"],nkey);
+          }
+        }
+       var version=undefined; 
+       //this.indexedDataBases[this.arrayIndex].version;
+      // console.log(this.selectedArraySet, this.indexedDataBases);
+        var newVersion=version+1;
+        var columns=this.gridDisplayArray.length;
+        var rows=this.gridDisplayArray[0].length;
+        var product=rows*columns;
+        console.log("here is where you should be saving grid");
+        //this.notifyVersionChangeToIndex(name, newVersion, rows, columns, product);
+        //this.initializeIndexDB(name, version,this.selectedArraySet)
+      }
 
 
 
@@ -1372,6 +1469,8 @@ addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
 FCBehaviors.FocusedDataManagerBehavior=[
         FCBehaviors.FcGridStyleBehavior, FCBehaviors.FocusedDataManagerBehaviorImpl];
 </script>
+
+
 <!-- 
    // getFcidPastInquiryNumber(profilefcid){};
     // saveInquiry(ref){

@@ -8,18 +8,18 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
-<link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html">
-<link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html">
+<!-- <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> -->
+<!-- <link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html"> -->
 <link rel="import" href="../fc-grid/data-manager.html">
 
-<link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html">
+<!-- <link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html"> -->
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
-<link rel="import" href="../bower_components/app-layout/app-drawer-layout/app-drawer-layout.html">
+<link rel="import" href="../fc-app-elements/fc-two-drawer-layout/fc-two-drawer-layout.html">
 <!-- <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html"> -->
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
@@ -29,8 +29,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-
-<!-- <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> -->
+<link rel="import" href="../fc-grid/fc-dropdown.html">
+<link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> 
 <link rel="import" href="../fc-call-center/fc-inputs-interface.html">
 <link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
@@ -86,27 +86,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
 
-    <app-location route="{{route}}"></app-location>
+    <app-location id="appLocationCenterOne" route="{{route}}"></app-location>
     <app-route
+        id="appRouteCenterOne"
         route="{{route}}"
         pattern="/:page"
         data="{{routeData}}"
         tail="{{subroute}}"></app-route>
 
-    <app-drawer-layout fullbleed>
+    <fc-two-drawer-layout fullbleed left-drawer->
 
     
-    <fc-app-drawer id="dashboardLeftDrawer" style="z-index: 8" drawer-current-width="{{leftCurrentWidth}}" opened swipe-open align="left">
-            <fc-inputs-interface current-inner-width="{{leftCurrentWidth}}" chosen="{{inputsChosen}}" style="margin-top: 40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;"></fc-inputs-interface>
-      </fc-app-drawer>
+<fc-app-drawer id="dashboardLeftDrawer" style="z-index: 3;" drawer-current-width="{{leftCurrentWidth}}" opened swipe-open align="left">
+  <fc-inputs-interface current-inner-width="{{leftCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="margin-top:40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;">
+  </fc-inputs-interface>
+</fc-app-drawer>
+
+ <fc-app-drawer id="dashboardRightDrawer" current-inner-width="{{leftCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="margin-top: 40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;"drawer-current-width="{{rightCurrentWidth}}" forms="{{selectedFormArray}}" position="right" opened swipe-open align="right">
+         <fc-form-right style="background: gold;  border: 5px solid orange; margin-top:-40px; position: absolute; height: 140vh; top: -120px; bottom:-80px; z-index: 4 ; right: 0px; background:green;">
+         </fc-form-right>
+ </fc-app-drawer>
+
       
       <!-- Main content -->
       <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
-        <app-header condenses reveals effects="waterfall" style="position: relative;">
+        <app-header condenses reveals effects="waterfall" style="position: static;">
         <span on-tap="backOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; left:106px;">&#8678;</span>
 
-        <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>
-        <span style="cursor: pointer; font-size: 20px; color: white; position: absolute; bottom: 2%; right: 45%; left: 45%;">{{_computeView(interfaceView.storeName)}}</span>
+        <span style="cursor: pointer; font-size: 22px; font-family: merriweather; color: white; position: absolute; font-weight: 600; right: 45%; left: 45%;">{{nowChosen}}</span>
+        <span style="cursor: pointer; font-weight: 300; font-size: 18px; font-family: merriweather; color: white; position: absolute; bottom: 2%; right: 45%; left: 45%;">{{_computeView(interfaceView.storeName)}}</span>
          
          
   
@@ -120,14 +128,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             drags
             class="draggable scrollable on-tracking"
             style="z-index:50000; position: fixed; top: 0; left: 200px;"
-            not-router="{{notRouter}}"
-              >
+            not-router="{{notRouter}}">
         <paper-tabs 
           id="protoTabMenu" 
           scrollable="true"
           class="horizontal layout"
           selected-class="turnedon"  
-          style="max-height: 76px; min-height: 24px; min-width: 160px; background: #000066;"
+          style="max-height: 76px; min-height: 24px; min-width: 699px; background: #000066;"
           hide-scroll-buttons="true" 
           bar="true">   
         <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
@@ -139,15 +146,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <paper-tab link selected-class="turnedon" class= "menubuttons longest">
           <a name="view2" href="/view2">View Two</a>
         </paper-tab>
-      <!--   <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="view3" href="/view3">View Three</a>
-        </paper-tab> -->
+      <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+          <a name="readingDashboard" href="/readingDashboard">Reading Dashboard</a>
+        </paper-tab>
         <paper-tab link selected-class="turnedon" class= "menubuttons longest">
           <a name="grid" href="/grid">Grid View</a>
         </paper-tab>
-       <!--  <paper-tab link selected-class="turnedon" class= "menubuttons longest">
+        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
           <a name="dashboard-divisions" href="/dashboard-divisions">Dashboard View</a>
-        </paper-tab> -->
+        </paper-tab>
         </div>
            <fc-dialog-toolbar 
                 hidden$="{{notRouter}}" 
@@ -168,16 +175,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
           <my-view1 name="view1"></my-view1>
           <my-view2 name="view2"></my-view2>
+          <fc-reading-dashboard-two name="fcReadingDashboard"></fc-reading-dashboard-two>
           <fc-grid id="liveGrid" chosen="{{nowChosen}}" forms="{{forms}}" forms="{{forms}}" form-selected="{{formSelected}}" focused-manager="{{focusedManager}}" interface-object="{{interfaceView}}" grid-display-array="{{gridDisplayArray}}" name="grid"></fc-grid>
          
         </iron-pages>
 
       </app-header-layout>
-         <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right" opened swipe-open align="right">
-       
-        </fc-app-drawer>
+        
+       <!--  <fc-app-drawer class="block layout vertical" id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" style="z-index: 5; background: gold; right: 0px;  border: 5px solid orange; margin-top:-40px; position: absolute; top: -120px; bottom:-80px; height:140vh;opacity: 1; position: absolute; visibility: visible;" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}">
+
+
+         <fc-form-right current-inner-width="width:calc({{rightCurrentWidth}}-80)px;" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="background: gold;  border: 5px solid orange; margin-top:-40px; position: absolute; height: 140vh; top: -120px; bottom:-80px; z-index: 4 ; right: 0px; background:green;""></fc-form-right>
+        -->
+     <!--    </fc-app-drawer> -->
   
-    </app-drawer-layout>
+    </fc-two-drawer-layout>
 
   </template>
 
@@ -199,6 +211,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: function(){return {};},
           notify: true,
         },
+
         focusedManager:{
           type: Object, 
           notify: true,

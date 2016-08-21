@@ -1,5 +1,5 @@
-
-<link rel="import" href="FC_frontpage_logo.png">
+<!-- 
+<link rel="import" href="FC_frontpage_logo.png"> -->
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
@@ -125,9 +125,11 @@
 			position: absolute;
 			left: 5px;
 		}
+    .card-content{}
   
 	
   
+
   @media(max-width: 570px){
     .container{
         width: 99%;
@@ -141,7 +143,7 @@
   }
 </style>
 <form is="iron-form" id="splashPageForm" method="get" action="/">
-  <div class="card-content">
+  <div class="horizontal layout flex wrap center-justified" ">
 
     <fc-dropdown-libre form-selected="{{formSelected}}" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
               </div>

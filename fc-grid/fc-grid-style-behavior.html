@@ -36,7 +36,7 @@ FCBehaviors.FcGridStyleBehaviorImpl = {
     },
     allSymbols:{
     	type:String,
-    	value:function(){return  `➔ ❶ ✂ ✎ ✒ ✜ ❚ ❶ ➀ ➞ ☚ ☛ ☰ ☱ ☷ ☑ ☐ ☎ ☏ ► ▼ ▲ ◄ ⇒ Δ ▐ █ ▄ ▀`;},
+    	value:function(){return  `➔ ❶ ✂ ✎ ✒ ✜ ❚ ❶ ➀ ➞ ☚ ☛ ☰ ☱ ☷ ☑ ☐ ☎ ☏ ► ▼ ▲ ◄ ⇒ Δ ▐ █ ▄ ▀ ⛔🌐🌎🌎 🌍 🌏❓❗❌⏩ ⏪ ⏫ ⏬ ⏭ ⏮ ⏯ ✅ ❎✍ ✉ ✊ ✋ ✌⬛ ⬜   ⏰ ⏱ ⏲ ⏳ ⚙`;},
     	notify: true,
     },
     color:{
@@ -154,8 +154,8 @@ FCBehaviors.FcGridStyleBehaviorImpl = {
     get rowMenu(){var menuArray= [
       {   "title": "Inserting & Excising Rows", 
               "buttons": [
-                  {"text": ["+1 Row Above:", ," ☰ ▲ "] ,"myFunction": this.insertRow.bind(this)}, 
-                  {"text":["+1 Row Below:", ," ☰ ▼ "], "myFunction": this.insertRow.bind(this)},
+                 // {"text": ["+1 Row Above:", ," ☰ ▲ "] ,"myFunction": this.insertRow.bind(this)}, 
+                  //{"text":["+1 Row Below:", ," ☰ ▼ "], "myFunction": this.insertRow.bind(this)},
                   {"text": ["Delete Row: "," ", " ✂ ☰"],"myFunction": this.deleteRow.bind(this)}, 
                   {"text":["Restore Row: ","☤", " ☤ ☰ ☤ "], "myFunction": this.restoreRow.bind(this)}
                 ]
@@ -435,7 +435,8 @@ notifygrids(e){
         }
       },
 
-  alternatingHighlighter(e){
+
+alternatingHighlighter(e){
     var keys=this.gridEvent.target.id.split("_");
     console.log(keys, this.gridEvent, this.gridEvent.target);
     var mapName="m"+keys[0],arrayName=keys[0];
@@ -496,59 +497,86 @@ notifygrids(e){
           this.notifygrids(e);
           return this[arrayName];
       },
-      insertRow(e){
-        console.log(e, "this is my event", this.gridEvent);
-        var model=this.gridEvent.target._templateInstance;
-        var cell=model.item;
-        var key=cell.key;
-        var keys=key.split("_");
-      
-        console.log(key, keys, cell, model, "total columns number of any row",
-        this.indexedDataBases[this.arrayIndex].columns, "total columns number of any row");
 
-        var keys1=parseInt(keys[1]);
-        var keys2=parseInt(keys[2]);
-        var id=keys[0];
-        var time=new Date().getTime();
-        // var newCell={"key":key, "value":"--", "contenteditable": true, "id": id, "style":  cell.style, "name": "","class": "", "time": time, "archive":[], "closed": false};
-        var counter=this.selectedArraySet.length;
-        console.log(counter);
-        for(var i=0;i<counter;i++){
-          var nextCell=this.selectedArraySet[i][keys2];
-          console.log(nextCell.style);
-          var newCell={"key":"", "value":"--", "contenteditable": true, "id": "", "style":  nextCell.style, "name": "","class": "", "time": time, "archive":[], "closed": false};
-        this.splice(["selectedArraySet",i],keys2, 0,newCell);
-        }
-        this.reorderKeys(this.selectedArraySet);
-      },
+    // addCallerTypeToGrids(args){                    
+    //         var grid = args.grid,valueObject=args.valueObject, context=args.context,keyz=Object.keys(this.valueObject), data=[];
 
-      reorderKeys(array){
-        var columns=array.length;
-        var rows=array[0].length;
-        var key=array[0][0].id;
-        var keys=key.split("_");
-        var name=keys[0];
-        for(var i=0;i<columns;i++){
-          columnArray=[];
-          for(var j=0; j<rows;j++){
-            var str="00000";
-            var col=(str+i).slice(-5);
-            var row=(str+j).slice(-5);
-            var nkey=name+"_"+col+"_"+row+"_";
-            this.set(["selectedArraySet", i, j, "id"],nkey);
-            this.set(["selectedArraySet", i, j, "key"],nkey);
-          }
-        }
-       var version=undefined; 
-       //this.indexedDataBases[this.arrayIndex].version;
-       console.log(this.selectedArraySet, this.indexedDataBases);
-        var newVersion=version+1;
-        var columns=this.selectedArraySet.length;
-        var rows=this.selectedArraySet[0].length;
-        var product=rows*columns;
-        this.notifyVersionChangeToIndex(name, newVersion, rows, columns, product);
-        this.initializeIndexDB(name, version,this.selectedArraySet)
-      },
+    //         var gskey=args.gridStoreKeys.dbName+"-"+args.storeName;
+                           
+    //         var superArgs=this.getGridInsertionCoordinates(grid, valueObject, context);
+    //             row= superArgs.rowIndex;
+    //             var time=new Date().getTime();
+    //             var counter=grid.length
+    //         for(var i=0;i<counter;i++){    
+    //           var newCell={},nextCell={},nextCell=grid[i][row],str="00000";
+    //           var co=(str+i).slice(-5),ro=(str+row).slice(-5), gridKey=gskey+"_"+co+"_"+ro+"_";
+    //           var propertName=context.focusedManager.labelToPropertyName(grid[i][0].value);
+    //           var fullnameprop=valueObject.role+"FullName";
+    //           var fullName=valueObject[fullnameprop];
+                        
+    //           newCell={"key":gridKey, "id": gridKey, "value":valueObject[propertyName], "contenteditable": true, "style":  nextCell.style,"class": "",name: propertyName, propertyName: propertryName, "time": time, "archive":[], "closed": false, fullName: fullName, fcid: valueObject.fcid,};
+                
+    //             context.splice(["gridDisplayArray",i],keys2, 0,newCell);
+    //             data.push(newCell);
+    //             }
+    //         context.set("focusedManager.arrayWorker.valueObject", context.valueObject);
+    //         context.set("focusedManager.arrayWorker.gridDisplayArray", context.gridDisplay);
+    //         context.focusedManager.arrayWorker.postMessage({"requestType": "addStudentToProfilesGrid", valueObject: valueObject}); //this should be db worker
+    //         this.reorderKeys(grid);
+    //       },
+
+    //     getGridInsertionCoordinates(grid, valueObject, context){
+    //             var property=valueObject.role+"LastName",
+    //             label=context.focusedManager.propertyNameToLabel(property);
+    //             var i=0,columnIndex=-1, rowIndex=-1,
+    //             newCaller=(valueObject.type==="newCaller")?true: false;
+    //         while(i<length){
+    //             var header= grid[i][0].value;
+    //             if(label===header){
+    //                   columnIndex=i;  
+    //                   var newArray= grid[i];
+    //                   var obj={};
+    //                   obj.value=valueObject[property];
+    //                 if(newCaller===true){
+    //                         newArray.unshift(obj);
+    //                   }
+    //                 var valsArray=newArray.map((ob,index)=>{return ob.value}).sort((a,b)=>{var indexer=(a > b) ? 1 : ((b > a) ? -1 : 0);});
+    //                   rowIndex=valsArray.indexOf(valueObject[property]);
+    //                       break;
+    //                   }
+    //             else{i++;}
+    //             }
+    //           return {"rowIndex":rowIndex, "columnIndex": columnIndex, "valueObject":valueObject, "grid": grid};
+    //         }, 
+
+    //   reorderKeys(array){
+    //     var columns=array.length;
+    //     var rows=array[0].length;
+    //     var key=array[0][0].id;
+    //     var keys=key.split("_");
+    //     var name=keys[0];
+    //     for(var i=0;i<columns;i++){
+    //       columnArray=[];
+    //       for(var j=0; j<rows;j++){
+    //         var str="00000";
+    //         var col=(str+i).slice(-5);
+    //         var row=(str+j).slice(-5);
+    //         var nkey=name+"_"+col+"_"+row+"_";
+    //         this.set(["gridDisplayArray", i, j, "id"],nkey);
+    //         this.set(["gridDisplayArray", i, j, "key"],nkey);
+    //       }
+    //     }
+    //    var version=undefined; 
+    //    //this.indexedDataBases[this.arrayIndex].version;
+    //   // console.log(this.selectedArraySet, this.indexedDataBases);
+    //     var newVersion=version+1;
+    //     var columns=this.selectedArraySet.length;
+    //     var rows=this.selectedArraySet[0].length;
+    //     var product=rows*columns;
+    //     console.log("here is where you should be saving grid");
+    //     //this.notifyVersionChangeToIndex(name, newVersion, rows, columns, product);
+    //     //this.initializeIndexDB(name, version,this.selectedArraySet)
+    //   },
 
       initializeIndexDB(name, lastversion, newArray){
         var data =newArray.map(function(colHolder){
@@ -626,9 +654,34 @@ notifygrids(e){
      
     updateOnValueChange(gridName, version, key, argToChange, setValue){
             //here we should use the pouch and the other data synching they offer
+    }
+     // getGridCoordinatesForInsertion(grid, valueObject, context){
+     //        var property=valueObject.role+"LastName",
+     //        label=context.focusedManager.propertyNameToLabel(property);
+     //        var i=0,columnIndex=-1, rowIndex=-1,
+     //        newCaller=(valueObject.type==="newCaller")?true: false;
+     //    while(i<length){
+     //        var header= grid[i][0].value;
+     //        if(label===header){
+     //              columnIndex=i;  
+     //              var newArray= grid[i];
+     //              var obj={};
+     //              obj.value=valueObject[property];
+     //            if(newCaller===true){
+     //                    newArray.unshift(obj);
+     //              }
+     //            var valsArray=newArray.map((ob,index)=>{return ob.value}).sort((a,b)=>{var indexer=(a > b) ? 1 : ((b > a) ? -1 : 0);});
+     //           rowIndex=valsArray.indexOf(valueObject[property]);
+     //      break;
+     //    }
+     //        else{i++;}
+     //        }
+     //      return {"rowIndex":rowIndex, "columnIndex": columnIndex, "valueObject":valueObject, "grid": grid};
+     //    } 
 
 
-    },
+
+
 
 	}
  FCBehaviors.FcGridStyleBehavior=[ FCBehaviors.FcGridInitializerBehavior,FCBehaviors.FcGridStyleBehaviorImpl];

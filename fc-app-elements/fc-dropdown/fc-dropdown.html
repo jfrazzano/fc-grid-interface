@@ -1,244 +1,35 @@
-<link rel="import" href="../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
-<link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+  <link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
+<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
+<link rel="import" href="../fc-call-center/fc-calendar-list-widget-behavior.html">
+<link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
-
-<dom-module id="fc-iss-input">	
-<template>
-<style>
-
-:host{background:"";
-margin-left: 28px;
-  @apply(--layout-flex);
-  @apply(--layout-start)
-  @apply(--layout-vertical);
-  @apply(--layout-self-stretch)
-
-  }
-paper-item{--paper-item-focused:{background: orange;};
-   @apply(--paper-item-focused);
-  }
-input{
- display: block;
-  border: none;
-  background: "none";
-  font-size: 16px;
-}
-/
-textarea:focus,
-input:focus {
-  margin-bottom: 8px;
-}
-input.question {
-  font-size: 16px;
-  font-weight: 300;
-  margin: 0;
-  border: none;
-  opacity: 1;
-  width: 90%;
-  /*background: rgba(0, 0, 0, 0);*/
-  transition: padding-top 0.4s ease, margin-top 0.4s ease;
-  overflow-x: hidden;
-}
-input.question + label{
-  display: block;
-  position: relative;
-  white-space: nowrap;
-  padding: 0;
-  margin: 0;
-width: 90%;
-  border-top: 1px solid brown;
-  -webkit-transition: width 0.4s ease;
-  transition: width 0.4s ease;
-  height: 0px;
-}
-input.question:focus + label
-{
-  width: 90%;
-  border-top: 1.2px solid #005c00;
-   -webkit-transition: width 0.3s ease, border-top .3s ease;
-  transition: width 0.3s ease, border-top .3s ease;
-}
-input.question:focus + label > span{
-top: -53px;
-  z-index:1;
-  font-size: 14px;
-  font-family: merriweather;
-  color: #050;
-  -webkit-transition: color 0.3s ease, top .3s ease;
-  transition: color 0.3s ease, top .3s ease;
-}
-input:valid + label + paper-listbox{
-  z-index: -1; left:-8px; right:0px; top:30px; width: 210px; opacity: 0;
-         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease,z-index 0.6s ease;
-  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease, z-index 0.6s ease;
-}
-input:focus + label + paper-listbox{
-  display:block; z-index: 4500; left:-8px; right:0px; top:30px; opacity: 1; margin-left:-8px;
-         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
-  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;
-}
-input.question:valid{
-  color: #009;
-  opacity: 1;
-  font-family: merriweather;
-  font-weight: 600;
-  width: 90%;
-
-}
-input.question:valid + label > span {
-  top: 1px;
-  z-index:0;
-  font-size: 12px;
-  font-family: merriweather;
-  color: #005c00;
-
-}
-
-input.question:valid + label{
-  border-color: green;
-  width: 90%;
-
-}
-input.question:invalid{
-  box-shadow: none;
-  color: red;
-  font-weight: 600;
-}
-input.question + label > span{
-  font-weight: 500;
-  margin: 0;
-  position: absolute;
-  font-size: 16px;
-  top: -26px;
-  color: MidnightBlue;
-  left: 0px;
-  z-index: 0;
-  -webkit-transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
-  transition: top 0.3s ease, font-size 0.3s ease, color 0.3s ease;
-}
-input.question:valid  input[type="submit"], textarea.question:valid  input[type="submit"] {
-  -webkit-animation: appear 1.2s forwards;
-  animation: appear 1.2s forwards;
-}
-input.question:invalid  input[type="submit"], textarea.question:invalid  input[type="submit"] {
-  display: none;
-}
-/
-@-webkit-keyframes appear {
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes appear {
-  100% {
-    opacity: 1;
-  }
-}
-paper-listbox{
-min-width: 210px;
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 
 
-} .inputcontainer{margin-left: 7px;}
-.dropbtn{
- margin: 0px;
- padding: 0px   ;
+<template id="twinBoyDoctors">
+ <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
+        <section class="horizontal layout flex"> 
+        <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+      </section>
+      <div class="horizontal layout flex wrap center-justified" style="margin-right: -18px;">
+        <section class="container">
+          <fc-search-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          </fc-search-input>
+        </section>
+        <section class="container">
+          <fc-search-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
+          </fc-search-input>
+        </section>  
+    </div>
+  </template>
  
-}
-.dropbtn.menuItem{}
- .dropbtn:hover, .dropbtn:focus{
-  color: red;
-  
+<!-- <
 
-  
-  }
-  .dropbtn:valid{color: #005c00;}
-  .defaultToggleButtonClass{background: gold; border-radius: 50%;}
-  .toggleOff{color: silver; border-radius: 50%; background: white; @apply(--layout-horizontal);} 
-  .toggleOn{color: #005c00; border-radius: 50%; background: white; @apply(--layout-horizontal); }
- 
-  .selectColor{
-   background: orange;
-  }
-  .dropbtn.cell{
-    display: none;
-  }
-  /* The container <div> - needed to position the dropdown content */
-  .dropdown {
-      position: relative;
-       min-width: 202px;
-      display: inline-block;
-  }
- /* / Dropdown Content (Hidden by Default) /*/
-  .dropdown-content {
-     display: none;
- 
-      /*background-color: #efefef;*/
-      width: 204px;
-      opacity: 0;
-      box-shadow: 3px 8px 16px 5px #afafaf;
-  }
-/*  / Links inside the dropdown /*/
-  .dropdown-content a {
-      color: #009;
-      /*padding: 8px 16px;*/
-      text-decoration: none;
-      display: block;
-      margin-top:32px;
-  }
-  .check{
-   font-size:24px;
-   text-align: right;
-   color: #009;
-   position: absolute;
-   left: 5px;
-  }
-  .show {/*display:block; z-index: 45; left:0px; right:0px; top:30px;*/ opacity: 1;
-         -webkit-transition: top 0.6 ease, display 0.6s ease, opacity 0.6s ease;
-  transition: top 0.6s ease, display 0.6s ease, opacity 0.6s ease;}
-  input{outline: 0px;
-    border: 0px;}
+listeners:{"on-message":"getcallcenterallmessages", 
+                "on-scroll": "getcallcenterallmessages"},
+     
 
-  iron-icon{
-    width: 28px;
-    height: 28px;
-    padding: 0px;
-  
-  }
-  paper-icon-button{ width: 28px; height: 28px; padding-bottom: 6px; color: silver;position: static; } 
-  .wrapper{width: 95%; position:relative; margin-top: 16px; margin-left: 4px;}
-</style>
-<array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
-<iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
-<iron-a11y-keys id="a11y2" target="[[target]]" keys="up" on-keys-pressed="onUpArrow"></iron-a11y-keys>
-<iron-a11y-keys id="a11y3" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
-<iron-a11y-keys id="a11y4" target="[[target]]" keys="esc" on-keys-pressed="onEsc"></iron-a11y-keys>
-
-
-<div class="horizontal layout flex self-stretch wrapper">
-  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" hidden="{{!showDropButton}}" on-tap="inputToggle">{{_setUtfSymbol(dropdownItems, localPropertyValue)}}</span>
-<div class="vertical layout dropdown inputcontainer" on-down="focusInput">
-	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
-		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
-			<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
-		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
-					<paper-item class="block" style="border: 1px silver solid; background:clear;margin-top: 3px; width: 192px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
-          <span hidden="{{!item.selectCheck}}" class="check">&#10148;</span>
-
-          <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
-          </paper-item>
-		 		</template>
-		 	</paper-listbox>
-		</div>
-	</div>
-	</template>
-<script>
-FcIssInput=Polymer({
-	is:"fc-iss-input",
-	properties:{
-    baseScrollTop:{
+baseScrollTop:{
           type: Number,
           notify: true
         },
@@ -252,26 +43,26 @@ FcIssInput=Polymer({
         computed: "computeLocalPropertyValue(issName, valueObject.*)",
         notify: true,
     },
-		dropdownItems:{
-			type:Array,
+    dropdownItems:{
+      type:Array,
       value:function(){return[];},
-			 notify: true,
+       notify: true,
       observe:"observeDropdownItems",
-		},
-	
+    },
+  
          dropdownOpen:{
           type: Boolean,
           value:function(){return false;},
           notify: true,
           observer:"observeDropdown",
         },
-  		dropdownlist:{
-  			type: Object,
-  			value:function(){
-  				return this.$.dropdownlist;
-  			},
+      dropdownlist:{
+        type: Object,
+        value:function(){
+          return this.$.dropdownlist;
+        },
         notify: true
-  		},
+      },
     
        issClass:{
           type: String,
@@ -279,10 +70,10 @@ FcIssInput=Polymer({
           observer:"observeIssClass",
         },
   
-  		issId:{
-  				type: String,
-  				notify: true,
-  		},
+      issId:{
+          type: String,
+          notify: true,
+      },
       issIcon:{
         type:String,
         value:function(){return "icons:dashboard";},
@@ -293,11 +84,11 @@ FcIssInput=Polymer({
           value:function(){return "";},
           notify: true
       },
-  		issName:{
-  			type: String,
+      issName:{
+        type: String,
         value:function(){return null;},
-  			notify: true
-  		},
+        notify: true
+      },
       issValue:{
       type: String,
       notify: true,
@@ -318,16 +109,16 @@ FcIssInput=Polymer({
         value:function(){return false;},
         notify: true,
       },
-  	itemSelectProperty:{
-  			type: String,
-  			value: function(){return "";},
-  			notify: true
-  		},
-  	itemKeyStrokeIndex:{
-  			type: Number,
-  			value: function(){return -889;},
-  			notify: true,
-  		},
+    itemSelectProperty:{
+        type: String,
+        value: function(){return "";},
+        notify: true
+      },
+    itemKeyStrokeIndex:{
+        type: Number,
+        value: function(){return -889;},
+        notify: true,
+      },
    
  maxHeight: {
       type: String,
@@ -336,9 +127,9 @@ FcIssInput=Polymer({
      },
    
         multiSelect:{
-        	type:Boolean,
-        	value:function(){return false;},
-        	notify: true,
+          type:Boolean,
+          value:function(){return false;},
+          notify: true,
         },
      
         searchOff:{
@@ -360,13 +151,13 @@ FcIssInput=Polymer({
       },
     
         shadowIndex:{
-        		type:Object,
-        		computed:"_computedSetterForIndex(multiSelect, dropdownOpen)",
-        		notify: true,
+            type:Object,
+            computed:"_computedSetterForIndex(multiSelect, dropdownOpen)",
+            notify: true,
         },
       showDropButton:{
       type:Boolean,
-      value:function(){return true;},
+      value:function(){return false;},
       notify: true,
     },
         startScrollTop:{
@@ -431,11 +222,11 @@ FcIssInput=Polymer({
 
       },
      
-	},//end properties
+  },//end properties
      hostAttributes:{
           value: true,
       },
-	ready(){
+  ready(){
     var retVal=(this.multiSelect===true)?[]:"";
     this.set("selected",retVal);
     retVal=(this.multiSelect===true)?Array:String;
@@ -523,9 +314,9 @@ computeLocalPropertyValue(issName, valueObject){
    if(nv&&nv!=undefined){this.set("iconTrigger", !this.iconTrigger);}
  },
  _computeItemSelectedPropValue(item, index,isp){
-	 		var retval=(isp==="")?item:item[isp];
+      var retval=(isp==="")?item:item[isp];
        return retval;
-	 },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
+   },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
    _computeItemSelectedPropertyName(item, index,isp){
     var retVal=(isp==""&& item.name==undefined)?"value":item.name;
     return retVal;
@@ -537,7 +328,7 @@ computeLocalPropertyValue(issName, valueObject){
   observeIssClass(nv,ov){
     // if(nv){console.log(nv, ov)};
   },
-	focusInput(){
+  focusInput(){
     this.set("dropdownOpen",true);
     this.$.issInput.focus();
     this.async(function(){
@@ -612,10 +403,10 @@ createFilter(issValue, searchOff){
   },
 _computedSetterForIndex(multi, ddo){
      console.log("insetter for index",ddo, multi);
-   		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
-   		this.set("itemKeyStrokeIndex", setVal);
-   		return setVal;
-   	},
+      var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
+      this.set("itemKeyStrokeIndex", setVal);
+      return setVal;
+    },
   getDropdownChildren(){
     var children=Polymer.dom(this.$.dropdownlist).children;
         itemChildren=children.filter(function(val,index, array){
@@ -652,7 +443,7 @@ _computedSetterForIndex(multi, ddo){
     this.set("changeEvent",{"event":e, "value": value, "name": property, "target":e.target, "model":model})
     var targ=e.target;
  
-    	if(this.dropdownOpen===true){//&& this.$.controllerList
+      if(this.dropdownOpen===true){//&& this.$.controllerList
         console.log("i have an open dropdown");
         var setval=(this.itemSelectProperty=="" )?item:model.item[this.itemSelectProperty];
         var children=this.getDropdownChildren();
@@ -671,18 +462,18 @@ _computedSetterForIndex(multi, ddo){
                console.log("search off multi off");
           }
           else if(this.$.selector.multi===true&&model.item.selectCheck===true){
-    		    this.$.selector.deselect(setval); 
-    		    model.set("item.selectCheck",false);
+            this.$.selector.deselect(setval); 
+            model.set("item.selectCheck",false);
             var index=this.issValue.indexOf(setval);
             this.set("issValue"," ");//fix this to choose type for value at attached and get rid oif the double value bullshit
             index=this.issValueArray.indexOf(setVal);
-    		    this.splice("issValueArray",index, 1);
+            this.splice("issValueArray",index, 1);
             var showvalue=this.issValueArray.toString();
             this.set("issValue", showvalue);
             Polymer.dom(targ).classList.remove("selectColor");
             console.log("multi plus select check");
             //console.log(this.issValue, typeof this.issValue, this.issValue.length);
-          }    		  
+          }         
           else if(this.$.selector.multi===true&&model.item.selectCheck===false){
             this.$.selector.select(item[this.itemSelectProperty]);
             this.push("issValueArray",item[this.itemSelectProperty]);
@@ -697,7 +488,7 @@ _computedSetterForIndex(multi, ddo){
           else{this.set("issValue",setval);}
         }
         console.log("leaving dropdown, closing on exit");
-		  this.set("dropdownOpen",false);
+      this.set("dropdownOpen",false);
   },
   updateAllyKeyChangedItemInColumnPosition(dy, elem){
         this.trackDelta = dy || this.trackDelta || 0;
@@ -708,7 +499,7 @@ _computedSetterForIndex(multi, ddo){
     },
   onDownArrow(e){
           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
-      	 var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
+         var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
          console.log(this.itemKeyStrokeIndex);
          var bool=children[last]._templateInstance.item.selectCheck;
@@ -740,17 +531,17 @@ _computedSetterForIndex(multi, ddo){
             this.$.dropdownlist.scrollTop=(this.$.dropdownlist.scrollHeight - this.$.dropdownlist.scrollTop < this.$.dropdownlist.clientHeight)?this.baseScrollTop:this.$.dropdownlist.scrollTop+delta;       
     },
   onUpArrow(e){
-      	var children=this.getDropdownChildren();
+        var children=this.getDropdownChildren();
         var last=(children.length-1);
-        setVal=(this.itemKeyStrokeIndex==0)?last:(this.itemKeyStrokeIndex-1);  ;  	
+        setVal=(this.itemKeyStrokeIndex==0)?last:(this.itemKeyStrokeIndex-1);  ;    
         this.set("itemKeyStrokeIndex",setVal);
         children=this.removeColorFromChildren(children);
-      	var elem=children[this.itemKeyStrokeIndex];
-      	elem.classList.add("selectColor");
-      	var rect=elem.getBoundingClientRect(),
-      	ht=window.getComputedStyle(elem,null).getPropertyValue("height"), 
-      	height=rect.height;
- 		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(Math.floor((height+ht)/2)+2);
+        var elem=children[this.itemKeyStrokeIndex];
+        elem.classList.add("selectColor");
+        var rect=elem.getBoundingClientRect(),
+        ht=window.getComputedStyle(elem,null).getPropertyValue("height"), 
+        height=rect.height;
+       this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(Math.floor((height+ht)/2)+2);
       },
   onEnter(e){
     console.log(e);
@@ -829,50 +620,3 @@ _computedSetterForIndex(multi, ddo){
     // 🌎🌎 🌍 🌏❓❗❌⏩ ⏪ ⏫ ⏬ ⏭ ⏮ ⏯ ✅ ❎✍ ✉ ✊ ✋ ✌⬛ ⬜   ⏰ ⏱ ⏲ ⏳ ⚙
   // return '\🌐','\🌎';
 -->
-
-
-
-<!--<g id="loop"><path d="M12 4V1L8 5l4 4V6c3.31 0 6 2.69 6 6 0 1.01-.25 1.97-.7 2.8l1.46 1.46C19.54 15.03 20 13.57 20 12c0-4.42-3.58-8-8-8zm0 14c-3.31 0-6-2.69-6-6 0-1.01.25-1.97.7-2.8L5.24 7.74C4.46 8.97 4 10.43 4 12c0 4.42 3.58 8 8 8v3l4-4-4-4v3z"></path></g>
-<g id="chat-bubble-outline"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H6l-2 2V4h16v12z"></path></g>
-<g id="contact-mail"><path d="M21 8V7l-3 2-3-2v1l3 2 3-2zm1-5H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 1.99-.9 1.99-2L24 5c0-1.1-.9-2-2-2zM8 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H2v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1zm8-6h-8V6h8v6z"></path></g>
-<g id="contact-phone"><path d="M22 3H2C.9 3 0 3.9 0 5v14c0 1.1.9 2 2 2h20c1.1 0 1.99-.9 1.99-2L24 5c0-1.1-.9-2-2-2zM8 6c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm6 12H2v-1c0-2 4-3.1 6-3.1s6 1.1 6 3.1v1zm3.85-4h1.64L21 16l-1.99 1.99c-1.31-.98-2.28-2.38-2.73-3.99-.18-.64-.28-1.31-.28-2s.1-1.36.28-2c.45-1.62 1.42-3.01 2.73-3.99L21 8l-1.51 2h-1.64c-.22.63-.35 1.3-.35 2s.13 1.37.35 2z"></path></g>
-<g id="access-time"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"></path></g>
-<g id="add-alarm"><path d="M7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7zm1-11h-2v3H8v2h3v3h2v-3h3v-2h-3V9z"></path></g>
-<g id="widgets"><path d="M13 13v8h8v-8h-8zM3 21h8v-8H3v8zM3 3v8h8V3H3zm13.66-1.31L11 7.34 16.66 13l5.66-5.66-5.66-5.65z"></path></g>
-<g id="format-color-text"><path fill-opacity=".36" d="M0 20h24v4H0z"></path><path d="M11 3L5.5 17h2.25l1.12-3h6.25l1.12 3h2.25L13 3h-2zm-1.38 9L12 5.67 14.38 12H9.62z"></path></g>
-<g id="account-balance"><path d="M4 10v7h3v-7H4zm6 0v7h3v-7h-3zM2 22h19v-3H2v3zm14-12v7h3v-7h-3zm-4.5-9L2 6v2h19V6l-9.5-5z"></path></g>
-<g id="account-circle"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 3c1.66 0 3 1.34 3 3s-1.34 3-3 3-3-1.34-3-3 1.34-3 3-3zm0 14.2c-2.5 0-4.71-1.28-6-3.22.03-1.99 4-3.08 6-3.08 1.99 0 5.97 1.09 6 3.08-1.29 1.94-3.5 3.22-6 3.22z"></path></g>
-<g id="add-circle-outline"><path d="M13 7h-2v4H7v2h4v4h2v-4h4v-2h-4V7zm-1-5C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"></path></g>
-<g id="alarm"><path d="M22 5.72l-4.6-3.86-1.29 1.53 4.6 3.86L22 5.72zM7.88 3.39L6.6 1.86 2 5.71l1.29 1.53 4.59-3.85zM12.5 8H11v6l4.75 2.85.75-1.23-4-2.37V8zM12 4c-4.97 0-9 4.03-9 9s4.02 9 9 9c4.97 0 9-4.03 9-9s-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"></path></g>
-<g id="assessment"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"></path></g>
-<g id="build"><path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"></path></g>
-<g id="chrome-reader-mode"><path d="M13 12h7v1.5h-7zm0-2.5h7V11h-7zm0 5h7V16h-7zM21 4H3c-1.1 0-2 .9-2 2v13c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 15h-9V6h9v13z"></path></g>
-<g id="event"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"></path></g>
-<g id="face"><path d="M9 11.75c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zm6 0c-.69 0-1.25.56-1.25 1.25s.56 1.25 1.25 1.25 1.25-.56 1.25-1.25-.56-1.25-1.25-1.25zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8 0-.29.02-.58.05-.86 2.36-1.05 4.23-2.98 5.21-5.37C11.07 8.33 14.05 10 17.42 10c.78 0 1.53-.09 2.25-.26.21.71.33 1.47.33 2.26 0 4.41-3.59 8-8 8z"></path></g>
-<g id="mail"><path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"></path></g>
-<g id="stars"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm4.24 16L12 15.45 7.77 18l1.12-4.81-3.73-3.23 4.92-.42L12 5l1.92 4.53 4.92.42-3.73 3.23L16.23 18z"></path></g>
-<g id="tab"><path d="M21 3H3c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h18c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H3V5h10v4h8v10z"></path></g>
-<g id="thumb-down"><path d="M15 3H6c-.83 0-1.54.5-1.84 1.22l-3.02 7.05c-.09.23-.14.47-.14.73v1.91l.01.01L1 14c0 1.1.9 2 2 2h6.31l-.95 4.57-.03.32c0 .41.17.79.44 1.06L9.83 23l6.59-6.59c.36-.36.58-.86.58-1.41V5c0-1.1-.9-2-2-2zm4 0v12h4V3h-4z"></path></g>
-<g id="thumb-up"><path d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.59 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-1.91l-.01-.01L23 10z"></path></g>
-<g id="today"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7z"></path></g>
-<g id="view-agenda"><path d="M20 13H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zm0-10H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V4c0-.55-.45-1-1-1z"></path></g>
-<g id="view-array"><path d="M4 18h3V5H4v13zM18 5v13h3V5h-3zM8 18h9V5H8v13z"></path></g>
-<g id="view-carousel"><path d="M7 19h10V4H7v15zm-5-2h4V6H2v11zM18 6v11h4V6h-4z"></path></g>
-<g id="view-column"><path d="M10 18h5V5h-5v13zm-6 0h5V5H4v13zM16 5v13h5V5h-5z"></path></g>
-<g id="view-day"><path d="M2 21h19v-3H2v3zM20 8H3c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h17c.55 0 1-.45 1-1V9c0-.55-.45-1-1-1zM2 3v3h19V3H2z"></path></g>
-<g id="view-headline"><path d="M4 15h16v-2H4v2zm0 4h16v-2H4v2zm0-8h16V9H4v2zm0-6v2h16V5H4z"></path></g>
-<g id="view-list"><path d="M4 14h4v-4H4v4zm0 5h4v-4H4v4zM4 9h4V5H4v4zm5 5h12v-4H9v4zm0 5h12v-4H9v4zM9 5v4h12V5H9z"></path></g>
-<g id="view-module"><path d="M4 11h5V5H4v6zm0 7h5v-6H4v6zm6 0h5v-6h-5v6zm6 0h5v-6h-5v6zm-6-7h5V5h-5v6zm6-6v6h5V5h-5z"></path></g>
-<g id="view-quilt"><path d="M10 18h5v-6h-5v6zm-6 0h5V5H4v13zm12 0h5v-6h-5v6zM10 5v6h11V5H10z"></path></g>
-<g id="view-stream"><path d="M4 18h17v-6H4v6zM4 5v6h17V5H4z"></path></g>
-<g id="view-week"><path d="M6 5H3c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1zm14 0h-3c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1zm-7 0h-3c-.55 0-1 .45-1 1v12c0 .55.45 1 1 1h3c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1z"></path></g>
-<g id="view-comfy"><path d="M3 9h4V5H3v4zm0 5h4v-4H3v4zm5 0h4v-4H8v4zm5 0h4v-4h-4v4zM8 9h4V5H8v4zm5-4v4h4V5h-4zm5 9h4v-4h-4v4zM3 19h4v-4H3v4zm5 0h4v-4H8v4zm5 0h4v-4h-4v4zm5 0h4v-4h-4v4zm0-14v4h4V5h-4z"></path></g>
-<g id="view-compact"><path d="M3 19h6v-7H3v7zm7 0h12v-7H10v7zM3 5v6h19V5H3z"></path></g>
-<g id="local-movies"><path d="M18 3v2h-2V3H8v2H6V3H4v18h2v-2h2v2h8v-2h2v2h2V3h-2zM8 17H6v-2h2v2zm0-4H6v-2h2v2zm0-4H6V7h2v2zm10 8h-2v-2h2v2zm0-4h-2v-2h2v2zm0-4h-2V7h2v2z"></path></g>
-<g id="local-offer"><path d="M21.41 11.58l-9-9C12.05 2.22 11.55 2 11 2H4c-1.1 0-2 .9-2 2v7c0 .55.22 1.05.59 1.42l9 9c.36.36.86.58 1.41.58.55 0 1.05-.22 1.41-.59l7-7c.37-.36.59-.86.59-1.41 0-.55-.23-1.06-.59-1.42zM5.5 7C4.67 7 4 6.33 4 5.5S4.67 4 5.5 4 7 4.67 7 5.5 6.33 7 5.5 7z"></path></g>
-<g id="local-phone"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"></path></g>
-<g id="event-available"><path d="M16.53 11.06L15.47 10l-4.88 4.88-2.12-2.12-1.06 1.06L10.59 17l5.94-5.94zM19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"></path></g>
-<g id="event-busy"><path d="M9.31 17l2.44-2.44L14.19 17l1.06-1.06-2.44-2.44 2.44-2.44L14.19 10l-2.44 2.44L9.31 10l-1.06 1.06 2.44 2.44-2.44 2.44L9.31 17zM19 3h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11z"></path></g>
-<g id="event-note"><path d="M17 10H7v2h10v-2zm2-7h-1V1h-2v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zm-5-5H7v2h7v-2z"></path></g>
-<g id="pages"><path d="M3 5v6h5L7 7l4 1V3H5c-1.1 0-2 .9-2 2zm5 8H3v6c0 1.1.9 2 2 2h6v-5l-4 1 1-4zm9 4l-4-1v5h6c1.1 0 2-.9 2-2v-6h-5l1 4zm2-14h-6v5l4-1-1 4h5V5c0-1.1-.9-2-2-2z"></path></g>
-<g id="public"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"></path></g>-->

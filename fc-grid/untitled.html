@@ -1,0 +1,44 @@
+<script>
+function ObjectArray(glob){
+
+	this.createFlatArray(glob){
+		var keys=Object.keys(glob);
+		var arr = [];
+		var p=0;
+		var rosettaStoneObject={};
+		starter=[];
+for(var j=0x30;j< 0x7b;j++){
+	var ch = String.fromCharCode(i);
+	while(!/\w/.test(ch)){ch = String.fromCharCode(i++)};
+	starter.push(ch);}	
+
+
+
+ 
+var holder =starter.forEach((pre,cho, i,array)=>{
+	for (var i = 0x30; i < 0x7b;i++){
+    		// skip non word characters
+    	var char = String.fromCharCode(i);
+    		while(!/\w/.test(char)){char = String.fromCharCode(i++)};
+    			// generate your code
+    		var res = char;
+    // use your result
+    				var onk={};
+    				var base62=cho.toString()+res.toString();
+    				var translator=keys[p]+"_"+p+"_"+base62; 
+    				this.rosettaStone[keys[p]]=translator;
+    				this.base62Translator[base62]=translator;
+    				this.indexerForName.push({keys: translator, index:p, value: glob[keys[p]]});
+    			
+    p++;
+   						r 
+	}
+});
+console.log(translator, this.indexerForName, this.rosettaStone[keys[p]], );
+}
+
+
+
+
+
+};

@@ -40,6 +40,7 @@
       overflow-x: hidden;
       @apply(--vertical-layout);
       @apply(--layout-flex);
+
       }
      
     .sidesLeft{
@@ -52,24 +53,7 @@
       	border: 1px #efefef solid;
       	margin: 12px 0px;
       }
-
-     paper-item{
-       max-width: 480px;
-      --paper-item-focused:{
-          font-size:.92em; 
-          max-width: 480px; 
-          outline:0px white solid; 
-          background: orange; 
-          order: solid silver 1px;
-          font-weight: 600;
-            @apply(--paper-item-focused);
-      };
-      --paper-item-selected:{
-         border: solid silver 1px;
-        @apply(--paper-item-selected);
-      };
-     }
-
+     
 		paper-button{
 		 	 width: 50%;
 		 	 min-width: 147px;
@@ -82,23 +66,34 @@
 		 	 background: white;
 		 	 border: #efefef 1px solid;
 		 }
-		 paper-button.green.submit:hover, {
+		 paper-button.green{
 		 	color: green; 
-      box-shadow: 2px 4px 7px 2px; opacity: .7, paper-button.green.submit:hover;
 		 	border: 2px solid green;
 		}
-   
+    fc-ddr-card{
+      min-width: 40px;
+      min-height: 40px;
+      max-height: 600px;
+      max-width: 580px;
+    }
 		paper-button.darkblue{
 			color: #009;
 			border: 2px solid #009;
 		}
-	
+		paper-button.red{
+			color: red;
+			border: 2px solid red;
+		}
+		paper-button.orange{
+			color: orange;
+			border: 2px solid orange;
+		}
 		paper-button:hover, paper-button:active{
-			box-shadow: 2px 4px 7px 2px; opacity: .7;
+			box-shadow: 2px 4px 7px 2px; 
 
 		} 
 		paper-button.darkblue:hover, paper-button.darkblue:active{
-			box-shadow: 2px 4px 7px 2px gold;      box-shadow: 2px 4px 7px 2px; opacity: .7;
+			box-shadow: 2px 4px 7px 2px gold; 
 
 		} 
 		.buttonRow{
@@ -114,6 +109,7 @@
 	font-weight: 600;
 	color: #080808;
 	font-size: 14px;
+
 	white-space: nowrap;
 	display: inline-block;
 }
@@ -125,8 +121,8 @@
         padding: 18px;
         background: white;
         @apply(--layout-self-stretch);
-        min-height: 640px;
-        /*height: 100%;*/
+        /*min-height: 1080px;*/
+        height: 100%;
       }
       neon-animatable {
         color: white;
@@ -136,7 +132,16 @@
         margin: 0px;
         padding: 0px;
       }
-   
+    
+    .subheading {
+    font-size: 14px;
+    color: brown;
+    font-family: times;
+ 		float: right;
+ 		margin: 0px 12px;
+    padding: 8px;
+    }
+ 
     label.returningCaller{
     	color: black;
     	font-size: 16px;
@@ -144,10 +149,26 @@
     	font-weight: 700;
     }
   
- 
+    p{
+    	text-indent: 36px;
+    	font-size: 14px;
+    	font-weight: 600;
+    		}
+  .setHeight {
+    min-height: 68px;
+    max-height: 980px;
+
+    max-width: 485px;
+    width: 320px;
+    margin: 4px;
+    padding: 4px;
+  }
+  
+
 .timestamp{
     font-weight: 300;
     color: #009;
+
     font-family: merriweather;
    font-size: 13px;
     position: absolute;
@@ -156,17 +177,13 @@
    top: 60px;
    left: 20px;
     }
-    .container1{
 
-      overflow-y:scroll;
-    }
-
-  .subheading{
+  .subheading {
     font-size: 13px;
     position: absolute;
     color: brown;
     font-family: times;
-   top: 34px;
+   top: 36px;
    right: 14px;
    margin-right: 0px;
     }
@@ -198,9 +215,6 @@
 			position: absolute;
 			left: 5px;
 		}
-    #container1{
-      max-width: 510px!important;
-    }
 	
 	
     .headerCenter{
@@ -216,23 +230,19 @@
   	}
 
  
-  
-  .innerContainer{
-    max-height: 640px!important;
-    min-height: 76vh;
-    overflow-y: scroll;
-     max-width: 480px!important;
   }
-}
+  .innerContainer{
+    max-height: 680px!important;
+    min-height: 72vh;
+    overflow-y: scroll;
+  }
   </style>
 
   <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
  <div class="header" style="margin: 30px 0px -40px 20px; padding-bottom: 10px; z-index; 5; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300;"> <span  style="padding-bottom:2px;" btn="changeAppInterfaceForInputs" >{{chosen}}</span>
  
- <div class="layout vertical flex" style="margin-bottom: 48px;"">
-    <section class="bar">
-      
-    </section>
+ <div class="vertical layout flex" style="margin-bottom: 48px;"">
+    <section class="bar"></section>
       <section class="horizontal layout flex">
         <span btn="leftClick" class="timestamp">
         [[time]] on [[date]]
@@ -246,19 +256,19 @@
 
         <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
 
-            <div class="container1">
-                <fc-call-center-form-one style="padding: 6px 38px 14px 38px; max-height: 650px; overflow-y: scroll;"  page-index="{{selected}}" search-off="{{searchOff}}" inquiry="{{inquiry}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}">
+            <div id="container1">
+                <fc-call-center-form-one style="padding: 6px 38px 14px 38px; max-height: 640px; overflow-y: scroll;"  page-index="{{selected}}" search-off="{{searchOff}}" inquiry="{{inquiry}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}">
                 </fc-call-center-form-one>
             </div>
         
             <template is="dom-repeat" items="{{inputsDisplayArray}}">
-                <div class="container1">
-                    <fc-call-center-form value-object="{{valueObject}}" forms="{{forms}}" form-selected="{{formSelected}}" id="generalForm" style="max-height: 650px; overflow-y: scroll;" first-free-row="{{rowIndex}}" search-off="{{searchOff}}" id="ioForm" grid-display-array="{{gridDisplayArray}}" focused-manager="{{focusedManager}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
+                <div>
+                    <fc-call-center-form value-object="{{valueObject}}" forms="{{forms}}" form-selected="{{formSelected}}" id="generalForm" style="max-height: 640px; overflow-y: scroll;" first-free-row="{{rowIndex}}" search-off="{{searchOff}}" id="ioForm" grid-display-array="{{gridDisplayArray}}" focused-manager="{{focusedManager}}" current-height="{{siblingHeight}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
                     </fc-call-center-form>
                 </div>
             </template>
         </neon-animated-pages>
-</div>
+    </div>
          
         <div style="border-top: solid 1px silver; margin-top: 18px; margin-left: 20px; width: 92%; overflow-x: hidden;" class="vertical layout flex center-justified">
               <div class="horizontal flex layout justified">
@@ -329,7 +339,22 @@ FcInputsInterface=Polymer({
       value: function(){return {};}, 
       notify: true,
     },
-  
+    superValue:{
+      type: Object,
+      value: function(){return {};},
+      notify: true,
+
+    },
+ 
+    childHeight:{
+        type: String,
+        notify: true,
+    },
+    siblingHeight:{
+        type: String,
+        computed: "_computeSiblingHeight(childHeight)",
+        notify: true,
+    },
     searchOff:{
       type: Boolean,
       notify: true, 
@@ -352,18 +377,16 @@ FcInputsInterface=Polymer({
           notify: true,
           observer: "observeSelected",
         },
-  
+    hasFocusedProfile:{
+      type: Boolean,
+      value: function(){return false;},
+      notify: true,
+    },
     isFormSubmitted:{
         type: Boolean,
         value: false,
         notify: true
       },
-      isNotToggle:{
-        type: Boolean, 
-        value: false, 
-        notify: true
-
-      }, 
     pageTotal:{
          type: Number,
             computed: "_computePageTotal(inputsDisplayArray)",
@@ -393,7 +416,7 @@ FcInputsInterface=Polymer({
 
   },
   _computeMinWidthHidden(cwidth){
-      var retVal=(cwidth-20<200)?true: false;
+      var retVal=(cwidth-20<215)?true: false;
       return retVal;
   },
   _modifySizeRatio(ciw){
@@ -417,28 +440,35 @@ FcInputsInterface=Polymer({
   },
 
     deepObserveValueObject(nv, ov){ 
-    //   if(nv&&nv.value&&nv.value.value){
+      if(nv&&nv.value&&nv.value.value){
      
-       
-    //    for(var i=0;i<2; i++){
+       var frank="superValue."+ keys[0];
+       this.set(frank,nv.value.value);
+       console.log(this.superValue);
+       this.superValue=Object.assign(this.superValue,nv.base);
+       var holder=this.valueObject;
+       var sup=this.superValue;
+       var array=[holder, sup];
+       for(var i=0;i<2; i++){
+        var po=array[i];
          
-    
-    //     if(retVal!=undefined){
-    //         var count =this.inputsDisplayArray.length;
-    //     console.log(count);
-    //       for(var i=0;i<count;i++)
-    //       {
-    //           var pageInputArray=this.inputsDisplayArray[i];
-    //           var inputSetCount=pageInputArray.length;
-    //            this.inputsDisplayArray[i].forEach((val, j, arr)=>{
-    //                 if(nv.base[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],nv.value[val.nameA]);}
-    //                 if(nv.base[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],nv.value[val.nameB]);} 
-    //            });
-    //       }
+       var retVal =this.searchMatchSet(nv.value, nv.base);
+        if(retVal!=undefined){
+            var count =this.inputsDisplayArray.length;
+        console.log(count);
+          for(var i=0;i<count;i++)
+          {
+              var pageInputArray=this.inputsDisplayArray[i];
+              var inputSetCount=pageInputArray.length;
+               this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+                    if(nv.base[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],nv.value[val.nameA]);}
+                    if(nv.base[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],nv.value[val.nameB]);} 
+               });
+          }
 
-    //     }
-    //   }
-    // }
+        }
+      }
+    }
   }, 
 
   doStuffOnLoad(e){
@@ -446,6 +476,92 @@ FcInputsInterface=Polymer({
           this.style.width="440px"; this.style.height="660px";}, 4);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
      },
+// searchMatchSet(valz, base){
+// if(this.superValue){
+//       var io=this.focusedManager.dashboardMap.get(this.selectedStoreNumber);
+//       var array=[];
+//       var p=0, labelToMatch=null, label=null;
+//       //TO DO MAKE GRID ARRAY 
+//       while(p<15){
+//             label=io.gridArray[p][0].value;
+//             name=valz.name;
+//             labelToMatch= this.focusedManager.propertyNameToLabel(name);
+//             p++;//the fifteen stops u from selecting a gradelevel and getting a random student//but just happened 19th of aug
+//       }
+
+//       var possibilities=io.gridArray[p].filter((entry, index)=>{
+//               if(entry.value==base.value||entry.value==valz.value)
+//               { 
+//                 array.push(index, entry.value); 
+//                       return entry.value;
+//               }
+//                 else{return false;}
+//               }); 
+//       if(possibilities!=undefined&&possibilities[0]!=undefined&&possibilities.length!=0)
+//       {
+//       var keys=possibilities[0].key.split("_"); 
+//       var row =parseInt(keys[2]);
+
+//           var valueObject=io.gridArray[15][row].valueObject;//this is fcid, this should be made general to find fcid
+//           //console.log(valueObject);
+//           valueObject=new ProfileReformer(valueObject);
+//           //console.log(valueObject, valueObject);
+//           var keyz=Object.keys(valueObject);
+//          console.log(valueObject,keyz, "HERE");
+//           keyz.forEach((prop,i, arr)=>{
+//             if(valueObject[prop]==="--"){
+//               valueObject[prop]="";//here attempting to make non-values uniform... 
+//             }
+//             if(this.valueObject[prop]==""||this.valueObject[prop]==undefined){
+//               var properTee="valueObject."+prop;
+//               this.set(properTee, valueObject[prop])
+//             }
+//         });
+//           //this.set("valueObject", valueObject);
+//          // console.log(this.valueObject, valz, base, "got past the if possibilities");
+//           this.superValue=Object.assign(this.superValue, this.valueObject);
+//          // console.log(this.superValue, this.valueObject);
+//                var count =this.inputsDisplayArray.length;
+//              // console.log(count);
+//            if(this.superValue.name){
+//                   var frankensteinProperty="superValue."+this.superValue.name;
+//                 this.set(frankensteinProperty, this.superValue.value);
+//                 this.set("superValue.name","");
+//                 this.set("superValue.value","");
+//               }
+//            if(this.superValue.undefined&&this.superValue.undefined.name){
+//                 var frankEb="superValue."+this.superValue.undefined.name;
+//                 var vag=this.superValue.undefined.value;
+//                 this.set(frankEb, vag); 
+//                 //console.log(this[frankEb], "frankenstein property");
+//                 }
+//                 var other=   "superValue."+"[object HTMLInputElement]";
+//            if(this[other]){
+//                 var another=this[other].name;
+//                 var valueThree=this[other].value;
+//                 var nom="superValue."+another;
+//                 //console.log(other, other, other, "other");
+//                 this.set(nom,valueThree);
+//                 }
+//                 var newProfile=new ProfileReformer(this.superValue);
+//                 this.set("superValue",{});
+//                 this.set("superValue",newProfile);
+//                 var propKeys=Object.keys(this.superValue);
+//               //  console.log(this.superValue, "this should be a clean version of the key value thing");
+//                 for(var i=0;i<count;i++)
+//                 {
+//                      this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+//                           if(this.superValue[val.nameA]!=undefined){this.set(["inputsDisplayArray",i,j,"valueA"],this.superValue[val.nameA]);}
+//                           if(this.superValue[val.nameB]!=undefined){this.set(["inputsDisplayArray",i,j,"valueB"],this.superValue[val.nameB]);} 
+//                      });
+//                 }
+
+
+//         }
+       
+//       }
+// },
+
   observeInputsDisplayArray(inputs){
       var vo={}, triple=this.focusedManager.propertiesLabelsAndValuesFromInputs(inputs);
       var valueObject=triple.name.reduce((vo, val,i)=>{ 
@@ -491,7 +607,7 @@ FcInputsInterface=Polymer({
                                 this.addCallerTypeToGrids(args);
               this.wipeCleanInputs();
 
-         // this.gridMakerFunction(this.chosen, trueForm, val, this.selectedStoreNumber);
+         this.gridMakerFunction(this.chosen, trueForm, val, this.selectedStoreNumber);
             }
      },
 
@@ -513,10 +629,10 @@ FcInputsInterface=Polymer({
         },
 
 
-    // wipeInputs(e){
-    //   this.wipeCleanInputs();
+    wipeInputs(e){
+      this.wipeCleanInputs();
       
-    // },
+    },
 
 
     observeChangeB(event, value, name){},
@@ -592,9 +708,3 @@ layWaste(e){
 });
 
 </script>
-</dom-module>
-
-
-
-
-
