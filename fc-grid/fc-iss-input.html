@@ -444,7 +444,7 @@ FcIssInput=Polymer({
  attached(){
     var children = this.getDropdownChildren();
     this.set("dropdownChildren",children);
-  console.log(this.onChange, this.onChange,this.onChange, this.dropdownChildren);
+  //console.log(this.onChange, this.onChange,this.onChange, this.dropdownChildren);
   this.set("startScrollTop",this.$.dropdownlist.scrollTop);
   this.set("baseScrollTop",this.$.dropdownlist.scrollTop);
   if((this.dropdownItems&&this.dropdownItems.length>0)||this.issClass==="menuItem"){
@@ -459,10 +459,10 @@ FcIssInput=Polymer({
  
  },
 computeLocalPropertyValue(issName, valueObject){
-    console.log(issName, valueObject);
+    //console.log(issName, valueObject);
       if(issName!=null){
 
-        console.log(issName, valueObject);
+        //console.log(issName, valueObject);
         if(valueObject.value && valueObject.base){
         if(valueObject.base[issName]&&valueObject.base[issName]!=undefined)
           {return valueObject[issName];}
@@ -471,17 +471,17 @@ computeLocalPropertyValue(issName, valueObject){
   }
 },
   _setUtfSymbol(dropdownItems, localPropertyValue){
-        console.log("I was calculated");
+        //console.log("I was calculated");
       if(this.issValue!=undefined&&this.dropdownItems!=false){ 
             var children=this.getDropdownChildren();
-            console.log(children, children.length);
+            //console.log(children, children.length);
               if(this.dropdownItems.length===1){
-                    console.log(children,this.issValue, this.localPro, this.dropdownItems); 
+                    //console.log(children,this.issValue, this.localPro, this.dropdownItems); 
                     return '\✅';
               }//here is if we have a match
               else if(this.issValue&&children.length>1){ 
-                    console.log(children.length); 
-                    console.log(children); 
+                    //console.log(children.length); 
+                    //console.log(children); 
                     if(children.length>1){  
                       return '\❓';
                     } 
@@ -498,13 +498,13 @@ computeLocalPropertyValue(issName, valueObject){
           }
   },
   setValueItem(e){
-            console.log(e, this.valueObject);
+            //console.log(e, this.valueObject);
             var input=this.$.issInput;
           this.set([input,"value"], e.target.value);
           this.$.issInput.value=e.target.value;
-          console.log(e.target.value, e.target);
+          //console.log(e.target.value, e.target);
           var valConstruct="valueObject."+e.target.name;
-          console.log(valConstruct);
+          //console.log(valConstruct);
           this.set(valConstruct, e.target.value);
           this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
           //if(e.model||e._templateInstance){
@@ -531,7 +531,8 @@ computeLocalPropertyValue(issName, valueObject){
     return retVal;
    },
   observeDropdownItems(newVal,oldVal){
-    if(newVal&&newVal.length>0){console.log(newVal);
+    if(newVal&&newVal.length>0){
+      //console.log(newVal);
     }
   }, 
   observeIssClass(nv,ov){
@@ -562,7 +563,7 @@ computeLocalPropertyValue(issName, valueObject){
   inputToggle(e){
     //console.log(this.isToggle, this.dropdownOpen, this.showDropButton);
       var retFunc=(this.isToggle===true)?"toggleToggleButton":(this.dropdownOpen===false&&this.showDropButton===true)?"focusInput":"blurInput";
-      console.log(retFunc, this.issLabel, this.issName, this.issValue, this.value);
+     // console.log(retFunc, this.issLabel, this.issName, this.issValue, this.value);
       this[retFunc](e); 
       //console.log(this.key, this.value, this.issValue,this.issValueArray, this.selected);
   },
@@ -611,7 +612,7 @@ createFilter(issValue, searchOff){
       }
   },
 _computedSetterForIndex(multi, ddo){
-     console.log("insetter for index",ddo, multi);
+     //console.log("insetter for index",ddo, multi);
    		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
    		this.set("itemKeyStrokeIndex", setVal);
    		return setVal;
@@ -631,44 +632,44 @@ _computedSetterForIndex(multi, ddo){
     },
   sortArrayForMultiSelect(e){
     var valArr=this.issValue.split(",");
-    console.log(valArr);
+    //console.log(valArr);
     var length=valArr.length;
     var arr=this.issValueArray;
     var size=arr.length;
     var diff=size-length;
-    console.log(diff,valArr, arr);
+    //console.log(diff,valArr, arr);
   },
   toggleSelection(e){
-    var item = this.$.controllerList.itemForElement(e.target);//console.log(item);
+    var item = this.$.controllerList.itemForElement(e.target);////console.log(item);
     var model=this.$.controllerList.modelForElement(e.target);
-    console.log(model, e, " I am in the tap",model );
-    console.log(item," I am in the tap", item);
+    //console.log(model, e, " I am in the tap",model );
+    //console.log(item," I am in the tap", item);
     var frankenInput="valueObject." + this.$.issInput.namel;
     this.set(frankenInput, item);
     var property= model._rootDataHost.__data__.issName;
 
     var value=item.value;
-    console.log(property, value, model._rootDataHost.__data__.issName);
+    //console.log(property, value, model._rootDataHost.__data__.issName);
     this.set("changeEvent",{"event":e, "value": value, "name": property, "target":e.target, "model":model})
     var targ=e.target;
  
     	if(this.dropdownOpen===true){//&& this.$.controllerList
-        console.log("i have an open dropdown");
+        //console.log("i have an open dropdown");
         var setval=(this.itemSelectProperty=="" )?item:model.item[this.itemSelectProperty];
         var children=this.getDropdownChildren();
-        console.log(setval);
+        //console.log(setval);
           if(this.multiSelect==false && this.searchOff==false){
                 this.set("issValue",setval);
-                console.log(this.issValue, "DID I GET TO HERE?");
+                //console.log(this.issValue, "DID I GET TO HERE?");
                 Polymer.dom(children[0]).classList.add("selectColor");
-                console.log("search is on and multi is false");
+                //console.log("search is on and multi is false");
               }
           else if(this.multiSelect==false && this.searchOff==true){
                 this.removeColorFromChildren(children);
                this.async(function(){
                   Polymer.dom(targ).classList.add("selectColor");
                   this.set("issValue",setval);},30);
-               console.log("search off multi off");
+               //console.log("search off multi off");
           }
           else if(this.$.selector.multi===true&&model.item.selectCheck===true){
     		    this.$.selector.deselect(setval); 
@@ -680,7 +681,7 @@ _computedSetterForIndex(multi, ddo){
             var showvalue=this.issValueArray.toString();
             this.set("issValue", showvalue);
             Polymer.dom(targ).classList.remove("selectColor");
-            console.log("multi plus select check");
+            //console.log("multi plus select check");
             //console.log(this.issValue, typeof this.issValue, this.issValue.length);
           }    		  
           else if(this.$.selector.multi===true&&model.item.selectCheck===false){
@@ -692,11 +693,11 @@ _computedSetterForIndex(multi, ddo){
             var showvalue=this.issValueArray.toString();
             this.async(function(){this.set("issValue", showvalue);}, 50);
             // this.valueMap.set(item,this.issValue);
-            console.log("multi no chekc");
+            //console.log("multi no chekc");
           }
           else{this.set("issValue",setval);}
         }
-        console.log("leaving dropdown, closing on exit");
+        //console.log("leaving dropdown, closing on exit");
 		  this.set("dropdownOpen",false);
   },
   updateAllyKeyChangedItemInColumnPosition(dy, elem){
@@ -710,7 +711,7 @@ _computedSetterForIndex(multi, ddo){
           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
       	 var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
-         console.log(this.itemKeyStrokeIndex);
+         //console.log(this.itemKeyStrokeIndex);
          var bool=children[last]._templateInstance.item.selectCheck;
          var element=children[oneMore]; 
          var preSib=children[setterBase];
@@ -753,7 +754,7 @@ _computedSetterForIndex(multi, ddo){
  		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(Math.floor((height+ht)/2)+2);
       },
   onEnter(e){
-    console.log(e);
+    //console.log(e);
     if(this.$.issInput.value!=undefined&&this.searchOff===true){
       this.set("issValue", this.$.issInput.value); 
       var nom="valueObject."+this.issName;
@@ -762,7 +763,7 @@ _computedSetterForIndex(multi, ddo){
       else{
         var children=this.getDropdownChildren();
         var fvali="valueObject."+this.$.issInput.name;
-        console.log(this.itemKeyStrokeIndex, "the mythic power if the index");
+        //console.log(this.itemKeyStrokeIndex, "the mythic power if the index");
                if(children[this.itemKeyStrokeIndex]!=undefined&&children[this.itemKeyStrokeIndex]._templateInstance!=undefined){
                                    this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item); 
                     } 
@@ -784,7 +785,7 @@ _computedSetterForIndex(multi, ddo){
                        this.set("issValue", value);
                        }
                      else if(this.multiSelect==false && this.searchOff==false){
-                       console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
+                       //console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
                          var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
                        this.set("issValue", value); 
                      }
@@ -810,14 +811,14 @@ _computedSetterForIndex(multi, ddo){
                          var value=children[this.itemKeyStrokeIndex].value;
                          var elem=children[this.ItemKeyStrokeIndex];
                          var name=this.$.issInput.name;
-                         console.log(value, this.$.issInput.name);
+                         //console.log(value, this.$.issInput.name);
                          this.set("changeEvent", {"event":e, "model": null, "target": null, "name": name, "value": value});
-                         console.log(this.changeEvent);
+                         //console.log(this.changeEvent);
                        this.set("issValue", value); 
                      }
                    }
                      this.blurInput();
-                     console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
+                     //console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
                    },
   
 });

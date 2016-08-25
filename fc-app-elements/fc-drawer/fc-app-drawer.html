@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../../fc-call-center/fc-inputs-interface.html">
+<link rel="import" href="../../fc-call-center/fc-form-right.html">
 
 <!--
 app-drawer is a navigation drawer that can slide in from the left or right.
@@ -61,8 +62,7 @@ Custom property                  | Description                            | Defa
         right: 0;
         bottom: -120px;
         left: 0;
-
-        visibility: hidden;
+        visibility: visible;
 
         transition: visibility 0.2s ease;
       }
@@ -315,12 +315,12 @@ FcAppDrawer=Polymer({
       },
 
       attached: function() {
-        this.set("dashboardLeftDrawerCurrentWidth",20);
-        this.set("dashboardRightDrawerCurrentWidth",20);
+        this.set("dashboardLeftDrawerCurrentWidth",295);
+       //  this.set("dashboardRightDrawerCurrentWidth",20);
 
-       this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",15);},80);
-        this.set("dashboardRightDrawerCurrentWidth",15);
-        console.log(this.align, this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth, "this should have the values");
+       
+       //  this.set("dashboardRightDrawerCurrentWidth",15);
+      //  console.log(this.align, this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth, "this should have the values");
         // Only transition the drawer after its first render (e.g. app-drawer-layout
         // may need to set the initial opened state which should not be transitioned).
         Polymer.RenderStatus.afterNextRender(this, function() {
@@ -332,6 +332,7 @@ FcAppDrawer=Polymer({
           this.addEventListener('transitionend', this._transitionend.bind(this));
           this.addEventListener('keydown', this._tabKeydownHandler.bind(this))
         });
+         this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",295);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
       },
 
       detached: function() {
@@ -366,7 +367,7 @@ FcAppDrawer=Polymer({
        */
       getWidth: function() {
         var elem=this.nodeName;
-        console.log("I BEEN CALLED", elem);
+       // console.log("I BEEN CALLED", elem);
         return this.$.contentContainer.offsetWidth;
       },
 
@@ -729,7 +730,9 @@ FcAppDrawer=Polymer({
        */
 
 obsereDrawerCurrentWidth(nv, ov){
-if(nv){console.log(nv,ov);}},
+if(nv){
+ // console.log(nv,ov);
+}},
     _resize: function(e){
             e.preventDefault();
             this.isResizing=true;
@@ -737,9 +740,9 @@ if(nv){console.log(nv,ov);}},
              var nId=e.target.attributes.id.value.split("_"), elem=this.$.contentContainer;
             // this.set("theMovingElement",elem);
             var width=Math.floor(parseFloat(window.screen.width));
-            console.log(width);
+            //console.log(width);
             width=width-25;
-            console.log(width);
+            //console.log(width);
             var height=Math.floor(parseFloat(window.screen.height)*.999);
             if(this.isResizing===true){
               var widthString=nId[0]+"CurrentWidth";
@@ -759,11 +762,11 @@ if(nv){console.log(nv,ov);}},
                     // // trueWidth=(trueWidth<0)?(-1*trueWidth):trueWidth;
                     // //console.log(trueWidth);
                     this.set([widthString],trueWidth);
-                    console.log(this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth);
+                 //   console.log(this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth);
                     var holder=trueWidth;
 
                     this.set("drawerCurrentWidth", trueWidth);
-                    console.log(this.drawerCurrentWidth);
+                   // console.log(this.drawerCurrentWidth);
                     var holder=holder.toString()+"px";
                     Polymer.dom(elem).setAttribute("style.width",holder);
                     Polymer.dom(this.$.contentContainer).setAttribute("style.width",holder);
@@ -779,13 +782,15 @@ if(nv){console.log(nv,ov);}},
               }
     },
     observeContentWidth(newVal, oldVal){
-      if(newVal){console.log(newVal, oldVal, "THIS IS THE WIDTH OF THE CONTENT TAG");}
+      if(newVal){
+      //  console.log(newVal, oldVal, "THIS IS THE WIDTH OF THE CONTENT TAG");
+      }
 
 
     },
     _computeDrawerCurrentWidth(position, right, left){
       var retVal=(position=="left")?left: right;
-      console.log(position, left, right);
+      //console.log(position, left, right);
       return retVal;
     },
     _computeDrawerCurrentWidthLess(position, right, left){

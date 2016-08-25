@@ -143,9 +143,10 @@
   }
 </style>
 <form is="iron-form" id="splashPageForm" method="get" action="/">
-  <div class="horizontal layout flex wrap center-justified" ">
 
-    <fc-dropdown-libre form-selected="{{formSelected}}" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
+  <div class="horizontal layout flex wrap center-justified" ">
+<fc-dropdown-libre selected-forms="{{selectedForms}}" forms="{{forms}}" forms-display="{{formsDisplay}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
+   
               </div>
              
               </form>
@@ -182,7 +183,11 @@ FcCallCenterFormOne=Polymer({
       value: function(){return false;},
       notify: true 
     },
-
+    formDisplay:{
+            type: Array, 
+            computed:"computeFormDisplay(formDisplays, arraycount)",
+            notify: true,
+    },
 		
     valueObject:{
       type: Object, 
@@ -192,6 +197,11 @@ FcCallCenterFormOne=Polymer({
     inquiry:{
       type: Object, 
       value:function(){return {};},
+        notify: true,
+      },
+      arraycount:{
+        type: Number, 
+        computed: "computeArraycount(chosen)",
         notify: true,
       }
     },
@@ -203,6 +213,20 @@ FcCallCenterFormOne=Polymer({
       var frankenObject= "valueObject."+"newProfile";
        this.set(frankenObject, setSearch);
       }
+    },
+    computeFormDisplay(forms, arraycount){
+      if(forms&&forms.length>=arraycount){
+        retVal=forms[arraycount];
+        this.set("arraycount",arraycount+1);
+        return retVal;
+      }
+    }, 
+    computeArraycount(chosen){
+      if(chosen&&chosen!=undefined){
+        return 0;
+      }
+
+
     },
 
       getfunction(e){

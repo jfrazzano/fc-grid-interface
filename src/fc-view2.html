@@ -24,6 +24,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding: 16px;
         margin: 24px;
         border-radius: 5px;
+        max-width: 95%; 
+        min-width: 50%; 
         background-color: #fff;
         color: #757575;
       }
@@ -46,22 +48,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </style>
 
     <div class="card">
-      <div class="circle">2</div>
-      <h1>View Two</h1>
-      <p>Ea duis bonorum nec, falli paulo aliquid ei eum.</p>
-      <p>Id nam odio natum malorum, tibique copiosae expetenda mel ea.Detracto suavitate repudiandae no eum. Id adhuc minim soluta nam.Id nam odio natum malorum, tibique copiosae expetenda mel ea.</p>
-    </div>
+    <section class="horizontal layout justified">
+      <div class="start-justified circle">2</div> <div class="end-justified" style="text-align: right; font-size: 3em; color: #009; padding-right: 20%; font-family: merriweather; font-weight: 300;"><i>Call Intakes</i></div> 
+     </section>
+      <div class="horizontal layout flex">
+      <template is="dom-repeat" items="{{arrays}}">
 
+      <fc-dropdown-libre  id="two" selected-form-array="{{item}}"></fc-dropdown-libre>
+    </template> 
+    </div>
+    <span> ADD PROGRESS BAR</span>
+    </div>
+<fc-dropdown-libre  id="one" selected-form-array="{{holderDisplays}}"></fc-dropdown-libre>
   </template>
 
   <script>
 
     Polymer({
 
-      is: 'my-view2'
+      is: 'my-view2',
+
+    attached(){
+      this.arrays=[];
+          var arrayOne=this.$.one.forms.Intakes.form1;
+          var arrayTwo=this.$.one.forms.Intakes.form2;
+      this.push("arrays", arrayOne);
+      this.push('arrays', arrayTwo);
+    }
 
     });
-
   </script>
 
 </dom-module>

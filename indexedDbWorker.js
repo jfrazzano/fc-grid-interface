@@ -25,15 +25,15 @@ importScripts("bower_components/firebase/firebase.js");
 				}
 				ping(argRequest)
 				{
-					console.log("Data Manager Worker received ping");
-					console.log("Data Manager Worker ping arg = " + argRequest.data.datum);
+					//console.log("Data Manager Worker received ping");
+					//console.log("Data Manager Worker ping arg = " + argRequest.data.datum);
 					argRequest.data.data = "pinged";
 					argRequest.data.status = "complete";
 				}
 				pong(argRequest)
 				{
-					console.log("Data Manager Worker received pong");
-						console.log("Data Manager Worker pong arg = " + argRequest.data.datum);
+					//console.log("Data Manager Worker received pong");
+						//console.log("Data Manager Worker pong arg = " + argRequest.data.datum);
 					argRequest.data.data = "ponged";
 					argRequest.data.status = "complete";
 				}
@@ -46,13 +46,13 @@ importScripts("bower_components/firebase/firebase.js");
 				var dbName=args.dbName; var storeName=args.storeName; var version=args.version; var data=args.data;
 
 				      	var request=indexedDB.open(dbName, version);
-				      	console.log(storeName, dbName, version, data);
+				      	//console.log(storeName, dbName, version, data);
 				      	request.onerror = (e)=>{
-				                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+				                  //console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
 				                  e.stopPropogation();
 				                  var request=indexedDB.open(dbName, undefined);
 				                  request.onerror = (ev)=>{ 
-				                          console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
+				                          //console.log("This is the second failed ATTEMPT.  NO MORE ATTEMPTS WILL BE MADE AT THIS TIME. Please attempt to access your data at a later time.");e.stopPropogation();
 				                  };
 				                  request.onsuccess =(event)=>{
 				                          var db = event.target.result;
@@ -62,21 +62,21 @@ importScripts("bower_components/firebase/firebase.js");
 				                          data.forEach(function(ref){
 				                                  objectStore.put(ref);
 				                            });
-				                          console.log("SUCCESS!!");
+				                          //console.log("SUCCESS!!");
 				                  			}
 				                  		else{objectStore.put(data);}
 				                  };
 				              };//end request on error closure
 				        request.onsuccess =(event)=>{
 				            var db = event.target.result;
-				            console.log(storeName);
+				            //console.log(storeName);
 				            var transaction = db.transaction(storeName, "readwrite");
 				            var objectStore = transaction.objectStore(storeName);
 				            if(Array.isArray(data)){
 				                          data.forEach(function(ref){
 				                                  objectStore.put(ref);
 				                            });
-				                          console.log("SUCCESS!!");
+				                          //console.log("SUCCESS!!");
 				                  			}
 				                  		else{objectStore.put(data);
 				                  		 if(this.gridsHolder[dbName]){
@@ -85,7 +85,7 @@ importScripts("bower_components/firebase/firebase.js");
 			            	var newGrid=this.gridsHolder[dbName];
 			            	self.postMessage({returnMessage: "gridToBePlaced", dbName: dbName, data: newGrid, version: version, storeName: storeName});
 
-				            console.log("SUCCESS!! FIRST TRY!!");
+				            //console.log("SUCCESS!! FIRST TRY!!");
 				        }}
 				        };
 				    }	
@@ -107,11 +107,11 @@ importScripts("bower_components/firebase/firebase.js");
 					 var query;
 
 					 request.onerror = (event)=>{
-                		console.log(dbName, version, "db error");
+                		//console.log(dbName, version, "db error");
                 		// request=indexedDB.open(dbName, storeName, undefined);
                 		};
                 	request.onsuccess=(e)=>{  
-                			console.log("success");
+                			//console.log("success");
                 			var db = event.target.result;
                 			var transaction = db.transaction([storeName], "readonly");
                 			var objectStore = transaction.objectStore([storeName]);
@@ -125,7 +125,7 @@ importScripts("bower_components/firebase/firebase.js");
           					updateData[propToUpdate] = updateValue;
           				var request = cursor.update(updateData);
           					request.onsuccess = function() {
-           							 console.log('ThisExampleSucks');
+           							 //console.log('ThisExampleSucks');
           									};
                 						};
                 			};
@@ -138,7 +138,7 @@ importScripts("bower_components/firebase/firebase.js");
 				}
 
 				createIndexedDb(e){
-					console.log(e);
+					//console.log(e);
 					var dbName=e.dbName;
 					var version=e.version;
 					var indicies=e.indicies;
@@ -146,20 +146,20 @@ importScripts("bower_components/firebase/firebase.js");
 					var storeName=e.storeName;
 					var key=e.key;
 					var bitVal=(e.bitVal)?e.bitVal: false
-					console.log(bitVal, key, storeName, data, indicies, version, dbName);
+					//console.log(bitVal, key, storeName, data, indicies, version, dbName);
 			       	var request = indexedDB.open(dbName, version);
-            		console.log(dbName, version, data, "db");
+            		//console.log(dbName, version, data, "db");
               
             		request.onerror = function(event){
-                		console.log(dbName, version, data, "db error");
+                		//console.log(dbName, version, data, "db error");
               			};
             		request.onupgradeneeded = (event)=>{
                 		var db = event.target.result;
-                		console.log("we are creating it");
-                			console.log(bitVal, key, storeName, data, indicies, version, dbName);
+                		//console.log("we are creating it");
+                			//console.log(bitVal, key, storeName, data, indicies, version, dbName);
                 		var objectStore = db.createObjectStore([storeName], { keyPath: key, autoIncrement:bitVal});
-                		console.log("created store");
-                			console.log(bitVal, key, storeName, data, indicies, version, dbName);
+                		//console.log("created store");
+                			//console.log(bitVal, key, storeName, data, indicies, version, dbName);
                 		objectStore.createIndex([key], [key], {unique: true });
                 		if(Array.isArray(indicies)){
                 		indicies.forEach(function(elem,index){
@@ -171,7 +171,7 @@ importScripts("bower_components/firebase/firebase.js");
    								objectStore.createIndex([elem], [elem], {unique: false });}
                 							});
                 			}
-                			console.log("completed the indicies", data);
+                			//console.log("completed the indicies", data);
                 		if(Array.isArray(data)){
                     		data.forEach(function(data,i,a){
                     			// var keys=Object.keys(profile);
@@ -190,7 +190,7 @@ importScripts("bower_components/firebase/firebase.js");
          	};//onsuccess
          }
          		deleteDatabase(names){
-         			 console.log("CALL deleteDatabase");
+         			 //console.log("CALL deleteDatabase");
 								if(Array.isArray(names))
 								{
 									names.forEach((name)=>{
@@ -205,18 +205,18 @@ importScripts("bower_components/firebase/firebase.js");
 						var dbName=args.dbName;
 						var storeName=args.storeName;
 						var version=args.version;
-						console.log(dbName, storeName, version);
+						//console.log(dbName, storeName, version);
 					 var request = indexedDB.open(dbName,version);
 					 var query;
             		
             		request.onerror = (event)=>{
-                		console.log(dbName, version, "db error");
+                		//console.log(dbName, version, "db error");
                 		request=indexedDB.open(dbName, storeName, undefined);
                 		request.onerror=(ev2)=>{
-                			console.log("second fail review data and try again after adjusting code");
+                			//console.log("second fail review data and try again after adjusting code");
                 		};
                 		request.onsuccess=(e)=>{  
-                			console.log("success");
+                			//console.log("success");
                 			var db = event.target.result;
                 			var transaction = db.transaction([storeName], "readonly");
                 			var objectStore = transaction.objectStore([storeName]);
@@ -224,15 +224,15 @@ importScripts("bower_components/firebase/firebase.js");
 
                 
                 			query.onerror=(quev)=>{
-                    			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
+                    			//console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
                 			};
                 			query.onsuccess =(queryEvent)=>{
                   				// if(asGrid===true){
                    					var cells = queryEvent.target.result;
-                   					console.log(cells);
+                   					//console.log(cells);
                    					this.cells=cells;
                    				
-                   					console.log(args.data.name, args.data);
+                   					//console.log(args.data.name, args.data);
                    					var orderedCells=cells.map((cell,i)=>{
                    					  var newKvPairs =args.data[0].name.reduce((kvpair,property,i)=>{
                    					  	kvpair.push([property, args.data[0].label[i], cell[property]]);
@@ -240,7 +240,7 @@ importScripts("bower_components/firebase/firebase.js");
                    					  }, []);
                    					  return newKvPairs;
                    					});
-                   					console.log(orderedCells);
+                   					//console.log(orderedCells);
                    					var rev=orderedCells;
                    					var counter=rev.length;
                    					for(var o=0;o<counter;o++){
@@ -259,8 +259,8 @@ importScripts("bower_components/firebase/firebase.js");
 				                   	}
 				                   	
                    					self.postMessage(["databaseReturn", newGrid]);
-                   					console.log("i left line 264");
-                   					console.log(newGrid);
+                   					//console.log("i left line 264");
+                   					//console.log(newGrid);
                    					this.gridsHolder[dbName]=newGrid;
                    					self.postMessage({returnMessage: "databaseReturn", dbName: dbName, data: newGrid, version: version, storeName: storeName});
                    					  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, version: version,data: newGrid});
@@ -268,15 +268,15 @@ importScripts("bower_components/firebase/firebase.js");
             			};
          	 		};
          	 		request.onsuccess=(e)=>{  
-            			console.log("success");
+            			//console.log("success");
             			var db = e.target.result;
-            			console.log(dbName, version, storeName);
+            			//console.log(dbName, version, storeName);
             			var transaction = db.transaction([storeName], "readonly");
             			var objectStore = transaction.objectStore([storeName]);
             			query = objectStore.getAll();
             
             			query.onerror=(quev)=>{
-                			console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
+                			//console.log("After initially opening the database, we have failed to query the object store.  Please try again later");
             			};
             			query.onsuccess =(queryEvent)=>{
               				
@@ -290,7 +290,7 @@ importScripts("bower_components/firebase/firebase.js");
                    					  }, []);
                    					  return newKvPairs;
                    					});
-                   					console.log(orderedCells);
+                   					//console.log(orderedCells);
                    					var rev=orderedCells;
                    					var counter=rev.length;
                    					for(var o=0;o<counter;o++){
@@ -309,17 +309,19 @@ importScripts("bower_components/firebase/firebase.js");
                    								 objA.name=rev[o][z][0];
                    								 objA.label=rev[o][z][1];
                    								 objA[objA.name]=objA.value;
-                   								  if(objA.name=="fcid"){objA.valueObject=cells[o]; console.log(cells[ro], objA.value, objA.name);}
+                   								  if(objA.name=="fcid"){objA.valueObject=cells[o]; 
+                   								  //	console.log(cells[ro], objA.value, objA.name);
+                   								}
                    								column.splice(ro,1, objA);
                    							}
                    							return column;
                    					});
 				                   	}
-				                   		console.log(newGrid, newGrid);
+				                   		//console.log(newGrid, newGrid);
                    					self.postMessage(["databaseReturn", newGrid]);
-                   					console.log("i left line 264");
+                   					//console.log("i left line 264");
                    					this.gridsHolder[dbName]= newGrid;
-                   					console.log(this.gridsHolder[dbName]);
+                   					//console.log(this.gridsHolder[dbName]);
                    					self.postMessage({returnMessage: "databaseReturn", dbName: dbName, data: newGrid, version: version, storeName: storeName});
                    					  self.postMessage({returnMessage: "build", name: dbName, storeName: storeName, version: version,data: newGrid});
             			};
@@ -331,11 +333,11 @@ importScripts("bower_components/firebase/firebase.js");
 				addObjectToObjectStore(dbName, storeName, version,indicies,data, key, context){
 			      	var request=indexedDB.open(dbName, version);
 			      	request.onerror = (e)=>{
-			                  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
+			                //  console.log("Unable to retrieve data from database. We have stopped propogation of events, but will attempt again to access the newest version of the requested database!");
 			                  e.stopPropogation();
 			                  var request=indexedDB.open(dbName, undefined);
 			                  request.onerror = (ev)=>{ 
-			                          console.log("This is the second failed ATTEMPT.  As a result a new database with the specified database and substore names and versions will be created at this time.");
+			                         // console.log("This is the second failed ATTEMPT.  As a result a new database with the specified database and substore names and versions will be created at this time.");
 			                         var e={}
 			                         // e.data={"dbName":dbName,"storeName": storeName,"version":1,"indicies": indicies,"data": ref,"key": fcid};
 			                         //  upgradeIndexedDb(e);
@@ -346,7 +348,7 @@ importScripts("bower_components/firebase/firebase.js");
 			                          var transaction = db.transaction([storeName], "readwrite");
 			                          var objectStore = transaction.objectStore([storeName]);
 			                            objectStore.put(ref);
-			                          console.log("SUCCESS!!");
+			                        //  console.log("SUCCESS!!");
 			                  };
 			              };//end request on error closure
 			        request.onsuccess =(event)=>{
@@ -354,7 +356,7 @@ importScripts("bower_components/firebase/firebase.js");
 			            var transaction = db.transaction([storeName], "readwrite");
 			            var objectStore = transaction.objectStore([storeName]);
 			                    objectStore.put(ref);
-			            console.log("SUCCESS!! FIRST TRY!!");
+			           // console.log("SUCCESS!! FIRST TRY!!");
 			            if(this.gridHolder[dbName]){
 			            	var keys=Object.keys(ref);
 			            	keys.forEach((cell,i)=>{this.gridHolder[dbName][i].splice(1,0,cell);});
@@ -369,23 +371,23 @@ importScripts("bower_components/firebase/firebase.js");
 
 			   getAllProfiles(argRequest)
 				{
-					console.log("Data Manager Worker received getAllCalls Request");
+					//console.log("Data Manager Worker received getAllCalls Request");
 					this.request = argRequest;
-					console.log(argRequest, argRequest.data);
+					//console.log(argRequest, argRequest.data);
 					var keys=Object.keys(argRequest.data);
 					var obj={};
 					var holderObject=keys.reduce((object, key, i, arr)=>{
 								object[key]="--";
-								console.log(object);
+								//console.log(object);
 								return object;
 									}, {});
-					console.log(holderObject);
+					//console.log(holderObject);
 					var lk=Object.keys(holderObject);
 					this.calls.once("value", (snap)=>{
 
 						var callRecords=snap.val();
 						var keys=Object.keys(callRecords);
-						console.log(callRecords[keys[0]]); 
+						//console.log(callRecords[keys[0]]); 
 						var profiles={};
 						var profilesHolder=keys.reduce((profiles, key, i)=>{
 							var ak={};
@@ -410,9 +412,9 @@ importScripts("bower_components/firebase/firebase.js");
 							}
 							else { return profiles;}
 								},profiles);
-						console.log(profilesHolder, argRequest, argRequest.data);
+						//console.log(profilesHolder, argRequest, argRequest.data);
 						
-						console.log("I am in the worker and getting the data from the data base!!!! Yeee Hah!!!!");
+						//console.log("I am in the worker and getting the data from the data base!!!! Yeee Hah!!!!");
 						var keys=Object.keys(profilesHolder);
 						var profilesArray=keys.map((key)=>{
 												var messageList=profilesHolder[key].messageList;
@@ -421,7 +423,8 @@ importScripts("bower_components/firebase/firebase.js");
 													// var string=JSON.stringify(profilesHolder[key]);
 													//console.log(string);
 													return [profilesHolder[key], messageList];
-						 				});console.log(profilesArray)
+						 				});
+						//console.log(profilesArray)
 						// var profilesHolderString=JSON.stringify(profilesHolder.toString());
 						// console.log(profilesHolderString);
 						profilesArray.forEach((miniArray)=>{
@@ -441,7 +444,7 @@ importScripts("bower_components/firebase/firebase.js");
 							 	if(profile&&profile[key]&&profile.fcid){
 							 	ooppa[key].push({"fcid":profile.fcid, "property": key, "value": profile[key]});}
 							 		});
-							 console.log(ooppa);
+							 //console.log(ooppa);
 							 return ooppa;
 						}, ooppa);
 						//console.log(filledOoppa);
@@ -449,10 +452,12 @@ importScripts("bower_components/firebase/firebase.js");
 						var profilesArr=profilesArray.map((miniArr)=>{
 							miniArr[0].messages=miniArr[1];
 							return miniArr[0];});
-						var datum=profilesArray.reduce((pre,miniArr)=>{var min=miniArr[1];min.fcid_=(min.fcid)+"_"; console.log(min);pre=pre.concat(min);
+						var datum=profilesArray.reduce((pre,miniArr)=>{var min=miniArr[1];min.fcid_=(min.fcid)+"_";
+						 //console.log(min);
+						 pre=pre.concat(min);
 							return pre;},[]).sort((a,b)=>{return (a.timestamp-b.timestamp);});
 						
-						console.log("53");
+						//console.log("53");
 						var e={};
 						e.data={
 							dbName:"callCenter",
@@ -486,7 +491,7 @@ importScripts("bower_components/firebase/firebase.js");
 					var d=new Date().getTime();
 					var messageObject={"intakeFcid":"ZirkelJoseph00001","callerMessage":"Hi, how are you, new messahe coming shortly","callerExpectedFollowUp":"call&signUp within 48hours","inquiryNumber":7,"isClosed": false, "api": "callCenter", "storeName": "inquiries", "timestamp":d}; 
 				var inq =new FoCoInquiry(data, propertyNames,messageObject, this);
-				console.log(inq);
+				//console.log(inq);
 
 
 				}
@@ -505,20 +510,20 @@ importScripts("bower_components/firebase/firebase.js");
 					{
 						am.initialize()
 					}
-					console.log("received Worker request", argRequest);
+					//console.log("received Worker request", argRequest);
 					var req = argRequest;
 					if(am[req.data.requestType])
 					{
 					req.data.status = "received";
 						//send a 'received' status unless synchronous call above completed request
-						console.log(req.data, req.data.args);
+						//console.log(req.data, req.data.args);
 					am[req.data.requestType](req.data);
 
 					}
 					else
 					{
 						req.data.status = "badType";
-						console.log("Array Status Manager Worker does not handle " + req.data.requestType + " requests");
+						//console.log("Array Status Manager Worker does not handle " + req.data.requestType + " requests");
 					}
 					postMessage(req.data);
 				});
@@ -528,24 +533,24 @@ class FoCoInquiry{
 	{	
         var profilesObject={};
        var keys=arrayKeys[0];
-       console.log(keys, keys[0]);
+      // console.log(keys, keys[0]);
        var profiles={};
             if(Array.isArray(arrayValues)&&Array.isArray(arrayKeys)){
                      var profile=arrayValues[0].reduce((profiles, val, i, array)=>{	
-                     		console.log("kiiiayyyuop", keys[i], val);
+        //             		console.log("kiiiayyyuop", keys[i], val);
                      		var name=keys[i]; 
                      		name=name.replace(/\s/g,"");
           					name=name.charAt(0).toLowerCase()+name.slice(1);
           					name =(name.match("One"))?name.replace("One","1"):(name.match("Two"))?name.replace("Two","2"):name;
-          					console.log(name);
+          //					console.log(name);
                                    profiles[name]=val;
-                                   console.log(profiles);
+            //                       console.log(profiles);
                                    return profiles;
                                                         },profiles);
                      var callerRole=profile.callerRole;
                      var fn=callerRole+"FirstName";
                      var ln=callerRole+"LastName";
-                     console.log(profile, profile[fn], profile[ln]);
+              //       console.log(profile, profile[fn], profile[ln]);
                     this.ref=null;
                     this.timestamp=profile.orderingTime;
                     this.readableTime=profile.date+"_"+profile.time;
@@ -566,7 +571,7 @@ class FoCoInquiry{
                     var inqNumber=this.getFcidPastInquiryNumber(profile.fcid);
 		            this.inquiryNumber =(parseInt(inqNumber)==NaN)?1:inqNumber+1;
                     //this.saveInquiry();
-                    console.log(this);
+                //    console.log(this);
                     this.saveInquiryLocal("callCenter", "MessageDetails",2,profile.indicies, this, this.fcid, context);
                     //this.displayInquiries();
                 }

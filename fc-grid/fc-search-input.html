@@ -217,7 +217,7 @@ min-width: 210px;
 
 
 <div class="horizontal layout flex self-stretch wrapper">
-  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" hidden="{{!showDropButton}}" on-tap="inputToggle">{{_setUtfSymbol(dropdownItems, localPropertyValue)}}</span>
+  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" hidden="{{!showDropButton}}" on-down="setDropdown" on-tap="inputToggle">{{_setUtfSymbol(issLabel)}}</span>
 <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
 	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
 		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
@@ -258,7 +258,7 @@ FcIssInput=Polymer({
  
       issLabel:{
           tinpiype:String,
-          value:function(){return "";},
+          value:function(){return "A Great Value";},
           notify: true
       },
   		issName:{
@@ -354,6 +354,12 @@ observeSelectedArray(nv,ov){
 
 
 },
+setDropdown(e){
+
+
+
+},
+
 computeLocalPropertyValue(issName, valueObject){
     console.log(issName, valueObject);
       if(issName!=null){

@@ -1,4 +1,8 @@
-<dom-module id="fc-reading-dashboard-two">
+<link rel="import" href="../fc-app-elements/fc-splitters/fc-splitter-jc.html">
+<link rel="import" href="../bower_components/paper-material/paper-material.html">
+
+
+<dom-module id="fc-reading-dashboard">
 <template>
 <style is="custom-style">
 .passages:{
@@ -1050,61 +1054,7 @@ function fc_highlight_passage(elemId)
 		passageQuoteSpan.scrollIntoView();
 	}
 }
-/*
-function fc_highlight_passage_old(elemId)
-{
 
-	//alert("fc_highlight_passage: elemId = " + elemId);
-	var passageElem = document.getElementById("passage1_test1");
-	passage1.text = passageElem.innerHTML;
-	var qNumStr = elemId.match(/Q.+stem/);
-
-	qNumStr[0] = qNumStr[0].replace("Q", "");
-	qNumStr[0] = qNumStr[0].replace("stem", "");
-
-	var qNum = Number(qNumStr[0]);
-
-	
-	var questions = fc_theContent2[0].split(/[1-9][0-9]*\./g);
-
-	var quoteBrief = questions[qNum].match( /(\"|\“).+(\"|\”)/ ); //" to keep the stupid editor color right
-	console.log(quoteBrief);
-	if(quoteBrief != null && quoteBrief.length != 0)
-	{
-		quoteBrief[0] = quoteBrief[0].replace("\"", "");
-		quoteBrief[0] = quoteBrief[0].replace("\“", "");
-		quoteBrief[0] = quoteBrief[0].replace("\”", "");
-		var startQuoteInQ = questions[qNum].indexOf(quoteBrief[0]);
-		var endQuoteInQ = startQuoteInQ + quoteBrief[0].length;
-		//alert("quote in question = " + quoteBrief[0]);
-		var quoteMatches = passage1.text.match(quoteBrief[0]);
-		//alert("found " + quoteMatches.length + " matches for quote '" + quoteBrief[0] + "'");
-		//just use first match?
-		fcElems[elemId][elemId].quote = quoteMatches[0];
-		fcElems[elemId][elemId].startQuote = passage1.text.indexOf(quoteMatches[0]);
-		fcElems[elemId][elemId].endQuote = fcElems[elemId][elemId].startQuote + fcElems[elemId][elemId].quote.length;
-		console.log(fcElems[elemId][elemId]);
-		fc_persist_qp(fcElems[elemId], "questions");
-		//alert("setting quote '" + quoteMatches[0] + "' for question " + qNum);
-		//actual highlighting of passage
-		passageElem.innerHTML = passageElem.innerHTML.replace(quoteMatches[0], "<span id='" + elemId + "_psg" + "'>" + quoteMatches[0] + "</span>");
-		var pElem = document.getElementById(elemId + "_psg");
-		theOldPassageContextId = thePassageContextId;
-		if(theOldPassageContextId != "")
-		{
-			//unhighlight old passage portion
-			alert("unhighlighting elem = " + theOldPassageContextId);
-			var oldP = document.getElementById(theOldPassageContextId);
-			oldP.setAttribute("style", "color:black");
-		}
-
-		thePassageContextId = elemId + "_psg";
-		alert("fc_highlight_passage: oldCID = " + theOldPassageContextId + " and currCID = " + thePassageContextId);
-		pElem.setAttribute("style", "color:red");
-		pElem.scrollIntoView();
-	}
-}
-*/
 function fc_update_tag(tag, tagValue)
 {
 	var subTree = "";
@@ -1460,7 +1410,7 @@ var fc_raw_questions_data = ["1. Which choice best describes what happens in the
 
 
 /*FcTopViewDashboard=*/Polymer({
-	is: "fc-reading=dashboard-two", 
+	is: "fc-reading-dashboard", 
 	properties: {
 		iPath: 'http://www.focusedstaging.com/Fresh_Attempt%20/index-jason.html',
 		topClassHidden: {

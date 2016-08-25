@@ -1,5 +1,5 @@
 
-<link rel="import"  href="fc-form-routing-behavior.html">
+<!-- <link rel="import"  href="fc-form-routing-behavior.html"> -->
 
 <link rel="import" href="../fc-grid/data-manager.html">
 <link rel="import" href="fc-course-calendar-creation-behavior.html">
@@ -19,25 +19,20 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
-
-<link rel="import" href="../fc-grid/fc-iss-input.html">
-
-<link rel="import" href="fc-call-center-form-one.html">
-<link rel="import" href="fc-call-center-form.html">
 <link rel="import" href="../src/fc-grid.html">
 <link rel="import" href="../fc-grid/fc-search-input.html">
+<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <dom-module id="fc-form-right">
 <template id="fc-form-right-template">
 <style>
 
 :host{
 
-  margin-right: -120px; 
-  position: absolute;
-  overflow-x: hidden;
-  border: red 5em dashed;
-  min-height: 120vh;
-  top-margin:-120px
+ /* margin-right: -120px; */
+  /*position: absolute;
+  overflow-x: hidden;*/
+/*  min-height: 120vh;*/
+/*  top-margin:-120px*/
   z-index:8;
   background: white;
 }
@@ -121,65 +116,82 @@
       }
     }
   
-    .topPad:{
+    .topPad{
         margin-top: 36px;
         padding-top: 32px;
 
 
     }
-  .form-content:{
+  .form-content{
       margin: 24px;
       padding: 16px;
     }
+  .menu{
+    max-height: 55vh!important;
+    overflow-y: scroll;
+    position: relative;
+    @apply(--layout-flex);
+    @apply(--layout-center);
   }
 
 </style>
-<form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
- <div class="header" style="margin: -230px 20px -40px 0; padding-bottom: 10px; z-index; 5; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300;"> <span  style="padding-bottom:2px;" btn="changeAppInterfaceForInputs" >{{chosen}}</span>
+<!-- <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+ <div class="vertical layout flex">
+ <div class="header" style="margin: 30px 0px -40px 20px; padding-bottom: 10px; z-index; 5; font-family: merriweather; line-height: .8;color: #009; font-size: 32px; font-weight: 300; text-align: left;"> 
+    <span style="padding-bottom:2px;" btn="changeAppInterfaceForInputs" >{{chosen}}</span>
  
- <div class="vertical layout flex" style="margin-bottom: 48px;"">
-    <section class="bar"></section>
-      <section class="horizontal layout flex">
-        <span btn="leftClick" class="timestamp">
-        [[time]] on [[date]]
-        </span>
-       <section btn="rightClick" class="subheading">Page {{shadowIndex}} of {{pageTotal}}</section>
-    </section>
-</div>
-</div>
+             <div class="layout vertical flex" style="margin-bottom: 48px;"">
+                <section class="bar"></section>
+                  <section class="horizontal layout flex">
+                    <span btn="leftClick" class="timestamp">
+                    [[time]] on [[date]]
+                    </span>
+                   <section btn="rightClick" class="subheading">Page {{shadowIndex}} of {{pageTotal}}</section>
+                </section>
+            </div>
+ </div>
 
- <div class="flex layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+ <div class="flex-5 layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"> -->
 
-        <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+         <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]"> 
 
 
 
-      <template is="dom-repeat" id="inputTemplate" items="{{itemObject}}">
+      <template is="dom-repeat" id="inputTemplate" items="{{inputsDisplayArray}}">
         <section class="horizontal layout flex"> 
-        <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+        <span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}</span>
       </section>
       <div class="horizontal layout flex wrap center-justified" style="margin-right: -18px;">
         <section class="container">
-          <fc-search-input class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          <fc-search-input class="left" on-down="launchDropdown" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{{item.valueA}}" show-drop-button="true" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
           </fc-search-input>
         </section>
         <section class="container">
-          <fc-search-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
+          <fc-search-input id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="A Greater Value" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="true" multi-select="{{item.isMultiSelectB}}">
           </fc-search-input>
         </section>  
     </div>
+<!-- </template> -->
+<!-- <content></content> -->
+<!-- <div id="menu">  -->  
+ <fc-dropdown-libre id="mobileDropdown" selected-form-array="{{holderDisplays}}" list-type="dropdown" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
+
+<!--   </div> -->
+  </neon-animated-pages> 
+ <!--  </div>
+  <section class="flex-2">hi footer</section>
+</div>
+  </form> -->
   </template>
-<div id="ittleImAndShellveeFin">
-<template id="fc-dropmemnu">
- 
-    <fc-dropdown-libre form-selected="{{formSelected}}" position="fixed" forms="{{forms}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
-    </template></div>
-  </neon-animated-pages>
-  </div>
 <script>
 FcFormRight=Polymer({
     is:"fc-form-right",
-    behaviors:[FCBehaviors.FocusedDataManagerBehavior],
+         behaviors:[Polymer.NeonAnimatableBehavior,
+                Polymer.NeonAnimationBehavior,
+                Polymer.NeonAnimationRunnerBehavior,
+                FCBehaviors.FcCalendarOptionsSelectorBehavior,
+                FCBehaviors.FocusedDataManagerBehavior,
+                FCBehaviors.FcCalendarControllerBehavior],
     observers:["observeChangeB(changeEventB.event, changeEventB.value, changeEventB.name)", "observeChangeA(changeEventA.event, changeEventA.value, changeEventA.name)"],
     properties:{
     	time:{
@@ -194,11 +206,7 @@ FcFormRight=Polymer({
 			},
 			notify: true
 		},
-    focusedManager:{
-      type: Object, 
-      notify: true,
-
-    },
+    
     searchOff:{
       type: Boolean,
       notify: true
@@ -207,6 +215,12 @@ FcFormRight=Polymer({
       type:Number,
       value: function(){return 2;},
       notify: true,
+    },
+    dropdownItemsA:{
+      type: Array, 
+      value:function(){return [];},
+      notify: true,
+      reflectToAttribute: true
     },
 		date:{
 				type: Date,
@@ -242,7 +256,11 @@ FcFormRight=Polymer({
         notify: true,
         observer:"observeItemObjects(newv, oldv)",
       },
-   
+    holderDisplays:{
+      type:Array,
+      value:function(){return [];},
+      notify: true,
+    },
       currentHeight:{
         type: String,
         notify: true
@@ -261,6 +279,15 @@ FcFormRight=Polymer({
      
 
 },
+  
+    ready(){
+     var highSchools= localStorage.getItem("NJHS");
+     this.set("dropdownItemsA",highSchools);
+   //  console.log(highSchools);
+     this.set("holderDisplays",this.dropdownItemsA);
+   //  console.log(this.dropdownItemsA, this.formDisplays);
+    },
+
      
       wipeInputsClean(e){
         var count=this.itemObject.length;
@@ -274,31 +301,30 @@ FcFormRight=Polymer({
     observeItemObjects(newv, oldv){
       if(newv){
 
-        console.log(newv,oldv);
+    //    console.log(newv,oldv);
       }
     },
     
   changeEventBObserve(nv,ov){  
     if(nv&& nv.name && nv.value){
-      console.log(nv);
       var frank="valueObject."+nv.name;
       this.set(frank, nv.value);
-      console.log(this.valueObject);
     }
-  
   },
    changeEventAObserve(nv, ov){
-    
     if(nv&& nv.name && nv.value){
-      console.log(nv);
+      //console.log(nv);
        var frank="valueObject."+nv.name;
       this.set(frank, nv.value);
     }    
   },   
-observeChangeB(event, value, name){ //console.log(event, name, value);
+
+  
+observeChangeB(event, value, name){ 
+  //console.log(event, name, value);
   var frank="valueObject."+ name;
       this.set(frank, value);
- console.log(this.valueObject[name]);
+ //console.log(this.valueObject[name]);
 },
 observeChangeA(event, value, name){
   //console.log(event, name, value); 
@@ -341,6 +367,12 @@ observeChangeA(event, value, name){
 
 
   },
+  observeValueObject(one, zero){
+    if(one){
+    //  console.log(one, this.inputsDisplayArray);
+    }
+
+  },
   _computeShadowIndex(selected){
     return selected+1;
   },
@@ -349,12 +381,34 @@ observeChangeA(event, value, name){
     return retVal;
 
   },
+
+_tapHandler(e){
+    var targ=e.target;
+    if(e==null){console.log(null);}
+    else if(e.target==null){console.log(null);}
+     else if(targ!=null){
+            console.log("not null"); 
+            if(targ!=undefined&&targ!=null&&targ.attributes&&targ.attributes!=undefined&&targ.attributes!=null)
+            {
+  
+              while(targ.attributes.btn==undefined && targ.nodeName!=="FORM")
+              { 
+               // console.log(targ);
+                   targ=targ.parentElement;
+            }
+            if(targ.attributes.btn){
+                  this[targ.attributes.btn.value](e);
+             }
+          }
+        }
+  },
+
   _computeMinWidthHidden(cwidth){
       var retVal=(cwidth-20<215)?true: false;
       return retVal;
   },
   _modifySizeRatio(ciw){
-    var r=(ciw>520)?.9454:(ciw/520)>.8125?(ciw/480):.723;
+    var r=(ciw>520)?.9454:(ciw/520)>.8125?(ciw/480):.700;
    var retVal=Math.ceil(r*22);
     console.log(r, retVal);
     return retVal; 
@@ -369,6 +423,37 @@ observeChangeA(event, value, name){
         console.log(newVal, oldVal);
 
       }
+
+
+  },
+  setBackgroundAndBlink(){
+
+
+  },
+  launchDropdown(e){
+    console.log(e);
+    console.log(this.$.mobileDropdown.selectedFormArray);
+     this.set("dropdownEvent", e);
+   var  targ=this.$.mobileDropdown.selectedFormArray;
+        this.set(targ, this.dropdownItemsA);
+        console.log(targ, this.dropdownItemsA);
+        this.set(targ, []);
+        this.push(targ, this.dropdownItemsA);
+        // this.$.myContextMenu.hidden=false;
+        // this.$.myContextMenu.style.left=(e.clientX-330)+"px";
+        // this.$.myContextMenu.style.top=(e.clientY-80)+"px";
+        // this.$.myContextMenu.style.zIndex=25000;
+        // var key=e.target.getAttribute("id").split("_");//
+        // if(key[2]==0 && key[1]!=0){
+        //   var returnColumnHeader=this.columnMenu.concat(this.basemenu);
+        // this.setMenuEntries(returnColumnHeader);
+        // }
+        // else if(key[1]==0&&key[2]!=0){
+        //     var returnRowMenu=this.rowMenu.concat(this.basemenu);
+        //      this.setMenuEntries(returnRowMenu);
+        // }
+        // else if(key[1]&&key[2]){ this.setMenuEntries(this.basemenu);}
+        // else{this.setMenuEntries([]);}
 
 
   },
@@ -389,7 +474,7 @@ observeChangeA(event, value, name){
        var retVal =this.searchMatchSet(nv.value, nv.base);
         if(retVal!=undefined){
             var count =this.inputsDisplayArray.length;
-        console.log(count);
+        //console.log(count);
           for(var i=0;i<count;i++)
           {
               var pageInputArray=this.inputsDisplayArray[i];
@@ -410,6 +495,9 @@ observeChangeA(event, value, name){
           this.style.width="440px"; this.style.height="660px";}, 4);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
      },
+     attached(){
+      console.log(this.inputsDisplayArray, "RIGHT FORM");
+     }
 
 
 

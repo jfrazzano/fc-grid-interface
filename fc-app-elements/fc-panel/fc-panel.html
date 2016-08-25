@@ -1,0 +1,334 @@
+<dom-module id="fc-panel">
+<template id="fc-panel-template">
+<style>
+:host{
+      background: white
+      border: silver 1px solid;
+      height: 100%;
+      width: 100%;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin-right: -19px;
+     position: absolute;
+      opacity: 1;
+      overflow-x: hidden;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      }
+     
+    .sidesArrowLeft{
+     position: absolute; 
+     left: 24px;
+     height: 22px; 
+     width: 22px; 
+     color: #009; 
+     top: 42%; 
+     cursor: pointer; 
+     opacity: .1;
+      -webkit-transition: width 2s, height 2s, opacity 2s;
+    transition: width 2s, height 2s, opacity 2s;
+	}
+    
+    .sidesArrowLeft:hover, .sidesArrowLeft:active, .sidesArrowLeft:focused{
+    		 height: 42px; width: 42px; color: #009; top: 42%; cursor: pointer; opacity: 1;
+    }
+     .sidesArrowRight{
+     	position: absolute;
+   		right: 24px;
+     	height: 22px; 
+     	width: 22px; 
+     	color: #009; 
+     	top: 42%; 
+     	cursor: pointer; 
+     	opacity: .1; 
+       -webkit-transition: width 2s, height 2s, opacity 2s;
+    transition: width 2s, height 2s, opacity 2s;
+     }
+    .sidesArrowRight:hover, .sidesArrowLeft:active, .sidesArrowLeft:focused{
+      height: 42px; 
+      width: 42px; 
+      color: #009; 
+      top: 42%; 
+      cursor: pointer; 
+      opacity: .1;
+      }
+.header{
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	left:0px;/*requires a positioned parent*/
+	margin: 30px 0px -40px 20px; 
+	padding-bottom: 10px; 
+	z-index; 5; 
+	font-family: merriweather; 
+	line-height: 1;
+	color: #009; 
+	font-size: 2.4em;
+	font-weight: 300; 
+	max-height: 25vh; 
+	min-height: 12vh;
+	box-shadow: 4px 11px 7px 12px #fafafa;
+	background: orange;
+	border-bottom: silver solid 2px;
+}
+.title{
+	padding-bottom:2px;	
+}
+.timestamp{
+    font-weight: 300;
+    color: #009;
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 60px;
+   left: 20px;
+    }
+    .container1{
+
+      overflow-y:scroll;
+    }
+
+  .subheading{
+    font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 34px;
+   right: 14px;
+   margin-right: 0px;
+    }
+     .bar{
+    
+      min-width:180px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 22px;
+      right: 22px;
+      top: 54px;
+
+    }
+    .last {
+    	color:brown; 
+    	font-family: merriweather; 
+    	float: left; 
+    	text-align: left;
+    }
+    .reverseArrow{
+
+   transform: matrix(-1, 0, 0, 1, 0, -.5);
+   display: inline-block;
+   filter: flipH;
+        -ms-filter: flipH;
+    }
+
+    .check{
+		font-size:26px;
+		color: green;
+		position: absolute;
+		left: 5px;
+		}
+    .inner-container1{
+      max-width: 510px!important;
+    		}
+    .column-container{
+    	height: 95vh;
+    	width: 100%;
+    	background: #aecdfe;
+
+
+    }
+    .footer-container{
+		border-top: solid 1px silver; 
+		margin-top: 18px; 
+		margin-left: 20px; 
+		width: 92%; 
+		overflow-x: hidden; 
+		min-height: 18vh; 
+		max-height: 21vh;
+    }
+    .next{
+    	color:#005c00;
+    	font-family: merriweather; 
+    	float: right; 
+    	text-align: right;
+
+    }
+    #one{
+		font-family: merriweather; 
+		font-weight: 600;
+		color: #080808;
+		font-size: 14px;
+		white-space: nowrap;
+		display: inline-block;
+		}
+
+     @media(max-width: 687px){
+  	#content{
+  		@apply(--layout-vertical);
+  		@apply(--layout-center-justified);
+  			}
+      .innerContainer2{
+    		max-height: 64vh!important;
+    		min-height: 55vh;
+    		overflow-y: scroll;
+    		 max-width: 480px!important;
+  			}
+	}
+@media(max-height: 420px){
+  	#content{
+  		@apply(--layout-vertical);
+  		@apply(--layout-center-justified);
+  			}
+      .header{
+
+
+      	/*add scroll animation*/
+      }
+	}
+
+
+</style>
+  <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+<div class="column-container">
+	<div class="header"> 
+        <span style="" btn="changeAppInterfaceForInputs" >{{chosen}}</span>
+          <div class="layout vertical flex" style="margin-bottom: 18px;">
+             <section class="bar"></section>
+        <section class="horizontal layout flex">
+          <span btn="leftClick" class="timestamp">
+          			[[time]] on [[date]]
+          </span>
+            <section btn="rightClick" class="subheading">Page {{shadowIndex}} of {{pageTotal}}</section>
+        </section>
+        </div>
+	</div>
+	<div class="contents"  style$="width:{{_computeCurrentWidth(currentInnerWidth)}}px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}>
+	<content>
+
+
+
+
+
+	</content>
+	</div>
+	 <div class="footer-container vertical layout flex center-justified" style="background: green;">
+              <div class="horizontal flex layout justified">
+                  <section btn="leftClick"><section class="last reverseArrow" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;">&#10148;</section> LAST PAGE</section>
+                  <section class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;" btn="rightClick">NEXT PAGE <span style="display: inline-block;">&#10148;</span></section>
+              </div>
+              <section class="horizontal layout flex around-justified buttons" style="padding:32px;">
+                  <paper-button class="flex-1" id="one" style="max-width: 100px;" btn="wipeCleanInputs">clear</paper-button>
+                  <paper-button style="max-width: 100px;" btn="submitHandler">Submit</paper-button>
+              </section>
+        </div>
+</div><!-- end container-->
+</form>
+</template>
+<script>
+FcPanel=Polymer({
+	is:'fc-panel',
+	properties: {
+		currentInnerWidth:{
+			type: Number,
+			notify: true,
+		},
+		currentWidth:{
+
+
+		},
+
+	},
+
+_computeCurrentWidth(ciw){
+    var retVal=ciw>=530?530:ciw;
+    return retVal;
+  },
+  _computeMinWidthHidden(cwidth){
+      var retVal=(cwidth-20<200)?true: false;
+      return retVal;
+  },
+  _modifySizeRatio(ciw){
+    var r=(ciw>520)?.9154:(ciw/520)>.80?(ciw/480):.70;
+   var retVal=Math.ceil(r*22);
+    console.log(r, retVal);
+    return retVal; 
+  },
+
+
+	_tapHandler(e){
+		var targ=e.target;
+    if(e==null){console.log(null);}
+    else if(e.target==null){console.log(null);}
+     else if(targ!=null){
+            console.log("not null"); 
+            if(targ!=undefined&&targ!=null&&targ.attributes&&targ.attributes!=undefined&&targ.attributes!=null)
+            {
+              while(targ.attributes.btn==undefined && targ.nodeName!=="FORM")
+		          { 
+                console.log(targ);
+			             targ=targ.parentElement;
+		        }
+	         	if(targ.attributes.btn){
+		              this[targ.attributes.btn.value](e);
+	           }
+          }
+        }
+	},
+
+
+
+
+
+});
+</script>
+</dom-module>
+
+
+
+
+
+  
+    .sidesArrowLeft{
+     position: absolute; 
+     left: 24px;
+     height: 22px; 
+     width: 22px; 
+     color: #009; 
+     top: 42%; 
+     cursor: pointer; 
+     opacity: 1;
+      -webkit-transition: width 2s, height 2s, opacity 2s;
+    transition: width 2s, height 2s, opacity 2s;
+  }
+    
+    .sidesArrowLeft:hover, .sidesArrowLeft:active, .sidesArrowLeft:focused{
+         height: 42px; width: 42px; color: #009; top: 42%; cursor: pointer; opacity: 1;
+    }
+     .sidesArrowRight{
+      position: absolute;
+      right: 24px;
+      height: 22px; 
+      width: 22px; 
+      color: #009; 
+      top: 42%; 
+      cursor: pointer; 
+      opacity: 1; 
+       -webkit-transition: width 2s, height 2s, opacity 2s;
+    transition: width 2s, height 2s, opacity 2s;
+     }
+    .sidesArrowRight:hover, .sidesArrowLeft:active, .sidesArrowLeft:focused{
+      height: 42px; 
+      width: 42px; 
+      color: #009; 
+      top: 42%; 
+      cursor: pointer; 
+      opacity: 1;
+      }

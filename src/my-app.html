@@ -20,18 +20,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-tabs/paper-tabs.html">
 <link rel="import" href="../bower_components/paper-tabs/paper-tab.html">
 <link rel="import" href="../fc-app-elements/fc-two-drawer-layout/fc-two-drawer-layout.html">
-<!-- <link rel="import" href="../bower_components/app-layout/app-drawer/app-drawer.html"> -->
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
 <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/iron-pages/iron-pages.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../fc-grid/fc-dropdown.html">
+<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> 
 <link rel="import" href="../fc-call-center/fc-inputs-interface.html">
+<link rel="import" href="../fc-call-center/fc-form-right.html">
 <link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
 
@@ -83,124 +83,120 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         padding-left: 32px;
       }
 
+      .drawer-class{
+        margin-top:40px; position: absolute; top: 80px;
+
+
+      }
+
 
     </style>
 
-    <app-location id="appLocationCenterOne" route="{{route}}"></app-location>
+    <app-location id="appLocationCenterOne" route="{{route}}" use-hash-as-path></app-location>
     <app-route
         id="appRouteCenterOne"
         route="{{route}}"
-        pattern="/:page"
+        pattern="/:gridPage"
         data="{{routeData}}"
-        tail="{{subroute}}"></app-route>
+        tail="{{subroute}}">
+    </app-route>
 
-    <fc-two-drawer-layout fullbleed left-drawer->
 
+    <app-route 
+        id="leftDrawerRouter"
+        route="{{subroute}}" 
+        pattern="/:leftDrawerPage" 
     
-<fc-app-drawer id="dashboardLeftDrawer" style="z-index: 3;" drawer-current-width="{{leftCurrentWidth}}" opened swipe-open align="left">
-  <fc-inputs-interface current-inner-width="{{leftCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="margin-top:40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;">
-  </fc-inputs-interface>
-</fc-app-drawer>
+        active="{{this.$.dashboardLeftDrawer.opened}}">
+    </app-route>
+        <!-- tail="{{leftDrawerPage}}"  -->
+   <!--  <app-route route="{{route}}" pattern="/" active="{{homeActive}}"></app-route> -->
 
- <fc-app-drawer id="dashboardRightDrawer" current-inner-width="{{leftCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="margin-top: 40px; position: absolute; top: 80px; left: 0px; right: 30px; width:calc({{leftCurrentWidth}}-80)px;"drawer-current-width="{{rightCurrentWidth}}" forms="{{selectedFormArray}}" position="right" opened swipe-open align="right">
-         <fc-form-right style="background: gold;  border: 5px solid orange; margin-top:-40px; position: absolute; height: 140vh; top: -120px; bottom:-80px; z-index: 4 ; right: 0px; background:green;">
-         </fc-form-right>
- </fc-app-drawer>
+<iron-media-query query="max-width: 680px" query-matches="{{smallScreen}}"></iron-media-query>
+<fc-two-drawer-layout fullbleed left-drawer-curerent-width="{{leftCurrentWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
+ 
+    
+        <fc-app-drawer id="dashboardLeftDrawer" drawer-current-width="{{leftCurrentWidth}}" opened persistent swipe-open align="left">
+                  <fc-inputs-interface forms-display-array="{{formsDisplayArray}}" current-inner-width="{{leftCurrentWidth}}" is-linked="{{isLeftLinked}}" route-data="{{routeData}}" interface="{{leftDrawerPage}}" local-dashboard="{{localDashboard}}" class="drawerClass" style$="left: 0px; right: 30px; width:{{leftCurrentWidth}}px;">
+                  </fc-inputs-interface>
+        </fc-app-drawer>
 
-      
+        <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open>
+                <fc-form-right current-inner-width="{{rightCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" inputs-display-array="{{inputsDisplayArray}}" chosen="{{inputsChosen}}" class="drawerClass" style="right: 0px; left: 30px; width:calc({{rightCurrentWidth}}-80)px;">
+                </fc-form-right>
+        </fc-app-drawer>
+
       <!-- Main content -->
-      <app-header-layout style="margin-left:{{leftCurrentWidth}}px; width:99%;right:{{rightCurrentWidth}}px;" has-scrolling-region>
-        <app-header condenses reveals effects="waterfall" style="position: static;">
-        <span on-tap="backOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; left:106px;">&#8678;</span>
+  <div class="layout vertical flex" style$="left:{{leftCurrentWidth}}px; right:{{rightCurrentWidth}}px; position: absolute;" has-scrolling-region>
 
-        <span style="cursor: pointer; font-size: 22px; font-family: merriweather; color: white; position: absolute; font-weight: 600; right: 45%; left: 45%;">{{nowChosen}}</span>
-        <span style="cursor: pointer; font-weight: 300; font-size: 18px; font-family: merriweather; color: white; position: absolute; bottom: 2%; right: 45%; left: 45%;">{{_computeView(interfaceView.storeName)}}</span>
+
+ <section style="background: silver;">
+     
+
+        <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>
+       
          
          
   
-  <span on-tap="forwardOne" style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 106px;">&#8680;</span>
-      <app-toolbar>
-           <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
-               <fc-drag-header-menu
-            drag-menu='true'  
-            id="dragMenuDrawer"
-            draggable
-            drags
-            class="draggable scrollable on-tracking"
-            style="z-index:50000; position: fixed; top: 0; left: 200px;"
-            not-router="{{notRouter}}">
+  
+   </section>
         <paper-tabs 
           id="protoTabMenu" 
+          data="{{localDashboard}}"
           scrollable="true"
           class="horizontal layout"
-          selected-class="turnedon"  
-          style="max-height: 76px; min-height: 24px; min-width: 699px; background: #000066;"
-          hide-scroll-buttons="true" 
+          selected="{{_computedSelect(localDashboard,gridPage,localIndex)}}"  
+          style="max-height: 76px; min-height: 24px; min-width: 280px; background: #000066;
+          attr-for-selected="name" 
           bar="true">   
-        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button>
+       <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> 
      
         <div class="horizontal layout flex" style="overflow-x: scroll;" hidden$="{{!notRouter}}">
-        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="view1" href="/view1">View One</a>
+        <template is="dom-repeat" items="{{localDashboard.array}}">
+        <paper-tab   selected="{{gridPage}}" attr-for-selected="name" class= "menubuttons longest">
+          <a name="{{item.value}}" href="#/{{item.value}}">{{item.value}}</a>
         </paper-tab>
-        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="view2" href="/view2">View Two</a>
-        </paper-tab>
-      <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="readingDashboard" href="/readingDashboard">Reading Dashboard</a>
-        </paper-tab>
-        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="grid" href="/grid">Grid View</a>
-        </paper-tab>
-        <paper-tab link selected-class="turnedon" class= "menubuttons longest">
-          <a name="dashboard-divisions" href="/dashboard-divisions">Dashboard View</a>
-        </paper-tab>
+        </template>
         </div>
-           <fc-dialog-toolbar 
-                hidden$="{{notRouter}}" 
-                data-dialog$="{{dataDialog}}">
-        </fc-dialog-toolbar>
+         <!--   <fc-dialog-toolbar hidden$="{{notRouter}}" data-dialog$="{{dataDialog}}">
+        </fc-dialog-toolbar> -->
             </paper-tabs>
-        </fc-drag-header-menu> 
-
-
-
+   
+            <array-selector items="{{localDashboard.array}}" selected="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></array-selector>
         
-      </app-toolbar>
-<paper-button on-tap="getcallcenterallmessages" hidden="{{_computeHidden(nowChosen)}}">GET MESSAGES</paper-button>
-          
-        </app-header>
-  
-
-        <iron-pages role="main" selected="[[page]]" attr-for-selected="name">
-          <my-view1 name="view1"></my-view1>
-          <my-view2 name="view2"></my-view2>
-          <fc-reading-dashboard-two name="fcReadingDashboard"></fc-reading-dashboard-two>
-          <fc-grid id="liveGrid" chosen="{{nowChosen}}" forms="{{forms}}" forms="{{forms}}" form-selected="{{formSelected}}" focused-manager="{{focusedManager}}" interface-object="{{interfaceView}}" grid-display-array="{{gridDisplayArray}}" name="grid"></fc-grid>
-         
-        </iron-pages>
-
-      </app-header-layout>
-        
-       <!--  <fc-app-drawer class="block layout vertical" id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" style="z-index: 5; background: gold; right: 0px;  border: 5px solid orange; margin-top:-40px; position: absolute; top: -120px; bottom:-80px; height:140vh;opacity: 1; position: absolute; visibility: visible;" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}">
-
-
-         <fc-form-right current-inner-width="width:calc({{rightCurrentWidth}}-80)px;" grid-display-array="{{gridDisplayArray}}" chosen="{{inputsChosen}}" style="background: gold;  border: 5px solid orange; margin-top:-40px; position: absolute; height: 140vh; top: -120px; bottom:-80px; z-index: 4 ; right: 0px; background:green;""></fc-form-right>
-        -->
-     <!--    </fc-app-drawer> -->
+          <template is="dom-repeat" items="{{_computedSelect(localDashboard,gridPage, localIndex)}}">
+                      <fc-grid id="liveGrid" name="{{item.value}}" chosen="[[item.value]]" inputs-display-array="{{item.inputsArray}}" grid-display-array="{{item.gridArray}}">
+                    </fc-grid>
+          </template>
+      </div>
+       
   
     </fc-two-drawer-layout>
 
   </template>
-
   <script>
 
     Polymer({
 
       is: 'my-app',
        behaviors:[FCBehaviors.FcFormDataRoutingBehavior, FCBehaviors.FocusedDataManagerBehavior],
-
       properties: {
+        isLeftLinked:{
+          type: Boolean, 
+          value: function(){return true;},
+          notify: true
+        },
+      isRightLinked:{
+          type: Boolean, 
+          value: function(){return false;},
+          notify: true
+        },
+      arePanelsSynched:{
+          type: Boolean, 
+          value: function(){return false;},
+          notify: true
+        },
+
         nowChosen:{
           type: String,
           notify: true,
@@ -211,6 +207,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: function(){return {};},
           notify: true,
         },
+        formDisplayArray:{
+           type: Array, 
+           value: function(){return [];},
+          notify: true, 
+
+        },
 
         focusedManager:{
           type: Object, 
@@ -220,15 +222,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type:String,
           notify: true,
         },
-        page: {
+        gridPage: {
           type: String,
           reflectToAttribute: true,
-          observer: '_pageChanged'
+          observer: '_gridPageChanged'
         },
         leftDrawerPage:{
           type: String,
           reflectToAttribute: true,
-          computed: '_pageLeftDrawerChanged(page)'
+          computed: '_gridPageLeftDrawerChanged(gridPage, isLeftLinked, arePanelsSynched)'
         },
 
         notRouter:{
@@ -237,9 +239,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           notify: true,
 
         },
+        formsDisplayArray:{type: Array, value: function(){return [];}, notify: true},
         leftCurrentWidth:{
           type: Number, 
-          value:function(){return 15;},
+            value: function(){return 295;},
           notify: true,
 
         },
@@ -258,24 +261,87 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           computed: "_computeContentAreaWidth(totalWidthLost)",
           notify: true
         },
+        localDashboard:{
+          type: Object, 
+          value:{},
+          notify: true,
+        },
+        localIndex: {
+          type: Array, 
+          notify: true, 
 
+        },
+        counter:{
+          type: Number,
+          value: function(){return 0;},
+          notify: true
+
+        }, 
+      
       },
 
       observers: [
-        '_routePageChanged(routeData.page)'
+        '_routePageChanged(routeData.gridPage)'
       ],
-      attached(){
-
+    attached(){
+        this.async(function(){this.set("leftCurrentWidth", 295);}, 400);
         console.log(this.chosen, this.focusedManager);
+        console.log(this.routeData);
        //this.async(function(){ this.forwardOne();this.backOne();}, 1250);
       }, 
+
+   _computedSelect(localDashboard,gridPage,localindex){
+    var count=localindex.indexOf(gridPage);
+    console.log(localDashboard[gridPage], count, count, count, count);
+    return [localDashboard[gridPage]];
+
+   },
+   _computedSelectName(localDashboard,gridPage,localindex){
+    var count=localindex.indexOf(gridPage);
+    console.log("IN NAME");
+    console.log(localDashboard[gridPage].value, count, count, count, count);
+    return [localDashboard[gridPage]][0].value;
+    
+
+   },
+
       _computeHidden(nowChosen){
         var retVal=(nowChosen=="All Messages")?false: true;
         return retVal;
       },
-      backOne(e){
-             this.$.liveGrid.minusArrowForGrids(e);
+   
+      ready(){
+        this.set("gridPage", "profiles");
+        var object=this.dashboardMapToObjectArray(this.focusedManager.dashboardMap);
+        this.set("localDashboard", object);
+        this.set("localIndex", object.index);
+       // console.log(this.localIndex, this.localDashboard);
+
       },
+      dashboardMapToObjectArray(map){
+        var length=((map.size)/2);
+         var dashboard={};
+          dashboard.index=[];
+        dashboard.array=[];
+        for(var i=0; i<length;i++){
+           var  object=map.get(i);
+           dashboard[object.value]=object;
+           dashboard[object.value].array=[];
+           dashboard.array.push(object);
+           dashboard.index[i]=object.value;
+        }
+        console.log(dashboard.index, dashboard, dashboard.courseCalendars);
+        return dashboard;
+
+      },
+      computeGridItems(interfaceObject, nowChosen, localDashboard, localIndex){
+       // console.log(interfaceObject, nowChosen, localDashboard, localIndex);
+          var retObj=localDashboard[nowChosen];
+          retObj.name=nowChosen;
+        //  console.log(localDashboard.array);
+          return localDashboard.array;
+      },
+
 
       _computeView(storeName){
         if(storeName!=undefined){
@@ -284,11 +350,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      forwardOne(e){
-        this.$.liveGrid.plusArrowForGrids(e);
-
-
-      },
+      
 
       _computeTotalWidthLost(left, right){
         var retVal=left+right;
@@ -298,22 +360,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             var width=screen.width;
             var retWidth=width-totalWidthLost;
-            console.log(retWidth, "WIDTH REMAINING");
+           // console.log(retWidth, "WIDTH REMAINING");
             return retWidth;
 
       },
-      _routePageChanged: function(page) {
-        this.page = page || 'grid';
+      _routePageChanged: function(gridPage) { 
+        this.gridPage = gridPage || gridPage;
+       if(this.focusedManager &&this.routeData){
+       
+        if(this.localDashboard[gridPage]==undefined&&this.counter===0){
+          var data=this.focusedManager.dashboardMap.get("profiles");
+          this.counter++;
+        }
+        else{
+         var data=this.localDashboard[gridPage];
+         }
+         var dataObject="routeData."+gridPage;
+        this.set(dataObject,data);
+         this.set("formsDisplayArray",this.routeData[gridPage].forms)
+         console.log(this.formsDisplayArray);
+       }
       },
 
-      _pageChanged: function(page) {
-        // load page import on demand.
+      _gridPageChanged: function(gridPage) {
+        // load gridPage import on demand.
+        
         this.importHref(
-          this.resolveUrl('fc-' + page + '.html'), null, null, true);
+          this.resolveUrl('fc-' + "grid" + '.html'), null, true);
       },
-      _pageLeftDrawerChanged(page){
+      _gridPageLeftDrawerChanged(gridPage, leftLinked, synched){
+        if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
+            if(this.isLeftLinked===true){
+              this.leftDrawerPage="leftInputs-"+gridPage;
           this.importHref(
-            this.resolveUrl('fc-' + page + '.html'), null, null, true);
+            this.resolveUrl('fc-' + "inputs-interface" + '.html'), null, true);
+
+
+              return gridPage;}
+          else{
+          this.importHref(
+            this.resolveUrl('fc-' + "inputs-interface" + '.html'), null, true);
+        }
+        }
       },
     
     });
@@ -321,3 +409,47 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </script>
 
 </dom-module>
+
+<!--
+// setSelected(e){
+//     console.log(e, "selected");
+
+//     this.set("mySelected", e.model.item.value);
+
+//     this.async(function(){this.set("mySelected", e.model.item.value);}, 50);
+//    },
+//    setselected(e){
+//   //  console.log(e,e,e);
+//    },
+ margin-left: 24px; margin-right: 24px;  z-index: 90;
+   plusArrowForGrids(e){
+    var  max=this.maxIoNumber;
+    if(this.selectedStoreNumber===max){this.set("selectedStoreNumber",0);}
+    else{ var plusOne=this.selectedStoreNumber+1;
+        this.set("selectedStoreNumber",plusOne)}
+    //console.log(this.selectedStoreNumber);
+},
+minusArrowForGrids(e){
+    var  max=this.maxIoNumber;
+    var  min=0;
+    if(this.selectedStoreNumber===min){this.set("selectedStoreNumber",max);}
+    else{ var minusOne=this.selectedStoreNumber-1;
+        this.set("selectedStoreNumber",minusOne)}
+    //console.log(this.selectedStore);
+
+       backOne(e){
+        console.log("backOne");
+             this.$.liveGrid.minusArrowForGrids(e);
+      },
+
+
+      forwardOne(e){
+        console.log("forwardOne");
+        this.$.liveGrid.plusArrowForGrids(e);
+
+
+      },
+
+      // <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> -->
+   <!--   </fc-drag-header-menu>  -->
+      <!-- <paper-icon-button icon="info" onclick="document.getElementById('dashboardRightDrawer').toggle();"></paper-icon-button> -->

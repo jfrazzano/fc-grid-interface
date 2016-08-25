@@ -1,6 +1,5 @@
 
 <link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
-<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
 <link rel="import" href="../fc-call-center/fc-calendar-list-widget-behavior.html">
 <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
@@ -9,92 +8,120 @@
 <template id="fc-dropdown-libre-template">
 <style>
     paper-item{
-        padding: 12px 4px 12px 20px; 
-        margin: 6px 4px 6px 18px; 
+        padding: 12px 4px 12px 26px; 
+        margin: 6px 4px 6px 6px; 
         font-size: 12px; 
         font-weight: 300; 
         font-family: merriweather; 
         color: #009;
-        margin-top: 3px; min-width: 180px; 
+        margin-top: 3px; 
+        min-width: 200px; 
         text-align: left;
+        max-width: 480px;
 
-
-            --paper-item-selected:{
-                background-color: #FFFFFF;
-                border: 1px silver solid;
-                @apply(--paper-item-selected);
-            };
 
             --paper-item-focused:{
-              background-color: #FFFFFF; 
+              background-color: yellow; 
               font-weight: 600;
               outline: 0px white solid;
-                border: #005c00 1px solid; 
+              border-left: #005c00 1px solid; 
                 @apply(--paper-item-focused);      
             };
             --paper-item:{padding: 0px;
-                max-width: 480px;
-
+                max-width: 500px;
+                outline: 0px white solid;
                 @apply(--paper-item);
+            };
+         --paper-item-selected:{
+                background-color: #FFFFFF;
+                border: 1px silver solid;
+                @apply(--paper-item-selected);
+                 @apply(--paper-item);
             };
 
     }
-    paper-item-body{--paper-item-body-focused:{border-bottom: 1px silver}
-      textarea::focused{outline: 0px white solid;}
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 8px 0px 12px; white-space: nowrap; height: 46px;};
+    paper-item:focus{background: orange; outline: white;};
+   @apply(--paper-item);
+  }
+ 
+
+      textarea:focused{outline: 0px white solid;}
       textarea{border: 11px solid green;}
+      details:focus{outline: 0px white solid;}
+      summary{outline:0px;padding-left: 12px;}
     section{
-            padding: 0px 24px; 
+            padding: 0px 4px 0px 12px; 
         text-align: left;
         font-size: 14px;
+        text-overflow: clip;
+        text-overflow: ellipsis;
+        text-overflow: "…";
 
     }
     .check{
-        position: absolute;
-        left: 12px;
-        color: green;
-        font-size: 1.3em;
+  
+        font-size: 9px;
+        cursor: pointer;
+    }
+    .check.surveyPage{
+
+        font-size: 1em;  
+    }
+    .check.dropdown{
+        font-size: 9px
+    }
+    .checkMinus{
+        color: brown;
+        font-size: 2.2em;
         cursor: pointer;
 
     }
-    .checkMinus{
-        position: absolute;
-        left: 12px;
-        color: red;
-        font-size: 2.1em;
+     .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
         cursor: pointer;
-        left:20px;
     }
-    .label{
+    .label.surveyPage{
         color: #005c00;
         font-size: 1.4em;
        text-decoration-style:underline;
+       font-weight: 600;
+    }
+    .label.dropdown{
+           color: #005c00;
+        font-size: 1.15em;
+        font-weight: 300;
+       text-decoration-style:underline;
+    }
+    .dropdown{
+        color: #009;
+        font-size: .9em;
+        font-weight: 300;
+
     }
 
 </style>
-       <!-- <template is="dom-repeat"  items="{{displayedFormArray}}" as="arr" id="pageRepeater" filter="{{createFilter(taValue, searchOff)}}"> -->
+       
  
  <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
-    <paper-listbox id="myFreeDropdown">
-        <template is="dom-repeat"  items="{{selectedFormArray}}" id="optionsRepeater" filter="{{createFilter(issValue, searchOff)}}">
-            <paper-item onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}"  btn-args="{{item.dataArgs}}"" style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}" 
-                btn-property="{{item.dataProperty}}" class="horizontal block" on-tap="makeSelection" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}"  value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" 
-                on-up="toggleSelection">  
-                                     <section class="label"> {{item.label}} </section>
-                                    <span id="checkcheck" class$="checkMinus {{computeCheckedClass(selectCheck, item.ind)}}">{{_computeChecked(item.ind, selectCheck)}}</span>
-                                    <section style="display: block">[[item.text]]</section>
-                                    <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
+    <paper-listbox id="myDropdown" style="{{_computeStyleByType(listType)}}">
+        <template is="dom-repeat"  items="{{formsDisplay}}" id="optionsRepeater">
+            <paper-item onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}"  btn-args="{{item.dataArgs}}"" style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}"  btn-property="{{item.dataProperty}}" class$="horizontal layout {{listType}}"  name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}"  value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" on-up="toggleSelection">  
+                 <div id="checkcheck" class$="checkMinus {{listType}} {{computeCheckedClass(selectedChecked, item.ind)}} {{listType}} flex-1" on-tap="makeSelection">{{_computeChecked(item.ind, selectedChecked, selectedIndex)}}</div>
+                    <div class="layout vertical flex-7">
+                    <section class$="label {{listType}}">{{item.label}} {{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</section>
+                    <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}"><summary hidden="{{summHidden}}">Show Details</summary>
+                <section class$="{{listType}}">[[item.text]]</section>
+            </details>
+        </div>
              </paper-item>
         </template>
     </paper-listbox>      
-    </template>     
+    </template>  
  <script>
  FcDropDownLibre=Polymer({
     is:"fc-dropdown-libre",
-    behaviors:[
-            FCBehaviors.FcCalendarOptionsSelectorBehavior, 
-            FCBehaviors.FcFormDataRoutingBehavior,
-            //FCBehaviors.FcCalendarListWidgetBehavior],
-    ],
     listeners:{'openDropdown': 'setGetAndScroll'},
     properties:{
         arrayDropdown:{
@@ -106,17 +133,28 @@
             },
             notify: true,
         },
+        formsDisplay:{
+            type: Array,
+            value: function(){return [];},
+            observer:"observeFormsDisplay",
+            notify: true,
+        },
+        selected:{
+            value: function(){return -1;},
+            notify: true,
 
+        },
+        noToggle:{
+
+
+
+        },
         textareaHidden:{
             type: Boolean, 
             value: true, 
             notify: true,
         },
-        selectCheck:{
-            type: Number,
-            value: function(){return -1;},
-            notify: true,
-        },
+
         checkEvent:{
             type: Object,
             value:function(){return{};},
@@ -131,11 +169,55 @@
             type:Boolean, 
             value:function(){return false;},
             notify: true,
-        }
+        },
+        listType: {
+            type: String, 
+            value: function(){return "surveyPage";},
+            notify: true, 
+        }, 
+      
+        summHidden:{  type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+        selectedChecked:{
+            value: function(){return -1;},
+            notify: true
+        },isMulti:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
+        },
+        selectedIndex:{
+            value:[-1],
+            notify:true,
+        },
+        secondaryToggle:{
+            type: Boolean,
+            computed:"computeSecondaryToggle(isMulti)",
+            notify:true
+        },
+        valueObject:{
+            type: Object, 
+            value: function(){return {};},
+            notify: true
+        },
+        
 
 
     },
-    ready(){console.log(this.forms, this.formSelected, "hello?"); },
+    computeSecondaryToggle(isMulti){
+        if(isMulti===true){this.set("isNotToggle", false); return true;}
+        return false;
+    },
+    observeListbox(newValue, oldValue){
+        if(newValue){console.log(newValue, oldValue);
+        }
+
+    },
+    attached(){
+
+    },
     toggleSelection(e){},
     _computeDropDownItems(focused, clicked, quant, dropdownItems){},
     _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
@@ -147,28 +229,112 @@
     _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText){},
     makeSelection(e){ 
         var children =Polymer.dom(this.$.optionsRepeater).children; 
-        console.log(e, children, e.target);
-       this.set("selectCheck", e.model.item.ind);
-       this.set("checkEvent", e.model.item);
-       this.set("selected")
+        var model=e.model;
+       switch(true){
+            case(this.selectedChecked!==e.model.item.ind):
+                    this.selectionSetter(e);
+                break;
+            case(this.selectedChecked===e.model.item.ind&&this.isNotToggle===false&&this.isMulti===false):
+                    this.selectionSetter("_", {a:-1, b:null, c: null, val: null});
+                    break;
+            case(this.isMulti===true&&this.selectedChecked!=e.model.item.ind):
+                    this.addToPropertyStringAndArray(e);
+                break;
+            case(this.isMulti===true&&this.selectedChecked==e.model.item.ind):
+                this.removeValueFromPropertyStringArrayAndObject(e);
+                break;
+            default: console.log("you screwed up");
+                break;
+            }
+        
+  },
 
+    selectionSetter(e, values){
+        if(values==undefined){
+          var values={};
+          values={a:e.model.index, b:e.model.item, c:e.model.item.name, val:e.model.item.value};
+      }
+       
+        this.set("selectedChecked", values.a);
+        this.set("checkEvent", values.b);
+        this.set("selected", values.c);
+        var valObjprop= "valueObject." + this.selected;
+        this.set(valObjprop, values.val);
+        console.log(this.valueObject);
+    
+    },
+    addToPropertyStringAndArray(e){
+        var val=e.model.item.value;
+        var name=e.model.item.name;
+        this.set("selectedChecked", e.model.index);
+        this.set("checkEvent", e);
+        this.set("selected", e.model.item.name);
+        var valObjProp= "valueObject." + this.selected;
+        var propValue=this.valueObject[this.selected];
+        if(this.valueObject[this.selected]==undefined){
+        this.set(valObjProp, val);}
+        else if(typeof propValue==='string'||typeof propValue!=='object'){
+            var newValue = val + ", " + propValue;
+            this.set(valObjProp,newValue);
+            var arrayVal=newValue.split(",");
+            console.log(arrayVal);
+            var arrayProp=this.selected+"Array";
+            var objArrProp="valueObject." + arrayProp;
+            this.set(objArrProp, arrayVal);
+            var justAdded=name+"_justAdded";
+            this.fire("valueObject",{arrayProp: arrayVal, name: newValue, justAdded: propValue});
+            this.push("focusedManager.archive", {valueObject: this.valueObject, additions: {arrayProp: arrayVal, name: newValue, justAdded: propValue}, time: new Date().getTime(), user: this.focusedManager.fcid, routeLocation: "route"});
+        }
+        else if(Array.isArray(propValue)){this.push(valObjProp, val);}
+        else if(typeof propValue==='object'){console.log("error, saving to object as property! are you sure you want to do this executeArchiverHERE HERE HERE HERE HERE"); }
+    },
+
+    removeValueFromPropertyStringArrayAndObject(e){
+        console.log("will do something cool here");
+
+    },
+               
+
+
+    computeDetails(listType){
+        if(listType==="dropdown"){return true;}
+        else{return false;}
 
     },
 
-    _computeChecked(ind, selectCheck){
-        if(ind===selectCheck){return '\✅';}else{return '\☐';}
+    computeOpened(listType){
+        if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
+        return false;
     },
-    computeCheckedClass(selectCheck, ind, isNotToggle){
+   
+   
+    //listbox style below
+    _computeStyleByType(listType){
+        var styleType={
+                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
+                surveyPage:"",
+        };
+        return styleType[listType];
+    },
+
+    _computeChecked(selectedChecked, ind, selectedIndex){
+        if(ind===selectedChecked){return '\✅';}else{return '\☐';}
+    },
+    computeCheckedClass(selectedChecked, index, ind, isNotToggle){
         if(isNotToggle===false){
         this.set("checked",!this.checked);
          this.toggleClass("checked",this.checked, this.$.checkcheck);
            }
         },
+    
    
-    attached(){
-        this.set("selectedFormArray", [this.forms.callIntakes, this.forms.callIntakesTwo]);
-        this._computeInputArrays(this.inputs);
-     
+    get listbox(){
+        return this.$.myDropdown;
+
+    },
+    get listboxWidth(){
+        var box=this.listbox;
+        console.log(box.style.width, box.style.width,box.style.width,box.style.width);
     },
     _handleTaps: function(e){
         console.log(e,
@@ -195,28 +361,35 @@
     },
 
 
+        observeFormsDisplay(newer, older){
+            if(newer){console.log(newer, "BITCH IS HERE");}
+
+
+        }
+
+
 
 
 
  });
  </script>
- </dom-module>     
-<!-- 
+ </dom-module> 
 
-    <div 
-                                        class="primary">
-                                        {{course.coach}} {{course.fcid}}
-                                    </div>
-                                    <div 
-                                        class="secondary">
-                                        [[course.courseMeetingSets]], {{course.numberOfMeetings}} Classes<br>
-                                        Test:{{course.testDate}}, {{course.programLength}}, {{course.price}}
-                                    </div>
-                                </paper-item-body>      
-                                <paper-icon-button 
-                                        icon="star" 
-                                        style="color: {{course.coachObject.color}}"
-                                        alt="favourite this!">
-                                </paper-icon-button>
-                            </paper-item>
-                        </template> -->
+ <!--
+
+  // computeItems(foul, forms){
+        
+    //     if(foul&&forms&&this.selectedForm){
+    //     var retArr=[];
+    //    var keys=Object.keys(forms[this.selectedForm]);
+    //    keys.length;
+    //    for(var i=0; i<keys; i++){
+    //     var key= keys[i];
+    //     var form=forms[this.selectedForm][key];
+    //             retArr.push(form);
+    //         }
+    //         console.log(retArr);
+    //    return retArr;
+    //     }
+       
+    // },    

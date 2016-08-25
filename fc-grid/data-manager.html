@@ -1,3 +1,4 @@
+<link rel="import" href="../fc-call-center/fc-form-routing-behavior.html">
 <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="fc-grid-style-behavior.html">
 <script>
@@ -66,18 +67,34 @@ function DataManager(user){
     //console.log("these should be the inquiry inputs", this.inquiryInputs);
     //good to here
     this.gridMaker=new DataGrids({});
+
+
     this.shorthandIndex={};
     this.inputsIndex=[];
     //console.log(this.gridMaker, "this is gridMaker");
     this.dashboardMap=this.mappedDashboardDataset();
+    
+var stuff=this.gridMaker.dataForPresetDatabases();
+    stuff.forEach((array, index)=>{
+        var grid= this.gridMaker.gridConstructor([array]);
+        var key=6+index;
+        var stuff=this.dashboardMap.get(key);
+        stuff.gridArray=grid;
+        console.log(stuff)
+        this.dashboardMap.set(key, stuff);
+
+    }, this);
+
+
     this.getShorthandIndex();
-  
+
     //issues with map consider plain object-- or object with array in it
     //fix dropdowns you tried to make more efficient
   console.log(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs);
     this.multiGridArray=this.buildGridFromInputs(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs, this.inputsIndex);
     var updater=this.multiGridArray;
     var keys=[0,1,2];
+    console.log(updater, updater);
     var propertiesToUpdateForEachKey=["gridArray", "gridArray", "gridArray"];
     this.updateMappedDashboardDataset(updater, keys, propertiesToUpdateForEachKey);
     //console.log(this.dashboardMap); 
@@ -106,7 +123,7 @@ function DataManager(user){
         if(index%8===0){arrHolder=[];}//sets the 8 inputs a page
         var temp=val[1].label2;
         temp=temp.replace(/\s/g, "");
-        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectCheck": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
+        var propertyName=temp.replace(temp.charAt(0),temp.charAt(0).toLowerCase()), label=val[1].label2, name=propertyName,dropdownItems=val[2].map(function(value,i,arr){var obj={};obj={"name": value, "value":value, "selectedChecked": false}; return obj;}),multiSelect=(val[3])?val[3].multiSelect:false, ab=(index%2===0)?"A":"B";
         //setting ab allows a row of two inputs to be created for the dom-repeat
         var nameProp="name"+ab,labelProp="label"+ab,propertyNameProp="propertyName"+ab,dropdownItemsProp="dropdownItems"+ab, multiSelectProp="multiSelect"+ab;
         it[nameProp]=name,it[labelProp]=label,it[propertyNameProp]=propertyName,it[dropdownItemsProp]=dropdownItems;
@@ -232,22 +249,108 @@ DataManager.prototype.labelToPropertyName=function(label){
   
 DataManager.prototype.mappedDashboardDataset=function(args){
     if(args==undefined || args==null){
-        //console.log(this.courseCalendarInputs, this.profileInputs, this.inquiryInputs);
+      
+        var forms={   
+                profiles: {form1:[
+                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: null, value: "newProfile", selectedChecked: null, text: "Does a Focused Profile Already Exist for the caller or will you have to help the caller make one?", label: "New Profile",ind: 0 }, 
+                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "profileLookup", label: "Profile Lookup", selectedChecked: null, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1}, 
+                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "viewOtherProfiles", selectedChecked: null, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2}, 
+                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "useDataToEducate", selectedChecked: null, label: "Use Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3}, 
+                           {name: "profileLookup", propetyName: "profileLookup", booleanValue: null, value: "searchWarning", selectedChecked: null, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4}
+                           ],
+                        },
+             courseCalendars:{
+                        form1:[ {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                ]
+                        },
+             allMessages:{
+                        form1:[
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                        ]
+             },
+             homeworkResults:{
+                        form1:[
+                            {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+
+                        ]
+             },
+             testResults:{
+                        form1:[
+                            {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                        ]
+             },
+             intakes:{
+                    form1:[
+                            {name: "callerType", booleanValue: undefined, value: "newClient", selectedChecked: null, text: "This caller is a new client, who has never contacted Focused before.", label: "New Caller", script: "Hello, and Welcome to Focused Coaching. Have you contacted Focused previously?", route: "callIntakes", subRoute: "name", tail: "userResponses" ,ind: 0 }, 
+                            {name: "callerType", booleanValue: undefined, value: "previousCaller", label: "Previous Caller", selectedChecked: null, text: "This caller has contacted Focued previously, but has yet to enroll in a Focused Program.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 1}, 
+                            {name: "callerType", booleanValue: undefined, value: "currentClient", selectedChecked: null, text: "This caller is currently enrolled in an ongoing Focused Educational Program.  The client likely needs information related to his or her current course.", label: "Current Client", script:"Welcome back to Focused.  How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ", route: "callIntakes", subRoute: "name", tail: "userResponses",ind: 2}, 
+                            {name: "callerType", booleanValue: undefined, value: "clientSeekingAdditionalServices", selectedChecked: null, text: "This is a returning client, who wants to enroll in another Focused course. Study group represents Focused's primary follow-up service.  Many students have mnore than doubled their improvement through Study Group, earning as many as 500 points on the new 1600 SAT exam, and more than 900 additional on the old, 2400 exam.", label: "Client Seeking Additional Services", script: "Welcome back to Focused ${1}... etc", ind: 3},
+                            {name: "callerType", text: "This caller is a past client, now seeking services or advice for a differnt child.", booleanValue: undefined, value: "clientEnrollingNewStudent", selectedChecked: null, label: "Client Enrolling New Student", script:"Welcome back to Focused ${2 references former student}, etc...", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 4},
+                            {name: "callerType", "value": "other", text: "This caller is not interested in Focused Services, please select from the drop down menu to categorize this caller after checking the box marked other.", label: "Non-Service Seeking Caller (Other)", script: "TBD",route: "callIntakes", subRoute: "name", tail: "userResponses",  ind: 5}
+                            ], 
+                    form2:[
+                            {name: "callerRole", booleanValue: undefined, value: "parent1", selectedChecked: null, text: "This caller is the primary parent contact for a Focused Student. Usually, 'Parent One' is a Focused Student's mother", label: "Parent One", script: "GET OLD SCRIPT", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 0,  }, 
+                            {name: "callerRole", booleanValue: undefined, value: "parent2", label: "Parent Two", selectedChecked: null, text: "This caller is the secondary parental contact for a Focused Student.  In subsequent portions of the Focused Profile Builder, Parent Two contact information is optional.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 1}, 
+                            {name: "callerRole", booleanValue: undefined, value: "student", selectedChecked: null, text: "The caller is the actual Focused Student. We find that students who seek out Focused on their own often have a better experience and increased performance.", label: "Student", script:"Welcome back to Focused. How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 2}, 
+                            {name: "callerRole", booleanValue: undefined, value: "relatedContact", selectedChecked: null, label: "Related Contact", text:"This caller has some relationship to a Focused Student. She could be a student's aunt, grandmother, neighbor, etc.  The relationship is important as this caller is responsible for the Student's participation in the Focused Program.  A text area will appear if you select this option, which will allow you to add the specific relationship.",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 3},
+                            {name: "callerRole", text: "This caller is a past client, now seeking services or advice for a differnt child.", booleanValue: undefined, value: "nonServiceSeeker", selectedChecked: null, label: "Other", text: "This caller has no direct relationship to a Focused Student and is not interested in Focused Services. As above, if you please select this option, a dropdown and text area will appear which will allow you to specify relevant details regarding this caller.",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 4}
+                            ],
+                    form3:[
+                            {name: "callerFullName", booleanValue: undefined, value: "", selectedChecked: null, label: "Caller Full Name", text: null},
+
+                        ],
+                        },
+                    };
+        
+    
+
+
+
 var array=[ 
-            {"value": "Profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: []},
-                    {"value": "Course Calendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 1, inputsArray: this.courseCalendarInputs, gridArray:[], archive: []},
-                    {"value": "All Messages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayIndex": 2, inputsArray: this.inquiryInputs, gridArray:[], archive: []},
-                    {"value": "Homework Results", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: []},
-                    {"value": "Test Results", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 4, inputsArray:[], gridArray:[], archive: []},
-                    {"value": "Intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayIndex": 5, inputsArray:[], gridArray:[], archive: []},
+            {"value": "profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: [],forms:[]},
+                    {"value": "courseCalendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 1, inputsArray: this.courseCalendarInputs, gridArray:[], archive: [], forms:[]},
+                    {"value": "allMessages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayIndex": 2, inputsArray: this.inquiryInputs, gridArray:[], archive: [], forms:[]},
+                    {"value": "homeworkResults", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"value": "testResults", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 4, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"value": "intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayIndex": 5, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"value": "fcFinancials", "dbName": "indexOfDatabases", "storeName": "fcFinancials", version: 4, "tag": ["shortFormProfile", "Financials", "eachFieldUsesFunctions", "smartContentOrdering"], "inputIndex": 7, "displayIndex": 6, inputsArray:[], gridArray:this.gridMaker.financialGrid, archive: [], forms:[]},
+                    {"value": "fcCallRecords", "dbName": "indexOfDatabases", "storeName": "fcCallRecords", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.june2015CallSheet, archive: [], forms:[]},
+                    {"value": "fcCourseResults", "dbName": "indexOfDatabases", "storeName": "fcCourseResults", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.courseResultsByStudent, archive: [], forms:[]},
+                    {"value": "fcCalendar", "dbName": "indexOfDatabases", "storeName": "fcCalendar", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.calendarGrid, archive: [], forms:[]},
                     ];
+
+
+
             var myMap=new Map();
             array.forEach((val, i, arr)=>{
-                var key=val.dbName+"_"+val.storeName;
+                var obj=forms[array[i].value];
+                if(obj){
+               var keys=Object.keys(obj);
+            keys.forEach((k)=>{
+            array[i].forms.push(forms[array[i].value][k]);
+        });}
+                var key=val.value;
                 myMap.set(key,val);
                 myMap.set(i, val);
             });
         this.databaseIndex=array;
+        console.log(myMap);
     }
     return myMap;
 }
@@ -382,8 +485,8 @@ DataManager.prototype.propertiesLabelsAndValuesFromInputs=function(inputs, type)
 }
 
 DataManager.prototype.getIdbDatabaseDataAndLoadToGrid=function(serialized, dashboardMapEntry, dashboardMapEntryNumbKey){
-    var dataArray=[serialized, dashboardMapEntry.gridArray];
-     this.arrayWorker.postMessage({data:dataArray, requestType: "getDatabase", dbName:dashboardMapEntry.dbName , storeName: dashboardMapEntry.storeName, version: dashboardMapEntry.version});
+ var dataArray=[serialized, dashboardMapEntry.gridArray];
+     this.arrayWorker.postMessage({requestType: "getDatabase", dbName:dashboardMapEntry.dbName , storeName: dashboardMapEntry.storeName, version: dashboardMapEntry.version});
      this.arrayWorker.onmessage=(e)=>{
         if(e.data.returnMessage=="build"){
             var retData=e.data.data;
@@ -427,7 +530,7 @@ DataManager.prototype.reformProfileObject=function(profileObject){
         },0);
 
         var retObj={"profile":tempObj,"unfilledProperties":unfilled};
-        return retObj;
+//return retObj;
 }
 
 'use strict';
@@ -1020,6 +1123,17 @@ FCBehaviors.FocusedDataManagerBehaviorImpl= {
         computed: "computeMaxIoNumber(focusedManager)",
      notify: true
     },
+    formDisplays:{
+        type: Array,
+        value:function(){return [];},
+        notify: true,
+
+    },
+    viewsArray:{
+        type: Array, 
+        value:function(){return [];},
+        notify: true,
+    },
 },
 
 
@@ -1041,9 +1155,18 @@ _computeInterfaceObject(key,interfaceType){
     var  objectKeyForDisplayArray=interfaceType+"Array";
     var interfaceObject=this.interfaceMap.get(key);
     var displayArray=interfaceObject[objectKeyForDisplayArray];
-    this.set("chosen", interfaceObject.value)
+    var label=this.focusedManager.propertyNameToLabel(interfaceObject.value);
+    this.set("chosen", label);
     var ida=interfaceType+"DisplayArray";
     this.set(ida, displayArray);
+    var chosen=this.chosen.replace(" ", "");
+    this.set("formSelected", chosen);
+    var formArray=this.createFormArray(chosen);
+    this.set("formDisplays", []);
+     this.set("formDisplays", formArray);
+     console.log(this.formDisplays);
+        // var newArray=this.formDisplays.concat(this.inputsDisplayArray);
+        // this.set("viewsArray", newArray);
     //console.log(this[ida]);
     //console.log(this.interfaceMap, this.focusedManager.dashboardMap);
     var sf=this._computeSearchableFields(interfaceObject);
@@ -1059,26 +1182,10 @@ changeAppInterfaceForInputs(e){
     else{this.set("selectedStoreNumber",this.selectedStoreNumber+1)}
     //console.log(this.selectedStoreNumber);
 },
-plusArrowForGrids(e){
-    var  max=this.maxIoNumber;
-    if(this.selectedStoreNumber===max){this.set("selectedStoreNumber",0);}
-    else{ var plusOne=this.selectedStoreNumber+1;
-        this.set("selectedStoreNumber",plusOne)}
-    //console.log(this.selectedStoreNumber);
-},
-minusArrowForGrids(e){
-    var  max=this.maxIoNumber;
-    var  min=0;
-    if(this.selectedStoreNumber===min){this.set("selectedStoreNumber",max);}
-    else{ var minusOne=this.selectedStoreNumber-1;
-        this.set("selectedStoreNumber",minusOne)}
-    //console.log(this.selectedStore);
 
-},
-   
  
     observeMessageContent(nv, ov){if(nv){
-        //console.log(nv, "This is the observed returned data from the search worker");
+        //console.log(s, "This is the observed returned data from the search worker");
     }},
     
 
@@ -1466,7 +1573,7 @@ addEntryToApiSheet(vals, sheetNumber, samePage, refObj){
 
 }
 
-FCBehaviors.FocusedDataManagerBehavior=[
+FCBehaviors.FocusedDataManagerBehavior=[ FCBehaviors.FcFormDataRoutingBehavior,
         FCBehaviors.FcGridStyleBehavior, FCBehaviors.FocusedDataManagerBehaviorImpl];
 </script>
 
