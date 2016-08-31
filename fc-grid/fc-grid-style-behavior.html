@@ -7,7 +7,7 @@
 })();
 window.FCBehaviors = window.FCBehaviors || {};
 FCBehaviors.FcGridStyleBehaviorImpl = {
-	listeners: {"color-picker-selected":"getcolor"},
+	// listeners: {"color-picker-selected":"getcolor"},
 	properties: {
 		gridEvent:{
         type: Object,
@@ -268,7 +268,7 @@ FCBehaviors.FcGridStyleBehaviorImpl = {
     },
     
     observeGridEvent(newEvent, oldEvent){
-      if(newEvent&&newEvent!=oldEvent){ console.log(newEvent, oldEvent);}
+      if(newEvent&&newEvent!=oldEvent){ }
     },
     
     onGridEventChanged(){

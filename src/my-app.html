@@ -8,11 +8,10 @@ Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
 <link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
-<!-- <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> -->
-<!-- <link rel="import" href="../fc-dashboard/fc-right-drawer/fc-right-drawer.html"> -->
 <link rel="import" href="../fc-grid/data-manager.html">
 
 <!-- <link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html"> -->
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -22,21 +21,84 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../fc-app-elements/fc-two-drawer-layout/fc-two-drawer-layout.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
-<link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html">
-<link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html">
+<!-- <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
+<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html"> -->
+<!-- <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html"> -->
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
+<link rel="import" href="../fc-app-elements/fc-check-menu/fc-check-menu.html">
+<link rel="import" href="fc-three-section-display.html">
+<link rel="import" href="../fc-grid/fc-grid-rows.html">
+<!-- <link rel="import" href="../fc-app-elements/fc-panel/fc-panel.html"> -->
+<!-- <link rel="import" href="fc-form-right.html"> -->
+<link rel="import" href="fc-drawer-form.html">
+<!-- <link rel="import" href="fc-inputs-interface.html"> -->
+
 <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> 
-<link rel="import" href="../fc-call-center/fc-inputs-interface.html">
-<link rel="import" href="../fc-call-center/fc-form-right.html">
 <link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
 
   <template>
+<style is="custom-style">
+paper-tab {
+  --paper-tab-background-color: silver;
+  --paper-tab-border: snow;
+  --paper-tab-ink:#aecdfe;
+  --paper-tab-visited:color: #005c00;
+  --paper-tab-selected: color: #005c00;
+  --paper-tab:selected: #005c00;
+  @apply(--paper-tab);
+}
+a{color: #009; color: #aecdfe;
+      font-family: merriweather;
+      font-weight: 300;
+      font-size: 1.1em; 
+      white-space: wrap;}
+a:visited{
+      color: #aecdfe;
+      font-family: merriweather;
+      font-weight: 300;
+      font-size: 1.1em; 
+      white-space: wrap;
+                        }
+a:selected, a:active{
+    color: #009;
 
+}
+paper-tab {
+  color: #009;
+  background: white;
+  --paper-tab-visited-color: #009;
+}
+paper-tab.iron-selected {
+  color: blue;
+}
+paper-tabs.slidingtabs{
+  height: 48px; 
+   min-width: 280px; 
+   border-bottom: #009 1px solid; 
+   background:#fafafa; 
+   color: #009
+   opacity: .3;
+   -webkit-transition: height 0.8s ease, opacity .8 ease;
+  transition: height 0.8s ease, opacity .8s ease;
+
+}
+paper-tabs.slidingtabs:hover{
+  height: 48px; 
+   min-width: 280px; 
+   border-bottom: #009 1px solid; 
+   background:#fafafa; 
+   color: #009
+   opacity: 1;
+   -webkit-transition: height 0.8s ease, opacity .8 ease;
+  transition: height 0.8s ease, opacity .8s ease;
+
+
+}
+</style>
     <style>
 
       :host {
@@ -100,61 +162,58 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         data="{{routeData}}"
         tail="{{subroute}}">
     </app-route>
-
-
-    <app-route 
-        id="leftDrawerRouter"
-        route="{{subroute}}" 
-        pattern="/:leftDrawerPage" 
-    
-        active="{{this.$.dashboardLeftDrawer.opened}}">
-    </app-route>
-        <!-- tail="{{leftDrawerPage}}"  -->
-   <!--  <app-route route="{{route}}" pattern="/" active="{{homeActive}}"></app-route> -->
+    <!-- <app-location id="pageUnderGrid" route="{{subroute}}" use-hash-as-path></app-location>
+        <app-route
+        id="appRouteCenterRightDrawer"
+        route="{{subRoute}}"
+        pattern="/:gridPage"
+        data="{{routeData}}"
+        tail="{{pageIndexSelected}}">
+    </app-route> -->
 
 <iron-media-query query="max-width: 680px" query-matches="{{smallScreen}}"></iron-media-query>
 <fc-two-drawer-layout fullbleed left-drawer-curerent-width="{{leftCurrentWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
  
+ <!--attr-for-selected="{{displayandData}}" {{displayAndData[i,j]-->
     
-        <fc-app-drawer id="dashboardLeftDrawer" drawer-current-width="{{leftCurrentWidth}}" opened persistent swipe-open align="left">
-                  <fc-inputs-interface forms-display-array="{{formsDisplayArray}}" current-inner-width="{{leftCurrentWidth}}" is-linked="{{isLeftLinked}}" route-data="{{routeData}}" interface="{{leftDrawerPage}}" local-dashboard="{{localDashboard}}" class="drawerClass" style$="left: 0px; right: 30px; width:{{leftCurrentWidth}}px;">
-                  </fc-inputs-interface>
-        </fc-app-drawer>
+        <fc-app-drawer id="dashboardLeftDrawer" limitone="{{totalWidthLost}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" style="margin-right: 8px;" opened persistent swipe-open align="left">
+       <!--  <iron-pages selected="{{selected}}}}"> -->
+                 <!--  <fc-triad style="z-index: 9999;position: absolute; top: 240px; bottom: -220px; left: 0px; right: -30px;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">></fc-triad> -->
 
+                 <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style="z-index: 9999;position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">
+                   
+                   <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows>
+                 </fc-three-section-display>
+       
+                <!--   <fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
+                   </fc-drawer-form> -->
+     <!--       </iron-pages> -->
+        </fc-app-drawer>
         <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open>
-                <fc-form-right current-inner-width="{{rightCurrentWidth}}" grid-display-array="{{gridDisplayArray}}" inputs-display-array="{{inputsDisplayArray}}" chosen="{{inputsChosen}}" class="drawerClass" style="right: 0px; left: 30px; width:calc({{rightCurrentWidth}}-80)px;">
-                </fc-form-right>
+                <fc-drawer-form current-inner-width="{{rightCurrentWidth}}" page-type="{{gridPage}}" route="{{subroute}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right: 0px; left: 22px;  width:calc({{rightCurrentWidth}}-80)px;">
+              
+                </fc-drawer-form>
         </fc-app-drawer>
 
       <!-- Main content -->
   <div class="layout vertical flex" style$="left:{{leftCurrentWidth}}px; right:{{rightCurrentWidth}}px; position: absolute;" has-scrolling-region>
-
-
  <section style="background: silver;">
-     
-
         <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>
-       
-         
-         
-  
-  
    </section>
         <paper-tabs 
           id="protoTabMenu" 
           data="{{localDashboard}}"
           scrollable="true"
-          class="horizontal layout"
+          class="horizontal layout end slidingtabs"
           selected="{{_computedSelect(localDashboard,gridPage,localIndex)}}"  
-          style="max-height: 76px; min-height: 24px; min-width: 280px; background: #000066;
           attr-for-selected="name" 
           bar="true">   
        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> 
      
         <div class="horizontal layout flex" style="overflow-x: scroll;" hidden$="{{!notRouter}}">
         <template is="dom-repeat" items="{{localDashboard.array}}">
-        <paper-tab   selected="{{gridPage}}" attr-for-selected="name" class= "menubuttons longest">
-          <a name="{{item.value}}" href="#/{{item.value}}">{{item.value}}</a>
+        <paper-tab   selected="{{gridPage}}" attr-for-selected="name" style="min-width: 160px">
+          <a name="{{item.value}}" href="#/{{item.value}}">{{_computeTabTitles(item.value)}}</a>
         </paper-tab>
         </template>
         </div>
@@ -169,8 +228,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
                     </fc-grid>
           </template>
       </div>
-       
-  
+
     </fc-two-drawer-layout>
 
   </template>
@@ -179,7 +237,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
 
       is: 'my-app',
-       behaviors:[FCBehaviors.FcFormDataRoutingBehavior, FCBehaviors.FocusedDataManagerBehavior],
+       behaviors:[ FCBehaviors.FocusedDataManagerBehavior],
       properties: {
         isLeftLinked:{
           type: Boolean, 
@@ -188,7 +246,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         },
       isRightLinked:{
           type: Boolean, 
-          value: function(){return false;},
+          value: function(){return true;},
           notify: true
         },
       arePanelsSynched:{
@@ -200,6 +258,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         nowChosen:{
           type: String,
           notify: true,
+          observer:"createFinancialsEtc",
         },
 
         interfaceView:{
@@ -222,6 +281,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type:String,
           notify: true,
         },
+        rightDrawerPage:{
+          type: String,
+          reflectToAttribute: true,
+          computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched)'
+
+        },
         gridPage: {
           type: String,
           reflectToAttribute: true,
@@ -242,13 +307,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         formsDisplayArray:{type: Array, value: function(){return [];}, notify: true},
         leftCurrentWidth:{
           type: Number, 
-            value: function(){return 295;},
+            value: function(){return 18;},
           notify: true,
 
         },
         rightCurrentWidth: {
           type: Number,
-          value: function(){return 15;},
+          value: function(){return 285;},
           notify: true,
         }, 
         totalWidthLost: {
@@ -265,6 +330,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           type: Object, 
           value:{},
           notify: true,
+        },
+        rightDrawerSelectedViewsArray:{
+          type: Array, 
+          value: function(){return [];},
+          notify: true, 
+        },
+        leftDrawerSelectedViewsArray:{
+          type: Array, 
+          value: function(){return [];},
+          notify: true, 
         },
         localIndex: {
           type: Array, 
@@ -284,12 +359,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         '_routePageChanged(routeData.gridPage)'
       ],
     attached(){
-        this.async(function(){this.set("leftCurrentWidth", 295);}, 400);
-        console.log(this.chosen, this.focusedManager);
+        this.async(function(){this.set("rightCurrentWidth", 245);
+          this.set("leftCurrentWidth", 18);}, 200);
         console.log(this.routeData);
-       //this.async(function(){ this.forwardOne();this.backOne();}, 1250);
       }, 
 
+_computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
    _computedSelect(localDashboard,gridPage,localindex){
     var count=localindex.indexOf(gridPage);
     console.log(localDashboard[gridPage], count, count, count, count);
@@ -304,14 +379,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     
 
    },
-
+   
       _computeHidden(nowChosen){
         var retVal=(nowChosen=="All Messages")?false: true;
         return retVal;
       },
    
       ready(){
-        this.set("gridPage", "profiles");
+        this.set("gridPage", "intakes");
         var object=this.dashboardMapToObjectArray(this.focusedManager.dashboardMap);
         this.set("localDashboard", object);
         this.set("localIndex", object.index);
@@ -334,13 +409,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return dashboard;
 
       },
-      computeGridItems(interfaceObject, nowChosen, localDashboard, localIndex){
-       // console.log(interfaceObject, nowChosen, localDashboard, localIndex);
-          var retObj=localDashboard[nowChosen];
-          retObj.name=nowChosen;
-        //  console.log(localDashboard.array);
-          return localDashboard.array;
-      },
+
 
 
       _computeView(storeName){
@@ -357,19 +426,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return retVal;
       },
       _computeContentAreaWidth(totalWidthLost){
-
             var width=screen.width;
             var retWidth=width-totalWidthLost;
-           // console.log(retWidth, "WIDTH REMAINING");
             return retWidth;
-
       },
+     
       _routePageChanged: function(gridPage) { 
         this.gridPage = gridPage || gridPage;
        if(this.focusedManager &&this.routeData){
        
         if(this.localDashboard[gridPage]==undefined&&this.counter===0){
-          var data=this.focusedManager.dashboardMap.get("profiles");
+
+          //here we add archive for last position to get from data
+          var data=this.focusedManager.dashboardMap.get("intakes");
           this.counter++;
         }
         else{
@@ -377,9 +446,22 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
          }
          var dataObject="routeData."+gridPage;
         this.set(dataObject,data);
-         this.set("formsDisplayArray",this.routeData[gridPage].forms)
-         console.log(this.formsDisplayArray);
-       }
+        // var setup="routeData.gridPage"
+        this.set("routeData.data",data);
+       var formset=this.routeData.data.forms.map((item)=>{
+          var form={"form": item};
+          return form;
+            }); 
+       console.log(formset);
+       var inputset=this.routeData.data.inputsArray.map((item)=>{
+            var input=item;
+            return input;
+       });
+      var selectedArray=  formset.concat(inputset);
+      this.set("rightDrawerSelectedViewsArray", selectedArray);
+      this.set("leftDrawerSelectedViewsArray", selectedArray);
+        console.log(this.rightDrawerSelectedViewsArray, selectedArray);
+        }
       },
 
       _gridPageChanged: function(gridPage) {
@@ -388,68 +470,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.importHref(
           this.resolveUrl('fc-' + "grid" + '.html'), null, true);
       },
+
+
+
+
       _gridPageLeftDrawerChanged(gridPage, leftLinked, synched){
         if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
             if(this.isLeftLinked===true){
-              this.leftDrawerPage="leftInputs-"+gridPage;
+              this.leftDrawerPage="left-drawer-"+gridPage;
           this.importHref(
-            this.resolveUrl('fc-' + "inputs-interface" + '.html'), null, true);
-
-
-              return gridPage;}
+            this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
+        }
           else{
-          this.importHref(
-            this.resolveUrl('fc-' + "inputs-interface" + '.html'), null, true);
+            this.leftDrawerPage="left-drawer-"+gridPage;
+          // this.importHref(
+          //   this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
         }
-        }
+         return this.leftDrawerPage;        
+       }
       },
+
+       _rightDrawerChanged(gridPage, rightLinked, synched){
+       // if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
+       //  if(this.isRightLinked===true){
+       //      this.rightDrawerPage="right-drawer-"+gridPage;
+       //       this.importHref(
+       //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
+        
+       //   }
+       //     else{
+       //       this.importHref(
+       //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
+         
+       //   }
+       //    return this.rightDrawerPage;        
+       //  }
+    },
+
     
     });
 
   </script>
 
 </dom-module>
-
-<!--
-// setSelected(e){
-//     console.log(e, "selected");
-
-//     this.set("mySelected", e.model.item.value);
-
-//     this.async(function(){this.set("mySelected", e.model.item.value);}, 50);
-//    },
-//    setselected(e){
-//   //  console.log(e,e,e);
-//    },
- margin-left: 24px; margin-right: 24px;  z-index: 90;
-   plusArrowForGrids(e){
-    var  max=this.maxIoNumber;
-    if(this.selectedStoreNumber===max){this.set("selectedStoreNumber",0);}
-    else{ var plusOne=this.selectedStoreNumber+1;
-        this.set("selectedStoreNumber",plusOne)}
-    //console.log(this.selectedStoreNumber);
-},
-minusArrowForGrids(e){
-    var  max=this.maxIoNumber;
-    var  min=0;
-    if(this.selectedStoreNumber===min){this.set("selectedStoreNumber",max);}
-    else{ var minusOne=this.selectedStoreNumber-1;
-        this.set("selectedStoreNumber",minusOne)}
-    //console.log(this.selectedStore);
-
-       backOne(e){
-        console.log("backOne");
-             this.$.liveGrid.minusArrowForGrids(e);
-      },
-
-
-      forwardOne(e){
-        console.log("forwardOne");
-        this.$.liveGrid.plusArrowForGrids(e);
-
-
-      },
-
-      // <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>    <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> -->
-   <!--   </fc-drag-header-menu>  -->
-      <!-- <paper-icon-button icon="info" onclick="document.getElementById('dashboardRightDrawer').toggle();"></paper-icon-button> -->

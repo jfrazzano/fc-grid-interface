@@ -1,12 +1,10 @@
-<!-- 
-<link rel="import" href="FC_frontpage_logo.png"> -->
+
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
-<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
 <dom-module id="fc-call-center-form-one">
 <template id="fc-call-center-form-one-template">
 <style>
-:host{position: static; margin: 1px;}
+:host{position: absolute; margin: 1px; left: 4px;}
      
     *{font-family: merriweather;
       color: #009;}
@@ -23,129 +21,12 @@
  
   }
   
-    	paper-button{
-		 	 width: 50%;
-		 	 min-width: 147px;
-		 	 font-weight: 600; 	  
-		 	 font-size: 14px;
-		 	 text-align: center;
-		 	 white-space: nowrap;
-		 	 max-height: 36px;
-		 	 @apply(--layout-nowrap);
-		 	 background: white;
-		 	 border: #efefef 1px solid;
-		 }
-		 paper-button.green{
-		 	color: green; 
-		 	border: 2px solid green;
-		}
-		paper-button.darkblue{
-			color: #009;
-			border: 2px solid #009;
-		}
-		paper-button.red{
-			color: red;
-			border: 2px solid red;
-		}
-		paper-button.orange{
-			color: orange;
-			border: 2px solid orange;
-		}
-		paper-button:hover, paper-button:active{
-			box-shadow: 2px 4px 7px 2px; 
 
-		} 
-		paper-button.darkblue:hover, paper-button.darkblue:active{
-			box-shadow: 2px 4px 7px 2px gold; 
-
-		} 
-		.buttonRow{
-			@apply(--layout-flex);
-			@apply(--layout-horizontal);
-			padding: 2px;
-		}
-
-      neon-animated-pages {
-        @apply(--layout-flex);
-        @apply(--layout-vertical)
-        margin: 6px;
-        padding: 4px;
-        background: white;
-        @apply(--layout-self-stretch);
-        min-height: 720px;
-      }
-      neon-animatable {
-        color: white;
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        @apply(--paper-font-display3);
-        margin: 0px;
-        padding: 0px;
-      }
-   
-    label.returningCaller{
-    	color: black;
-    	font-size: 15px;
-    /*	font-style: italic;*/
-    	font-weight: 700;
-    }
- 
-    iron-icon{ 
-        width: 36px;
-        height: 36px;
-    }
- 
- 
-  .dropbtn:hover, .dropbtn:focus{
-		    background-color: #3e8e41;
-		}
-		/* The container <div> - needed to position the dropdown content */
-		.dropdown {
-		    position: relative;
-		    display: inline-block;
-		}
-		/* Dropdown Content (Hidden by Default) */
-		.dropdown-content {
-		    display: none;
-		    position: absolute;
-		    background-color: #f9f9f9;
-		    min-width: 160px;
-		    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-		}
-		/* Links inside the dropdown */
-		.dropdown-content a {
-		    color: black;
-		    padding: 12px 4px;
-		    text-decoration: none;
-		    display: block;
-		}
-		.check{
-			font-size:26px;
-			color: green;
-			position: absolute;
-			left: 5px;
-		}
-    .card-content{}
-  
-	
-  
-
-  @media(max-width: 570px){
-    .container{
-        width: 99%;
-        @apply(--layout-vertical);
-        @apply(--layout-flex);
-        @apply(--layout-self-stretch);
-        @apply(--layout-wrap);
-        @apply(--layout-flex-grow);
-        @apply(--flex-grow);
-    };
-  }
 </style>
-<form is="iron-form" id="splashPageForm" method="get" action="/">
+<form is="iron-form" hidden$="{{notForm}}" id="splashPageForm" method="get" action="/">
 
   <div class="horizontal layout flex wrap center-justified" ">
-<fc-dropdown-libre selected-forms="{{selectedForms}}" forms="{{forms}}" forms-display="{{formsDisplay}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
+<fc-dropdown-libre selected-form="{{selectedForm}}" forms-display="{{formDisplay}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-dropdown-libre>
    
               </div>
              
@@ -156,28 +37,21 @@ FcCallCenterFormOne=Polymer({
     is:"fc-call-center-form-one",
     behaviors:[FCBehaviors.FcFormDataRoutingBehavior],
     properties:{
-    
+      formItems:{
+        type: Object || Array,
+        value: function(){ return null;},
+        notify: true,
+
+
+      },
     checkEvent:{
       type: Object, 
       value: function(){return {};},
       notify: true,
       observer: "observeCheckEvent",
     },
-    radioOther:{
-      type: Boolean,
-      value:function(){return false;},
-      notify: true
-    },
-
-    pageIndex:{
-      type:Number,
-      value: function(){return 0;},
-      notify: true,
-    },
-    currentHeight:{
-      type: String,
-      notify: true,
-    },
+  
+    
     searchOff:{
       type: Boolean, 
       value: function(){return false;},
@@ -185,7 +59,7 @@ FcCallCenterFormOne=Polymer({
     },
     formDisplay:{
             type: Array, 
-            computed:"computeFormDisplay(formDisplays, arraycount)",
+            computed:"computeFormDisplay(formItem)",
             notify: true,
     },
 		
@@ -194,16 +68,13 @@ FcCallCenterFormOne=Polymer({
       value:function(){return {};},
         notify: true,
       },
-    inquiry:{
-      type: Object, 
-      value:function(){return {};},
+      notForm:{
+        type: Boolean, 
+        value:function(){return false;},
         notify: true,
+
+
       },
-      arraycount:{
-        type: Number, 
-        computed: "computeArraycount(chosen)",
-        notify: true,
-      }
     },
     observeCheckEvent(newVal, oldVal){
       if(newVal){console.log(newVal, oldVal);
@@ -214,48 +85,21 @@ FcCallCenterFormOne=Polymer({
        this.set(frankenObject, setSearch);
       }
     },
-    computeFormDisplay(forms, arraycount){
-      if(forms&&forms.length>=arraycount){
-        retVal=forms[arraycount];
-        this.set("arraycount",arraycount+1);
-        return retVal;
+    computeFormDisplay(item){
+      if(item&&item!=undefined){
+        if(item.form&&item.form[0].isForm===true){
+          this.set("notForm",false);
+          var array=new Array(item.form);
+          console.log(array);
+          return array[0];
+        }
+        else{ this.set("notForm",true); return [];}
+      
+        return [];
       }
     }, 
-    computeArraycount(chosen){
-      if(chosen&&chosen!=undefined){
-        return 0;
-      }
-
-
-    },
-
-      getfunction(e){
-       var setValue= (e.target.checked===true && e.targetname!=undefined)?{value: e.target.name, name: e.target.class}:null; 
-       console.log(e.target.class, e.target.name, e.target.checked, console.log(setValue));
-         if(Polymer.dom(e.target).classList.contains("callerType")){
-                   var one=(e.target.name==="newClient"|| e.target.name==="nonClient")?false:true;
-                   var two=(e.target.name==="currentClient")?true: false;
-                   this.set("inquiry.isPreviousCaller", one);
-                   if(e.target.name!=undefined){
-                   this.set("inquiry.callerType", e.target.name);
-                    }
-                   this.set("inquiry.isCurrentClient", two)
-           }
-         else if(Polymer.dom(e.target).classList.contains("callerRole")&&e.target.name==="other"){
-                       // this.set("radioOther", true);
-                       this.set("inquiry.callerRole", "other");
-         
-           }
-         if(e.target.name!=undefined&&Polymer.dom(e.target).classList.contains("callerRole")){
-               this.set("inquiry.callerRole", e.target.name); 
-               this.set("valueObject.callerRole", e.target.name);
-            
-           }
-        
-         this.set("valueObject", this.inquiry);
-         this.inputsDisplayArray
-                     console.log(this.inquiry, this.valueObject,this.inputsDisplayArray);
-       },
+    
+     
        submitFirstPage(e){
         var formResults =  this.$.splashPageForm.serialize();     
           console.log(formResults);

@@ -1,3 +1,539 @@
+<link rel="import" href="../../fc-grid/data-manager.html">
+<link rel="import" href="../../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
+
+<dom-module id="fc-triad">
+<template>
+<style>
+:host{
+	position: relative;
+	background: white;
+	box-shadow: 4px 11px 21px 7px #9fafaf;
+	max-width: 110%;
+	right: 0px;
+	top:-1px;
+	bottom: -1px;
+	padding: 0px 0px;
+	margin: 6px 10px;
+	max-height: 98vh;
+	
+	@apply(--layout-vertical);
+	@appply(--layout-flex);
+	@apply(--layout-self-stretch)
+}
+.calendarheader{
+	border-right: 1px solid white;
+	text-align: center; 
+	padding-right:1px; 
+	font-size: 14px; 
+	font-weight: 600; 
+	margin: auto; 
+	margin-top: 3px; 
+	border-top: 1px solid #afafaf; 
+	margin-bottom: 3px; 
+	background: white;
+}
+.calendarcontainer{
+background: white; 
+}
+.calendarborder{
+	background: #005c00; 
+	border-bottom: #005c00 solid 2px; 
+	width: 100%;
+}
+
+.headerArrowLeft{
+	position: absolute; 
+	top: 0px; 
+	color: white; 
+	left: 2px;
+}
+.headerMonthYear{
+	margin: 0 auto;
+	text-align: center;
+	color: white; 
+	font-size:22px; 
+	font-weight: 500;
+	padding: 6px 6px;
+	@align(--layout-self-stretch);
+	@align(--layout-center);
+	@align(--layout-flex);
+	@align(--layout-center-justified);
+	}
+.headerTop{
+min-height: 38px;
+
+}
+fc-relative-fit-wrapper{
+	border: dashed 8px orange;
+};
+.headerArrowRight{
+	 color: white; 
+	 position:absolute; 
+	 right: 2px;
+}
+  .card{
+  	border-top: 1px solid silver;
+  	text-align: center; 
+  	margin: 1px; 
+  	display: flex;
+
+  	@apply(--self-stretch);
+  } 
+  .cardcontainer{
+  	background: white; 
+  	overflow:scroll; 
+
+  }
+  .cardcontainer2{
+	
+  	overflow:scroll; 
+
+  }
+  iron-icon{
+  	height: 20px;
+  	width: 20px;
+  }
+
+}
+</style>
+	<div id="myPanel" style$="width:{{currentWidth}}; height:{{currentHeight}}px; margin: 38px;" class="horizontal layout flex self-shrink justified-around" >
+		<div class="vertical layout self-stretch nowrap" > 
+	<!-- 	 <fc-relative-fit-wrapper id="wrapperLb" cws="in" class="item wrapper" on-track="dragAndDrop" draggable drags>       
+            </fc-relative-fit-wrapper>  -->
+		<paper-material class=" layout vertical around-justified calendarborder" style$="max-height: 78px!important; min-height: 105px; margin:12px 12px 24px: 12px; padding 8px 4px 4px 4px;">
+					<section class="horizontal layout center-justify headerTop" style="align-items: center;">
+						<span id="spanLeft" on-tap="_backOne" hidden={{backHidden}} style="font-size:32px; color:white;" inner-html-one="[[_computeSpanOne(arrow)]]"></span>
+						<section class="layout horizontal headerMonthYear">
+						Header Left
+						</section>
+						<span on-tap="_forward" hidden="{{forwardHidden}}" style="font-size:32px; color:white;"> 
+						&#9658;</span>
+					</section> 
+					<section on-down="dragsOff" on-track="_resize" hidden="{{!isResizing}}"  on-up="dragsOn" style="position: absolute; right: -4px; top: 0px; bottom:0px; cursor:ew-resize; padding: 4px; width: 8px!important;opacity: 0;">
+				</section>
+		</paper-material>
+<div>
+		
+</div>
+
+<!--left-panel-header-end-->
+     <template is="dom-repeat" id="inputTemplate" items="{{itemsOneObject}}">
+        <section class="horizontal layout container"> 
+        		<span hidden$="{{computeItemHeaderHidden(item.headerA)}}" class="questionHeader">{{item.headerA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.headerB)}}" class="questionHeader">{{item.headerB}}.</span>
+      	</section>
+
+      	<div class="horizontal layout flex wrap self-stretch around-justified" style="padding: 22px;">
+          		<fc-input-search-select class="left" id$="{{item.nameA}}_{{counter}}" iss-name="{{item.nameA}}" iss-label="{{item.labelA}}" item-select-property="value" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.multiSelectA]]">
+          		</fc-input-search-select>
+          		<fc-input-search-select id$="{{item.nameB}}_{{counter}}" iss-name="{{item.nameB}}" iss-label="{{item.labelB}}" item-select-property="value" class="right" dropdown-items="{{item.dropdownItemsB}}" multi-select="[[item.multiSelectB]]">
+          		</fc-input-search-select>
+     	</div>
+  	</template>
+  	</div>      
+  <iron-splitter signal="{{resize}}" style$="top: 0px; bottom:0px; background:{{background}}; width: 12px;  border: 2px solid #efefef;" direction="left"></iron-splitter>
+		<div class="layout vertical flex self-stretch" style="width: 100%; overflow: hidden;">
+		<div class="flex layout vertical self-stretch" style="min-height: 95.5vh; max-height: 95.5vh; overflow: scroll;"><!--visual swap in horizontal layout here-->
+			<div class="vertical layout flex self-shrink">
+				<paper-material class=" layout vertical around-justified calendarborder" style$="{{_heightOfHeaderArea(calendarData, gridData)}}">
+					<section class="horizontal layout center-justify headerTop" style="align-items: center;">
+						<span btn="_backOne" hidden={{backHidden}} style="font-size:32px; color:white;margin-left: 18%;">&#9668;</span>
+	
+						<section class="layout horizontal headerMonthYear">
+							[[computeDisplayHeaderOne(displayedIndex)]] [[computeDisplayHeaderTwo(displayed)]]
+						</section>
+						<span 
+							btn="_forward" 
+							hidden="{{forwardHidden}}" 
+							style="font-size:32px; margin-right: 18%; color:white;"> &#9658; 
+						</span>
+					</section> 
+				</paper-material><!--header ends-->
+				<!--resizer-->
+				<div flex layout vertical style="height: 96vh;">
+				<div class="horizontal layout flex-1" style="height: 50vh; margin: 12px 5px;">
+					<fc-data-grid-supra data-set="{{itemsArraysOne}}" context-menu-categories="{{contextMenuCategories}}" properties="{{format}}" grid-event="{{gridEvent}}" btn-value={{btnValue}} color="{{color}}" color-two="{{format.colorTwo}}">
+					</fc-data-grid-supra>
+				</div>
+				 <iron-splitter signal="{{resize}}" style="background:orange; height: 22px; width: 99%; border: 2px solid #efefef;" direction="up"></iron-splitter><!--here is where you have to change your the height to the difference betweeb screen height and height, and use a margin property or overflow to fix it-->
+			
+ 				<div class="layout horizontal flex" style="position:static; height: 100%; padding-bottom: 50%; overflow:scro
+ 									<article  class="layout horizontal flex wrap" style="position:static;padding: 34px; height: 450px;max-height:76vh;">
+		  				<template is="dom-repeat" items="{{wordEvents}}" as="wordEvent">
+		    					<p style="margin: 36px;">{{wordEvent}}</p> 	
+		  				</template>
+		  			</article>
+		  			</div>
+				</div>
+			</div>
+		</div>
+ </div>
+ </div>
+
+</template>
+<script>
+FcTriad=Polymer({
+	is: "fc-triad",
+	behaviors:[
+	FCBehaviors.FcCalendarBehaviorPrime,
+	FCBehaviors.FcDataGridBehavior,
+	Polymer.IronResizableBehavior],
+	properties: {
+		arrow:{
+			type: String,
+			value: function(){return '&#9668';},
+			notify: true
+		},
+
+		colorToApply:{
+			type:String,
+			notify: true,
+		},
+		background: {
+			type: String,
+			value:function(){return "#005c00";},
+			notify: true,
+		},
+		visualSwap:{
+			type: String,
+			value: function(){return "horizontal";},
+			notify: true,
+		},
+		itemsArraysOne :{
+			notify: true,
+		},
+		contextMenuCategories:{
+			notify: true,
+		},
+		gridEvent:{
+			notify: true,
+		},
+		btnValue:{
+			notify: true,
+		},
+		color:{
+			notify: true,
+		},
+		format:{
+			notify: true,
+		},
+		
+		maxIndex:{
+			type: Number,
+			notify: true,
+		},
+		displayedIndex:{
+			type:Number,
+			value: 0,
+			notify: true
+		},
+		displayedLeft:{
+			type: Array,
+			value:function(){return [];},
+			notify: true
+		},
+		displayed:{
+			type: Array,
+			notify: true
+		},
+		displayedCalendarMonth:{
+			type: String,
+			notify: true
+		},
+		currentWidth: {
+			type: String,
+			value: function(){return 1100;},
+			notify: true,
+
+		},
+		
+		currentHeight: {
+			type: String,
+			value: function(){return "100%";},
+			notify: true
+		},
+		units: {
+			type: String,
+			value: "months",
+			notify: true 
+		},
+		forwardHidden:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		backHidden:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		itemsArraysOne:{
+			type: Array,
+			value:function(){return [];},
+			notify: true,
+		},
+		itemsOneObject:{
+			type: Array,
+			 computed:"_computeItemsOneObject(itemsArraysOne,indexItemsArraysOne)",
+			notify: true
+		},
+		calendarData:{
+			type:Array,
+			value:function(){return [1,2]},
+			notify: true
+
+		}, 
+		gridData:{
+			type:Array,
+			value:function(){
+						return [1,2,3,4];
+			},
+			notify: true,
+
+		},
+		event:{
+			type: Array,
+			value: [],
+			notify: true
+		},
+		drags:{
+			value: true,
+			notify: true
+		}, 
+		isResizing: {
+			value: true,
+			notify: true
+
+		},
+		forwardOneArray:{
+			type:Boolean,
+			value: function(){return false;},
+			notify: true,
+		},
+		backOneArray:{
+			type:Boolean,
+			value: function(){return false;},
+			notify: true,
+		},
+		indexItemsArraysOne:{
+			type:Number,
+			value: function(){return 0;},
+			notify:true,
+
+		},
+		unitIncrement:{
+			value: function(){return "Month";},
+			notify: true,
+		},
+		displayedDateObject:{
+				type:Object,
+			value:function(){
+				return {"year": new Date().getFullYear(),
+				"month": new Date().getMonth(),
+				"day":new Date().getDate()};
+			},
+			notify:true,
+		},
+		change:{
+			notify: true,
+			value:function(){return null;},
+		},
+		user:{
+			type:Object,
+			notify: true, 
+
+		},
+		params:{
+			type: Object,
+			notify: true,
+		},
+	
+		isResizing:{
+			type: Boolean,
+			notify: true,
+			value:function(){return true;},
+		}
+
+  },
+  _computeSpanOne(arrow){
+  	this.$.spanLeft.innerHTML=arrow;
+  },
+
+
+  computeDisplayHeaderOne(displayedIndex){
+  		return "This is the Data Grid";
+  },
+
+
+_heightOfHeaderArea(gridData){
+		var retVal=(gridData.length>5)?"min-height: 105px; max-height: 135px;":"height:65px!important;";
+		return "min-height: 85px; background: #005c00;";
+},
+  computeDisplayHeaderTwo(displayed){
+return "The Data Grid Rocks!";
+
+  },
+ computeDisplayedLeft(displayedIndexLeft)
+{		
+	if(itemsArraysOne && itemsArraysOne.length>0){
+		console.log(itemsArraysOne);
+	return itemsArraysOne[indexItemsArraysOne];
+	}
+},
+_forward: function(){
+		if(this.indexItemsArraysOne===this.itemsArraysOne.length-1)
+			{
+				this.indexItemsArraysOne=0;
+			}
+		else{
+			this.set("indexItemsArraysOne", this.indexItemsArraysOne+1);
+    		this.set("displayedLeft", this.itemsArraysOne[this.indexItemsArraysOne]);
+    		
+    	}
+    },
+ _backOne: function(){	
+ 		if(this.indexItemsArraysOne===0)
+ 		{ 
+			var max=this.itemsArraysOne.length-1;
+ 			console.log(max);
+ 			this.set("indexItemsArraysOne",max);
+ 			this.set("displayedLeft",this.itemsArraysOne[this.indexItemsArraysOne]);
+ 		}
+ 		else
+ 		{	this.set("displayedLeft", this.itemsArraysOne[this.indexItemsArraysOne-1]);
+ 			this.set("indexItemsArraysOne", this.indexItemsArraysOne-1);
+    		
+ 		}
+
+},  
+  computeItemHeaderHidden(header){
+    if(header){return false;}
+    else{return true;}
+  },
+  _computeItemsOneObject(itemsArraysOne,indexItemsArraysOne){},
+  
+computeEventHeightLightColor:function(){
+	return "aliceblue";
+},
+_computeItemsOneObject(itemsArraysOne,indexItemsArraysOne){
+
+	if(itemsArraysOne && itemsArraysOne.length>0){
+		console.log(itemsArraysOne,indexItemsArraysOne);
+
+	return itemsArraysOne[indexItemsArraysOne];
+	}
+},
+
+
+ready: function()
+{	
+		var today = new Date();
+		var index=today.getMonth();
+ 		this.set("indexItemsArraysOne",0);
+
+},
+
+computeCurrentHeight: function(currentHeight){
+   	var ht=window.screen.height;
+      ht=.90*(ht);
+      ht=ht.toString()+"px";
+    	if(this.currentHeight==undefined) {this.set("currentHeight", ht); this.style.height=ht;}	
+    },
+computeViewHeaderOne(monthsArray){},
+
+forward: function(){
+		if(this.displayedIndex ==this.maxIndex){
+ 			this.splice("calendarMonthsArray",this.MaxIndex,1);
+ 		}
+ 		else
+ 		{	this.set("backHidden",false);
+ 			this.set("forwardHidden",false);
+ 			console.log(this.calendarMonthsArray);
+    		this.set("displayedIndex", this.displayedIndex+1);
+    		this.set("displayed", this.calendarMonthsArray[this.displayedIndex]);
+    		this.setArrays();
+    	}
+    },
+backOne: function(){	
+ 		if(this.displayedIndex===0)
+ 		{ 
+ 			this.set("backHidden",true);
+ 		}
+ 		else
+ 		{	this.set("forwardHidden",false);
+ 			this.set("backHidden",false);
+    		this.set("displayedIndex", this.displayedIndex-1);
+    		console.log(this.calendarMonthsArray);
+    		this.set("displayed", this.calendarMonthsArray[this.displayedIndex]);
+ 				this.setArrays();
+ 		}
+ 	
+    },
+  
+  computeYear:function(displayed)
+  		{
+  		var	y =  new Date();
+  		y=y.getFullYear();
+  		var	m = new Date();
+  		var retVal=y+Math.floor((this.displayedIndex)/12);
+		return retVal;
+		},
+
+
+ 	 _resize: function(e){
+          var self=this;
+          var template=this.$.ddrtemplate;
+          this.set("drags",false);
+          e.preventDefault();
+          var width=Math.floor(parseFloat(window.screen.width)*.96);
+          var height=Math.floor(parseFloat(window.screen.height)*.999);
+          if(this.isResizing==true){
+          switch(e.detail.state) {
+                case 'start':
+                var theId=this.relId;
+                var elem=this.$$(theId);
+                var sWidth =window.getComputedStyle(self.$.myPanel, null).getPropertyValue("width");
+                var sheight =window.getComputedStyle(self.$.myPanel, null).getPropertyValue("height");
+                self.set("currentHeight", sheight);
+              
+                 break;
+                case 'track':
+                  var newheight = parseInt(self.currentHeight) + e.detail.ddy;
+                  var nwidth = parseInt(self.currentWidth) + e.detail.ddx;
+                  var nheight2=(newheight<parseFloat(self.minHeight))?self.minHeight:(newheight>height)?height: newheight;
+                  var nwidth2=(nwidth<320)?320:(nwidth>width)? width:nwidth;
+                  var trueWidth = nwidth2.toString()+'px';
+                  var trueHeight = nheight2.toString()+'px';
+                  
+                  
+                  self.set("currentWidth",trueWidth);
+                  self.set("currentHeight",trueHeight);
+                  self.style.width= trueWidth;
+                  self.style.height= trueHeight;
+                
+                  break;
+                case 'end':
+                  self.style.width= trueWidth;
+                  self.style.height= trueHeight;
+                  this.set("heightHolder", self.currentHeight);
+                  this.set("widthHolder", self.currentWidth);
+                  // self.notifyResize();
+                  this.toggleColor=true;
+                  // self._onIronResize();
+                  self.set("refit", true);
+                 // self.afterStartResize();
+                  Polymer.dom.flush();
+                  break;
+              }
+            }
+        },
+      
+});
+</script>
+</dom-module>
+<!--
+
+
+
 <dom-module id="fc-triad">
 <template>
 <style>
@@ -169,10 +705,7 @@ min-height: 38px;
 <script>
 FcTriad=Polymer({
 	is: "fc-triad",
-	behaviors:[
-	FCBehaviors.FcCalendarBehaviorPrime,
-	FCBehaviors.FcDataGridBehavior,
-	Polymer.IronResizableBehavior],
+	behaviors:[FCBehaviors.FocusedDataManagerBehavior],
 	properties: {
 		arrow:{
 			type: String,

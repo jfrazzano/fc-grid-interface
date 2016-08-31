@@ -1,0 +1,382 @@
+
+<link rel="import" href="../../fc-call-center/fc-course-calendar-creation-behavior.html">
+<link rel="import" href="../../fc-call-center/fc-calendar-list-widget-behavior.html">
+<link rel="import" href="../../fc-call-center/fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../fc-grid/data-manager.html">
+<dom-module id="fc-check-menu">
+<template id="fc-check-menu">
+<style>
+    paper-item{
+        padding: 4px 4px 4px 0px; 
+        margin: 4px;
+        font-size: 12px; 
+        font-weight: 300; 
+        font-family: merriweather; 
+        color: #009;
+        margin-top: 3px; 
+        min-width: 200px; 
+        text-align: left;
+        max-width: 480px;
+      
+
+
+          
+            --paper-item:{padding: 0px;
+                max-width: 500px;
+                outline: 0px white solid;
+                @apply(--paper-item);
+            };
+         --paper-item-selected:{
+                background-color: #FFFFFF;
+                border: 1px silver solid;
+                @apply(--paper-item-selected);
+                 @apply(--paper-item);
+            };
+
+    }
+        paper-item-body{padding-left:4px;}
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
+    paper-item:focus{background: orange; outline: 0px dashed white;};
+   @apply(--paper-item);
+  }
+ 
+
+      textarea:focused{outline: 0px white solid;}
+      textarea{border: 11px solid green;}
+      details:focus{outline: 0px white solid;}
+      summary{outline:0px;padding-left: 8px;}
+    section{
+            padding: 0px 4px 0px 4px; 
+        text-align: left;
+        font-size: 14px;
+        text-overflow: clip;
+        text-overflow: ellipsis;
+        text-overflow: "…";
+
+    }
+    .selectColor{
+        border: 1px green solid;
+    }
+    .check{
+  
+        font-size: 9px;
+        cursor: pointer;
+    }
+
+    paper-item-body{}
+    .check.surveyPage{
+
+        font-size: 1em;  
+    }
+    .check.dropdown{
+        font-size: 9px
+    }
+    .checkMinus{
+        color: brown;
+        font-size: 2.2em;
+        cursor: pointer;
+
+    }
+     .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
+        cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    .label.surveyPage{
+        color: #005c00;
+        font-size: 1.4em;
+       text-decoration-style:underline;
+       font-weight: 600;
+    }
+    .label.dropdown{
+           color: #005c00;
+        font-size: 1.15em;
+        font-weight: 300;
+       text-decoration-style:underline;
+    }
+    .dropdown{
+        color: #009;
+        font-size: .9em;
+        font-weight: 300;
+
+    }
+
+</style>
+  <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified">
+ </textarea>
+
+    <paper-listbox id="myDropdown" class=" vertical layout" form-name="[[formName]]" style="{{_computeStyleByType(listType)}}" position: absolute;" attr-for-selected="value" my-selected="{{value}}">
+        <template is="dom-repeat"  style="font-size: 1.2em;" items="{{_computeItems(formsDisplay)}}" id="optionsRepeater">
+            <paper-item form-name="[[formName]]"  class$="horizontal layout flex self-stretch {{listType}}" name="{{item.name}}" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value="{{item.value}}"> 
+            <section class="horizontal layout" style="cursor: pointer; font-size: 1.9em; color: green; white-space:nowrap; overflow: hidden;"><section style=" padding: 0px 4px 4px 4px; margin: 12px 5px 0px 0px; text-align: left;font-size: 1em; color: green;" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]">✅</section><section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]" style="font-size: 1.47em;" >[[item.checkbox]]</section></section>
+            <paper-item-body class="layout vertical flex-7">
+                    <section class$="label {{listType}}">{{item.label}}</section>
+                    <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}"><summary hidden="{{summHidden}}">Show Details</summary>
+                    <section class$="{{listType}}">[[item.text]]</section>
+                </details>
+            </paper-item-body>       
+             </paper-item>
+        </template>
+    </paper-listbox>      
+    </template>  
+ <script>
+ FcCheckMenu=Polymer({
+    is:"fc-check-menu",
+    listeners:{'openDropdown': 'setGetAndScroll'
+            },
+    behaviors: [FCBehaviors.FocusedDataManagerBehavior],
+    properties:{
+
+         checkedEvent:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
+        formName:{
+            type: String, 
+            notify: true
+        },
+          formsDisplay:{
+            type: Array,
+            value: function(){return [];},
+            notify: true,
+        },
+        heldValue:{
+            type: String, 
+            value: function(){return null;},
+            notify: true,
+        },
+        isMulti:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
+        },
+         isNotToggle:{
+            type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+         listType: {
+            type: String, 
+            value: function(){return "surveyPage";},
+            notify: true, 
+        }, 
+        model:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
+         mySelected:{
+            type: String,
+            value: function(){return "";},
+            notify: true,
+        },
+        selectedChecked:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true
+        },
+       
+        selectedIndexArchive:{
+            type: Array,
+            value:function(){return [];},
+            notify:true,
+        },
+      
+        selectedName:{
+            type: String, 
+            value: function(){"";},
+            notify: true
+        },
+
+        summHidden:{  type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+         textareaHidden:{
+            type: Boolean, 
+            value: true, 
+            notify: true,
+        },
+         valueObject:{
+            type: Object, 
+            value: function(){return {};},
+            observer:"observeValueObject",
+            notify: true
+        },
+        profilesArray:{
+            type: Array,
+            value: function(){return [];},
+            notify: true
+        },
+      
+    },
+    ready(){},
+    attatached(){
+         
+        console.log("i am in the attached");
+        
+
+    },
+   
+
+    get listbox(){return this.$.myDropdown;},
+    _computeItems(items){if(items!=undefined){return items[0];}},
+
+
+    getDropdownChildren(type){
+            var children=Polymer.dom(this.listbox).children;
+            var itemChildren=children.filter((val,index,array)=>{return (val.nodeName===type); });
+                return itemChildren;
+    },
+     getProfiles(){
+        var profiles=this.focusedManager.dashboardMap.get("profiles");
+        var arrayProfiles= profiles.gridArray[15];
+        var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{         
+        console.log(pro.valueObject);    
+                  return pro.valueObject;
+                });
+        this.set("profilesArray",  profileObjectsArr);
+        console.log(this.profilesArray);
+        return this.profilesArray;
+            },
+    searchInputProfiles(profiles, property, input){
+                  var regex = new RegExp('.*' + input + '.*', 'i');
+           var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
+                 if((obj[property].match(regex))!=null){
+                    return obj;}});
+           return filteredProfiles;
+            },
+
+    _computeStyleByType(listType){
+            var styleType={
+                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
+                surveyPage:"",
+            };
+            return styleType[listType];
+    },
+    
+    _computeSelectedCheck(sc, myselected, value){
+        if(myselected!==value||this.heldValue===value){return false;}//toggle
+        if(myselected===value){return true;}
+    },
+    
+    makeSelection(e){ 
+        var children = this.getDropdownChildren("PAPER-ITEM");
+        if(children&&children.length>0)
+        {
+            var nodes=children.length-1;
+        }
+        var model=e.model;
+        this.set("model",model);
+        this.set("selectedName", e.model.item.name);
+        var valObjProp= "valueObject." + e.model.item.name;
+        this.listbox.select(model.item.value);
+        this.set("mySelected", e.model.item.value);
+        this.set("valueObject.currentForm",this.formName);
+        this.set(valObjProp, this.model.item.value);
+        this.model.set("item.selectedChecked",!this.model.item.selectedChecked);
+       
+        var d=new Date().getTime();
+      
+        var vals;
+        if(this.heldValue!=null&&e.model.item.value===this.heldValue){
+            vals="--";
+        }
+        else{vals=e.model.item.value;}
+       
+        var entry={index: e.model.index, name:e.model.item.name, value: vals, fcIndex: e.model.item.ind, timestamp: d, user: this.focusedManager.fcid,formName: this.formName};
+        this.push("selectedIndexArchive",entry);
+       var archive= "focusedManager.archive";
+        this.push(archive, entry);
+        this.set("checkedEvent", e);
+        var last=this.selectedIndexArchive.length-1;
+        this.set("heldValue", this.selectedIndexArchive[last].value);
+    
+      
+  },
+  observeValueObject(newVal, oldValue)
+  {
+    // if(newVal)
+    //     {
+    //     console.log("newValue: ", newVal, "and oldManHouse: ", oldValue);
+    //     if(newVal.callerType!="newCaller" || newVal.callerType.matches("ServiceSeeking")!=null)
+    //     {
+    //         var profiles=  this.getProfiles();
+    //         console.log(profiles);
+    //         if(newVal.callerRole&&newVal.callerRole!="--"&&newVal.callerRole.match("nonServiceSeeker"!=null)
+    //         {
+    //         //searchInputProfiles(this.profilesArray, newVal.callerRole, "input");
+    //         }        
+        
+    //     } 
+    //   }    
+  },
+     
+  formTypeObserver(newVal, oldVal){
+    if(newVal.match("ntakes")!=null){}
+  },
+    
+
+    removeValueFromPropertyStringArrayAndObject(e){console.log("will do something cool here", e, e._templateInstance, e.target, e.target.left, etc);},
+            
+    computeDetails(listType){return(listType==="dropdown");},
+
+    computeOpened(listType){
+        if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
+        return false;
+    },
+
+    
+    computeCheckedClass(selectedChecked, index, ind, isNotToggle){
+        if(isNotToggle===false){
+        this.set("checked",!this.checked);
+         this.toggleClass("checked",this.checked, this.$.checkcheck);
+           }//unless updated does nothing i believe
+        },
+    
+
+
+
+
+//cut and paste relics... from calendar creator... this drawer now functions as a resiving, right left drawer to hold checkbox or button lists, searchable inputs with drop downs, toggle buttons, the text inputs are animated can hold lists (arrays but presented as comma separated lists, arrays, or just plain strings)
+
+/*the list itself, once fully completed should be instantiated once on teh top level page with the largest scorp... that single page should then be repeatedly stamped and removed from the dom to facillirtate all dropdowns, single page forms, check boxes etc, which can brought up and removed as needed anywhjere on screen.  
+
+first test of this instantiation came in form of the conetxt menu... created this menu then as a add on to a leaned down iss, and to facilitate forms...
+
+not sure on how to integratye text area...  would just replace input in the iss with text are, but the "no close context on the input" allows for the communication, css animation that would other wise have neeen more 
+complex as a result of closure (Read I would hjave no idea how to get so much out of so little if enclosed.*/
+
+//TODO: FIX DATA SHADOW--try routing to the page and remove the array button wheel pushe//
+
+ });
+ </script>
+ </dom-module> 
+
+
+
+<!-- // getProfiles(){
+    //     var profiles=this.focusedManager.dashboardMap.get("profiles");
+    //     var arrayProfiles= profiles.gridArray[15];
+    //     var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{     
+    //             this.set("profilesArray",  profileObjectsArr);
+    //               return pro.valueObject;
+    //             });
+    //     return this.profilesArray;
+    //         },
+
+  searchInputProfiles(profiles, property, input){
+                  var regex = new RegExp('.*' + input + '.*', 'i');
+           var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
+                 if((obj[property].match(regex))!=null){
+                    return obj;}});
+           return filteredProfiles;
+    },

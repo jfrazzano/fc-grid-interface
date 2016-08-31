@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<!-- saved from url=(0068)http://www.w3schools.com/jsref/tryit.asp?filename=tryjsref_onscroll2 -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=windows-1252">
+<style>
+.test {
+    background-color: yellow;
+}
+</style>
+</head>
+<body style="height:1500px" contenteditable="false">
+
+<p>Scroll down this page</p>
+
+<p id="myP" style="position:fixed" class="">When you have scrolled 50 pixels from the top of this page, add the class "test" (yellow background color) to this paragraph. Scroll up again to remove the class.
+</p>
+
+<script>
+window.onscroll = function() {myFunction()};
+
+function myFunction() {
+    if (document.body.scrollTop > 50 || document.documentElement.scrollTop > 50) {
+        document.getElementById("myP").className = "test";
+    } else {
+        document.getElementById("myP").className = "";
+    }
+}
+</script>
+
+
+
+</body></html>

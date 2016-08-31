@@ -10,8 +10,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 <link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../../fc-call-center/fc-inputs-interface.html">
-<link rel="import" href="../../fc-call-center/fc-form-right.html">
+<!-- <link rel="import" href="../../fc-call-center/fc-inputs-interface.html">-->
+<!-- <link rel="import" href="../../fc-call-center/fc-form-right.html"> -->
 
 <!--
 app-drawer is a navigation drawer that can slide in from the left or right.
@@ -175,7 +175,7 @@ Custom property                  | Description                            | Defa
     <div id="contentContainer" style$="width:{{_computeDrawerCurrentWidth(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px;background:white;">
       
 
-       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize"  style$="position: relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:6px!important; height:120vh; cursor:ew-resize; padding: 1px; width: 8px!important; opacity: 1; border-right: 2px solid #aecefe; z-index: 5; border-right: silver solid 2px; background: white;" is-resizing dragging draggable>
+       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize"  style$="position: relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:6px!important; height:120vh; cursor:ew-resize; padding: 1px; width: 6px!important; opacity: 1; border-right: 2px solid #aecefe; z-index: 965; border-right: silver solid 2px;  padding-right: 12px; background: white;" is-resizing dragging draggable>
     </section>
 
 <div hidden$="{{computeContentHidden(widthOfContent)}}" style$="position:static; {{_computeDrawerCurrentWidthLess(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px;">
@@ -183,7 +183,7 @@ Custom property                  | Description                            | Defa
       <content></content>
 </div>
 
-     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize"  style$="position:relative; right:{{dashBoardRightDrawerCurrentWidth}}px; left: 0px; bottom:0px; top: 0px; min-width: 6px; height: 103vh; cursor:ew-resize; padding: 1px; width:8px!important; opacity:1; border-left: 2px solid silver; z-index:4; background: white;" is-resizing dragging draggable>
+     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize"  style$="position:relative; right:{{dashBoardRightDrawerCurrentWidth}}px; left: -10px; bottom:-40px; top: -40px; min-width: 6px; height: 120vh; background: white; cursor:ew-resize; padding: 1px; width:8px!important; opacity:1; border-left: 2px solid silver; z-index:965; padding-left: 8px; margin-left: -2px;" is-resizing dragging draggable>
       </section>
 
     </div>
@@ -212,7 +212,7 @@ FcAppDrawer=Polymer({
           reflectToAttribute: true,
         },
         dragState:{
-          value: false, 
+          value: true, 
           notify: true,
 
         },
@@ -225,7 +225,7 @@ FcAppDrawer=Polymer({
          */
         opened: {
           type: Boolean,
-          value: false,
+          value: true,
           notify: true,
           reflectToAttribute: true
         },
@@ -315,12 +315,11 @@ FcAppDrawer=Polymer({
       },
 
       attached: function() {
-        this.set("dashboardLeftDrawerCurrentWidth",295);
+        this.set("dashboardLeftDrawerCurrentWidth",18);
        //  this.set("dashboardRightDrawerCurrentWidth",20);
 
        
-       //  this.set("dashboardRightDrawerCurrentWidth",15);
-      //  console.log(this.align, this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth, "this should have the values");
+
         // Only transition the drawer after its first render (e.g. app-drawer-layout
         // may need to set the initial opened state which should not be transitioned).
         Polymer.RenderStatus.afterNextRender(this, function() {
@@ -332,7 +331,8 @@ FcAppDrawer=Polymer({
           this.addEventListener('transitionend', this._transitionend.bind(this));
           this.addEventListener('keydown', this._tabKeydownHandler.bind(this))
         });
-         this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",295);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
+         this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",18);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
+           this.async(function(){this.set("dashboardRightDrawerCurrentWidth",295);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[1];
       },
 
       detached: function() {
@@ -757,7 +757,7 @@ if(nv){
                     var change = (widthString.match("Right"))?[(-e.detail.ddx),"Left","Right"]: [e.detail.ddx,"Right","Left"];//here i chose to place the "negative" string value in position 1, as it is needed below; I placed the "true" value in 1 as it may be needed shortly
                     var nwidth=this[widthString]+parseFloat(change[0]),
                     oppositeSide="dashboard"+change[1].toString()+"DrawerCurrentWidth";
-                    var trueWidth=(nwidth<15)?15:(nwidth>width)? width:nwidth;
+                    var trueWidth=(nwidth<15)?15:(nwidth>width*.9)? width:nwidth;
                     // (nwidth+this[oppositeSide]>width)?Math.ceil(parseFloat(width-this[oppositeSide])): should check here for over lap;
                     // // trueWidth=(trueWidth<0)?(-1*trueWidth):trueWidth;
                     // //console.log(trueWidth);

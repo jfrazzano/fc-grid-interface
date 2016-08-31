@@ -258,27 +258,13 @@ FcCallCenterForm=Polymer({
       },
       attached(){
      
-       console.log(this.itemObject);
+ 
       },
     _computeItems(item){
-      console.log(item.form);
-
-        if(item.form){return [];}
+        if(item.form){return null;}
         else{this.set("inputsHidden", false); return item;}
   },
-      _computeSelected(itemsObject){
-
-        console.log(itemsObject);
-      },
-      computePageNumber(e){
-        return 2;
-      },
-      observeValueObject(nv,ov){
-
-        if(nv&&nv!=undefined){
-       // console.log(nv,ov);
-      }
-      },
+  
      
       wipeInputsClean(e){
         var count=this.itemObject.length;
@@ -323,33 +309,9 @@ FcCallCenterForm=Polymer({
          this.focusedManager.dashboardMap.set(0, oi);
       }
       },
-    observeItemObjects(newv, oldv){
-      if(newv){
-
-        console.log(newv,oldv);
-      }
 
 
-    },
-    
-  changeEventBObserve(nv,ov){
-     
-    // if(nv&& nv.name && nv.value){
-    //   console.log(nv);
-    //   var frank="valueObject."+nv.name;
-    //   this.set(frank, nv.value);
-    //   console.log(this.valueObject);
-    // }
-  
-  },
-   changeEventAObserve(nv, ov){
-    
-    // if(nv&& nv.name && nv.value){
-    //   console.log(nv);
-    //    var frank="valueObject."+nv.name;
-    //   this.set(frank, nv.value);
-    // }    
-  },   
+
 observeChangeB(event, value, name){ 
   var frank="valueObject."+ name;
       this.set(frank, value);
@@ -361,10 +323,10 @@ observeChangeA(event, value, name){
       console.log("This is the Value Object: ", this.valueObject, this.valueObject[name]);
     },
   
-  _computeShowDropButton(dropItems, dropdowns){
-    var retVal=true;
-    return retVal;
-  },
+  // _computeShowDropButton(dropItems, dropdowns){
+  //   var retVal=true;
+  //   return retVal;
+  // },
 
   computeItemHeaderHidden(header){
     if(header){return false;}else{return true;}
@@ -377,9 +339,7 @@ observeChangeA(event, value, name){
       //this.$.callList.updateSearchVals(this.searchVals, name, val);
     },
   
-    observeDropdownPair(nv, ov){
   
-},
     
   _sendInputChanged: function(e, detail){
     //console.log(e,e.target, detail);
@@ -390,17 +350,6 @@ observeChangeA(event, value, name){
     this.fire("sendInputVal", {property: target.value});
     this.searchVals[name]=target.value;
   },
-  findColumns(){},
-
-
-setBackgroundAndBlink(){
-  // this.children
-
-
-
-},
-
-
  
 });
 

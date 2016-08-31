@@ -1,30 +1,3 @@
-<!-- 
-<link rel="import"  href="fc-form-routing-behavior.html"> 
-
-<link rel="import" href="../fc-grid/data-manager.html">
-<link rel="import" href="fc-course-calendar-creation-behavior.html">
-
-<link rel="import" href="../bower_components/iron-form/iron-form.html">
- <link rel="import" href="fc-calendar-behavior-beta-prime.html"> 
-
-<link rel="import" href="fc-profile-class.html">
-<link rel="import"  href="fc-calendar-controller-behavior.html">
-
-<link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
-<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
-<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
-<link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../bower_components/paper-item/paper-item.html">
-<link rel="import" href="../src/fc-grid.html">
-<link rel="import" href="../fc-grid/fc-search-input.html">
-<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
- -->
-
-
 
 <link rel="import" href="../fc-grid/data-manager.html">
 <link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
@@ -57,32 +30,36 @@
       right: 0;
       left: 0;
       bottom: 0;
-      margin-right: 12px;
+      margin-right: 18px;
       margin-left: -19px;
      position: absolute;
       opacity: 1;
       display: block;
       visibility: visible;
-      overflow-x: scroll;
+      overflow: scroll;
       @apply(--vertical-layout);
       @apply(--layout-flex);
        @apply(--layout-reverse);
       }
    
 .header{
-/*  position: absolute;
+position: absolute;
   top: 0px;
   right: 0px;
-  left:0px;*/
-  margin: 30px 0px -75px 20px; 
-  padding-bottom: 30px; 
+  left:0px;
+  margin: 0px 0px -58px 0px; 
   font-family: merriweather; 
+  padding-bottom: 10px;
   line-height: 1;
   color: #009; 
   font-size: 1.2em;
-  font-weight: 300; 
+  font-weight: 300;
+  min-height: 222px!important;/*160 at smallest*/ 
   max-height: 23vh; 
   min-height: 20vh;
+  z-index:23999;
+  overflow: hidden;
+  box-shadow:3px 8px 17px 5px #bfbfbf;
 
 }
 paper-tab{
@@ -98,8 +75,8 @@ paper-tab{
   z-index: 220;
   color: black;
   position: absolute;
-  left:32px;
-  top: 150px;
+  left:12px;
+  top: 218px;
  font-family:merriweather;
   font-size: 2.1em; 
   color: #009;
@@ -109,53 +86,47 @@ paper-tab{
     font-weight: 300;
     color: #009;
     font-family: merriweather;
-   font-size: 13px;
+   font-size: .7em;
     position: absolute;
     color: brown;
     font-family: times;
-   top: 198px;
-   right: 32px;
+   top: 210px;
+   left: 12px;
    margin-bottom: 4px;
     }
   .subheading{
-    font-size: .8em;
+    font-size: .7em;
     position: absolute;
     color: brown;
     font-family: times;
-    top: 180px;
-    right: 32px;
+    top: 192px;
+    right: 22px;
     margin-bottom: 4px;
 
   }
+
       neon-animated-pages {
         @apply(--layout-flex);
         @apply(--layout-horizontal);
-        margin: 12px 24px 12px 0px;
-        padding: 18px;
+        margin: 22px 12px 12px 0px;
+        padding: 6px;
         background: white;
         @apply(--layout-self-stretch);
-        height: 720px;
+        min-height: 100%;
         max-height: 80vh;
       }
-      neon-animatable {
-        color: white;
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        margin: 0px;
-        padding: 0px;
-      }
-
+      
 
     .container1{
       position: relative;
       min-height: 65vh;
       overflow-y:scroll;
-      margin-right: 24px;
-    }
+      margin-right: 4px;
+      }
 
   
      .bar{
-      min-width:280px; 
+      min-width:268px; 
       height: 2px;
       background:silver;
       @apply(--vertical-layout);
@@ -163,8 +134,8 @@ paper-tab{
       @apply(--layout-self-stretch);
       position: absolute;
       left: 12px;
-      top: 195px;
-      right: 34px;
+      top: 205px;
+      right: 22px;
       width: auto;
 
     }
@@ -173,6 +144,7 @@ paper-tab{
       font-family: merriweather; 
       float: left; 
       text-align: left;
+      padding-bottom: 12px;
     }
     .reverseArrow{
 
@@ -188,30 +160,43 @@ paper-tab{
     position: absolute;
     left: 5px;
     }
-    .inner-container1{
-      max-width: 510px!important;
-        }
+
+   
     .column-container{
-      height: 95vh;
+      max-height: 200vh;
       width: 100%;
+      min-height: 96vh;
+      margin-bottom: -80px;
+      height: calc(96.5vh+120px);
       @apply(--vertical-layout);
-      @apply(--layout-flex);
+      @apply(--layout-center);
+      position: relative;
     }
     .footer-container{
+    position: absolute;
+    overflow:hidden;
+    bottom: -4px;
+    right: 0px;
+    left: -5px;
+    padding: 4px;
     border-top: solid 1px silver; 
-    margin-top: 18px; 
-    margin-left: 20px; 
-    width: 92%; 
+    margin: 3px auto 4px auto; 
+    width: 100%; 
+    background: white;
     overflow-x: hidden; 
-    min-height: 8vh; 
-    max-height: 12vh;
-    position: relative;
+    min-height: 4vh; 
+    max-height: 6vh!important;
+    max-height: 80px!important;
+    top: 92%;
     }
     .next{
       color:#005c00;
       font-family: merriweather; 
       float: right; 
+      margin-right: 24px;
+      white-space: nowrap;
       text-align: right;
+      padding-bottom: 12px;
 
     }
     .one{
@@ -223,11 +208,12 @@ paper-tab{
     display: inline-block;
     }
 
-@media(max-height: 580px){
+@media(max-height: 779px){
     #content{
       @apply(--layout-vertical);
       @apply(--layout-center-justified);
         }
+      .container1{margin-top: 22px!important;}
       }
 @media(max-width: 360px){.byebye{display: none;}}
 
@@ -249,13 +235,12 @@ paper-tab{
     
    
     .show {display:block; z-index: 45; right: 0;}
-
   </style>
   <app-route 
         id="rightInteriorDrawerRouterForms"
         route="{{newRoute}}" 
         pattern="/rightDrawerPage/:inputs" 
-        data="{{data.inputsArray}}"
+        data="{{data}}"
         active="{{this.$.dashboardRightDrawer.opened}}">
     </app-route>
 
@@ -263,9 +248,9 @@ paper-tab{
 <div class="column-container">
 
   
-    <div class="header" style="margin-bottom: 14px; z-index: 11; background: white;">
-      <section class="horizontal layout flex">
-    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(localDashboard, interface, currentInnerWidth)}}</span>
+    <div class="header" style$="margin-bottom: 0px; z-index: 11; background: white; height:{{headerHeight}}px;">
+      <section class="horizontal layout block">
+    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
     </section>
              <section class="bar"></section>
         <section class="horizontal layout flex middleheader">
@@ -276,55 +261,46 @@ paper-tab{
         </section>
         </div>
 
- <div class="flex layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}px; min-height: 57vh; max-height: 75vh; margin-top: -14px; margin-bottom: 23px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
-    <array-selector toggle items="{{_computeItems(data, one,counter, nameOfPage)}}" selected="{{selected}}"></array-selector>
-        <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
-          <template is="dom-repeat" items="{{selectedArray}}">
+ <div class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+        <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+        <!--   <template is="dom-repeat" items="{{dataSelected}}">
               <div class="container1">
-                <fc-dropdown-libre hidden="{{one}}" forms-display="{{item}}" selected-checked="{{choiceSelected}}"  select-check check-event="{{checkEvent}}"></fc-dropdown-libre>
-                <fc-call-center-form hidden="{{two}}" value-object="{{item}}" id="generalForm" style="min-height: 650px; overflow-y: scroll;"  search-off="{{searchOff}}" id="ioForm"  focused-manager="{{focusedManager}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}">
-                </fc-call-center-form>
+                 <fc-dropdown-libre hidden$="{{!item.form}}" forms-display="{{item.form}}" selected-checked="{{choiceSelected}}"  select-check check-event="{{checkEvent}}"></fc-dropdown-libre> -->
+                <!--<fc-call-center-form hidden$="{{item.forum}}" value-object="{{_computeItems(item)}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; overflow-y: scroll;" id="ioForm"  focused-manager="{{focusedManager}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}">
+                </fc-call-center-form> 
               </div>
-          </template>
+          </template> -->
       </neon-animated-pages>
   </div>
 
-   <div class="footer-container vertical layout center-justified" style="max-height: 14vh; min-height: 3vh; top: 123px; margin-top: 30px; bottom: 248px; left: -13px; right: 33px; margin-right: 32px;padding-top: 10px;  background: white; position: relative;">
+   <div class="footer-container">
    
               <div class="horizontal flex layout justified">
-                  <section class="last" btn="leftClick" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;"><section class="last reverseArrow">&#10148; </section> &nbsp; LAST PAGE</section>
-                  <section class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;" btn="rightClick">NEXT PAGE <span style="display: inline-block;">&#10148;</span></section>
-              </div>
-              <section class="horizontal layout flex around-justified buttons">
-                  <paper-button class="flex-1 one" style="max-width: 100px;" btn="wipeCleanInputs">clear</paper-button>
-                  <paper-button style="max-width: 100px;" class='one' btn="submitHandler">Submit</paper-button>
-              </section>
+                  <section class="last" btn="leftClick" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px; margin-left:9px;"><section class="last reverseArrow">&#10148; </section> &nbsp; LAST</section>
+                  <section class="horizontal layout flex around-justified buttons">
+                  <content select='.bottomMenu'></content>
+                  </section>
+                  <span class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px; display: inline-block;" btn="rightClick">NEXT &nbsp; &#10148;</span>
+              </div>  
         </div>
       
 </div><!-- end container-->
 </form>
 </template>
 <script>
-FcFormRight=Polymer({
+Polymer({
   is:"fc-form-right",
      behaviors:[Polymer.NeonAnimatableBehavior,
                 Polymer.NeonAnimationBehavior,
                 Polymer.NeonAnimationRunnerBehavior,
-                FCBehaviors.FcCalendarOptionsSelectorBehavior,
-                FCBehaviors.FcGridStyleBehavior, 
-                FCBehaviors.FocusedDataManagerBehavior,
-                FCBehaviors.FcCalendarControllerBehavior,
-                FCBehaviors.FcFormDataRoutingBehavior],
+                FCBehaviors.FocusedDataManagerBehavior
+                ],
           
         listeners: {"on-tap":"_tapHandler"},
-        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)', 'observeInputsDisplayArray(inputsDisplayArray)','deepObserveValueObject(valueObject.*)', 'observeInterfaceObjectAndForms(interfaceObject.value, forms.Intakes, interfaceObject.inputsArray)', 'observeRightDrawerRouteChange()'
-        ],
-    properties:{
-      localDashboard:{
-        type: Object,
-        notify: true,
-      },
-      time:{
+        observers:['deepObserveValueObject(valueObject.*)'
+            ],
+properties:{
+    time:{
       type:Date,
       value:function(){
           var time=new Date().toLocaleTimeString();
@@ -333,20 +309,12 @@ FcFormRight=Polymer({
       },
       notify: true
     },
+    pageType:{
+      value:String,
+      notify: true,
+    },
     selected:{
       type: Number,
-      notify: true,
-
-    },
-    one:{
-      type: Boolean,
-      value:function(){return false;},
-      notify: true,
-
-    },
-      two:{
-      type: Boolean,
-      computed:"computeTwo(one)",
       notify: true,
 
     },
@@ -358,56 +326,44 @@ FcFormRight=Polymer({
             },
         notify: true,
         },
-      entryAnimation:{
-          type: String,
-          value: function(){ return "";},
-          notify: true
-        },
-        shadowIndex:{
-            type: Number,
-            computed: "_computeShadowIndex(selected)",
-            notify: true
-        },
-        exitAnimation:{
-            type: String,
-            value: function(){return "";},
-            notify: true
-        },
-      interface:{
+    entryAnimation:{
         type: String,
-        value: function(){return "profiles";},
-        notify: true, 
-       // observer: "observeInterface",
+        value: function(){ return "";},
+        notify: true
       },
- 
-    valueObject:{
+      shadowIndex:{
+          type: Number,
+          computed: "_computeShadowIndex(selected)",
+          notify: true
+      },
+      exitAnimation:{
+          type: String,
+          value: function(){return "";},
+          notify: true
+      },
+      headerHeight:{
+        type:Number, 
+        value:function(){return 220;},
+        notify: true
+
+
+      },
+  valueObject:{
       type: Object,
       value: function(){return {};}, 
       notify: true,
     },
-    data:{
-      type: Object,
-      value: function(){return {};},
-      notify: true,
-    },
-    selectedArray:{
+    dataSelected:{
       type: Array,
       value: function(){return [];},
-      notify: true
+      notify: true,
+    },
+    rightRouteData:{
+      type: Object,
+      value: function(){return {};}, 
+      notify: true,
     },
   
-    searchOff:{
-      type: Boolean,
-      notify: true, 
-      observer:"observeSearchOff",
-     
-    },
-    formsDisplayArray:{
-      type: Array, 
-      value: function(){return [];},
-      notify: true,
-      obserer:"observeFormsDisplayArray",
-    },
     currentWidth:{
       type:String,
       notify: true,
@@ -416,7 +372,16 @@ FcFormRight=Polymer({
       type:Number, 
       notify: true
     },
+    titleTop: {
+      value: String,
+      notify: true
+    },
+    title:{
+      value: String, 
+      notify: true,
+     
 
+    },
     selected: {
           type: Number,
           value: function(){return 0;},
@@ -429,16 +394,19 @@ FcFormRight=Polymer({
         value: false,
         notify: true
       },
-      isNotToggle:{
-        type: Boolean, 
-        value: false, 
+       hideInputs:{
+        type: Boolean,
+        notify: true
+      },
+      data:{
+        type: Object,
         notify: true
 
-      }, 
+      },
 
     pageTotal:{
          type: Number,
-            computed: "_computePageTotal(selectedArray)",
+            computed: "_computePageTotal(dataSelected)",
             notify: true
         },
    
@@ -450,6 +418,7 @@ FcFormRight=Polymer({
     var maxWidth=window.innerWidth;
     console.log(maxWidth);
     this.set("maxWidth",maxWidth);
+    console.log(this.dataSelected);
   },
   _computeCurrentWidth(ciw){
     var retVal=ciw>=530?530:ciw;
@@ -457,22 +426,24 @@ FcFormRight=Polymer({
   },
   observeSelected(nv, ov){
     if(nv){console.log(nv,ov);}
+  },
+  computeHiddenForm(obj){
+    var retVal=(obj.isForm===true)?false:true;
+    this.set("hideInputs", !retVal);
+    console.log(obj.name, obj.isForm, obj.name);
+    return retVal;
 
 
   },
   computeTwo(one){return !one},
 
-  observeFormsDisplayArray(newArr, oldArr){
-      if(newArr){console.log(newArr);}
-
-
-  }, 
+  
   _computeShadowIndex(selected){
     return selected+1;
   },
-  _computePageTotal(selectedArray){
-    if(selectedArray!=undefined){
-           var retVal=selectedArray.length+1;
+  _computePageTotal(dataSelected){
+    if(dataSelected!=undefined){
+           var retVal=dataSelected.length;
          }
     else{var retVal=1;}
     return retVal;
@@ -484,25 +455,34 @@ FcFormRight=Polymer({
       return retVal;
   },
   _modifySizeRatio(ciw){
-    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.650;
-   var retVal=Math.ceil(r*22);
+    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.6230;
+   var retVal=Math.ceil(r*19);
     console.log(r, retVal);
     return retVal; 
   },
+_computeItems(item){
+  var hidden=(form)?true: false;
+  var retVal=(form==undefined||form==null)?"":item;
+  if(retVal==""){
+  this.set("inputsHidden", hidden);
+  }
+  else{}
+  return retVal;
 
+  },
 
-  _computeTitle(localDashboard, interface, currentInnerWidth){
+  _computeTitle(interface, currentInnerWidth){
     this.title= this.focusedManager.propertyNameToLabel(interface);
      var pxWidt= this.fitTextInDrawer(this.title);
     this.set("titleFontSize",pxWidt);
     console.log(this.titleFontSize);
-    var top=150+(48-this.titleFontSize)*.955;
+    var top=170+(38-this.titleFontSize)*.955;
     this.set("titleTop", top);
     return this.title;
   },
 
     fitTextInDrawer(text){
-    var size=48;  
+    var size=38;  
     var c=document.createElement("CANVAS");
     var ctx=c.getContext("2d");
         var txt=text;
@@ -515,27 +495,6 @@ FcFormRight=Polymer({
     console.log(size);
     return size;
   },
-  _computeItems(data, one,counter, pageName){
-            if(data!=undefined){
-      console.log(data, data, data.inputsArray, data.forms, data.value);
-
-        if(data.forms!=undefined&&data.inputsArray!=undefined){ 
-          if(data.forms&&data.forms.length>0){
-                  this.set("one", true);  
-                  console.log(data.forms, data.forms.length); 
-                  var myLinkSelected=data.forms.concat(data.inputsArray);
-                  console.log(myLinkSelected);
-                  return myLinkSelected;
-            }
-          }
-        }
-    },
-
-
-  computeIsSearchRequired(hasFocusedProfile){},
-  observeSearchOff(nv, ov){if(nv){
-      console.log(nv);}},
-  
 
     deepObserveValueObject(nv, ov){ 
 
@@ -546,14 +505,7 @@ FcFormRight=Polymer({
           this.style.width="440px"; this.style.height="660px";}, 4);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
      },
-  observeInputsDisplayArray(inputs){
-      // var vo={}, triple=this.focusedManager.propertiesLabelsAndValuesFromInputs(inputs);
-      // var valueObject=triple.name.reduce((vo, val,i)=>{ 
-      //               vo[val]="";
-      //               return vo;}, vo);
-      // this.set("valueObject", valueObject);
-      // console.log(this.valueObject);
-  },
+ 
   _computeSiblingHeight(childHeight){
     return childHeight;
        },
@@ -561,20 +513,9 @@ FcFormRight=Polymer({
   attached(){
     this.set("interfaceType", "inputs");
   },
-  observeInterfaceObjectAndForms(name,inputsArray, forms){
-    if(inputsArray&& inputsArray.length){
-      this.set("inputsDisplayArray", inputsArray);
-      }
-    },
-    _computeNextPage(formsDisplayArray, shad){
-        var pickle=formsDisplayArray[shad-1];
-      if(formsDisplayArray.length<=shad){return formsDisplayArray[shad-1];}
-    },
-
-
+ 
     submitHandler(event){
-    if(this.selectedStoreNumber==2){this.focusedManager.createIndexedDatabase(2);}
-    else{
+    
           var formResults = this.$.callIntakeForm.serialize();
             var keys=Object.keys(formResults);
             var trueForm=keys;
@@ -592,9 +533,8 @@ FcFormRight=Polymer({
             gridStoreKeys:{"dbName": base.dbName,"storeName":base.storeName, "verion":base.version, "displayIndex":base.displayIndex, "context": this},  
          };
                                 
-                                this.addCallerTypeToGrids(args);
+              this.addCallerTypeToGrids(args);
               this.wipeCleanInputs();
-            }
      },
 
 
@@ -615,12 +555,16 @@ FcFormRight=Polymer({
         },
 
 
-   _computeNextPage(formsDisplayArray, selected){
-          if(formsDisplayArray[selected]){return formsDisplayArray[selected];}
+   // _computeNextPage(formsDisplayArray, selected){
+   //        if(formsDisplayArray[selected]){return formsDisplayArray[selected];}
 
-     },
+   //   },
 
-
+   computeDisplay(item, hideInput){
+    if(hideInput===true){return "";}
+      else {return item;
+    }
+   },
     observeChangeB(event, value, name){},
 
     observeChangeA(event, value, name){},
@@ -654,14 +598,14 @@ FcFormRight=Polymer({
         this.exitAnimation = 'slide-right-animation';
         
         
-       this.selected = (this.selected === (this.inputsDisplayArray.length))? 0 : (this.selected + 1);
+       this.selected = (this.selected === (this.dataSelected.length-1))? 0 : (this.selected + 1);
        
       },
       leftClick: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
-        console.log(this.inputsDisplayArray, "look here");
-       this.selected = this.selected === 0 ?(this.inputsDisplayArray.length): (this.selected - 1);
+        console.log(this.dataSelected, "look here");
+       this.selected = this.selected === 0 ?(this.dataSelected.length-1): (this.selected - 1);
          
       },
       observerForSearch(isPreviousCaller, callerRole){
@@ -692,7 +636,11 @@ layWaste(e){
 
 
 <!--<style>
-
+ // FCBehaviors.FcCalendarOptionsSelectorBehavior,
+                // FCBehaviors.FcGridStyleBehavior, 
+                //
+                // FCBehaviors.FcCalendarControllerBehavior,
+                // FCBehaviors.FcFormDataRoutingBehavior
 :host{
 
  /* margin-right: -120px; */

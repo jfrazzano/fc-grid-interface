@@ -1,5 +1,4 @@
 
-
 <link rel="import" href="../fc-grid/data-manager.html">
 <link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
 <link rel="import" href="../bower_components/iron-form/iron-form.html">
@@ -14,14 +13,12 @@
 <link rel="import" href="../bower_components/neon-animation/neon-animations.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../fc-grid/fc-iss-input.html">
 <link rel="import" href="../fc-app-elements/fc-panel/fc-panel.html">
-
-<link rel="import" href="../fc-call-center/fc-call-center-form-one.html">
 <link rel="import" href="../fc-call-center/fc-call-center-form.html">
-<dom-module id="fc-inputs-interface">
-
-<template>
+<dom-module id="fc-drawer-form">
+<template id="fc-drawer-form-template">
 <style>
 
 :host{
@@ -32,33 +29,40 @@
       right: 0;
       left: 0;
       bottom: 0;
-      margin-right: -19px;
+      margin-right: 18px;
+      margin-left: -19px;
      position: absolute;
       opacity: 1;
       display: block;
       visibility: visible;
-      overflow-x: scroll;
       @apply(--vertical-layout);
       @apply(--layout-flex);
        @apply(--layout-reverse);
+    .left.header{
+      padding-left: 8px
+      right: 14px;
+      margin-right: 7px;
+
       }
+    };
    
 .header{
- /*position: absolute;
+position: absolute;
   top: 0px;
-  right: 0px;*/
-  /*left:0px;*/ 
-  margin: 30px 0px -95px 20px; 
-  padding-bottom: 20px; 
- 
+  right: 0px;
+  left:-8px;
+  margin: 0px 0px -58px 0px; 
   font-family: merriweather; 
+  padding-bottom: 10px;
   line-height: 1;
-  background: white;
   color: #009; 
   font-size: 1.2em;
-  font-weight: 300; 
-  max-height: 20vh; 
-  min-height: 18vh;
+  font-weight: 300;
+  min-height: 222px!important;/*160 at smallest*/ 
+  max-height: 23vh; 
+  /*min-height: 20vh;*/
+  z-index:23999;
+  box-shadow:3px 8px 17px 5px #bfbfbf;
 
 }
 paper-tab{
@@ -75,7 +79,7 @@ paper-tab{
   color: black;
   position: absolute;
   left:12px;
-  top: 140px;
+  top: 218px;
  font-family:merriweather;
   font-size: 2.1em; 
   color: #009;
@@ -85,53 +89,48 @@ paper-tab{
     font-weight: 300;
     color: #009;
     font-family: merriweather;
-   font-size: 13px;
+   font-size: .7em;
     position: absolute;
     color: brown;
     font-family: times;
-   top: 185px;
+   top: 210px;
    left: 12px;
    margin-bottom: 4px;
     }
   .subheading{
-    font-size: .8em;
+    font-size: .7em;
     position: absolute;
     color: brown;
     font-family: times;
-    top: 167px;
-    right: 12px;
+    top: 192px;
+    right: 25px;
     margin-bottom: 4px;
 
   }
+
       neon-animated-pages {
         @apply(--layout-flex);
         @apply(--layout-horizontal);
-        margin: 12px 0px 12px 0px;
-        padding: 18px;
+        margin: 22px 12px 12px 0px;
+        padding: 6px;
         background: white;
         @apply(--layout-self-stretch);
-        height: 720px;
+        min-height: 100%;
         max-height: 80vh;
       }
-      neon-animatable {
-        color: white;
-        @apply(--layout-horizontal);
-        @apply(--layout-center-center);
-        margin: 0px;
-        padding: 0px;
-      }
-
+      
 
     .container1{
       position: relative;
-      min-height: 73vh;
-      overflow-y:scroll;
-      margin: 14px 2px;
-    }
+      min-height: 200vh;
+      margin-right: 0px;
+      width: 110%
+      padding: 0px 3px;
+      }
 
   
      .bar{
-      min-width:280px; 
+      min-width:268px; 
       height: 2px;
       background:silver;
       @apply(--vertical-layout);
@@ -139,8 +138,8 @@ paper-tab{
       @apply(--layout-self-stretch);
       position: absolute;
       left: 12px;
-      top: 182px;
-      right: 12px;
+      top: 205px;
+      right: 22px;
       width: auto;
 
     }
@@ -149,6 +148,7 @@ paper-tab{
       font-family: merriweather; 
       float: left; 
       text-align: left;
+      padding-bottom: 12px;
     }
     .reverseArrow{
 
@@ -164,30 +164,45 @@ paper-tab{
     position: absolute;
     left: 5px;
     }
-    .inner-container1{
-      max-width: 510px!important;
-        }
+
+   
     .column-container{
-      height: 95vh;
+      max-height: 200vh;
       width: 100%;
+      min-height: 96vh;
+      right: -8px;
+      padding-right: 8px;
+      margin-bottom: -80px;
+      height: calc(96.5vh+120px);
       @apply(--vertical-layout);
-      @apply(--layout-flex);
+      @apply(--layout-center);
+      position: relative;
     }
     .footer-container{
+    position: absolute;
+    overflow:hidden;
+    bottom: -4px;
+    right: 0px;
+    left: -5px;
+    padding: 4px;
     border-top: solid 1px silver; 
-    margin-top: 18px; 
-    margin-left: 20px; 
-    width: 92%; 
+    margin: 3px auto 4px auto; 
+    width: 100%; 
+    background: white;
     overflow-x: hidden; 
     min-height: 4vh; 
-    max-height: 9vh;
-    position: relative;
+    max-height: 6vh!important;
+    max-height: 80px!important;
+    top: 92%;
     }
     .next{
       color:#005c00;
       font-family: merriweather; 
       float: right; 
+      margin-right: 24px;
+      white-space: nowrap;
       text-align: right;
+      padding-bottom: 12px;
 
     }
     .one{
@@ -196,15 +211,16 @@ paper-tab{
     color: #080808;
     font-size: 14px;
     white-space: nowrap;
-    /*display: inlinblock;*/
+    display: inline-block;
     }
 
-@media(max-height: 580px){
+@media(max-height: 779px){
     #content{
       @apply(--layout-vertical);
       @apply(--layout-center-justified);
         }
-      *{font-size:.82%;
+        .header{min-height: 166px; height: 168px!important;};
+      .container1{margin-top: 22px!important;}
       }
 @media(max-width: 360px){.byebye{display: none;}}
 
@@ -215,27 +231,34 @@ paper-tab{
   .middleheader, .bar, .timestamp, .subheading, .last,.next{display: none;}
     /*.bar{display: none;}
   .last{display: none;}*/
-  .title{font-size: .95em;top: 125px; left: 2px;}
+  .title{font-size: .95em;top: 125px; right: 2px;}
 }
 
       .intakeForm{
-      	border: 1px #efefef solid;
-      	margin: 12px 0px;
+        border: 1px #efefef solid;
+        margin: 12px 0px;
       }
 
     
    
-		.show {display:block; z-index: 45; right: 0;}
-
+    .show {display:block; z-index: 45; right: 0;}
   </style>
+< <app-location route="{{newRoute}}"  use-hash-as-path></app-location> 
+  <app-route 
+        id="rightInteriorDrawerRouterForms"
+        route="{{newRoute}}" 
+        pattern="/:formName" 
+        data="{{data}}"
+        active="{{this.$.dashboardRightDrawer.opened}}">
+    </app-route>
 
   <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
 <div class="column-container">
 
   
-    <div class="header" style="margin-bottom: 14px; opacity: 1; z-index: 281; background: white;">
-      <section class="horizontal layout flex">
-    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(localDashboard, interface, currentInnerWidth)}}</span>
+    <div class="header" style$="margin-bottom: 0px; z-index: 11; background: white; height:{{headerHeight}}px;">
+      <section class="horizontal layout block">
+    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
     </section>
              <section class="bar"></section>
         <section class="horizontal layout flex middleheader">
@@ -245,63 +268,46 @@ paper-tab{
             <span btn="rightClick" class="subheading"><span class="byebye">Page</span> {{shadowIndex}} of {{pageTotal}}</span>
         </section>
         </div>
-
- <div class="flex layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}px; min-height: 57vh; max-height: 75vh; margin-top: -14px; margin-bottom: 23px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
-
-        <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
-   
-       <div class="container1">
-          <fc-dropdown-libre forms-display="{{_computeNextPage(formsDisplayArray,selected,interface)}}" selected-checked="{{choiceSelected}}"  select-check check-event="{{checkEvent}}"></fc-dropdown-libre>
-           </div>
-           
-            <template is="dom-repeat" items="{{inputsDisplayArray}}">
-                <div class="container1">
-                    <fc-call-center-form value-object="{{valueObject}}" forms="{{forms}}" form-selected="{{formSelected}}" id="generalForm" style="min-height: 650px; overflow-y: scroll;" first-free-row="{{rowIndex}}" search-off="{{searchOff}}" id="ioForm" grid-display-array="{{gridDisplayArray}}" focused-manager="{{focusedManager}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}" >
-                    </fc-call-center-form>
-                </div>
-            </template>
-        </neon-animated-pages>
-</div>
-
-   <div class="footer-container vertical layout center-justified" style="max-height: 8vh; min-height: 3vh; top: 123px; margin-top: 30px; bottom: 208px; left: -13px; right: 33px; margin-right: 32px;  position: relative;">
+ <div class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh; overflow-y: scroll;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+<!--          <array-selector items="{{dataSelected}}" selected="{{selected}}"></array-selector>  -->
+      <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+          <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
+          <div id="innerContainer1" on-scroll="handleHeaderOnScroll" class="container1">
+              <fc-check-menu hidden$="{{_computeHidden(item)}}" form-name="[[pageType]][[index]]" style="position: absolute; left: 1px;" forms-display="{{computeItem(item)}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+               <fc-call-center-form hidden$="{{!_computeHidden(item)}}" form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; overflow-y: scroll;" id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
+                </fc-call-center-form> 
+              </div>
+          </template>
+ </neon-animated-pages>
+  </div>
+   <div class="footer-container">
    
               <div class="horizontal flex layout justified">
-                  <section class="last" btn="leftClick" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;"><section class="last reverseArrow">&#10148; </section> &nbsp; LAST PAGE</section>
-                  <section class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;" btn="rightClick">NEXT PAGE <span style="display: inline-block;">&#10148;</span></section>
-              </div>
-              <section class="horizontal layout flex around-justified buttons">
-                  <paper-button class="flex-1 one" style="max-width: 100px;" btn="wipeCleanInputs">clear</paper-button>
-                  <paper-button style="max-width: 100px;" class='one' btn="submitHandler">Submit</paper-button>
-              </section>
+                  <section class="last" btn="leftClick" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px; margin-left:9px;"><section class="last reverseArrow">&#10148; </section> &nbsp; LAST</section>
+                  <section class="horizontal layout flex around-justified buttons">
+                  <content select='.bottomMenu'></content>
+                  </section>
+                  <span class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px; display: inline-block;" btn="rightClick">NEXT &nbsp; &#10148;</span>
+              </div>  
         </div>
       
 </div><!-- end container-->
 </form>
 </template>
 <script>
-FcInputsInterface=Polymer({
-	is:"fc-inputs-interface",
-		 behaviors:[Polymer.NeonAnimatableBehavior,
+FcDrawerForm=Polymer({
+  is:"fc-drawer-form",
+     behaviors:[Polymer.NeonAnimatableBehavior,
                 Polymer.NeonAnimationBehavior,
                 Polymer.NeonAnimationRunnerBehavior,
-                FCBehaviors.FcCalendarOptionsSelectorBehavior,
-                FCBehaviors.FcGridStyleBehavior, 
-                FCBehaviors.FocusedDataManagerBehavior,
-                FCBehaviors.FcCalendarControllerBehavior,
-                FCBehaviors.FcFormDataRoutingBehavior],
+                FCBehaviors.FocusedDataManagerBehavior
+                ],
           
-        listeners: {
-                    "on-tap":"_tapHandler"
-                        },
-        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)', 'observeInputsDisplayArray(inputsDisplayArray)','deepObserveValueObject(valueObject.*)', 
-            'observeInterfaceObjectAndForms(interfaceObject.value, forms.Intakes, interfaceObject.inputsArray)'
-        ],
-    properties:{
-      localDashboard:{
-        type: Object,
-        notify: true,
-      },
-      time:{
+        listeners: {"on-tap":"_tapHandler"},
+        observers:['observeValueObjectStar(valueObject.*)'
+            ],
+properties:{
+    time:{
       type:Date,
       value:function(){
           var time=new Date().toLocaleTimeString();
@@ -309,6 +315,18 @@ FcInputsInterface=Polymer({
           return time;
       },
       notify: true
+    },
+    formName:{
+      type: String,
+      value: function(){return "profiles0";},
+      notify: true,
+
+
+    },
+    pageType:{
+      type: String,
+      value:function(){return "";},
+      notify: true,
     },
     date:{
         type: Date,
@@ -318,56 +336,69 @@ FcInputsInterface=Polymer({
             },
         notify: true,
         },
-      entryAnimation:{
-          type: String,
-          value: function(){ return "";},
-          notify: true
-        },
-        shadowIndex:{
-            type: Number,
-            computed: "_computeShadowIndex(selected)",
-            notify: true
-        },
-        exitAnimation:{
-            type: String,
-            value: function(){return "";},
-            notify: true
-        },
-      interface:{
+    entryAnimation:{
         type: String,
-        value: function(){return "profiles";},
-        notify: true, 
-       // observer: "observeInterface",
+        value: function(){ return "";},
+        notify: true
       },
- 
-    valueObject:{
+      shadowIndex:{
+          type: Number,
+          computed: "_computeShadowIndex(selected)",
+          notify: true
+      },
+      exitAnimation:{
+          type: String,
+          value: function(){return "";},
+          notify: true
+      },
+      headerHeight:{
+        type:Number, 
+        value:function(){return 220;},
+        observer: "observeHeaderHeight",
+        notify: true, 
+
+      },
+      arrat:{
+        type: Array, 
+        value: function(){return [];},
+        notify: true,
+
+      },
+  valueObject:{
+      type: Object,
+      value: function(){return {};}, 
+      notify: true,
+    },
+    dataSelected:{
+      type: Array,
+      value: function(){return [];},
+      notify: true,
+    },
+    rightRouteData:{
       type: Object,
       value: function(){return {};}, 
       notify: true,
     },
   
-    searchOff:{
-      type: Boolean,
-      notify: true, 
-      observer:"observeSearchOff",
-     
-    },
-   
-    formsDisplayArray:{
-      type: Array, 
-      value: function(){return [];},
-      notify: true,
-      obserer:"observeFormsDisplayArray",
-    },
     currentWidth:{
       type:String,
+      
       notify: true,
     },
     currentInnerWidth:{
       type:Number, 
       notify: true
     },
+    titleTop: {
+      value: String,
+      notify: true
+    },
+    title:{
+      value: String, 
+      notify: true,
+     
 
+    },
     selected: {
           type: Number,
           value: function(){return 0;},
@@ -380,83 +411,122 @@ FcInputsInterface=Polymer({
         value: false,
         notify: true
       },
-      isNotToggle:{
-        type: Boolean, 
-        value: false, 
+       hideInputs:{
+        type: Boolean,
+        notify: true
+      },
+      data:{
+        type: Object,
         notify: true
 
-      }, 
+      },
+
     pageTotal:{
          type: Number,
-            computed: "_computePageTotal(inputsDisplayArray)",
+            computed: "_computePageTotal(dataSelected)",
             notify: true
         },
+    deNowHeight:{
+      type: String, 
+      notify: true,
+      observer: "observeDeNowHeight",
+
+
+    },
    
   },//end of properties
-		
+    
+
+
   ready(){
-   
+    var maxWidth=window.innerWidth;
+    console.log(maxWidth);
+    this.set("maxWidth",maxWidth);
+    console.log(this.dataSelected);
   },
+
+    attached(){
+    this.set("interfaceType", "inputs");
+    console.log(this.dataSelected);
+
+    // var time=setInterval(()=>{console.log(this.style.height); this.set("deNowHeight",this.style.height); this.arrat=[];
+    //   this.push("arrat",this.deNowHeight)},500);
+  }, 
+
+  _computeHidden(item){
+    if(item&&item!=undefined){
+        if(item.form&&item.form[0].isForm===true){
+          return false;
+        }
+        else return true;
+      }
+
+  },
+  computeItem(item){
+      if(item&&item!=undefined){
+        if(item.form&&item.form[0].isForm===true){
+          this.set("notForm",false);
+          var array=new Array(item.form);
+          console.log(array);
+          return array;
+        }
+        else{ this.set("notForm",true); }
+      
+      }
+    }, 
+
   _computeCurrentWidth(ciw){
     var retVal=ciw>=530?530:ciw;
     return retVal;
   },
   observeSelected(nv, ov){
     if(nv){console.log(nv,ov);}
-
-
   },
+  computeHiddenForm(obj){
+    var retVal=(obj.isForm===true)?false:true;
+    this.set("hideInputs", !retVal);
+    console.log(obj.name, obj.isForm, obj.name);
+    return retVal;
+  },
+  computeTwo(one){return !one},
 
-  observeFormsDisplayArray(newArr, oldArr){
-      if(newArr){console.log(newArr);}
-
-
-  }, 
+  
   _computeShadowIndex(selected){
     return selected+1;
   },
-  _computePageTotal(inputsDisplayArray){
-    if(inputsDisplayArray!=undefined&&this.localDashboard&&this.localDashboard[this.interface]&&this.localDashboard[this.interface].forms){
-      var addTo=this.localDashboard[this.interface].forms.length;
-    var retVal=inputsDisplayArray.length+addTo;}
-    else if(inputsDisplayArray!=undefined){
-           var retVal=inputsDisplayArray.length+1;
+  _computePageTotal(dataSelected){
+    if(dataSelected!=undefined){
+           var retVal=dataSelected.length;
          }
     else{var retVal=1;}
     return retVal;
 
   },
-  computePageNumber(){},
+
   _computeMinWidthHidden(cwidth){
       var retVal=(cwidth-20<200)?true: false;
       return retVal;
   },
   _modifySizeRatio(ciw){
-    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.650;
-   var retVal=Math.ceil(r*22);
+    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.6230;
+   var retVal=Math.ceil(r*19);
     console.log(r, retVal);
     return retVal; 
   },
 
 
-  _computeTitle(localDashboard, interface, currentInnerWidth){
+  _computeTitle(interface, currentInnerWidth){
     this.title= this.focusedManager.propertyNameToLabel(interface);
-    var ht=parseInt(window.innerHeight);
-    console.log(ht);
-
-    var ratio=(ht<690)?1.5:.955
      var pxWidt= this.fitTextInDrawer(this.title);
-    
     this.set("titleFontSize",pxWidt);
     console.log(this.titleFontSize);
-    var top=148+(36-this.titleFontSize)*ratio;
+    var top=170+(38-this.titleFontSize)*.955;
     this.set("titleTop", top);
     return this.title;
-   
   },
 
     fitTextInDrawer(text){
-    var size=36;  
+    var size=38;  
     var c=document.createElement("CANVAS");
     var ctx=c.getContext("2d");
         var txt=text;
@@ -470,14 +540,7 @@ FcInputsInterface=Polymer({
     return size;
   },
 
-
-
-  computeIsSearchRequired(hasFocusedProfile){},
-  observeSearchOff(nv, ov){if(nv){
-      console.log(nv);}},
-  
-
-    deepObserveValueObject(nv, ov){ 
+    observeValueObjectStar(nv, ov){ 
 
   }, 
 
@@ -486,35 +549,23 @@ FcInputsInterface=Polymer({
           this.style.width="440px"; this.style.height="660px";}, 4);
         //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
      },
-  observeInputsDisplayArray(inputs){
-      // var vo={}, triple=this.focusedManager.propertiesLabelsAndValuesFromInputs(inputs);
-      // var valueObject=triple.name.reduce((vo, val,i)=>{ 
-      //               vo[val]="";
-      //               return vo;}, vo);
-      // this.set("valueObject", valueObject);
-      // console.log(this.valueObject);
-  },
-  _computeSiblingHeight(childHeight){
-    return childHeight;
-       },
+  
 
-  attached(){
-    this.set("interfaceType", "inputs");
-  },
-  observeInterfaceObjectAndForms(name,inputsArray, forms){
-    if(inputsArray&& inputsArray.length){
-      this.set("inputsDisplayArray", inputsArray);
-      }
-    },
-    _computeNextPage(formsDisplayArray, shad){
-        var pickle=formsDisplayArray[shad-1];
-      if(formsDisplayArray.length<=shad){return formsDisplayArray[shad-1];}
+
+    handleHeaderOnScroll(e){
+        
+    var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
+
+        console.log(scrollpercent);
+
+
+
     },
 
 
+ observeDeNowHeight(newVal, oldVal){if(newVal){console.log(newVal,this.style.height, oldVal);}},
     submitHandler(event){
-    if(this.selectedStoreNumber==2){this.focusedManager.createIndexedDatabase(2);}
-    else{
+    
           var formResults = this.$.callIntakeForm.serialize();
             var keys=Object.keys(formResults);
             var trueForm=keys;
@@ -532,9 +583,8 @@ FcInputsInterface=Polymer({
             gridStoreKeys:{"dbName": base.dbName,"storeName":base.storeName, "verion":base.version, "displayIndex":base.displayIndex, "context": this},  
          };
                                 
-                                this.addCallerTypeToGrids(args);
+              this.addCallerTypeToGrids(args);
               this.wipeCleanInputs();
-            }
      },
 
 
@@ -554,54 +604,51 @@ FcInputsInterface=Polymer({
                }
         },
 
-
-   _computeNextPage(formsDisplayArray, selected){
-          if(formsDisplayArray[selected]){return formsDisplayArray[selected];}
-
-     },
-
-
-    observeChangeB(event, value, name){},
-
-    observeChangeA(event, value, name){},
-
-
-	_tapHandler(e){
-		var targ=e.target;
+   computeDisplay(item, hideInput){
+    if(hideInput===true){return "";}
+      else {return item;
+    }
+   },
+   
+  _tapHandler(e){
+    var targ=e.target;
     if(e==null){console.log(null);}
     else if(e.target==null){console.log(null);}
      else if(targ!=null){
             console.log("not null"); 
             if(targ!=undefined&&targ!=null&&targ.attributes&&targ.attributes!=undefined&&targ.attributes!=null)
             {
-	
+  
               while(targ.attributes.btn==undefined && targ.nodeName!=="FORM")
-		          { 
+              { 
                 console.log(targ);
-			             targ=targ.parentElement;
-		        }
-	         	if(targ.attributes.btn){
-		              this[targ.attributes.btn.value](e);
-	           }
+                   targ=targ.parentElement;
+            }
+            if(targ.attributes.btn){
+                  this[targ.attributes.btn.value](e);
+             }
           }
         }
-	},
-	    
-
-    
+  },
+  
+      observeHeaderHeight(newv, oldv){
+        if(newv, oldv){
+          console.log(newv, oldv);
+        }
+      },
        rightClick: function() {
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         
         
-       this.selected = (this.selected === (this.inputsDisplayArray.length))? 0 : (this.selected + 1);
+       this.selected = (this.selected === (this.dataSelected.length-1))? 0 : (this.selected + 1);
        
       },
       leftClick: function() {
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
-        console.log(this.inputsDisplayArray, "look here");
-       this.selected = this.selected === 0 ?(this.inputsDisplayArray.length): (this.selected - 1);
+        console.log(this.dataSelected, "look here");
+       this.selected = this.selected === 0 ?(this.dataSelected.length-1): (this.selected - 1);
          
       },
       observerForSearch(isPreviousCaller, callerRole){
@@ -631,27 +678,10 @@ layWaste(e){
 </dom-module>
 
 
-<!--     <!--  <fc-call-center-form-one style="padding: 6px 38px 14px 38px; min-height: 380px; max-height: 650px; overflow-y: scroll;" selected-forms="{{selectedForms}}" page-index="{{selected}}" search-off="{{searchOff}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}" forms-display="{{formsSent}}"  selected-forms="{{computeSelectedForms(selectedForms, chosen}}">
-                </fc-call-center-form-one> 
-    /* @media(max-width: 1080px){
-    #content{
-      @apply(--layout-vertical);
-      @apply(--layout-center-justified);
-        }
-      .title{font-size: 1.7em; top: 135px; left: 18px;}
-      .bar{ left: 18px;top:165px; }
-      .timestamp{
-        left: 18px; top: 170px;
 
-        } 
-            
-        .subheading{top: 150px;}
-      .innerContainer2{
-        max-height: 75vh!important;
-        min-height: 68vh;
-        overflow-y: scroll;
-         max-width: 480px!important;
-        }
-}*/-->
+             <!--  <fc-call-center-form-one hidden="{{_computeHidden(item)}}" form-name="[[pageType]][[index]]_1" form-id="" form-index="[[index]]" value-object="{{valueObject}}" id="checkBoxFormOne" style="min-height: 650px; padding-bottom: 24px; overflow-y: scroll;" id="ioForm"  focused-manager="{{focusedManager}}" form-item="[[item]]">
+              </fc-call-center-form-one> -->
+              <!-- </template> -->
+
 
 

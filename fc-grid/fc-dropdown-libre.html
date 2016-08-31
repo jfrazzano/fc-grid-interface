@@ -4,12 +4,17 @@
 <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../fc-grid/data-manager.html">
 <dom-module id="fc-dropdown-libre">
 <template id="fc-dropdown-libre-template">
 <style>
+:host{
+    width: 100%;
+    background: white;
+}
     paper-item{
-        padding: 12px 4px 12px 26px; 
-        margin: 6px 4px 6px 6px; 
+        padding: 4px 4px 4px 12px; 
+        margin: 4px;
         font-size: 12px; 
         font-weight: 300; 
         font-family: merriweather; 
@@ -18,15 +23,10 @@
         min-width: 200px; 
         text-align: left;
         max-width: 480px;
+      
 
 
-            --paper-item-focused:{
-              background-color: yellow; 
-              font-weight: 600;
-              outline: 0px white solid;
-              border-left: #005c00 1px solid; 
-                @apply(--paper-item-focused);      
-            };
+          
             --paper-item:{padding: 0px;
                 max-width: 500px;
                 outline: 0px white solid;
@@ -40,8 +40,9 @@
             };
 
     }
-     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 8px 0px 12px; white-space: nowrap; height: 46px;};
-    paper-item:focus{background: orange; outline: white;};
+        paper-item-body{padding-left:4px; margin-right: -20px;}
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
+    paper-item:focus{background: orange; outline: 0px dashed white;};
    @apply(--paper-item);
   }
  
@@ -49,9 +50,9 @@
       textarea:focused{outline: 0px white solid;}
       textarea{border: 11px solid green;}
       details:focus{outline: 0px white solid;}
-      summary{outline:0px;padding-left: 12px;}
+      summary{outline:0px;padding-left: 8px;}
     section{
-            padding: 0px 4px 0px 12px; 
+            padding: 0px 4px 0px 4px; 
         text-align: left;
         font-size: 14px;
         text-overflow: clip;
@@ -59,11 +60,16 @@
         text-overflow: "…";
 
     }
+    .selectColor{
+        border: 1px green solid;
+    }
     .check{
   
         font-size: 9px;
         cursor: pointer;
     }
+
+    paper-item-body{}
     .check.surveyPage{
 
         font-size: 1em;  
@@ -81,12 +87,16 @@
         color: brown;
         font-size: 1.6em;
         cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
     }
     .label.surveyPage{
         color: #005c00;
         font-size: 1.4em;
        text-decoration-style:underline;
        font-weight: 600;
+       overflow-x: hidden;
     }
     .label.dropdown{
            color: #005c00;
@@ -102,20 +112,21 @@
     }
 
 </style>
-       
+   <!--  <array-selector items="{{computeItems(formsDisplay)}}" attr-for-selected="{{formName}}" selected="{{formName}}"></array-selector>  -->
  
- <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified"></textarea>
-    <paper-listbox id="myDropdown" style="{{_computeStyleByType(listType)}}">
-        <template is="dom-repeat"  items="{{formsDisplay}}" id="optionsRepeater">
-            <paper-item onclick="{{item.myFunction}}" btn-set-value="{{item.dataSetValue}}" btn-text="{{item.text.0}}"  btn-args="{{item.dataArgs}}"" style$="{{_computeStyle(item.dataProperty, item.dataSetValue, color, background, item.text.0)}}"  btn-property="{{item.dataProperty}}" class$="horizontal layout {{listType}}"  name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}"  value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index,itemSelectProperty)}}" on-up="toggleSelection">  
-                 <div id="checkcheck" class$="checkMinus {{listType}} {{computeCheckedClass(selectedChecked, item.ind)}} {{listType}} flex-1" on-tap="makeSelection">{{_computeChecked(item.ind, selectedChecked, selectedIndex)}}</div>
-                    <div class="layout vertical flex-7">
-                    <section class$="label {{listType}}">{{item.label}} {{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</section>
+ <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified">
+ </textarea>
+    <div id="myDropdown" class=" vertical layout" form-name="[[formName]]" style="{{_computeStyleByType(listType)}}" position: absolute;" attr-for-selected="value" my-selected="{{value}}">
+        <template is="dom-repeat"  style="font-size: 1.2em;" items="{{_computeItems(formsDisplay)}}" id="optionsRepeater">
+            <paper-item form-name="[[formName]]"  class$="horizontal layout flex self-stretch {{listType}}" name="{{item.name}}" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value="{{item.value}}"> 
+            <section class="horizontal layout" style="cursor: pointer; font-size: 1.9em; color: green; white-space:nowrap; overflow: hidden;"><section style=" padding: 0px 4px 4px 4px; margin: 12px 5px 0px 0px; text-align: left;font-size: 1em; color: green;" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]">✅</section><section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]" style="font-size: 1.47em;" >[[item.checkbox]]</section></section>
+            <paper-item-body class="layout vertical flex">
+                    <section class$="label {{listType}}">{{item.label}}</section>
                     <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}"><summary hidden="{{summHidden}}">Show Details</summary>
-                <section class$="{{listType}}">[[item.text]]</section>
-            </details>
-        </div>
-             </paper-item>
+                    <section class$="{{listType}}">[[item.text]]</section>
+                </details>
+            </paper-item-body>       
+             </div>
         </template>
     </paper-listbox>      
     </template>  
@@ -123,48 +134,41 @@
  FcDropDownLibre=Polymer({
     is:"fc-dropdown-libre",
     listeners:{'openDropdown': 'setGetAndScroll'},
+    behaviors: [FCBehaviors.FocusedDataManagerBehavior],
     properties:{
-        arrayDropdown:{
-            type: Array, 
-            value: function(){ 
-                var njhs=localStorage.getItem("NJHS");
-                this.set("quant", njhs);
-                return njhs;
-            },
-            notify: true,
-        },
         formsDisplay:{
             type: Array,
             value: function(){return [];},
-            observer:"observeFormsDisplay",
             notify: true,
         },
-        selected:{
-            value: function(){return -1;},
+      
+        formName:{
+            type: String, 
+            value:function(){return "";},
+            notify: true
+        },
+        heldValue:{
+            type: String, 
+            value: function(){return null;},
             notify: true,
-
         },
-        noToggle:{
-
-
-
+        selectedName:{
+            type: String,
+            value: function(){return "propertyName";},
+            notify: true
         },
+
         textareaHidden:{
             type: Boolean, 
             value: true, 
             notify: true,
         },
-
-        checkEvent:{
-            type: Object,
-            value:function(){return{};},
+        mySelected:{
+            type: String,
+            value: function(){return "";},
             notify: true,
         },
-        checked: {
-            type: Boolean, 
-            value: function (){return false;}, 
-            notify: true,
-        },
+       
         isNotToggle:{
             type:Boolean, 
             value:function(){return false;},
@@ -181,150 +185,135 @@
             notify: true,
         },
         selectedChecked:{
-            value: function(){return -1;},
+            type: Boolean,
+            value: function(){return false;},
             notify: true
         },isMulti:{
             type: Boolean,
             value: function(){return false;},
             notify: true,
         },
-        selectedIndex:{
-            value:[-1],
+       
+        selectedIndexArchive:{
+            type: Array,
+            value:function(){return [];},
             notify:true,
         },
-        secondaryToggle:{
-            type: Boolean,
-            computed:"computeSecondaryToggle(isMulti)",
-            notify:true
-        },
+       
         valueObject:{
             type: Object, 
             value: function(){return {};},
             notify: true
         },
+        model:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
+        selectedName:{
+            type: String, 
+            value: function(){"";},
+            notify: true
+        },
+        checkedEvent:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
         
 
 
     },
-    computeSecondaryToggle(isMulti){
-        if(isMulti===true){this.set("isNotToggle", false); return true;}
-        return false;
+    computeItems(formsDisplay){
+        console.log(formsDisplay);
+        if(formsDisplay!=undefined&&formsDisplay[0]!=undefined){
+           var retValue=(formsDisplay[0].isForm!=undefined)?formsDisplay:[];
+            return retValue;  
+            }          
     },
-    observeListbox(newValue, oldValue){
-        if(newValue){console.log(newValue, oldValue);
-        }
 
-    },
     attached(){
-
-    },
-    toggleSelection(e){},
-    _computeDropDownItems(focused, clicked, quant, dropdownItems){},
-    _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
-    _computeItemSelectedPropertyName(item, index,itemSelectedProperty){
-
-
-    },
-    createFilter(issValue, searchOff){},
-    _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText){},
-    makeSelection(e){ 
-        var children =Polymer.dom(this.$.optionsRepeater).children; 
-        var model=e.model;
-       switch(true){
-            case(this.selectedChecked!==e.model.item.ind):
-                    this.selectionSetter(e);
-                break;
-            case(this.selectedChecked===e.model.item.ind&&this.isNotToggle===false&&this.isMulti===false):
-                    this.selectionSetter("_", {a:-1, b:null, c: null, val: null});
-                    break;
-            case(this.isMulti===true&&this.selectedChecked!=e.model.item.ind):
-                    this.addToPropertyStringAndArray(e);
-                break;
-            case(this.isMulti===true&&this.selectedChecked==e.model.item.ind):
-                this.removeValueFromPropertyStringArrayAndObject(e);
-                break;
-            default: console.log("you screwed up");
-                break;
-            }
         
+    },
+      getDropdownChildren(type){
+    var children=Polymer.dom(this.listbox).children;
+        itemChildren=children.filter((val,index,array)=>{
+               return (val.nodeName===type);
+                        });
+            return itemChildren;
   },
-
-    selectionSetter(e, values){
-        if(values==undefined){
-          var values={};
-          values={a:e.model.index, b:e.model.item, c:e.model.item.name, val:e.model.item.value};
-      }
-       
-        this.set("selectedChecked", values.a);
-        this.set("checkEvent", values.b);
-        this.set("selected", values.c);
-        var valObjprop= "valueObject." + this.selected;
-        this.set(valObjprop, values.val);
-        console.log(this.valueObject);
+  _computeStyleByType(listType){
+        var styleType={
+                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
+                surveyPage:"",
+        };
     
     },
-    addToPropertyStringAndArray(e){
-        var val=e.model.item.value;
-        var name=e.model.item.name;
-        this.set("selectedChecked", e.model.index);
-        this.set("checkEvent", e);
-        this.set("selected", e.model.item.name);
-        var valObjProp= "valueObject." + this.selected;
-        var propValue=this.valueObject[this.selected];
-        if(this.valueObject[this.selected]==undefined){
-        this.set(valObjProp, val);}
-        else if(typeof propValue==='string'||typeof propValue!=='object'){
-            var newValue = val + ", " + propValue;
-            this.set(valObjProp,newValue);
-            var arrayVal=newValue.split(",");
-            console.log(arrayVal);
-            var arrayProp=this.selected+"Array";
-            var objArrProp="valueObject." + arrayProp;
-            this.set(objArrProp, arrayVal);
-            var justAdded=name+"_justAdded";
-            this.fire("valueObject",{arrayProp: arrayVal, name: newValue, justAdded: propValue});
-            this.push("focusedManager.archive", {valueObject: this.valueObject, additions: {arrayProp: arrayVal, name: newValue, justAdded: propValue}, time: new Date().getTime(), user: this.focusedManager.fcid, routeLocation: "route"});
+    _computeItems(items){
+        if(items!=undefined){
+        return items[0];
+    }
+
+    },
+    _computeSelectedCheck(sc, myselected, value){
+
+        if(myselected!==value||this.heldValue===value){return false;}
+        if(myselected===value){return true;}
+    },
+    
+    makeSelection(e){ 
+        var children = this.getDropdownChildren("PAPER-ITEM");
+        console.log(children);
+        if(children&&children.length>0){
+        var nodes=children.length-1;
+        var model=e.model;
+        this.set("model",model);
+        this.set("selectedName", e.model.item.name);
+        var valObjProp= "valueObject." + e.model.item.name;
+       // this.listbox.select(model.item.value);
+     this.set("mySelected", e.model.item.value);
+     this.set("valueObject.currentForm",this.formName);
+     this.set(valObjProp, this.model.item.value);
+        this.model.set("item.selectedChecked",!this.model.item.selectedChecked);
+       ;}
+        var d=new Date().getTime();
+      //if (this.selectedIndexArchive&&this.selectedIndexArchive.length>0){
+        var vals=e.model.item.value;
+        if(this.heldValue!=null&&e.model.item.value===this.heldValue){
+            vals="--";
         }
-        else if(Array.isArray(propValue)){this.push(valObjProp, val);}
-        else if(typeof propValue==='object'){console.log("error, saving to object as property! are you sure you want to do this executeArchiverHERE HERE HERE HERE HERE"); }
-    },
+        var changedChildren=this.getDropdownChildren("PAPER-ITEM");
+        var entry={index: e.model.index, name:e.model.item.name, value: vals, fcIndex: e.model.item.ind, timestamp: d, user: this.focusedManager.fcid,formName: this.formName, htmlChildren: changedChildren};
+        this.push("selectedIndexArchive",entry);
+        this.push("focusedManager[this.formName].archive", entry);
+        this.set("checkedEvent", e);
+        console.log(changedChildren);
+        console.log(this.selectedIndexArchive);
+        var last=this.selectedIndexArchive.length-1;
+        this.set("heldValue", this.selectedIndexArchive[last].value);
+        console.log(this.heldValue);
+        console.log(changedChildren);
+        console.log(this.selectedIndexArchive);
+       
+  },
 
-    removeValueFromPropertyStringArrayAndObject(e){
-        console.log("will do something cool here");
-
-    },
-               
-
-
-    computeDetails(listType){
-        if(listType==="dropdown"){return true;}
-        else{return false;}
-
-    },
+    removeValueFromPropertyStringArrayAndObject(e){console.log("will do something cool here", e, e._templateInstance, e.target, e.target.left, etc);},
+            
+    computeDetails(listType){return(listType==="dropdown");},
 
     computeOpened(listType){
         if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
         return false;
     },
-   
-   
-    //listbox style below
-    _computeStyleByType(listType){
-        var styleType={
-                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
-                surveyPage:"",
-        };
-        return styleType[listType];
-    },
 
-    _computeChecked(selectedChecked, ind, selectedIndex){
-        if(ind===selectedChecked){return '\✅';}else{return '\☐';}
-    },
+    
     computeCheckedClass(selectedChecked, index, ind, isNotToggle){
         if(isNotToggle===false){
         this.set("checked",!this.checked);
          this.toggleClass("checked",this.checked, this.$.checkcheck);
-           }
+           }//unless updated does nothing i believe
         },
     
    
@@ -332,50 +321,126 @@
         return this.$.myDropdown;
 
     },
-    get listboxWidth(){
-        var box=this.listbox;
-        console.log(box.style.width, box.style.width,box.style.width,box.style.width);
-    },
-    _handleTaps: function(e){
-        console.log(e,
-        e.target );
-        var target=e.target;
-                while(target.nodeName!=="PAPER-BUTTON" && target.nodeName!=="PAPER-ICON-BUTTON" && target.nodeName!=="FC-CALL-CENTER-DIALOG")
-                    {target=target.parentElement;}
-                    if(target.nodeName=="PAPER-BUTTON" || target.nodeName=="PAPER-ICON-BUTTON"){
-                        this[target.btm]();
-                    }
-                        else{
-                            var j=e;
-                            this.soSelected(j);
-                        }
-            },
- 
-    confirmCalculate(){
-        console.log(this.fcCourse);
-        this.fcCourse.save();
-        this.fire("catchTheCourse", {theCourse: this.fcCourse});
-        event = JSON.stringify(this.fcCourse);
-        console.log(event);
-        localStorage.setItem("New_Course", event); 
-    },
-
-
-        observeFormsDisplay(newer, older){
-            if(newer){console.log(newer, "BITCH IS HERE");}
-
-
-        }
 
 
 
+//cut and paste relics... from calendar creator... this drawer now functions as a resiving, right left drawer to hold checkbox or button lists, searchable inputs with drop downs, toggle buttons, the text inputs are animated can hold lists (arrays but presented as comma separated lists, arrays, or just plain strings)
 
+/*the list itself, once fully completed should be instantiated once on teh top level page with the largest scorp... that single page should then be repeatedly stamped and removed from the dom to facillirtate all dropdowns, single page forms, check boxes etc, which can brought up and removed as needed anywhjere on screen.  
+
+first test of this instantiation came in form of the conetxt menu... created this menu then as a add on to a leaned down iss, and to facilitate forms...
+
+not sure on how to integratye text area...  would just replace input in the iss with text are, but the "no close context on the input" allows for the communication, css animation that would other wise have neeen more 
+complex as a result of closure (Read I would hjave no idea how to get so much out of so little if enclosed.*/
+
+//TODO: FIX DATA SHADOW--try routing to the page and remove the array button wheel pushe//
 
  });
  </script>
  </dom-module> 
 
- <!--
+ <!--    _computeSelectedChecked(item){
+      var children =this.getDropdownChildren("PAPER-ITEM");
+         for(var i=0;i<children.length; i++){
+                 var elem=children[i];
+             var it=  this.$.myDropdown.itemForElement(elem);
+                var dc=elem._templateInstance.item;
+                console.log(it, elem._templateInstance.item);
+
+                var  retValue=(dc.selectedChecked===true)?'\✅':'\☐'; 
+             }
+     return retValue    
+ },
+
+// removeCheckedFromAllChildren(children){
+    // if(children!=undefined&&children.length>0)
+    //     {
+    //     var retChildren=children.map(function(val,index, array){
+      
+    //         if(val.classList.contains("selectedChecked"))
+    //         {
+    //                 val.classList.remove("selectedChecked");
+    //                 val.classList.add('selectedUnchecked');
+    //         }
+    //                 return val;
+    //     });
+    //     return retChildren;
+    // }
+    // },
+
+    // testKeysAndValuesAgainstValueObject(object, keysValuesArray){
+    //       var propValsToTest= keysValuesArray.filter((kvp,index, array)=>{
+    //                     object[kvp[0]]==kvp[1];
+    //                     return kvp;});
+    //                 return propValsToTest;
+    //     },
+    // setCheckedOnChildrenWithToggleAndMulti(childrenToTest,testKeyValueArray){
+ 
+    //     return childrenToTest.map((obj, index, array)=>{
+    //            return testKeyValueArray.map((kvp,i,a)=>{
+    //            console.log("here is the block",obj.name, obj.value, kvp[0], kvp[1]);
+    //                 var retOb = (obj.name==kvp[0]&&obj.value==kvp[1]&&Polymer.dom(obj).classList.contains("selectedUnchecked"))?(Polymer.dom(obj).classList.remove("selectedUnchecked"),Polymer.dom(obj).classList.add("selectedChecked"),obj):(obj.name==kvp[0]&&obj.value==kvp[1]&&Polymer.dom(obj).classList.contains("selectedChecked"))?(Polymer.dom(obj).classList.remove("selectedChecked"), Polymer.dom(obj).classList.add("selectedUnchecked"), obj):(obj.value!==kvp[1]&&Polymer.dom(obj).classList.contains("selectedChecked"))?(Polymer.dom(obj).classList.remove("selectedChecked"), Polymer.dom(obj).classList.add("selectedUnchecked"), obj):obj;
+    //                 console.log(retOb);
+    //                 return retOb;
+    //            });
+    //     });
+        
+    // },
+
+
+
+    // _handleTaps: function(e){
+    //     console.log(e,e.target ); //cut and paste relic
+    //     var target=e.target;
+    //             while(target.nodeName!=="PAPER-BUTTON" && target.nodeName!=="PAPER-ICON-BUTTON" && target.nodeName!=="FC-CALL-CENTER-DIALOG")
+    //                 {target=target.parentElement;}
+    //                 if(target.nodeName=="PAPER-BUTTON" || target.nodeName=="PAPER-ICON-BUTTON"){
+    //                     this[target.btm]();
+    //                 }
+    //                     else{
+    //                         var j=e;
+    //                         this.soSelected(j);
+    //                     }
+    //         },
+ 
+    // confirmCalculate(){
+    //     console.log(this.fcCourse);
+    //     this.fcCourse.save();
+    //     this.fire("catchTheCourse", {theCourse: this.fcCourse});
+    //     event = JSON.stringify(this.fcCourse);
+    //     console.log(event);
+    //     localStorage.setItem("New_Course", event); 
+    // },
+
+
+
+        observeFormsDisplay(newer, older){
+           
+
+
+        }
+
+
+    _computePageCheck(checkedSelected){
+        // var children =this.getDropdownChildren("PAPER-ITEM");
+        // console.log(children);
+    
+
+            // for(var i=0;i<children.length; i++){
+            //     var elem=children[i];
+            //     var dc = Polymer.dom(elem).firstElementChild;
+            //     var box= Polymer.dom(dc).firstElementChild;
+            //     var check= Polymer.dom(dc).lastElementChild;
+               
+            //      console.log(elem.model, elem.item.value, elem.model.item);
+            //         retVal=     '\☐': '\✅';
+            //      console.log(e.target);
+                // if(boxModel.selectedChecked===true&&this.valueObject[this.selectedName]===elem.value){box.style.display="none"; check.style.display="block";}
+                // else{box.style.display="block"; check.style.display="none";
+                // }
+                // }
+                // }      
+            },
 
   // computeItems(foul, forms){
         

@@ -51,7 +51,8 @@ function DataManager(user){
     this.fcid=user.fcid;
     this.type=user.type;
 	this.dataManagerProfile={};
-  
+    this.gridMaker=new DataGrids({});
+    this.archive=[];
     this.arrayWorker=new Worker("indexedDbWorker.js");
        var addOns=this.getAddOns(); 
     this.profileConstructorArray= [FocusedProfile,FocusedPastAcademics,FocusedAdditionalAcademics];
@@ -66,25 +67,32 @@ function DataManager(user){
     this.inquiryInputs=this.setPropertiesFromConstructorsToInitializeInputsForAnApi([FocusedInquiry],this.inquiryInputs,null, [["_", "_", "_", true]]);
     //console.log("these should be the inquiry inputs", this.inquiryInputs);
     //good to here
-    this.gridMaker=new DataGrids({});
+  
 
 
     this.shorthandIndex={};
     this.inputsIndex=[];
     //console.log(this.gridMaker, "this is gridMaker");
+    var keys=[6,7,8,9];
     this.dashboardMap=this.mappedDashboardDataset();
-    
+   var pickle=this.dashboardMap;
+   var jason=this;
 var stuff=this.gridMaker.dataForPresetDatabases();
     stuff.forEach((array, index)=>{
         var grid= this.gridMaker.gridConstructor([array]);
-        var key=6+index;
-        var stuff=this.dashboardMap.get(key);
-        stuff.gridArray=grid;
-        console.log(stuff)
-        this.dashboardMap.set(key, stuff);
-
+      
+        var i=Math.floor((index-2)/2);
+          var key=keys[i];
+         var more=jason.dashboardMap.get(keys[i]); 
+         console.log(more);
+         if(more){
+        more.gridArray=grid;
+    }
+        console.log(more, grid, "MOVIE TIME")
+        if(more){
+        jason.dashboardMap.set(key, more);
+    }
     }, this);
-
 
     this.getShorthandIndex();
 
@@ -100,7 +108,16 @@ var stuff=this.gridMaker.dataForPresetDatabases();
     //console.log(this.dashboardMap); 
     this.getIdbProfiles();
 
-       
+       var stuff=this.gridMaker.dataForPresetDatabases();
+    stuff.forEach((array, index)=>{
+        var grid= this.gridMaker.gridConstructor([array]);
+        var key=6+index;
+        var stuff=this.dashboardMap.get(key);
+        stuff.gridArray=grid;
+        console.log(stuff)
+        this.dashboardMap.set(key, stuff);
+
+    }, this);
         var databasesIndex={
 
 
@@ -252,75 +269,74 @@ DataManager.prototype.mappedDashboardDataset=function(args){
       
         var forms={   
                 profiles: {form1:[
-                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: null, value: "newProfile", selectedChecked: null, text: "Does a Focused Profile Already Exist for the caller or will you have to help the caller make one?", label: "New Profile",ind: 0 }, 
-                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "profileLookup", label: "Profile Lookup", selectedChecked: null, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1}, 
-                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "viewOtherProfiles", selectedChecked: null, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2}, 
-                            {name: "profileLookup", propetyName: "profileLookup", booleanValue: true, value: "useDataToEducate", selectedChecked: null, label: "Use Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3}, 
-                           {name: "profileLookup", propetyName: "profileLookup", booleanValue: null, value: "searchWarning", selectedChecked: null, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4}
+                            {isForm: true, name: "profileLookup",toggles: true, propertyName: "profileLookup", booleanValue: null, value: "newProfile", selectedChecked: false, text: "Does a Focused Profile Already Exist for the caller or will you have to help the caller make one?", label: "New Profile",ind: 0 , checkbox: '\☐',}, 
+                            {isForm: true, name: "profileLookup",toggles: true, propertyName: "profileLookup", booleanValue: true, value: "profileLookup", label: "Profile Lookup", selectedChecked: false, text: "Are You Looking Up Your Student's Or a Caller's Profile?", ind: 1, checkbox: '\☐',}, 
+                            {isForm: true, name: "profileLookup",toggles: true, propertyName: "profileLookup", booleanValue: true, value: "viewOtherProfiles", selectedChecked: false, text: "Are You Reviewing Profiles To See How You Compare To Other Focused Clients?", label: "View Other's Performance", ind: 2, checkbox: '\☐',}, 
+                            {isForm: true, name: "profileLookup",toggles: true, propertyName: "profileLookup", booleanValue: true, value: "useDataToEducate", selectedChecked: false, label: "Use Data To Educate", text: "Are you reviewing Profile Data to Build a Curriculum or Educate Children?", ind: 3, checkbox: '\☐',}, 
+                           {isForm: true, name: "profileLookup",toggles: true, propertyName: "profileLookup", booleanValue: null, value: "searchWarning", selectedChecked: false, label: "Search Warning", text:"Using Focused Search feartures when entering a new profile WILL cause data to be lost!", ind: 4, checkbox: '\☐',}
                            ],
                         },
              courseCalendars:{
-                        form1:[ {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                        form1:[ {isForm: true, name: "1convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "calendarUseT", booleanValue: undefined, value:"valueOfSelection_ whenBooleanIsBoolean_ nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOther NarrativeAssociatedWithT heEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "1convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "calendarUseT", booleanValue: undefined, value: "valueOfSelection_whenBool eanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedAChec kNextToTheEn tryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntry OnTheDropdo wnMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "c3onvertsToLabelUsuallyPropertyName",toggles: true, propertyName: "calendarUseT", booleanValue: undefined, value: "valueOfSelection_whenBool eanIsBoolean_na meBecome sSelectionValue", selectedChecked: "doWeNeedACheckNextToT heEntryToSignifySelected", text: "TheText", label: "theLabel DerivedFromTheCamelCaseName",script:"aCallSciptOrO therNarrative AssociatedWithTheEntry", ind: "theIndexForTh eEntryOnT heDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',},  
+                                {isForm: true, name: "1convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "calendarUseT", booleanValue: undefined, value: "valueOfSelection_whenBoole ryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallScipt OrOtherNarrati veAssociatedWithTheEntry", ind: "theIndexForThe EntryOnThe DropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "1convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "calendarUseT", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBool ean_nameBecomesSele oTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOthe rNarrativeAssociatedWithTheEntry", ind: "theIndexForT heEntryOnThe DropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
                                 ]
                         },
              allMessages:{
                         form1:[
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                                {isForm: true, name: "2convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "messageSearchType", booleanValue: undefined, value: "valueOf Selection_whenBooleanIsBoolea n_nameBecomesSelectionValue", selectedChecked: "doWeNe edACheckNextToTheEntryToSignifyS elected", text: "TheText", label: "theLabelDerivedFro mTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexF  orTheEntr yOnTheDrop downMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "2convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "messageSearchType", booleanValue: undefined, value: "valueOfSelection_whenBoo leanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckN extToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerive dFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForThe EntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "2convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "messageSearchType", booleanValue: undefined, value: "valueOfSelec tion_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedAC heckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelD erivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "the IndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "2convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "message  SearchType", booleanValue: undefined, value: "valueOfS election_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNee dACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLab elDeriv edFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "2convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "messageSearchType", booleanValue: undefined, value: "valueOfSelectio n_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedAC heckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDe rivedFromTheCamelCaseName",script:"aCallSciptOrOtherN arrativeAssociatedWithTheEntry", ind: "theIndexForT heEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
                         ]
-             },
+                            },
              homeworkResults:{
                         form1:[
-                            {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                            {isForm: true, name: "converts ToLabelUsuallyPropertyName",toggles: true, propertyName: "hwkResultsProfile", booleanValue: undefined, value: "valueOfSelection_ whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNe xtToTh eEntryToS ignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOr OtherNarrativeAssociatedWithTheEntry", ind: "theIndexFo rTheEntryOnTheDropdownMen uOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "hwkResultsProfile", booleanValue: undefined, value: "valueOfSel ection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedAC heckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelD  erivedFromT heCamelCaseName",script:"aCallScipt OrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForT heEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "hwkResultsProfile", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheck NextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "hwkResultsProfile", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNee dACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOth erNarrativeAsso ciatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "hwkResultsProfile", booleanValue: undefined, value: "valueOfSelectio n_whenBoo leanIsBoolea n_nameB ecomesSelectionValue", selectedChecked: "doWeNeedACheckNextT oTheEn tryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheC amelCaseName",script:"aCallSciptOrOtherNar rativeAssociatedWithTheEntry", ind: "theIndexForTheEntryO nTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
 
-                        ]
-             },
+                             ]
+                        },
              testResults:{
                         form1:[
-                            {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
-                                {name: "convertsToLabelUsuallyPropertyName", propetyName: "PropertyName", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform"}, 
+                            {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "testResultsProfile", booleanValue: undefined, value: "valueOfSelection_whenBooleanIsBoole an_nameBecomesSele ctionValue", selectedChecked: "doWeNeedACheckNextT oTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromTheCamelCaseName",script:"aCallS cip tOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEnt ryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "testResultsProfile", booleanValue: undefined, value: "valueOfSelection_ whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNe xtToTheEntryTo SignifySelected", text: "TheText", label: "theLabelDerivedF romTheC amelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEn tryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "testResultsProfile", booleanValue: undefined, value: "valueOfSelection_whenBool eanIsBoo ACheckNextToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerive dFromTheCamelCaseName",script:"aCallSci ptOrOtherNarrativeAssoci atedWithTheEntry", ind: "theIndexForTheEntryOn TheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "testResultsProfile", booleanValue: undefined, value: "valueOfSelection_ whenBooleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckN extToTheEntryToS ignifySelected", text: "TheText", label: "theLabelDerivedF romTheCamelCaseName",script:"aCallSciptOrOth erNarrativeAssociatedWithTheEntry", ind: "theIndexForTheEntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
+                                {isForm: true, name: "convertsToLabelUsuallyPropertyName",toggles: true, propertyName: "testResultsProfile", booleanValue: undefined, value: "valueOfSelection_whenBo oleanIsBoolean_nameBecomesSelectionValue", selectedChecked: "doWeNeedACheckNe xtToTheEntryToSignifySelected", text: "TheText", label: "theLabelDerivedFromThe  CamelCaseName",script:"aCallSciptOrOtherNarrativeAssociatedWithTheEntry", ind: "theIndexForTheE ntryOnTheDropdownMenuOrTheform", selectedChecked: false, checkbox: '\☐',}, 
                         ]
-             },
+                    },
              intakes:{
                     form1:[
-                            {name: "callerType", booleanValue: undefined, value: "newClient", selectedChecked: null, text: "This caller is a new client, who has never contacted Focused before.", label: "New Caller", script: "Hello, and Welcome to Focused Coaching. Have you contacted Focused previously?", route: "callIntakes", subRoute: "name", tail: "userResponses" ,ind: 0 }, 
-                            {name: "callerType", booleanValue: undefined, value: "previousCaller", label: "Previous Caller", selectedChecked: null, text: "This caller has contacted Focued previously, but has yet to enroll in a Focused Program.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 1}, 
-                            {name: "callerType", booleanValue: undefined, value: "currentClient", selectedChecked: null, text: "This caller is currently enrolled in an ongoing Focused Educational Program.  The client likely needs information related to his or her current course.", label: "Current Client", script:"Welcome back to Focused.  How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ", route: "callIntakes", subRoute: "name", tail: "userResponses",ind: 2}, 
-                            {name: "callerType", booleanValue: undefined, value: "clientSeekingAdditionalServices", selectedChecked: null, text: "This is a returning client, who wants to enroll in another Focused course. Study group represents Focused's primary follow-up service.  Many students have mnore than doubled their improvement through Study Group, earning as many as 500 points on the new 1600 SAT exam, and more than 900 additional on the old, 2400 exam.", label: "Client Seeking Additional Services", script: "Welcome back to Focused ${1}... etc", ind: 3},
-                            {name: "callerType", text: "This caller is a past client, now seeking services or advice for a differnt child.", booleanValue: undefined, value: "clientEnrollingNewStudent", selectedChecked: null, label: "Client Enrolling New Student", script:"Welcome back to Focused ${2 references former student}, etc...", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 4},
-                            {name: "callerType", "value": "other", text: "This caller is not interested in Focused Services, please select from the drop down menu to categorize this caller after checking the box marked other.", label: "Non-Service Seeking Caller (Other)", script: "TBD",route: "callIntakes", subRoute: "name", tail: "userResponses",  ind: 5}
+                            {isForm: true, toggles: true, name: "callerType", booleanValue: undefined, value: "newClient", selectedChecked: false, text: "This caller is a new client, who has never contacted Focused before.", label: "New Caller", script: "Hello, and Welcome to Focused Coaching. Have you contacted Focused previously?", route: "callIntakes", subRoute: "callerType", page: this.name, stateObject: "valueObject", tail: "userResponses" ,ind: 0 , selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerType", nextPath: this.value, booleanValue: undefined, value: "previousCaller", label: "Previous Caller", selectedChecked: false, text: "This caller has contacted Focued previously, but has yet to enroll in a Focused Program.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?",route: "callIntakes", subRoute: "callerType", tail: "userResponses", ind: 1, selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerType", booleanValue: undefined, value: "currentClient", selectedChecked: false, text: "This caller is currently enrolled in an ongoing Focused Educational Program.  The client likely needs information related to his or her current course.", label: "Current Client", script:"Welcome back to Focused.  How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ", route: "callIntakes", subRoute: "callerType", tail: "userResponses",ind: 2, selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerType", booleanValue: undefined, value: "clientSeekingAdditionalServices", selectedChecked: false, text: "This is a returning client, who wants to enroll in another Focused course. Study group represents Focused's primary follow-up service.  Many students have mnore than doubled their improvement through Study Group, earning as many as 500 points on the new 1600 SAT exam, and more than 900 additional on the old, 2400 exam.", subRoute: "callerType", label: "Client Seeking Additional Services", script: "Welcome back to Focused ${1}... etc", ind: 3, selectedChecked: false,checkbox: '\☐',},
+                            {isForm: true, toggles: true, name: "callerType", text: "This caller is a past client, now seeking services or advice for a differnt child.", booleanValue: undefined, value: "clientEnrollingNewStudent", selectedChecked: false, label: "Client Enrolling New Student", script:"Welcome back to Focused ${2 references former student, selectedChecked: false, checkbox: '\☐',}, etc...", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 4, selectedChecked: false, checkbox: '\☐',},
+                            {isForm: true, toggles: true, name: "callerType", "value": "other", text: "This caller is not interested in Focused Services, please select from the drop down menu to categorize this caller after checking the box marked other.", label: "Non-Service Seeking Caller (Other)", script: "TBD",route: "callIntakes", ssubRoute: "callerType", tail: "userResponses",  ind: 5, checkbox: '\☐', selectedChecked: false, }
                             ], 
                     form2:[
-                            {name: "callerRole", booleanValue: undefined, value: "parent1", selectedChecked: null, text: "This caller is the primary parent contact for a Focused Student. Usually, 'Parent One' is a Focused Student's mother", label: "Parent One", script: "GET OLD SCRIPT", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 0,  }, 
-                            {name: "callerRole", booleanValue: undefined, value: "parent2", label: "Parent Two", selectedChecked: null, text: "This caller is the secondary parental contact for a Focused Student.  In subsequent portions of the Focused Profile Builder, Parent Two contact information is optional.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 1}, 
-                            {name: "callerRole", booleanValue: undefined, value: "student", selectedChecked: null, text: "The caller is the actual Focused Student. We find that students who seek out Focused on their own often have a better experience and increased performance.", label: "Student", script:"Welcome back to Focused. How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles. ",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 2}, 
-                            {name: "callerRole", booleanValue: undefined, value: "relatedContact", selectedChecked: null, label: "Related Contact", text:"This caller has some relationship to a Focused Student. She could be a student's aunt, grandmother, neighbor, etc.  The relationship is important as this caller is responsible for the Student's participation in the Focused Program.  A text area will appear if you select this option, which will allow you to add the specific relationship.",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 3},
-                            {name: "callerRole", text: "This caller is a past client, now seeking services or advice for a differnt child.", booleanValue: undefined, value: "nonServiceSeeker", selectedChecked: null, label: "Other", text: "This caller has no direct relationship to a Focused Student and is not interested in Focused Services. As above, if you please select this option, a dropdown and text area will appear which will allow you to specify relevant details regarding this caller.",route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 4}
+                            {isForm: true, toggles: true, name: "callerRole", booleanValue: undefined, value: "parent1", selectedChecked: false, text: "This caller is the primary parent contact for a Focused Student. Usually, 'Parent One' is a Focused Student's mother", label: "Parent One", script: "GET OLD SCRIPT", route: "callIntakes", subRoute: "name", tail: "userResponses", ind: 0, selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerRole", booleanValue: undefined, value: "parent2", label: "Parent Two", selectedChecked: false, text: "This caller is the secondary parental contact for a Focused Student.  In subsequent portions of the Focused Profile Builder, Parent Two contact information is optional.", script: "[Add a ${1} in each of them]. Have you enrolled in a Focused program, or are you still considering your options and need more information?", route: "callIntakes", subRoute: "callerRole", tail: "userResponses", ind: 1, selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerRole", booleanValue: undefined, value: "student", selectedChecked: false, text: "The caller is the actual Focused Student. We find that students who seek out Focused on their own often have a better experience and increased performance.", label: "Student", script:"Welcome back to Focused. How may I help you? Whose course are you currently taking, what days of the week, this selection should route to course calendaring and profiles.", route: "callIntakes", subRoute: "callerRole", tail: "userResponses", ind: 2, selectedChecked: false, checkbox: '\☐',}, 
+                            {isForm: true, toggles: true, name: "callerRole", booleanValue: undefined, value: "relatedContact", selectedChecked: false, label: "Related Contact", text:"This caller has some relationship to a Focused Student. She could be a student's aunt, grandmother, neighbor, etc.  The relationship is important as this caller is responsible for the Student's participation in the Focused Program.  A text area will appear if you select this option, which will allow you to add the specific relationship.",route: "callIntakes", subRoute: "callerRole", tail: "userResponses", ind: 3, selectedChecked: false, checkbox: '\☐',},
+                            {isForm: true, toggles: true, name: "callerRole", text: "This caller is not seeking Focused services.", booleanValue: undefined, value: "nonServiceSeeker", selectedChecked: false, label: "Other", text: "This caller has no direct relationship to a Focused Student and is not interested in Focused Services. As above, if you please select this option, a dropdown and text area will appear which will allow you to specify relevant details regarding this caller.",route: "callIntakes", subRoute: "callerRole", tail: "userResponses", ind: 4, checkbox: '\☐',}
                             ],
                     form3:[
-                            {name: "callerFullName", booleanValue: undefined, value: "", selectedChecked: null, label: "Caller Full Name", text: null},
+                            {isForm: true, toggles: true, name: "callerFullName", booleanValue: undefined, value: '', selectedChecked: true, label: "Caller Full Name", text: null, checkbox: '\☐',},
 
                         ],
                         },
                     };
         
     
-
-
+ 
 
 var array=[ 
             {"value": "profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: [],forms:[]},
@@ -352,6 +368,7 @@ var array=[
         this.databaseIndex=array;
         console.log(myMap);
     }
+
     return myMap;
 }
 DataManager.prototype.getReviseResaveAllBasicProfiles=function(key, reactionFunction, reactFunction){
@@ -432,7 +449,7 @@ DataManager.prototype.propertiesLabelsAndValuesFromInputs=function(inputs, type)
                 pre.val=[]; 
                 pre.label=[];
                 pre.name=[];
-
+                if(inputs){
           var headersPlus=inputs.reduce((arr,ar, index, array)=>{
                 arr=arr.concat(ar);
             return arr;
@@ -447,6 +464,7 @@ DataManager.prototype.propertiesLabelsAndValuesFromInputs=function(inputs, type)
                             }, pre);
         this[type]=headersPlus;
         return headersPlus;
+    }
 }
 
 
@@ -752,7 +770,7 @@ class DataGrids{
     else{return "6px";}
   }
    
-  dataForPresetDatabases(){
+ dataForPresetDatabases(){
         return [
 
         [{"dbName": "fcFinancials", "storeName":"mid2014Monthlies", "version": 1, "columns": undefined, "rows": undefined, "size":0, "time": undefined, "changeRecord": []},this.financialGrid],
@@ -1168,6 +1186,9 @@ _computeInterfaceObject(key,interfaceType){
         // var newArray=this.formDisplays.concat(this.inputsDisplayArray);
         // this.set("viewsArray", newArray);
     //console.log(this[ida]);
+
+
+    console.log(this.focusedManager);
     //console.log(this.interfaceMap, this.focusedManager.dashboardMap);
     var sf=this._computeSearchableFields(interfaceObject);
     this.set("searchableFields",sf); 

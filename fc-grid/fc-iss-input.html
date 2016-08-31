@@ -17,6 +17,10 @@ margin-left: 28px;
   @apply(--layout-self-stretch)
 
   }
+  *{border-sizing:border-sizing;}
+  *, *:before, *:after {
+  box-sizing: inherit;
+}
 paper-item{--paper-item-focused:{background: orange;};
    @apply(--paper-item-focused);
   }
@@ -174,8 +178,6 @@ min-width: 210px;
  /* / Dropdown Content (Hidden by Default) /*/
   .dropdown-content {
      display: none;
- 
-      /*background-color: #efefef;*/
       width: 204px;
       opacity: 0;
       box-shadow: 3px 8px 16px 5px #afafaf;
@@ -207,7 +209,7 @@ min-width: 210px;
     padding: 0px;
   
   }
-  paper-icon-button{ width: 28px; height: 28px; padding-bottom: 6px; color: silver;position: static; } 
+ /* paper-icon-button{ width: 28px; height: 28px; padding-bottom: 6px; color: silver;position: static; } */
   .wrapper{width: 95%; position:relative; margin-top: 16px; margin-left: 4px;}
 </style>
 <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}"></array-selector>
@@ -218,13 +220,13 @@ min-width: 210px;
 
 
 <div class="horizontal layout flex self-stretch wrapper">
-  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" hidden="{{!showDropButton}}" on-tap="inputToggle">{{_setUtfSymbol(dropdownItems, localPropertyValue)}}</span>
+  <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: red;  cursor: pointer;" on-tap="inputToggle">{{_setUtfSymbol(dropdownItems, localPropertyValue)}}</span><!-- hidden="{{!showDropButton}}"-->
 <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
 	<input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
 		<label for="issInput" class$="{{issClass}}"><span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}</span></label>
 			<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
 		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
-					<paper-item class="block" style="border: 1px silver solid; background:clear;margin-top: 3px; width: 192px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
+					<paper-item class="block" style="border-bottom: 1px silver solid; background:clear;margin-top: 3px; width: 192px; color: #006; font-size: 16px; font-weight:600; font-family:times; text-align: center;" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
           <span hidden="{{!item.selectCheck}}" class="check">&#10148;</span>
 
           <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
@@ -313,6 +315,11 @@ FcIssInput=Polymer({
           value: function(){return false;},
           notify: true
       },
+      counter:{
+        type: Number,
+        value: function(){return 0;},
+        notify: true
+      },
       isChecked:{
         type: Boolean, 
         value:function(){return false;},
@@ -325,7 +332,7 @@ FcIssInput=Polymer({
   		},
   	itemKeyStrokeIndex:{
   			type: Number,
-  			value: function(){return -889;},
+  			value: function(){return 0;},
   			notify: true,
   		},
    
@@ -445,18 +452,20 @@ FcIssInput=Polymer({
     var children = this.getDropdownChildren();
     this.set("dropdownChildren",children);
   //console.log(this.onChange, this.onChange,this.onChange, this.dropdownChildren);
-  this.set("startScrollTop",this.$.dropdownlist.scrollTop);
-  this.set("baseScrollTop",this.$.dropdownlist.scrollTop);
-  if((this.dropdownItems&&this.dropdownItems.length>0)||this.issClass==="menuItem"){
-    this.set("showDropButton",true);
-  }
+  var scrollWithMargin=(this.$.dropdownlist.scrollTop +35)
+  this.set("startScrollTop",scrollWithMargin);
+  this.set("baseScrollTop",scrollWithMargin);
+  // if((this.dropdownItems&&this.dropdownItems.length>0)||this.issClass==="menuItem"){
+  //   this.set("showDropButton",true);
+  // }
+  console.log(this.$.dropdownlist.scrollTop);
   if(this.isToggle===true){
     this.set("toggleClassOff", "toggleOff");
     this.toggleToggleButton();
    // this.$.dropdownbutton.toggleClass(this.toggleClassOff,!this.toggleOn);
     //this.set("searchOff",true);
     }
- 
+  this.set("showDropButton", true);
  },
 computeLocalPropertyValue(issName, valueObject){
     //console.log(issName, valueObject);
@@ -702,16 +711,18 @@ _computedSetterForIndex(multi, ddo){
   },
   updateAllyKeyChangedItemInColumnPosition(dy, elem){
         this.trackDelta = dy || this.trackDelta || 0;
-        //console.log(this.trackDelta);
+        console.log(this.trackDelta);
         var scrollDelta = this.$.dropdownlist.scrollTop -this.startScrollTop;
-        var pos = this.trackDelta + scrollDelta;
-        this.translate3d(0, -pos + 'px', 0, elem);
+        var pos = this.trackDelta;
+
+        console.log(this.$.dropdownlist.scrollHeight-this.trackDelta, this.$.dropdownlist.scrollHeight-this.$.dropdownlist.scrollTop, this.$.dropdownlist.scrollTop, this.itemKeyStrokeIndex);
+          if(this.trackDelta>310){this.translate3d(0, -pos + 'px', 0, this);}
     },
   onDownArrow(e){
           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
-      	 var children=this.getDropdownChildren(),setterBase=this.itemKeyStrokeIndex;
+      	 var children=this.getDropdownChildren(); var setterBase=this.itemKeyStrokeIndex;
          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
-         //console.log(this.itemKeyStrokeIndex);
+         console.log(this.itemKeyStrokeIndex);
          var bool=children[last]._templateInstance.item.selectCheck;
          var element=children[oneMore]; 
          var preSib=children[setterBase];
@@ -737,21 +748,37 @@ _computedSetterForIndex(multi, ddo){
           }
             var boundRect=element.getBoundingClientRect();
             this.set("bound",boundRect);
-            var delta=(Math.floor(boundRect.height)+1.6);
-            this.$.dropdownlist.scrollTop=(this.$.dropdownlist.scrollHeight - this.$.dropdownlist.scrollTop < this.$.dropdownlist.clientHeight)?this.baseScrollTop:this.$.dropdownlist.scrollTop+delta;       
-    },
+            var delta=(Math.ceil(boundRect.height));
+            console.log(delta, this.itemKeyStrokeIndex);
+              var elem=children[this.itemKeyStrokeIndex];
+        elem.classList.add("selectColor");
+
+        this.counter++;
+        this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop+delta+3;
+              console.log(delta);
+              var dy=this.itemKeyStrokeIndex*delta;
+              this.updateAllyKeyChangedItemInColumnPosition(dy, this);
+                  if(setterBase===last||this.counter==last){this.$.dropdownlist.scrollTop=0;}
+           },
+        
+        
   onUpArrow(e){
       	var children=this.getDropdownChildren();
+        console.log(children);
         var last=(children.length-1);
-        setVal=(this.itemKeyStrokeIndex==0)?last:(this.itemKeyStrokeIndex-1);  ;  	
+        var setVal=(this.itemKeyStrokeIndex==0)?(this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollHeight, last):(this.itemKeyStrokeIndex-1);
+
         this.set("itemKeyStrokeIndex",setVal);
-        children=this.removeColorFromChildren(children);
+  
+       children[last].scrollIntoView(false);
+       children[last].style.backgrou
+        this.removeColorFromChildren(children);
       	var elem=children[this.itemKeyStrokeIndex];
       	elem.classList.add("selectColor");
-      	var rect=elem.getBoundingClientRect(),
-      	ht=window.getComputedStyle(elem,null).getPropertyValue("height"), 
-      	height=rect.height;
- 		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(Math.floor((height+ht)/2)+2);
+      	var rect=elem.getBoundingClientRect();
+        var ht=rect.height;
+        console.log(ht, rect);
+ 		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(ht+3);
       },
   onEnter(e){
     //console.log(e);

@@ -1,0 +1,465 @@
+
+<link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
+<link rel="import" href="../fc-call-center/fc-calendar-list-widget-behavior.html">
+<link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../fc-grid/data-manager.html">
+<dom-module id="fc-dropdown-libre">
+<template id="fc-dropdown-libre-template">
+<style>
+    paper-item{
+        padding: 4px; 
+        margin: 4px;
+        font-size: 12px; 
+        font-weight: 300; 
+        font-family: merriweather; 
+        color: #009;
+        margin-top: 3px; 
+        min-width: 200px; 
+        text-align: left;
+        max-width: 480px;
+
+
+            --paper-item-focused:{
+              background-color: yellow; 
+              font-weight: 600;
+              outline: 0px white solid;
+              border-left: #005c00 1px solid; 
+                @apply(--paper-item-focused);      
+            };
+            --paper-item:{padding: 0px;
+                max-width: 500px;
+                outline: 0px white solid;
+                @apply(--paper-item);
+            };
+         --paper-item-selected:{
+                background-color: #FFFFFF;
+                border: 1px silver solid;
+                @apply(--paper-item-selected);
+                 @apply(--paper-item);
+            };
+
+    }
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
+    paper-item:focus{background: orange; outline: white;};
+   @apply(--paper-item);
+  }
+ 
+
+      textarea:focused{outline: 0px white solid;}
+      textarea{border: 11px solid green;}
+      details:focus{outline: 0px white solid;}
+      summary{outline:0px;padding-left: 8px;}
+    section{
+            padding: 0px 4px 0px 8px; 
+        text-align: left;
+        font-size: 14px;
+        text-overflow: clip;
+        text-overflow: ellipsis;
+        text-overflow: "…";
+
+    }
+    .check{
+  
+        font-size: 9px;
+        cursor: pointer;
+    }
+    .check.surveyPage{
+
+        font-size: 1em;  
+    }
+    .check.dropdown{
+        font-size: 9px
+    }
+    .checkMinus{
+        color: brown;
+        font-size: 2.2em;
+        cursor: pointer;
+
+    }
+     .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
+        cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    .label.surveyPage{
+        color: #005c00;
+        font-size: 1.4em;
+       text-decoration-style:underline;
+       font-weight: 600;
+    }
+    .label.dropdown{
+           color: #005c00;
+        font-size: 1.15em;
+        font-weight: 300;
+       text-decoration-style:underline;
+    }
+    .dropdown{
+        color: #009;
+        font-size: .9em;
+        font-weight: 300;
+
+    }
+
+</style>
+ <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified">
+ </textarea>
+    <paper-listbox id="myDropdown" style="{{_computeStyleByType(listType)}}">
+        <template is="dom-repeat"  items="{{computeItems(formsDisplay)}}" id="optionsRepeater">
+            <paper-item class$="horizontal layout {{listType}}" attr-for-selected="value" name="{{item.name}}" value="{{item.value}}">
+
+                 <div id="checkcheck" class$="checkMinus {{listType}} {{computeCheckedClass(selectedChecked, item.ind)}} {{listType}} flex-1" on-tap="makeSelection"> <span hidden$="{{!computeChecked(this.lostbox.selected,item.value, item.selectChecked)}}">✅ </span><span hidden$="{{computeChecked(this.listbox.selected, item.value, item.selectChecked}}">☐</span>
+
+<!-- 
+                 [[_computeChecked(item.ind, selectedChecked, selectedIndexArchive, item.value, item.name)]]</div>-->
+                 </div>
+                    <div class="layout vertical flex-7">
+                        <section class$="label {{listType}}">{{item.label}}{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}
+                        </section>
+                         <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}">
+                                    <summary hidden="{{summHidden}}">Show Details</summary>
+                                    <section class$="{{listType}}">[[item.text]]</section>
+                         </details>
+                    </div>
+
+             </paper-item>
+        </template>
+    </paper-listbox>      
+    </template>  
+ <script>
+ FcDropDownLibre=Polymer({
+    is:"fc-dropdown-libre",
+    listeners:{'openDropdown': 'setGetAndScroll'},
+    behaviors: [FCBehaviors.FocusedDataManagerBehavior],
+    properties:{
+        arrayDropdown:{
+            type: Array, 
+            value: function(){ 
+                var njhs=localStorage.getItem("NJHS");
+                this.set("quant", njhs);
+                return njhs;
+            },
+            notify: true,
+        },
+        formsDisplay:{
+            value: Array,
+            notify: true,
+        },
+        selected:{
+            value: String,
+            notify: true,
+
+        },
+        itemSelectedProperty:{
+            type: String,
+            value: 'value',
+            notify: true,
+
+        },
+        selectedName:{
+            type: String,
+            value: function(){return "propertyName";},
+            notify: true
+        },
+
+        textareaHidden:{
+            type: Boolean, 
+            value: true, 
+            notify: true,
+        },
+        selected:{
+            value: String,
+            notify: true,
+        },
+
+        checkEvent:{
+            type: Object,
+            value:function(){return{};},
+            notify: true,
+        },
+        checked: {
+            type: Boolean, 
+            value: function (){return false;}, 
+            notify: true,
+        },
+        isNotToggle:{
+            type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+        listType: {
+            type: String, 
+            value: function(){return "surveyPage";},
+            notify: true, 
+        }, 
+      
+        summHidden:{  type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+        selectedChecked:{
+            value: function(){return -1;},
+            notify: true
+        },isMulti:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
+        },
+        selectedIndex:{
+            value:[-1],
+            notify:true,
+        },
+        selectedObject:{
+            type: Object,
+            value:function(){return {};},
+            notify: true,
+        },
+        selectedIndexArchive:{
+            type: Array,
+            value:function(){return [];},
+            notify:true,
+        },
+        secondaryToggle:{
+            type: Boolean,
+            computed:"computeSecondaryToggle(isMulti)",
+            notify:true
+        },
+        valueObject:{
+            type: Object, 
+            value: function(){return {};},
+            notify: true
+        },
+        
+
+
+    },
+    computeItems(formsDisplay){
+        if(Array.isArray(formsDisplay)){return formsDisplay;}
+        else{ var array=[];
+                console.log(formsDisplay);
+                array=Object.values(formsDisplay);
+                console.log(array);
+                return array;
+            }
+    },
+    computeSecondaryToggle(isMulti){
+        if(isMulti===true){this.set("isNotToggle", false); return true;}
+        return false;
+    },
+    observeListbox(newValue, oldValue){
+        if(newValue){console.log(newValue, oldValue);
+        }
+
+    },
+    computeChecked(selected,value, checked){
+        retVal=(selected===value&&checked==false)?true:(selected===value&&checked===true&&this.isNotToggle===false)?true:false;
+        if (retVal===true){this.set("selectChecked", true);}
+        else {this.set("selectChecked", false);}
+        return retVal;
+    },
+    attached(){
+
+    },
+    toggleSelection(e){},
+    _computeDropDownItems(focused, clicked, quant, dropdownItems){},
+    _computeItemSelectedPropValue(item,index, itemSelectProperty){ return "oooonooo";},
+    _computeItemSelectedPropertyName(item, index,itemSelectedProperty){
+        if(itemSelectedProperty==undefined||itemSelectedProperty==null){
+            return "item";
+        }
+        else if(itemSelectedProperty!==undefined&&itemSelectedProperty==!null&&typeof itemSelectedProperty=="string"){
+                return itemSelectProperty;
+        }
+        else return "value";
+    },
+    _computeActive(item){if(item&&item!=undefined){console.log(item);}},
+    createFilter(issValue, searchOff){},
+    _computeStyle(itemDataProperty, itemDataSetValue, color, background, itemText){},
+    makeSelection(e){ 
+        var children = Polymer.dom(this.$.optionsRepeater).children; 
+        var model=e.model;
+        this.set("selectedName", e.model.item.name);
+
+
+        //console.log(e.target, e.model.item.value, e.model.index);
+        var d=new Date().getTime();
+        var entry={index: e.model.index, name:e.model.item.name, value: e.model.item.value, fcIndex: e.model.item.ind, timestamp: d, user: this.focusedManager.fcid};
+        this.push("selectedIndexArchive",entry);
+        this.push("focusedManager.archive", entry);
+       switch(true){
+            case(this.selectedChecked!==e.model.item.ind):
+                    this.selectionSetter(e);
+                break;
+            case(this.selectedChecked===e.model.item.ind&&this.isNotToggle===false&&this.isMulti===false):
+                    this.selectionSetter("_", {a:-1, b:null, c: null, val: null});
+                    break;
+            case(this.isMulti===true&&this.selectedChecked!=e.model.item.ind):
+                    this.addToPropertyStringAndArray(e);
+                break;
+            case(this.isMulti===true&&this.selectedChecked==e.model.item.ind):
+                this.removeValueFromPropertyStringArrayAndObject(e, this.selectedCheck, e.model.item.ind);
+                break;
+            default: console.log("you screwed up");
+                break;
+            }
+        
+  },
+
+    selectionSetter(e, values){
+        if(values==undefined){
+          var values={};
+          values={a:e.model.item.ind, b:e.model.item, c:e.model.item.name, val:e.model.item.value, checked:e.model.item.selectedChecked};
+      }
+        console.log(this.listbox.items);
+        this.listbox.select(values.val);
+        console.log(this.listbox.selected);
+        this.set("selectedChecked", values.checked);
+        this.set("checkEvent", values.b);
+        this.set("selectedName", values.c);
+        // this.set("selected",values.val);
+        // console.log(values);
+        console.log(this.listbox.selectedItem);
+        // this.$.myDropdown.select(values.val);
+        console.log(this.listbox.items.selected);
+        var valObjprop= "valueObject." + this.selectedName;
+        this.set(valObjprop, values.val);
+            // e.model.set("item.selectedChecked", true);
+        console.log(this.valueObject, this.$.myDropdown.selectedItem, this.$.myDropdown.selectedItems, this.$.myDropdown.selected);
+    },
+    addToPropertyStringAndArray(e){
+        var val=e.model.item.value;
+        var name=e.model.item.name;
+        this.set("selectedChecked", e.model.index);
+        this.set("checkEvent", e);
+        this.set("selected", e.model.item.name);
+        var valObjProp= "valueObject." + this.selectedName;
+        var propValue=this.valueObject[this.selectedName];
+        if(this.valueObject[this.selectedName]==undefined){
+        this.set(valObjProp, val);}
+        else if(typeof propValue==='string'||typeof propValue!=='object'){
+            var newValue = val + ", " + propValue;
+            this.set(valObjProp,newValue);
+            var arrayVal=newValue.split(",");
+            console.log(arrayVal);
+            var arrayProp=this.selectedName+"Array";
+            var objArrProp="valueObject." + arrayProp;
+            this.set(objArrProp, arrayVal);
+            var justAdded=name+"_justAdded";
+            this.fire("valueObject",{arrayProp: arrayVal, name: newValue, justAdded: propValue});
+            this.push("focusedManager.archive", {valueObject: this.valueObject, additions: {arrayProp: arrayVal, name: newValue, justAdded: propValue}, time: new Date().getTime(), user: this.focusedManager.fcid, routeLocation: "route"});
+        }
+        else if(Array.isArray(propValue)){this.push(valObjProp, val);}
+        else if(typeof propValue==='object'){console.log("error, saving to object as property! are you sure you want to do this executeArchiverHERE HERE HERE HERE HERE"); }
+    },
+
+    removeValueFromPropertyStringArrayAndObject(e){
+        console.log("will do something cool here", e, e._templateInstance, e.target, e.target.left, etc);
+
+    },
+               
+
+
+    computeDetails(listType){
+        if(listType==="dropdown"){return true;}
+        else{return false;}
+
+    },
+
+    computeOpened(listType){
+        if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
+        return false;
+    },
+   
+   
+    //listbox style below
+    _computeStyleByType(listType){
+        var styleType={
+                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
+                surveyPage:"",
+        };
+        return styleType[listType];
+    },
+
+    _computeChecked(selectedChecked, ind, selectedIndexArchive, val, name){
+        //      var last=selectedIndexArchive.length-1;
+        // var lastNameSet=selectedIndexArchive[last].name;
+        // if(name!==lastNameSet){}
+        // else{
+        console.log("i got in the checked", selectedChecked, ind, selectedIndexArchive, val, name);
+        var last=selectedIndexArchive.length-1;
+       // var lastChosenValue=selectedIndexArchive[last].value;
+
+        if(ind===selectedChecked&&lastChosenValue===val){return '\✅';}else{return '\☐';}
+        // }
+    },
+    computeCheckedClass(selectedChecked, index, ind, isNotToggle){
+        if(isNotToggle===false){
+        //this.set("checked",!this.checked);
+         this.toggleClass("checked",this.checked, this.$.checkcheck);
+           }
+        },
+    
+   
+    get listbox(){
+        return this.$.myDropdown;
+
+    },
+    get listboxWidth(){
+        var box=this.listbox;
+        console.log(box.style.width, box.style.width,box.style.width,box.style.width);
+    },
+    _handleTaps: function(e){
+        console.log(e,
+        e.target );
+        var target=e.target;
+                while(target.nodeName!=="PAPER-BUTTON" && target.nodeName!=="PAPER-ICON-BUTTON" && target.nodeName!=="FC-CALL-CENTER-DIALOG")
+                    {target=target.parentElement;}
+                    if(target.nodeName=="PAPER-BUTTON" || target.nodeName=="PAPER-ICON-BUTTON"){
+                        this[target.btm]();
+                    }
+                        else{
+                            var j=e;
+                            this.soSelected(j);
+                        }
+            },
+ 
+    confirmCalculate(){
+        console.log(this.fcCourse);
+        this.fcCourse.save();
+        this.fire("catchTheCourse", {theCourse: this.fcCourse});
+        event = JSON.stringify(this.fcCourse);
+        console.log(event);
+        localStorage.setItem("New_Course", event); 
+    },
+
+
+    
+
+
+
+ });
+ </script>
+ </dom-module> 
+
+ <!--
+
+  // computeItems(foul, forms){
+        
+    //     if(foul&&forms&&this.selectedForm){
+    //     var retArr=[];
+    //    var keys=Object.keys(forms[this.selectedForm]);
+    //    keys.length;
+    //    for(var i=0; i<keys; i++){
+    //     var key= keys[i];
+    //     var form=forms[this.selectedForm][key];
+    //             retArr.push(form);
+    //         }
+    //         console.log(retArr);
+    //    return retArr;
+    //     }
+       
+    // },    

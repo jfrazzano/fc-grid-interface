@@ -1,23 +1,24 @@
-<link rel="import" href="../fc-grid/fc-grid-style-behavior.html">
+<!-- <link rel="import" href="fc-grid-initializer-behavior.html">
+<link rel="import" href="fc-indexed-db-behavior.html"> -->
+<link rel="import" href="fc-grid-style-behavior.html">
+<link rel="import" href="fc-indexed-db-helper.html">
+<link rel="import" href="fc-indexed-database.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html"> 
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
-<link rel="import" href="../fc-grid/data-manager.html">
-<link rel="import" href="../fc-grid/fc-dropdown-libre.html">
- <link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html"> 
-<dom-module id="fc-grid">
+<link rel="import" href="data-manager.html">
+<!-- <link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import"  href="../fc-call-center/fc-tabbed-card-plus.html"> -->
+<
+<dom-module id="fc-grid-rows">
   <template id="fc-grid-template">
     <style>
       :host{
-        margin: 12px; 
-        padding: 4px;
+        padding: 12px 24px;
         position: static;
         background: white; 
         opacity: 1; 
-        min-height: 700px;
-        background: white;
         @apply(--layout-vertical);
         @apply(--layout-flex); 
       }
@@ -65,8 +66,8 @@
           overflow-y: scroll; 
           box-shadow: 5px 7px 11px 3px #afafaf;
           }
-        #mappedGridContainer{
-         
+      /*  #mappedGridContainer{
+          min-width:50.99vw; 
           background: aliceblue; 
           max-width:92.99vw; 
           width: 90%; 
@@ -77,7 +78,7 @@
           padding: 19px; 
           margin: 16px;
           @apply(--layout-self-stretch);
-        }
+        }*/
         input{
           padding: 6px; 
           min-height: 12px; 
@@ -117,12 +118,12 @@
             position: absolute: 
             top: 0px; right: 0px; left: 0px;
         }
-        @media (min-width: 1900px){
+        @media (min-width: 1500px){
           .leftpanel{
             @apply(--layout-flex-1);
             z-index: 7; 
             position: relative; 
-            left:22px;
+            left:48px;
             bottom: -2px; 
             top: 1px; 
             width: 137px;
@@ -131,28 +132,29 @@
 
           }
         }
-        @media (max-width: 1899px){
+        @media (max-width: 1499px){
           .leftpanel{
             display: none;
           }
         }
         @media (min-width: 947px)
         {
-          .rightpanel{
-            @apply(--layout-flex-1);
+         /* .rightpanel{
+        
             z-index: 4; 
             position: relative; 
-            right:-2px;
+            right:4px;
             bottom: -2px; 
             top: 1px; 
-            min-width: 137px;
+            min-width: 190px;
             max-width: 245px;
             padding: 8px; 
-            margin:0px; 
+            margin-right: 24px; 
             border-left: 1px silver solid;
             @apply(--layout-left-justified);
+                @apply(--layout-flex-1);
           }
-        }
+        }*/
         @media(max-width: 946px){
           .rightpanel{
             width: 1px;
@@ -166,51 +168,32 @@
           position: fixed;
           bottom: 50px;
           right: 70px;
-          background: orange;
-          border:#005c00 3px solid;
+          background: white;
           color: #005c00;
-          z-index:222800;
+          z-index:76200;
         }
     </style>
-   
-    <div on-mousedown="closemenu" class="layout horizontal" style="position: relative; width: 100%;">
-        
-        <div is-gridbox="true"  
-            id="mappedGridContainer" 
-            class="horizontal layout reverse flex-8" 
-            style="position: relative; overflow: scroll;">
-            <!--interior of scroll div for grid-->
-            <!--begin grid div below-->        
-            <div id="polymerGrid" 
-                on-contextmenu="mycontextMenu" 
-                class="horizontal layout flex-9 self-stretch reverse">
-                <template is="dom-repeat"  
-                    id="mappedGridRepeater" 
-                    observe="data selected" 
-                    class="horizontal layout flex self-stretch" 
-                    id="template" 
-                    index-as="columnIndex" 
-                    items="{{gridDisplayArray}}"
-                     initial-count="40" 
-                    as="col"><!--begin columns-->
-                    <div id$="divCol_[[columnIndex]]" 
-                        class="vertical layout container columnHeader self-stretch" 
-                        style="position: relative;overflow:hidden;">
+
+    <div on-mousedown="closemenu" class="layout horizontal block" style="position: relative;">
+    <paper-fab on-tap="openit" class="interface">interface</paper-fab>
+
+        <div is-gridbox="true"  id="mappedGridContainer" 
+            class="horizontal layout flex wraop" 
+            style="position: relative; margin: auto;"
+                on-contextmenu="mycontextMenu">
                         <template 
                             is="dom-repeat" 
-                            id$="template_{{columnIndex}}" 
-                            filter="{{_myStupidFilter(valueObject.studentFirstName, superValue.studentFirstName, valueObject.studentPhoneNumber, inputsDisplayArray.studentFirstName, inputsDisplayArray.studentPhoneNumber, item)}}"
+                            id$="template_" 
+                            filter="{{_myStupidFilter(item)}}"
                             class="vertical flex layout"
-                            items="{{col}}"
-                            observe="studentFirstName, value, studentLastName, studentPhoneNumber, studentEmail, parent1FirstName, parent1LastName, parent1PhoneNumber"
-                            initial-count="100">
-                           <!--begin cell repeats--> <!-- 
-                            on-keydown="valueChangeRecord" -->
-                            <textarea input-type="text" 
-                                  inputs-display-array="{{inputsDisplayArray}}"
+                            items="{{_computeRows(selectedArraySet)}}"
+                            initial-count="30">
+                            <textarea        
+                                input-type="text" 
+                                 
                                 id$="{{item.id}}" 
                                 value="{{item.value::input}}"
-                               focused-manager.gridMaker.
+                                on-keydown="valueChangeRecord"
                                 on-change="_valueFunction"
                                 contenteditable="true" 
                                 style="{{item.style}} {{_computeStyleTwo(item.style)}}"
@@ -223,17 +206,17 @@
                             </textarea>      
                         </template><!--end cell repeats-->
                     </div><!--end column div-->
-                </template><!--end column repeater-->
-            </div><!-- end grid div-->
+               
         </div><!--end center grid scroll container-->
+        <!--begin Right control panel-->
+        
     </div>
     <!--end grid-->
     <paper-listbox id="myContextMenu"  hidden>
         <paper-item class="around-justified">
-           <span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
+           <!--  --><span>  &nbsp; Text Color &nbsp;&nbsp; &nbsp;</span>
             <input type="color" value="{{background::input}}"> Background Color
         </paper-item>
-     
         <template is="dom-repeat"  items="{{contextMenuCategories}}" as="category" index-as="categoryIndex">
             <paper-item on-blur="detailOpenListener" value="{{category.title}}">
                 <details on-blur="detailOpenListener" open="{{detailOpen}}">
@@ -248,15 +231,14 @@
             </paper-item>
         </template>
     </paper-listbox>
-   <!--   <paper-fab on-tap="openit" class="interface">interface</paper-fab> -->
+    
   </template>
   <script>
-  FcGrid=Polymer({
-	   is:"fc-grid",
-      behaviors:[FCBehaviors.FocusedDataManagerBehavior],
-      listeners: {'color-picker-selected':'getcolor'},
+  FcGridRows=Polymer({
+	      is:"fc-grid-rows",
+      behaviors:[FCBehaviors.FcGridStyleBehavior],
+      listeners: {"color-picker-selected":"getcolor"},
      	properties: { 
-      
         format:{
           type: Object,
           value:function(){return {};},
@@ -266,11 +248,11 @@
             type: Object,
             notify: true,
         },
-        selectedApi:{
-          type: Array,
-          notify:true, 
+        gridWorker:{
+          type: Object,
+          value:function(){return {};},
+          notify: true
         },
-       
         data:{
           type: Array,
           value: function(){return [];},
@@ -281,59 +263,86 @@
             value: function(){return false;},
             notify: true,
           },
-          valueObject:{
-            type:Object,
-            value: function(){return {};},
-            notify: true,
-          },
           selectedArraySet:{
-          type: Array,
-          value: function(){return [];},
-          notify: true
-        },
-        arrayIndex:{
-          notify: true,
-          value: 0,
-        },
-          superValue:{
-            type:Object,
-            value: function(){return {};},
-            notify: true,
-          },
-       
+            type: Array,
+            value: function(){return [];},
+            notify: true
 
+          },
+        
+          gridArraysFromInputs:{
+            type: Array,
+            value:function(){return [];},
+            observer:"observeGridArrays",
+            notify: true,
+          }
        
      	},
 
-      observeDisplayArrayGee(nv, ov){if(nv){this.push("gridDisplayArray",this.displayArrayGrid);}},
+     get gridPresets(){
+        return [ [50,50, "JasonTest", "allRed", 1, null, false, undefined, undefined],
+          [40,40, "ACalendar", "calendar", 1, null, false, undefined, undefined],
+          [30,30, "ACalendar2", "daysofweek", 1, null, true, undefined, undefined],
+          [26,26,"jasonGrid2","monthsFinancial",1, null, true, undefined, undefined],
+          [16,25,"jasonGrid","allBlue",1, null, true, undefined, undefined],
+          [12,12,"months","allBlue",1, null, false, undefined, undefined],
+          [38,43,"class","allBlue",1, null, false, undefined, undefined],
+          [4,10,"class21","allBlue",1, null, false, undefined, undefined],
+          [6,12,"class20","allBlue",1, null, false, undefined, undefined],
+          [5,10,"class22","allBlue",1, null, false, undefined, undefined]
+          ];
+        },
+        observeGridArrays(nv, ov){if(nv){console.log(nv, ov, nv, nv);}},
     
       registered(){
-      // this.getAllObjectStoresAtInit();
+//        this.getAllObjectStoresAtInit();
+      },
+      _computeRows(selectedArraySet){
+       var retArray= selectedArraySet.reduce((previous,col)=>{
+             return previous.concat(col);
+        }, []);
+          console.log(retArray);
+          return retArray;
+
+
+
+      },
+      ready(){
+               //  this.getAllObjectStoresAtInit();
+                
+      
+
       },
       attached(){
-            this.set("interfaceType", "grid");
-  
+      
+       
       },
 
-       display(){
+      display(){
+        var pickle=new DataGrids();
+        //console.log(pickle, pickle.dataArrays);
       },
 
       _computeStyleTwo(style){
      
-      }, 
-      
+      },     
+      openit(){
+        this.$.interface.openit();
+      },
 
+      valueChangeRecord(e){},
       _valueFunction(e){
 
        var model=e.model;
         var value=e.target.value;
-        console.log(model, value, model.item);
+        //console.log(model, value, model.item);
         model.set("item.value",value);
         var setValue=model.item.value;
-        console.log(model.item.value);
+        //console.log(model.item.value);
         var key=e.model.item.id;
         var keys=key.split("_");
         var keys1=parseInt(keys[1]);
+        this.updateObjectStores(keys[0], 1, key,"value", setValue);
         var width= this.textMeasurements(model.item);
         var cellStyle=model.item.style;
         var property="width";
@@ -341,7 +350,7 @@
         minWidth=(minWidth>=width)?minWidth:(width>180)?180:width;
         width=minWidth+63;
         var fullVal=property+":"+" "+width+"px;" 
-        var noodles=this.gridDisplayArray[keys1];
+        var noodles=this.selectedArraySet[keys1];
         var smallestWidth=noodles.reduce((pre,val)=>{
               let width=this.textMeasurements(val);
               // console.log(width);
@@ -359,10 +368,10 @@
                     cstyle=cstyle.replace(replacer, "");
                     }
                   cstyle=cstyle+fullVal;
-                  this.set(["gridDisplayArray",keys1,ind,"style"], cstyle);
+                  this.set(["selectedArraySet",keys1,ind,"style"], cstyle);
                   let key =cell.id;
                   let keys=cell.id.split("_");
-                //  this.updateObjectStores(keys[0], 1, key ,"style", cstyle);
+                  this.updateObjectStores(keys[0], 1, key ,"style", cstyle);
               }, this);
           }
          
@@ -370,29 +379,32 @@
 
      
       _computeClass(key, item){
-          var keys=key.split("_");
-          var oddEvenRow=(parseInt(keys[2])%2!==0)?"oddRow":"evenRow";
+        var keys=key.split("_");
+        var oddEvenRow=(parseInt(keys[2])%2!==0)?"oddRow":"evenRow";
           var oddEvenColumn=(parseInt(keys[1])%2!==0)?"oddColumn":"evenColumn";
-          var str;
-        if(keys[1]!=0&&keys[2]!=0){ 
-                str= keys[0] + " " +"row"+parseInt(keys[2])+" "+" column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
-                item.class=str;
-                this.set("item.class",str);
-            }
-        else if(keys[2]==0){
-            str = keys[0]+" "+ "headers" + " " +"row"+parseInt(keys[2])+" "+"column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
+        if(keys[1]!=0&&keys[2]!=0)
+        { 
+        var str= keys[0] + " " +"row"+parseInt(keys[2])+" "+" column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
+        item.class=str;
+        this.set("item.class",str);
+        return str;
+        }
+        else if(keys[2]==0)
+          {
+            var str = keys[0]+" "+ "headers" + " " +"row"+parseInt(keys[2])+" "+"column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
             this.set("item.class",str);
             item.class=str;
-            }
+        return str;
+          }
         else{
-            str=keys[0]+" "+"rowlabels row"+parseInt(keys[2])+" column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
-            this.set("item.class",str);
-            item.class=str;
-           }
-                    return str;
-        },
+          var str=keys[0]+" "+"rowlabels" + " " +"row"+parseInt(keys[2])+" "+"column"+parseInt(keys[1])+" "+oddEvenRow +" "+ oddEvenColumn;
+          this.set("item.class",str);
+          item.class=str;
+          return str;
+        }
+      },
 
-
+      
       detailOpenListener(e){
         console.log(e, "here is the focus lost");
         if(e.target.nodeName==="DETAILS"){
@@ -447,38 +459,37 @@
         }
         else{ return "background: gold";}
       },
-
+      // arraySwap(e){
+      //      var maxNum=this.dataArrays.length;
+      //       maxNum=maxNum-1;
+      //       var newIndex=(this.arrayIndex!=maxNum)?parseInt(this.arrayIndex)+1:0;
+      //       this.set("arrayIndex", newIndex);
+      //       this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
+      // },
+      // arraySwapBack(e){
+      //   var maxNum=this.dataArrays.length;
+      //   maxNum=maxNum-1;
+      //   var newIndex=(this.arrayIndex!=0)?parseInt(this.arrayIndex)-1:maxNum;
+      //       this.set("arrayIndex", newIndex);
+      //       this.set("selectedArraySet", this.dataArrays[this.arrayIndex]);
+      // },
     loadPresets(e){
       this.gridPresets.forEach(function(gridParams, index, arrayOfGrids){
           this.gridConstructor(gridParams);
           }, this);
 
     },
-    getFocusedInput(){},
-    
-
-    _myStupidFilter(propVal, ida, item){
-      console.log(propVal,item.name, ida, item.value, "LOOOOOOOOOOOOOOOOOOOOOOOOOOOOK");
-        return function(){
+    _myStupidFilter(item){
+      return function(){
 
         return true;
       };
     },
-
     lockColumn(e){},
     startDrag(e){},
     dragOver(e){},
     handleDrop(e){},
-    computeLockedColumn(col){}
+    computeLockedColumn(col){},
   });
   </script>
-  </dom-module>
-  <!--<fc-call-center-dialog grid-display-array="{{gridDisplayArray}}" forms="{{forms}}" form-selected="{{formSelected}}" super-value="{{superValue}}" inputs-display-array="{{inputsDisplayArray}}" value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
-       <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-   <fc-indexed-db-helper value-object="valueObject" grid-display-array="{{gridDisplayArray}}" id="interface"></fc-indexed-db-helper>
-        begin Right control panel-->
-     <!--  <fc-call-center-dialog grid-display-array="{{gridDisplayArray}}" forms="{{forms}}" form-selected="{{formSelected}}" super-value="{{superValue}}" inputs-display-array="{{inputsDisplayArray}}" value-object="{{valueObject}}" style="position:fixed;z-index:2200; right: 250px;"></fc-call-center-dialog> 
-       <paper-fab on-tap="openit" class="interface">interface</paper-fab>
-    
-        end Right Panel-->
-
+</dom-module>
