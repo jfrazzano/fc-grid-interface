@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../fc-grid/data-manager.html">
 
 <!-- <link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html"> -->
-
+<link rel="import" ref="../fc-app-elements/fc-animated-header/fc-animated-header.html">
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
@@ -21,6 +21,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../fc-app-elements/fc-two-drawer-layout/fc-two-drawer-layout.html">
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
+
 <!-- <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
 <link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html"> -->
 <!-- <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html"> -->
@@ -182,9 +183,8 @@ paper-tabs.slidingtabs:hover{
 
                  <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style="z-index: 9999;position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">
                    
-                   <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows>
                  </fc-three-section-display>
-       
+              <!--      <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows> -->
                 <!--   <fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
                    </fc-drawer-form> -->
      <!--       </iron-pages> -->
@@ -241,7 +241,7 @@ paper-tabs.slidingtabs:hover{
       properties: {
         isLeftLinked:{
           type: Boolean, 
-          value: function(){return true;},
+          value: function(){return false;},
           notify: true
         },
       isRightLinked:{
@@ -459,7 +459,7 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
        });
       var selectedArray=  formset.concat(inputset);
       this.set("rightDrawerSelectedViewsArray", selectedArray);
-      this.set("leftDrawerSelectedViewsArray", selectedArray);
+      //this.set("leftDrawerSelectedViewsArray", selectedArray);
         console.log(this.rightDrawerSelectedViewsArray, selectedArray);
         }
       },
@@ -475,18 +475,26 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
 
 
       _gridPageLeftDrawerChanged(gridPage, leftLinked, synched){
+        console.log("is this called")
+        Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild.nodeName;
         if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
             if(this.isLeftLinked===true){
-              this.leftDrawerPage="left-drawer-"+gridPage;
+              var page="left-drawer-"+gridPage;
           this.importHref(
             this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
+          
         }
           else{
-            this.leftDrawerPage="left-drawer-"+gridPage;
+             var bug=  Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild;
+             var nn=bug.nodeName;
+             nn=nn.toLowerCase();
+            var page="left-drawer-"+gridPage+"-"+nn+"#";
+          
+            console.log(this.leftDrawerPage, bug,nn, page, "this is the first element child attemot");
           // this.importHref(
           //   this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
         }
-         return this.leftDrawerPage;        
+         return page;        
        }
       },
 

@@ -46,6 +46,15 @@
       }
     };
    
+
+paper-tab{
+  --paper-tab:{
+      color: white;
+      background: silver;
+      font-size: 1.2em;
+      @apply(--paper-tab);
+    }
+}
 .header{
 position: absolute;
   top: 0px;
@@ -64,14 +73,6 @@ position: absolute;
   z-index:23999;
   box-shadow:3px 8px 17px 5px #bfbfbf;
 
-}
-paper-tab{
-  --paper-tab:{
-      color: white;
-      background: silver;
-      font-size: 1.2em;
-      @apply(--paper-tab);
-    }
 }
 .title{
 
@@ -108,6 +109,22 @@ paper-tab{
 
   }
 
+  
+     .bar{
+      min-width:268px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 12px;
+      top: 205px;
+      right: 22px;
+      width: auto;
+
+    }
+
       neon-animated-pages {
         @apply(--layout-flex);
         @apply(--layout-horizontal);
@@ -128,21 +145,6 @@ paper-tab{
       padding: 0px 3px;
       }
 
-  
-     .bar{
-      min-width:268px; 
-      height: 2px;
-      background:silver;
-      @apply(--vertical-layout);
-      @apply(--layout-flex);
-      @apply(--layout-self-stretch);
-      position: absolute;
-      left: 12px;
-      top: 205px;
-      right: 22px;
-      width: auto;
-
-    }
     .last {
       color:brown; 
       font-family: merriweather; 
@@ -231,7 +233,7 @@ paper-tab{
   .middleheader, .bar, .timestamp, .subheading, .last,.next{display: none;}
     /*.bar{display: none;}
   .last{display: none;}*/
-  .title{font-size: .95em;top: 125px; right: 2px;}
+  .title{font-size: .6em;top: 80px; left: 12px;}
 }
 
       .intakeForm{
@@ -243,7 +245,7 @@ paper-tab{
    
     .show {display:block; z-index: 45; right: 0;}
   </style>
-< <app-location route="{{newRoute}}"  use-hash-as-path></app-location> 
+ <app-location route="{{newRoute}}"  use-hash-as-path></app-location> 
   <app-route 
         id="rightInteriorDrawerRouterForms"
         route="{{newRoute}}" 
@@ -258,7 +260,7 @@ paper-tab{
   
     <div class="header" style$="margin-bottom: 0px; z-index: 11; background: white; height:{{headerHeight}}px;">
       <section class="horizontal layout block">
-    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
+    <span class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
     </section>
              <section class="bar"></section>
         <section class="horizontal layout flex middleheader">
@@ -268,13 +270,13 @@ paper-tab{
             <span btn="rightClick" class="subheading"><span class="byebye">Page</span> {{shadowIndex}} of {{pageTotal}}</span>
         </section>
         </div>
- <div class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh; overflow-y: scroll;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
-<!--          <array-selector items="{{dataSelected}}" selected="{{selected}}"></array-selector>  -->
+ <div id="outerContentContainer" class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh; overflow-y: scroll;"  on-scroll="handleHeaderOnScroll" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+         <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector> 
       <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
-          <div id="innerContainer1" on-scroll="handleHeaderOnScroll" class="container1">
-              <fc-check-menu hidden$="{{_computeHidden(item)}}" form-name="[[pageType]][[index]]" style="position: absolute; left: 1px;" forms-display="{{computeItem(item)}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
-               <fc-call-center-form hidden$="{{!_computeHidden(item)}}" form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; overflow-y: scroll;" id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
+          <div id="innerContainer1" class="container1">
+              <fc-check-menu form-name="[[pageType]][[index]]" style="position: absolute; left: 1px;" forms-display="{{item.form}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+               <fc-call-center-form form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
                 </fc-call-center-form> 
               </div>
           </template>
@@ -396,7 +398,18 @@ properties:{
     title:{
       value: String, 
       notify: true,
-     
+    },
+    scroller:{
+      type: Object, 
+      notify: true,
+    },
+
+    //I use old title as a cheat to resych the pages on a page turn...
+
+    oldTitle:{
+      type: String, 
+      computed: "_computeTitleNew(title)",
+      notify: true,
 
     },
     selected: {
@@ -426,55 +439,61 @@ properties:{
             computed: "_computePageTotal(dataSelected)",
             notify: true
         },
+        notForm:{
+          type: Boolean, 
+          notify: true,
+
+        },
     deNowHeight:{
       type: String, 
       notify: true,
       observer: "observeDeNowHeight",
-
-
     },
    
   },//end of properties
     
+  _computeSelected(dataSelected){
+    if(Array.isArray(dataSelected[this.selected])){
+      this.set("notForm", true);
+    }
+    else{this.set("notForm", false);
 
+      }
+    console.log(dataSelected, this.selected);
+    return dataSelected[this.selected];
+
+  },
 
   ready(){
-    var maxWidth=window.innerWidth;
-    console.log(maxWidth);
-    this.set("maxWidth",maxWidth);
+    // var maxWidth=window.innerWidth-80;
+  this.set("interfaceType", "inputs");
     console.log(this.dataSelected);
+    // console.log(maxWidth);
+    // this.set("maxWidth",maxWidth);
+    // console.log(this.dataSelected);
   },
 
     attached(){
-    this.set("interfaceType", "inputs");
-    console.log(this.dataSelected);
+      this.set("scroller", this.$.outerContentContainer);
+    // this.set("interfaceType", "inputs");
+    // console.log(this.dataSelected);
 
     // var time=setInterval(()=>{console.log(this.style.height); this.set("deNowHeight",this.style.height); this.arrat=[];
     //   this.push("arrat",this.deNowHeight)},500);
   }, 
 
-  _computeHidden(item){
-    if(item&&item!=undefined){
-        if(item.form&&item.form[0].isForm===true){
-          return false;
-        }
-        else return true;
-      }
+  get scrolly(){
+    return this.$.outerContentContainer;
 
   },
-  computeItem(item){
-      if(item&&item!=undefined){
-        if(item.form&&item.form[0].isForm===true){
-          this.set("notForm",false);
-          var array=new Array(item.form);
-          console.log(array);
-          return array;
-        }
-        else{ this.set("notForm",true); }
-      
-      }
-    }, 
 
+    _computeTitleNew(title){
+      this.set("selected", 0);
+      this.set("scroller.scrollTop", 0);
+      return title;
+
+
+    },
   _computeCurrentWidth(ciw){
     var retVal=ciw>=530?530:ciw;
     return retVal;
@@ -554,9 +573,9 @@ properties:{
 
     handleHeaderOnScroll(e){
         
-    var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
+    // var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
 
-        console.log(scrollpercent);
+    //     console.log(scrollpercent);
 
 
 
@@ -640,7 +659,7 @@ properties:{
         this.entryAnimation = 'slide-from-left-animation';
         this.exitAnimation = 'slide-right-animation';
         
-        
+            this.set("scroller.scrollTop", 0);
        this.selected = (this.selected === (this.dataSelected.length-1))? 0 : (this.selected + 1);
        
       },
@@ -648,6 +667,7 @@ properties:{
         this.entryAnimation = 'slide-from-right-animation';
         this.exitAnimation = 'slide-left-animation';
         console.log(this.dataSelected, "look here");
+            this.set("scroller.scrollTop", 0);
        this.selected = this.selected === 0 ?(this.dataSelected.length-1): (this.selected - 1);
          
       },

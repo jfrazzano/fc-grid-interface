@@ -1,4 +1,4 @@
-ßß<link rel="import" href="../fc-grid/fc-search-input.html">
+<link rel="import" href="../fc-grid/fc-search-input.html">
 <dom-module id="fc-call-center-form">
 <template id="fc-call-center-form-template">
 <style>
@@ -172,7 +172,7 @@ FcCallCenterForm=Polymer({
 			},
 			notify: true
 		},
-    inputsHiddent:{
+    inputsHidden:{
       type: Boolean,
       notify: true
 
@@ -263,7 +263,7 @@ FcCallCenterForm=Polymer({
     _computeItems(item){
       console.log(item.form);
 
-        if(item.form){return [];}
+        if(item.form){}
         else{this.set("inputsHidden", false); return item;}
   },
       _computeSelected(itemsObject){

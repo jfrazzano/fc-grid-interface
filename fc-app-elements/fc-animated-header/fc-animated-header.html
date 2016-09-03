@@ -1,0 +1,594 @@
+<dom-module id="fc-animated-header">
+<template id="fc-animated-header-template">
+<style>
+:host{
+	position: relative;
+	padding: 8px 1px 1px 1px;
+	background: white;
+	z-index: 22;
+
+	@apply(--layout-vertical);
+	@apply(--layout-block);
+	/*@apply(--layout-reverse);*/
+}
+	
+.header{
+  padding: 4px 4px 0px 4px;
+  top: 0px;
+  right: 0px;
+  font-family: merriweather; 
+  padding-bottom: 10px;
+  line-height: 1;
+  color: #009; 
+  font-size: 1.2em;
+  font-weight: 300;
+
+  min-height: 12vh;
+  z-index:22229;
+  box-shadow:3px 8px 17px 5px #bfbfbf;
+  @apply(--layout-vertical);
+   @apply(--layout-block);
+
+}
+.title{
+  color: black;
+  z-index: 222;
+left:12px;
+/*  top: 218px;*/
+ font-family:merriweather;
+  font-size: 2.1em; 
+  color: #009;
+  margin-bottom: 3px;
+}
+.timestamp{
+    font-weight: 300;
+
+    font-family: merriweather;
+   font-size: .7em; 
+    color: brown;
+    font-family: times;
+   left: 24px;
+   margin-bottom: 1px;
+    }
+  .subTitle{
+  	font-size: .7em;
+    text-align: right;
+    color: brown;
+    font-family: times;
+
+  }
+  .top-header{
+  	display: flex;
+  }
+     .bar{
+      min-width:268px; 
+      height: 2px;
+      background:silver;
+  
+      left: 22px;
+  
+      right: 22px;
+      width: auto;
+    }
+
+   .middleHeader{}
+
+/*@media(max-height: 550px){
+  
+         .middleheader,.last, .next, .top-header {display: none;}
+      }*/
+@media(max-width: 360px){.byebye{display: none;}}
+
+@media(max-height: 320px){
+/*  .next{
+    display: none;
+  }*/
+  .middleheader, .timestamp, .subTitle, .last,.next, .top-header {display: none;}
+    /*.bar{display: none;}
+  .last{display: none;}*/
+  .title{font-size: .95em;top: 80px; left: 12px;}
+}
+</style>
+<iron-media-query full="true"></iron-media-query>
+	<div hidden$="{{!sectionsHidden.zero}}" style="padding: 2px; border-bottom: silver solid 1px; position: relative; top: 0px; left: 0px; right: 0px; overflow: hidden; cursor: pointer; white-space: nowrap;" on-tap="selectFeatures">{{toolButton}}&nbsp;<span style="font-size: 10px;">{{title}}</span></div>
+	<div class="header vertical layout end-justified" hidden$="{{sectionsHidden.zero}}" style$="margin-bottom: 0px; padding: 8px 12px 2px 12px; z-index: 11; background:white;height:{{headerHeight}}px!important;">
+		    <section hidden$="{{sectionsHidden.one}}" class="horizontal layout block top justified  subTitle top-header">
+		     		<section on-tap="seewhatsup" class="top-header" style="border-radius: 50%; padding:0px 18px 18px 18px; cursor: pointer; color: silver;font-size: 1.4em;" >{{menuButton}}</section> 			
+		     		<section style="color: silver; font-size: 1.2em;" class="top-header">[[time]]</section>					
+		     		<section  style="color: silver;" class="top-header"><span class="pages">Page&nbsp;[[pageReference]]</span><span>&nbsp;of&nbsp;[[pageTotal]]&nbsp;</span></section>
+		    </section>
+		    <section hidden$="{{sectionsHidden.two}}" class="horizontal layout block center-justified">
+		    		<span btn="changeAppInterfaceForInputs" class="title layout horizontal" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px; opacity: 0;">	☯	
+		    		</span>	
+		    		<!-- <content></content> -->
+		    		<span></span>
+		    </section>
+		    <section hidden$="{{sectionsHidden.three}}" class="horizontal layout end justified">
+		    			
+		    			<section btn="changeAppInterfaceForInputs" class="title end justified" style$="top:{{titleTop}}px; font-size:{{titleFontSize}}px; margin-bottom:-4px;">{{_computeTitle(title, subtitleFontSize, containerWidth)}}</section> 
+
+		    			<section btn="rightClick" hidden$="{{subTitleHidden}}" class="subTitle layout block" style$="margin-bottom: calc(-2.5-({{subtitleFontSize}}/10))px; font-size:{{subtitleFontSize}}px;"> {{subTitle}}</section>
+		    </section>
+		    <section hidden$="{{sectionsHidden.four}}" class="bar layout horizonatal"> 
+		    </section>  
+		    <section hidden$="{{sectionsHidden.five}}" class="horizontal layout block justified middleheader" style="padding-top:4px;">
+		          <span btn="leftClick" class="timestamp">[[day]] on [[date]]</span> 
+		          <span style="opacity:.07;">M</span>
+		           <span style="cursor: pointer;" on-tap="selectFeatures">{{toolButton}}</span>
+		    </section>
+		  <!-- 	<section hidden$="{{sectionsHidden.six}}" class="horizontal layout block menu"> 
+		   	</section>  -->
+	</div>
+	  	<fc-check-menu id="dropdownMenu" list-type="{{menuType}}"  forms-display="{{menuItems}}" style="position: fixed; z-index: 1000000;" hidden$="{{!showMenu}}"></fc-check-menu>
+</template>
+<script>
+Polymer({
+	is:"fc-animated-header",
+	behaviors:[ FCBehaviors.FocusedDataManagerBehavior, Polymer.IronResizableBehavior],
+	listeners:{"notifyResize": "resize"},
+	properties:{
+		//container width is a property passed down from the container holding the animated header
+		//it is assumed the header will be used with one of the animated/resizing panels-drawers-pages or sections
+		//of the fc-dashboard-system... if this is not the case, a device observer is substituted.
+		containerWidth:{
+			type: Number,
+			notify: true,
+			observer:"observeContainerWidth",
+		},
+		containerHeight:{
+			type: Number,
+			value: function(){return 780;},
+			observer: "observeContainerHeight",
+		},
+		headerHeight:{
+			type: Number,
+			value: function(){return 45;},
+			notify: true,
+			observer: "observehh",
+		},
+		menuButton:{
+			type: String,
+			value: function(){return '\☰';},
+			notify: true,
+		},
+		showMenu:{
+			type: Boolean,
+			value: function(){
+				return false;
+			},
+			notify: true,
+		},
+
+		day:{
+			type: Date,
+			value: function(){
+				var d=new Date().getDay();
+				var dayArray=["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+				console.log(dayArray[d]);
+				return dayArray[d];
+			},
+		notify: true,
+		},
+		toolButton:{
+			type: String,
+			value: function(){return '\⚙';},
+			notify: true,
+		},
+		needToolsMenu:{
+			type: Boolean, 
+			value: function(){return false;},
+			notify: true,
+		},		
+		triggers:{
+			type: Array, 
+			value:function(){
+				var array=[
+						{effect: "hidden", trigger: "containerHeight", isProgressive: false, triggerValue: 220, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "hidden", trigger: "containerWidth", isProgressive: false, triggerValue: 180, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "minimize",  trigger:"elapsedTime", isProgressive: true, triggerValue: [12000,15000, 18000, 20000], delay: 0, animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]},
+						{"effect": "minimize", trigger: "scrollTop", isProgressive: true, triggerValue: [70,140,210, 280, 350, 420],animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]}
+						];
+				return array;
+				},
+
+		},
+		menuItems:{
+			type: Array,
+			value:function(){
+				return [
+							  {isForm: true, name: "displayTitle",toggles: true, propertyName: "displayTitle", booleanValue: false, value: "addTitle", selectedChecked: false, text: "Would you like to add an interface or section title to your header?", label: "Display Title",ind: 0 , checkbox: '\☐',}, 
+							  {isForm: true, name: "displaySubtitle",toggles: true, propertyName: "displaySubtitle", booleanValue: false, value: "addSubtitle", selectedChecked: false, text: "Would you like to add a section or subsection subtitle to your header? Subtitles are often helpful when sections of an interface have multiple pages or parts.  We encourage subtitles.", label: "Display Subtitle",ind: 0 , checkbox: '\☐',}, 
+							 {isForm: true, name: "displayTime",toggles: true, propertyName: "displayTime", booleanValue: false, value: "addTime", selectedChecked: false, text: "Do you want to add a clock to your header?", label: "Display Time",ind: 0 , checkbox: '\☐',}, 
+                            {isForm: true, name: "displayDate",toggles: true, propertyName: "displayDate", booleanValue: true, value: "addDate", label: "Display Date", selectedChecked: false, text: "Would you like to add the Date to your header?", ind: 1, checkbox: '\☐',}, 
+                            {isForm: true, name: "displayDayOfTheWeek",toggles: true, propertyName: "displayDayOfTheWeek", booleanValue: true, value: "addDayOfTheWeek", selectedChecked: false, text: "Would you like to display the day of the week on your header?", label: "Display Day Of The Week", ind: 2, checkbox: '\☐',}, 
+                            {isForm: true, name: "displayPageNumber",toggles: true, propertyName: "displayPageNumber", booleanValue: true, value: "addPageNumber", selectedChecked: false, label: "Display Page Number", text: "Would you like to add the 'Page Number' of the current page in the current interface to your header?", ind: 3, checkbox: '\☐',},
+                            {isForm: true, name: "displayTotalPages",toggles: true, propertyName: "displayTotalPages", booleanValue: true, value: "addTotalPages", selectedChecked: false, label: "Display Total Pages", text: "Would you like to add the total number of pages for this interface to your header? (Note: Usually, page totals are added along with the current page number, with thepage total placed to the right of the current page number. Example: 'Page 3 of 7'.", ind: 3, checkbox: '\☐',}, 
+                            {isForm: true, name: "pageForwardArrow",toggles: true, propertyName: "pageForwardArrow", booleanValue: true, value: "addPageForwardArrow", selectedChecked: false, label: "Page Forward Arrow", text: "Would you like to add a 'Page Forward' arrow to you header?", ind: 3, checkbox: '\☐',}, 
+                           {isForm: true, name: "pageBackArrow",toggles: true, propertyName: "pageBackArrow", booleanValue: null, value: "addPageBackArrow", selectedChecked: false, label: "Page Back Arrow", text:"Would you like to add a page back arrow to your header?", ind: 4, checkbox: '\☐',},
+                  			{isForm: true, name: "displayTimer",toggles: true, propertyName: "displayTimer", booleanValue: null, value: "addTimer", selectedChecked: false, label: "Display Timer", text:"Would you like to add a timer to your header? A stopwatch timer can help you pace yourself as you work on different sections of this project.  Similarly, the timer can help you log the amount of time you spend on each portion of this project.", ind: 4, checkbox: '\☐',},
+                  			{isForm: true, name: "displayCountdownOrAlarm",toggles: true, propertyName: "displayCountdownOrAlarm", booleanValue: null, value: "addCountdownAlarm", selectedChecked: false, label: "Display Timer", text:"Would you like to add a timer to your header? A stopwatch timer can help you pace yourself as you work on different sections of this project.  Similarly, the timer can help you log the amount of time you spend on each portion of this project.", ind: 4, checkbox: '\☐',},
+                                    
+				];
+			},
+			notify: true,
+
+		},
+
+		title:{
+			type: String,
+			value: function(){return "Focus On Progress";},
+			notify: true,
+			observer: "titleObserver", 
+		}, 
+		propertyForTitle:{
+				type: String,
+			value: function(){return "focusOnProgress";},
+			notify: true,
+		},
+		isTitleComputed:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true,
+		},
+		titleTop: {
+			type: Number,
+			notify: true,
+		},
+
+		titleFontSize: {
+			type: Number,
+			value: function(){return 38;},
+			notify: true,
+		},
+		subTitle:{
+			type: String,
+			value: function(){return "The Syllabus";},
+			notify: true,
+			observer: "subTitleObserver", 
+		}, 
+
+		subtitleFontSize:{
+			type: Number,
+			value:function(){return 18;}, 
+			notify: true
+
+		},
+		pageReference:{
+			type: String,
+			value: function(){return "1";},
+			notify: true,
+		}, 
+		pageTotal:{
+			type: String, 
+			value: function(){return "2";},
+		},
+		date:{
+			  type: Date,
+        value: function(){
+          var date=new Date().toLocaleDateString();
+          return date;
+            },
+        notify: true,
+		}, 
+
+		time:{
+      		type:Date,
+      		value:function(){
+          		var time=new Date().toLocaleTimeString();
+          		console.log(time);
+          		return time;
+      		},
+      	notify: true
+    	},
+    	canvasOne:{
+    		type: Object,
+    		value: function(){
+    			var one=	document.createElement("CANVAS");
+    			return one;
+    		},
+
+    	},
+    	canvasTwo:{
+    		type: Object,
+    		value: function(){
+    			var one=	document.createElement("CANVAS");
+    			return one;
+    		},
+    	},
+		menuType:{
+			type: String, 
+			value:function(){return "dropdown";},
+			notify: true,
+		},
+		interfaceType:{
+			type: String,
+			value: function(){return "inputs";},
+			notify: true,
+		},
+		maxTitleFontSize:{
+			type: Number,
+			value: function(){return 38;},
+			notify: true,
+		},
+		maxSubtitleFontSize:{
+			type: Number,
+			value: function(){return 22;},
+			notify: true
+
+
+		},
+		subTitleHidden:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true
+		},
+		
+		// number of rows ranges from one two six, four up to three rows above the header bar, two below the bar, and the bar counts as a row (you can fill it with text too)  
+		numberOfRows:{
+			type: Number,
+			value:function(){return 6;},
+			notify: true,
+		},
+		sectionsHidden:{
+			type: Object,
+			value: function(){
+				return { 
+					zero: false,
+					one: false,
+					two: false, 
+					three: false, 
+					four: false,
+					five: false,
+					six: false
+				};
+			},
+			notify: true,
+		},
+		toolbars:{
+			type: Object, 
+			value: function(){
+				return {
+					oneOne:"",
+					oneTwo:"",
+					oneThree:"", 
+					twoOne:"",
+					twoTwo:"",
+					twoThree:"",
+					threeOne:"",
+					threeTwo:"",
+					threeThree:"",
+					fourOne:"",
+					fourTwo:"",
+					fourThree:"",
+					fiveOne:"",
+					fiveTwo:"",
+					fiveThree:"",
+					sixOne:"",
+					sixTwo:"",
+					sixThree:"",
+				};
+			},
+		  	notify: true,
+		},
+
+		toolbarsFill:{
+			type: Object,
+			computed: "_computeToolBarFills(day, date, time, title, subTitle,toolbars, isTitleComputed, numberOfRows,pageTotal, pageReference)",
+			notify: true,
+		},
+
+
+
+
+
+
+
+
+
+
+	},
+
+	attached(){
+		console.log(this.focusedManager.allSymbols, "SYMBOLS");
+	var app=Polymer.dom(this.root).parentElement;
+		console.log(app);
+	},
+	seewhatsup(e){
+		this.set("menuType", "dropdown");
+	console.log(e, e.target,e.target.innerHTML);
+	this.set("showMenu",!this.showMenu);
+	var menu= this.$.dropdownMenu;
+	Polymer.dom(menu).setAttribute("style.left", e.detail.x);
+	Polymer.dom(menu).setAttribute("style.top", e.detail.y);
+
+
+	},
+observehh(newVal, oldVal){
+	if(newVal&&newVal!==oldVal){
+		console.log(newVal, oldVal, "you should see header height here");
+	}
+},
+
+titleObserver(newVal, oldVal){
+	if(newVal&&newVal!==oldVal){
+		console.log(newVal, oldVal, "you should trigger a selected reset, on this api change");
+	}
+},
+
+subTitleObserver(newVal, oldVal){
+	if(newVal&&newVal!==oldVal){
+		console.log(newVal, oldVal, "you should trigger a dataRelated Prechoice loads on this page/topic/api change");
+	}
+},
+_computeToolBarFills(day, date, time, title, subTitle,toolbars, isTitleComputed, numberOfRows,pageTotal, pageReference){},
+
+observeContainerWidth(newVal, oldVal){
+	if(newVal){
+		var hh=Math.ceil(newVal*.2285);
+		if(hh>120){hh=120;}
+		else{hh=hh;}
+		console.log(hh, "loook here");
+		this.set("headerHeight", hh);
+		var str=hh.toString()+"px";
+		console.log(str);
+		Polymer.dom(this).setAttribute("style.height", str);
+	//	console.log(margin);
+		if(newVal>480){
+				this.set("sectionsHidden.one", false);
+			this.set("sectionsHidden.two", false);
+			this.set("sectionsHidden.six", false);
+			
+			
+		}
+		if(newVal<480){
+			this.set("sectionsHidden.one", true);
+			this.set("sectionsHidden.two", true);
+			this.set("sectionsHidden.six", true);
+			console.log(this.headerHeight, this.style.height, this, "I AM SHRINKING HEADER");
+			// this.set("headerHeight", 4);
+			// Polymer.dom(this).setAttribute("style.height", "65px");
+
+		}
+		if(newVal>180){
+			this.set("sectionsHidden.zero", false);
+		}
+		if(newVal>280){
+			this.set("subTitleHidden",false);
+			}
+		if(newVal<280){
+			this.set("subTitleHidden",true);
+
+		}
+		if(newVal<180){
+			this.set("sectionsHidden.zero", true);
+			Polymer.dom(this).setAttribute("style.height", "28px");
+
+
+
+		}
+
+
+	}
+
+
+},
+selectFeatures(e){
+	this.set("showMenu",!this.showMenu);
+	var menu= this.$.dropdownMenu;
+	this.set("menuType", "tools");
+	Polymer.dom(menu).setAttribute("style.right", e.detail.x);
+	Polymer.dom(menu).setAttribute("style.top", e.detail.y);
+	(this.$.dropdownMenu);  //here should change her type
+
+
+
+},
+resize(){
+	this.set("currentHeight", this.currentHeight+1);
+	this.set("currentWidth", this.currentWidth-1);
+
+},
+observeContainerHeight(newVal, oldVal){
+	if(newVal){
+		console.log(newVal, oldVal, "container height");
+		var height=Math.ceil(newVal*.1);
+		if(newVal<510){
+			this.set("sectionsHidden.one", true);
+			this.set("sectionsHidden.two", true);
+			this.set("sectionsHidden.six", true);
+			this.set("headerHeight", 78);
+			console.log("I hid 1,2,6");
+		}
+
+
+	}
+
+
+},
+
+
+  _computeMinWidthHidden(cwidth){
+      var retVal=(cwidth-20<200)?true: false;
+      this.set("needToolsMenu", true);
+      return retVal;
+  },
+
+  _modifySizeRatio(ciw){
+    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.6230;
+   var retVal=Math.ceil(r*19);
+    console.log(r, retVal);
+    return retVal; 
+  },
+
+
+  _computeTitle(title, subtitle, containerWidth){
+    //var title= this.focusedManager.propertyNameToLabel(interface);
+     var pxWidt= this.fitTextInDrawer(title, subtitle, containerWidth);
+    this.set("titleFontSize",pxWidt[0]);
+    this.set("subtitleFontSize",pxWidt[1]);
+  //  console.log(this.titleFontSize);
+    var top=(this.headerHeight)/2+(38-this.titleFontSize)*.955;
+    this.set("titleTop", top);
+    return title;
+  },
+
+   fitTextInDrawer(text, subtext, containerWidth){
+    var size=this.maxTitleFontSize; 
+    var size2=Math.ceil(size/1.7);
+    var c2=this.canvasTwo;	
+    var c=this.canvasOne; 
+    var ctx=c.getContext("2d");
+    var ctx2=c2.getContext("2d");
+        var txt=text; var txt2=subtext;
+    while(size>16&&size2>10){
+      ctx.font =size+"px"+ " "+"merriweather";
+      ctx2.font=size2+"px"+ " "+"merriweather";
+      	var width2=ctx2.measureText(txt2).width;
+        var width=ctx.measureText(txt).width;
+       if((Math.floor((containerWidth)*.60))>=width+width2){this.set("titleSize", width); this.set("subtitleSize", width2); 
+       //console.log(width, this.containerWidth);
+       break;}
+       else{
+      size--;size2=Math.ceil(size/2);
+  		}
+    }
+  //  console.log(size);
+    return [size,size2];
+  },
+
+    observeValueObjectStar(nv, ov){ 
+
+  }, 
+
+  // doStuffOnLoad(e){
+  //        this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");//console.log(ht, wt);
+  //         this.style.width="440px"; this.style.height="660px";}, 4);
+  //       //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
+  //    },
+  
+
+
+    handleHeaderOnScroll(e){
+        
+    var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
+
+        console.log(scrollpercent);
+
+
+
+    },
+
+
+ observeDeNowHeight(newVal, oldVal){if(newVal){console.log(newVal,this.style.height, oldVal);}}
+
+
+
+
+
+
+
+
+
+});
+</script>
+</dom-module>

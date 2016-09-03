@@ -9,6 +9,7 @@
 <template id="fc-check-menu">
 <style>
     paper-item{
+        position: static;
         padding: 4px 4px 4px 0px; 
         margin: 4px;
         font-size: 12px; 
@@ -19,6 +20,7 @@
         min-width: 200px; 
         text-align: left;
         max-width: 480px;
+        background: white;
       
 
 
@@ -28,20 +30,17 @@
                 outline: 0px white solid;
                 @apply(--paper-item);
             };
-         --paper-item-selected:{
-                background-color: #FFFFFF;
-                border: 1px silver solid;
-                @apply(--paper-item-selected);
-                 @apply(--paper-item);
-            };
 
     }
-        paper-item-body{padding-left:4px;}
-     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
-    paper-item:focus{background: orange; outline: 0px dashed white;};
-   @apply(--paper-item);
-  }
  
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
+      paper-item.tools{ border-bottom: silver 1px solid; display: flex; width: 100%;}
+    paper-item:focus{background: orange; outline: 0px dashed white;};
+     paper-item.tools:focus{background: aliceblue; outline: 0px dashed white;}
+   @apply(--paper-item);
+  
+        paper-item-body{padding-left:4px;}
+        paper-item-body.tools{width: 100%; @apply(--layout-flex);}
 
       textarea:focused{outline: 0px white solid;}
       textarea{border: 11px solid green;}
@@ -56,6 +55,16 @@
         text-overflow: "…";
 
     }
+    paper-listbox.tools{ 
+        min-width: 360px;
+        max-width: 100%;
+        max-height: 43vh;
+        border: red 13px ridge;
+           overflow-y: scroll;
+        /*add here a media query for smaller phones*/
+
+     }
+    section.label.tools{color: red;}
     .selectColor{
         border: 1px green solid;
     }
@@ -65,7 +74,6 @@
         cursor: pointer;
     }
 
-    paper-item-body{}
     .check.surveyPage{
 
         font-size: 1em;  
@@ -109,13 +117,14 @@
 </style>
   <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified">
  </textarea>
+    <paper-listbox  id="myDropdown" class$="{{listType}}" form-name="[[formName]]" style="{{_computeStyleByType(listType)}};" attr-for-selected="value" my-selected="{{value}}">
+        <template is="dom-repeat"  style="font-size: 1.2em;" items="{{formsDisplay}}" id="optionsRepeater">
+            <paper-item hidden$="{{!item}}" form-name="[[formName]]"  class$="{{listType}} horizontal layout flex self-stretch" name="{{item.name}}" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value="{{item.value}}"> 
+            <section class="horizontal layout" hidden$="{{_computeHiddenCheck(listType)}}" style="cursor: pointer; font-size: 1.9em; color: green; white-space:nowrap; overflow: hidden;">
 
-    <paper-listbox id="myDropdown" class=" vertical layout" form-name="[[formName]]" style="{{_computeStyleByType(listType)}}" position: absolute;" attr-for-selected="value" my-selected="{{value}}">
-        <template is="dom-repeat"  style="font-size: 1.2em;" items="{{_computeItems(formsDisplay)}}" id="optionsRepeater">
-            <paper-item form-name="[[formName]]"  class$="horizontal layout flex self-stretch {{listType}}" name="{{item.name}}" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value="{{item.value}}"> 
-            <section class="horizontal layout" style="cursor: pointer; font-size: 1.9em; color: green; white-space:nowrap; overflow: hidden;"><section style=" padding: 0px 4px 4px 4px; margin: 12px 5px 0px 0px; text-align: left;font-size: 1em; color: green;" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]">✅</section><section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value)]]" style="font-size: 1.47em;" >[[item.checkbox]]</section></section>
+            <section style=" padding: 0px 4px 4px 4px; margin: 12px 5px 0px 0px; text-align: left;font-size: 1em; color: green;" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]">✅</section><section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]" style="font-size: 1.47em;" >[[item.checkbox]]</section></section>
             <paper-item-body class="layout vertical flex-7">
-                    <section class$="label {{listType}}">{{item.label}}</section>
+                    <section class$="label {{listType}}" style$="font-weight:{{computeFontSelected(item.selectedChecked, mySelected, item.value, listType)}};">{{item.label}}</section>
                     <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}"><summary hidden="{{summHidden}}">Show Details</summary>
                     <section class$="{{listType}}">[[item.text]]</section>
                 </details>
@@ -137,6 +146,11 @@
             value: function(){return {};},
             notify: true,
 
+        },
+        hideListbox:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
         },
         formName:{
             type: String, 
@@ -173,9 +187,21 @@
             notify: true,
 
         },
+        selected:{
+            type: Array,
+            notify: true, 
+
+
+        },
          mySelected:{
             type: String,
             value: function(){return "";},
+            notify: true,
+        },
+        symbols:{
+            type:Array,
+            value: function(){return ['\➔','\❶','\✂','\✎','\✒','\✜','\❚','\❶','\➀','\➞','\☚','\☛','\☰','\☱','\☷','\☑','\☐','\☎','\☏','\►','\▼','\▲','\◄','\⇒','\Δ','\▐','\█','\▄','\▀','\⛔','\🌐','\🌎','\🌎','\🌍','\🌏','\❓','\❗','\❌','\⏩','\⏪','\⏫','\⏬','\⏭','\⏮','\⏯','\✅','\❎','\✍','\✉','\✊','\✋','\✌','\⬛','\⬜','\','\⏰','\⏱','\⏲','\⏳','\⚙'];
+            },
             notify: true,
         },
         selectedChecked:{
@@ -225,6 +251,26 @@
         
 
     },
+    //  computeItem(datum, listType){
+    //   if(datum&&datum!=undefined){
+    //     console.log(datum, datum, datum);
+    //     if(listType==="dropdown"){
+    //         this.set("hideListbox", false);
+    //         return datum;
+    //     }
+    //     else if(!datum.form){
+    //       this.set("hideListbox", true);
+    //       return [];
+    //     }
+    //     else if(datum.form&&datum.form[0].isForm===true){
+    //       this.set("hideListbox",false);
+    //       return datum.form[0];
+          
+    //     }
+    //     else{ this.set("hideListbox",true); return [];}
+      
+    //   }
+    // }, 
    
 
     get listbox(){return this.$.myDropdown;},
@@ -254,7 +300,14 @@
                     return obj;}});
            return filteredProfiles;
             },
-
+    computeFontSelected(sc, myselected, value, listType){
+        
+                if(this.heldValue===value||myselected!==value){return "300";}
+                if(myselected===value){return "600";}
+                // else {console.log("you got here");
+                //     return "300"};
+            
+        },
     _computeStyleByType(listType){
             var styleType={
                 dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
@@ -263,7 +316,7 @@
             return styleType[listType];
     },
     
-    _computeSelectedCheck(sc, myselected, value){
+    _computeSelectedCheck(sc, myselected, value, listType){
         if(myselected!==value||this.heldValue===value){return false;}//toggle
         if(myselected===value){return true;}
     },
@@ -299,8 +352,13 @@
         this.set("checkedEvent", e);
         var last=this.selectedIndexArchive.length-1;
         this.set("heldValue", this.selectedIndexArchive[last].value);
+        console.log(this.selectedIndexArchive);
     
       
+  },
+  _computeHiddenCheck(listType){
+    if(listType&&listType==="dropdown"){return true;}
+    else{return false;}
   },
   observeValueObject(newVal, oldValue)
   {
@@ -331,6 +389,7 @@
 
     computeOpened(listType){
         if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
+        if(listType==="tools"){    return true;}
         return false;
     },
 
@@ -360,23 +419,3 @@ complex as a result of closure (Read I would hjave no idea how to get so much ou
  });
  </script>
  </dom-module> 
-
-
-
-<!-- // getProfiles(){
-    //     var profiles=this.focusedManager.dashboardMap.get("profiles");
-    //     var arrayProfiles= profiles.gridArray[15];
-    //     var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{     
-    //             this.set("profilesArray",  profileObjectsArr);
-    //               return pro.valueObject;
-    //             });
-    //     return this.profilesArray;
-    //         },
-
-  searchInputProfiles(profiles, property, input){
-                  var regex = new RegExp('.*' + input + '.*', 'i');
-           var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
-                 if((obj[property].match(regex))!=null){
-                    return obj;}});
-           return filteredProfiles;
-    },

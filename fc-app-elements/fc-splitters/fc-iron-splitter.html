@@ -45,7 +45,7 @@ Example:
 <link rel="import" href="../../iron-resizable-behavior/iron-resizable-behavior.html">
 <link rel="import" href="../../iron-flex-layout/iron-flex-layout.html">
 
-<dom-module id="fc-ron-splitter">
+<dom-module id="fc-iron-splitter">
   <link rel="import" type="css" href="fc-iron-splitter.css">
   <template>
   </template>
@@ -159,7 +159,7 @@ Example:
       },
       //trackStart: function () {
       //  this.update();
-      //  this.size = parseInt(getComputedStyle(this.target)[this.dimension]);
+      //  this.size = parseInt(getComputedStyle(`this.target)[this.dimension]);
       //},
       track: function (e) {
         if (this.locked) {

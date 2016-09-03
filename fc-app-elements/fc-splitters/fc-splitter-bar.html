@@ -1,0 +1,81 @@
+<dom-module id="fc-splitter-bar">
+<template id="fc-slitter-bar-template">
+<style>
+:host{	min-width: 8px!important;
+		padding:0px 4px; 
+		min-height: 110%
+		background: silver; 
+		border: 1px solid #009;
+		outline: 2px solid #aecefd;
+		display: block;
+		  cursor: ew-resize;
+		  position: absolute;
+		  top:-20px;
+		  bottom:-20px;
+		  overflow-x: hidden;
+		}
+:host.northSouth{
+	cursor: ns-resize;
+		 }	
+</style>
+FcSplitterBar=Polymer({
+	is:"fc-splitter-bar",
+	properties:{
+		isRightGrowsLeft:{
+			type:Boolean,
+			value:false, 
+			notify: true 
+		},
+		isUpBottomGrows:{
+			type: Boolean, 
+			value: false, 
+			notify: true,
+
+		},
+		currentWidth:{
+			type: Number, 
+			value:function(){return 400;},
+			notify: true,
+
+
+
+		}, 
+
+		isInGrid:{
+			type:Boolean, 
+			value: false,
+			notify: true
+
+		},
+
+		numberOfGridBoxes:{
+			type: Number, 
+			value: function(){return 4;},
+			notify: true, 
+
+		}, 
+		gridArrangement:{
+			type: String,
+			value: function(){return "leftList-bottom-options-top-display"},
+			notify: true, 
+
+		}, 
+		gridDimensions:{
+			type: Array,
+			computed: "computeGridDimensions(gridArrangement, numberOfGridBoxes, deviceType)",
+			notify: true, 
+
+
+
+
+		}, 
+
+
+
+
+	}
+
+
+
+
+});

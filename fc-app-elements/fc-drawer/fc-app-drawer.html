@@ -193,7 +193,7 @@ Custom property                  | Description                            | Defa
 
 FcAppDrawer=Polymer({
       is: 'fc-app-drawer',
-
+      behaviors:[Polymer.IronResizableBehavior],
       properties: {
         dashboardLeftDrawerCurrentWidth:{
           type: Number,
@@ -270,10 +270,21 @@ FcAppDrawer=Polymer({
           value: false,
           reflectToAttribute: true
         },
+          _notifyingDescendant: {
+        type: Boolean,
+        value: true
+      },
 
         /**
          * Trap keyboard focus when the drawer is opened and not persistent.
          */
+        maxWidth:{
+          type: Number,
+          notify: true,
+
+
+
+        },
         noFocusTrap: {
           type: Boolean,
           value: false
@@ -312,6 +323,10 @@ FcAppDrawer=Polymer({
         // Only transition the drawer after its first render (e.g. app-drawer-layout
         // may need to set the initial opened state which should not be transitioned).
         this._setTransitionDuration('0s');
+
+        var maxWidth=window.innerWidth-80;
+        console.log(maxWidth);
+        this.set("maxWidth",maxWidth);
       },
 
       attached: function() {
@@ -739,9 +754,12 @@ if(nv){
 
              var nId=e.target.attributes.id.value.split("_"), elem=this.$.contentContainer;
             // this.set("theMovingElement",elem);
-            var width=Math.floor(parseFloat(window.screen.width));
+           var maxWidth=window.innerWidth-40;
+
+            console.log(maxWidth);
+            this.set("maxWidth",maxWidth);
             //console.log(width);
-            width=width-25;
+            var width=this.maxWidth;
             //console.log(width);
             var height=Math.floor(parseFloat(window.screen.height)*.999);
             if(this.isResizing===true){
@@ -754,19 +772,17 @@ if(nv){
                 break;
               case 'track':
                     var rol=(widthString.match("Right"))?"right":"left";
-                    var change = (widthString.match("Right"))?[(-e.detail.ddx),"Left","Right"]: [e.detail.ddx,"Right","Left"];//here i chose to place the "negative" string value in position 1, as it is needed below; I placed the "true" value in 1 as it may be needed shortly
+                    var change = (widthString.match("Right"))?[(-e.detail.ddx),"Left","Right"]: [e.detail.ddx,"Right","Left"];//here i chose to place the "negative" string value in position 0, as it is needed directly below; I placed the "true" value in 1 as it may be needed shortly
                     var nwidth=this[widthString]+parseFloat(change[0]),
                     oppositeSide="dashboard"+change[1].toString()+"DrawerCurrentWidth";
-                    var trueWidth=(nwidth<15)?15:(nwidth>width*.9)? width:nwidth;
-                    // (nwidth+this[oppositeSide]>width)?Math.ceil(parseFloat(width-this[oppositeSide])): should check here for over lap;
-                    // // trueWidth=(trueWidth<0)?(-1*trueWidth):trueWidth;
-                    // //console.log(trueWidth);
+                    var trueWidth=(nwidth<25)?25:(nwidth>width*.98)? Math.floor(width*.98):nwidth;
+                   
                     this.set([widthString],trueWidth);
                  //   console.log(this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth);
                     var holder=trueWidth;
 
                     this.set("drawerCurrentWidth", trueWidth);
-                   // console.log(this.drawerCurrentWidth);
+  
                     var holder=holder.toString()+"px";
                     Polymer.dom(elem).setAttribute("style.width",holder);
                     Polymer.dom(this.$.contentContainer).setAttribute("style.width",holder);

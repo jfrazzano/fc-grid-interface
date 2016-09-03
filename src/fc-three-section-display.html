@@ -1,48 +1,63 @@
-<link rel="import" ref="../fc-splitters/fc-iron-splitter.html">
-<link rel="import" ref="../fc-grid/fc-grid-rows">
+
+
+
+
+
+<link rel="import" href="../fc-app-elements/fc-animated-header/fc-animated-header.html">
+<!-- <link rel="import" href="../fc-grid/fc-grid-rows"> -->
 <dom-module id="fc-three-section-display">
 <template>
 <style>
 :host{
 	position: absolute;
+/*	margin-top:-150px;
+	margin-bottom: -150px;*/
 	background: white;
 	box-shadow: 4px 11px 21px 7px #9fafaf;
 	max-width: 110%;
 	right: 0px;
 	top:-1px;
 	bottom: -1px;
-	padding: 0px 0px;
-	margin: 6px 10px;
-	max-height: 99.8vh;
-	
+	left: 0px;
+	/*padding: 150px 0px;*/
+	overflow: hidden;
 	@apply(--layout-vertical);
 	@appply(--layout-flex);
-	@apply(--layout-self-stretch)
 }
-.columnTwo{
-	height: 100vh; 
-	margin-right: 22px; 
-	/*border-right: snow 3px solid;*/ 
-	position: relative;
-	width: 100%;
-	right: -2px;
-	top:3px;
-	bottom:-22px; 
+
+.container{
+	position: static;
+	max-height: 99vh;
+	min-height: 60vh;
+	height: 90vh;
+	overflow-y: scroll;
+	margin-top: 8px;
+	background: aliceblue;
+	border: solid 1px red;
+	@apply(--layout-flex);
 	@apply(--layout-vertical);
 }
 .colummnOne{
-height: 200vh; 
-	margin-right: 0px; 
-	position: relative;
-	width: 100%;
-	left: 0px;
-	top: -20px;
-	bottom: -20px;
+	height: 110vh; 
+	margin-right: 12px; 
+	position: static;
+	bottom: -22px;
 	@apply(--layout-vertical);
+		@apply(--layout-flex);
+}
+.columnTwo{
+	height: 110vh; 
+	margin-right: 12px; 
+	position: static
+	bottom:-22px;
+	@apply(--layout-vertical);
+	@apply(--layout-flex);
+
 }
 .rightSideOfPanelResizer{
-	position: absolute;
-	 right: -10px;
+	 position:static;
+	 display: block;
+	 right: -1px;
 	 max-width:6px!important;
 	  top: 0px;
 	 bottom:0px;
@@ -53,27 +68,10 @@ height: 200vh;
  	height: 120vh;
 	 opacity: 1;
 	 background: silver;
-	 z-index:100000;
-	 @apply(--layout-vertical);
+	 z-index:100;
+		@apply(--layout-vertical);
+	@apply(--layout-flex); 
 	}
-
-.animatedHeaderTwo{
-	background: red; 
-	width: 100%;  
-	position: static; 
-	left: 0px; 
-	right: 0px;
-	height: 65px; 
-	color: #009; 
-	box-shadow: 5px 7px 15px 3px #adadad;
-}
-  .animatedHeader{
-  		color: #009; 
-  		box-shadow: 5px 7px 15px 3px #adadad;
-  		background: aliceblue; 
-  		position: static; 
-  }
-
   
   *{ font-family: merriweather;
   	font-weight: 300;
@@ -81,65 +79,48 @@ height: 200vh;
   	color: #009;
   }
   .fullPanel{
-  position:relative;
-  left:0; 
-  height: 52vh;  
+  position:static;
   border: 1px silver solid;
-  top: -0px; 
-  bottom: -23px;
-  overflow-x: hidden;
+  height: 92vh;  
+  overflow: hidden;
   @apply(--layout-vertical);
 	@apply(--layout-flex); 
 }
-.topHalfPanelRight{
+
+.rightPanel{
 	position:static; 
-	height: 52vh; 
-	/*border: 1px silver solid; */
-	right: 0px; 
-	width: 100%;
-	top:-0px; 
-	overflow-x: hidden;
-	bottom: -23px;
+	border: 2px silver solid; 
+ 	height: 92vh; 
+ 	  overflow: hidden; 
 	@apply(--layout-vertical);
 	@apply(--layout-flex); 
-/*	@apply(--layout-self-stretch);*/
+
 }
 </style>
-<div  id="containerLeftDrawer" class="horizontal layout flex" style="position: absolute; top: 0px; bottom: 0px; left: 0px; right: 0px; ">
-	<div class="columnOne">
-			<div id="myPanel" class="fullPanel vertical layout block" style$="width:{{currentWidth}}px;"> 
-				
-				<fc-animated-header class="animatedHeader" style$="width:{{currentWidth}}px; height:65px;">I am the Header</fc-animated-header>		
-					<div class="column container">
-						   <content select=".leftPanel"></content>
-					</div>    
-				<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer" style$="margin-left:calc({{currentWidth}})px;"></section> 	 
-		 	</div>
-		 	<div id="myPanel" class="fullPanel vertical layout block" style$="width:{{currentWidth}}px;"> 
-				
-				<fc-animated-header class="animatedHeader" style$="width:{{currentWidth}}px; height:65px;">I am the Header</fc-animated-header>		
-					<div class="column container">
-						   <content select=".leftPanel"></content>
-					</div>    
-				<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer" style$="margin-left:calc({{currentWidth}})px;"></section> 	 
+
+<div id="containerLeftDrawer" class="horizontal layout flex" style="position:absolute; top:0px; bottom:0px; left:0px; right:0px;">
+	<div id="columnOne" class="columnOne">
+			<div id="myPanel" class="fullPanel vertical layout block" style$="height:{{currentHeight}}px;""> 
+				<fc-animated-header container-height="{{currentHeight}}" container-width="{{currentWidth}}">
+				I am the Header
+				</fc-animated-header>		
+				<div class="column container">
+					   <content select=".leftPanel"></content>
+				</div>    
 		 	</div>
 	</div>
- 	<div class="columnTwo" style$="margin-left:calc({{currentWidth}})px; margin-bottom: -34px;">	
-		<div class="topHalfPanelRight" style$="left:calc({{currentWidth}}-400)px;">
-			<fc-animated-header class="animatedHeaderTwo">I am the Header</fc-animated-header>
-				<div class="column container">
-   					<content select=".centerPanel"></content>
-				 </div>    
-			</div>
-
-			<div class="topHalfPanelRight" style$="left:calc({{currentWidth}}-400)px; margin-top: 35px;">
-			<fc-animated-header class="animatedHeaderTwo">I am the Header</fc-animated-header>
-				<div class="column container">
-   					<content select=".centerPanel"></content>
-				 </div>    
-			</div>
+	<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer"></section>
+ 	<div id="columnTwo" class="columnTwo">	
+		<div class="rightPanel vertical layout block" style$="height:{{currentHeight}}px;">
+			<fc-animated-header container-height="{{currentHeight}}" container-width="{{computeContainerWidth(maxCurrentWidth, currentWidth)}}">I am Header2</fc-animated-header>
+			<div class="column container">
+   				<content select=".centerPanel"></content>
+			</div> 
 		</div>
- </div>
+ 	</div>
+</div>
+
+ 
 </template>
 <script>
 FcThreeSectionDisplay=Polymer({
@@ -151,9 +132,7 @@ FcThreeSectionDisplay=Polymer({
 		currentLeft:{
 			type: Number,
 			value: function(){}
-
 		},
-
 		currentWidth: {
 			type: Number,
 			value: function(){return 400;},
@@ -164,13 +143,107 @@ FcThreeSectionDisplay=Polymer({
 			type: Number, 
 			notify: true, 
 		},
+		_notifyingDescendant: {
+        	type: Boolean,
+        	value: true
+      	},
 		
 		currentHeight: {
-			type: String,
-			value: function(){return "100%";},
+			type: Number,
+			value:function(){return 500;},
 			notify: true
 		},
+		maxHeight:{
+			type: Number,
+		value: function(){return 1400;},
+			notify: true,
+
+
+		},
+		maxHeight:{
+			type: Number,
+		value: function(){return 65;},
+			notify: true,
+
+
+		},
 	
+
+		isResizing:{
+			type: Boolean,
+			notify: true,
+			value:function(){return true;},
+		}
+
+  },
+  attached(){
+  	this.$.columnOne.style.width=this.currentWidth+"px";
+
+  },
+
+
+ 	 _resize: function(e){
+          e.preventDefault();
+           var resizer=e.target;
+           var next=Polymer.dom(resizer).nextElementSibling;
+              next.style.width="auto";
+           var elem=Polymer.dom(resizer).previousElementSibling;
+           var width=this.currentWidth;        
+          switch(e.detail.state) {
+                case 'start':  
+                break;
+                case 'track':
+                next.style.width="auto";
+                  var nwidth = parseInt(elem.style.width) + e.detail.ddx;
+      			  var max=this.maxCurrentWidth-80;
+                  var nwidth2=(nwidth<50)?50:(nwidth>=max)? max:nwidth;
+                  var trueWidth = nwidth2.toString()+'px';  
+                  this.set("currentWidth",nwidth2);
+                  elem.style.width= trueWidth;
+                  next.marginLeft=(nwidth2-width).toString(); + "px";
+                break;
+                case 'end':
+                 	elem.style.width= trueWidth;
+                 	this.set("currentWidth", nwidth2);
+                  	Polymer.dom.flush();
+                break;
+              }
+        },
+    _upDown(e){
+           	var resizer=e.target;
+            var next=Polymer.dom(resizer).nextElementSibling;
+            var elem=Polymer.dom(resizer).previousElementSibling;
+        while(elem.nodeName!="DIV" || elem.nodeName==null){elem=elem.previousElementSibling;}
+        switch(e.detail.state){
+            case 'start':
+	            var sheight =window.getComputedStyle(elem, null).getPropertyValue("height");
+	            var nheight=parseInt(sheight);
+	            this.set("currentHeight", nheight);
+            break;
+            case 'track':
+	            var newheight = parseInt(this.currentHeight) + e.detail.ddy;
+	            var nheight2=(newheight<parseFloat(this.minHeight))?this.minHeight:(newheight>=this.maxHeight)?this.maxHeight: newheight; 
+	            var trueHeight = nheight2.toString()+'px';
+	            this.set("currentHeight",nheight2);
+	            elem.style.height=trueHeight;
+            break;
+            case 'end':
+			  	this.set("currentHeight",nheight2);
+             	elem.style.height= trueHeight;
+              	Polymer.dom.flush();
+            break;
+            }
+        },
+      computeContainerWidth(max, current){
+      	var width=Math.floor(max-current-80);
+      	return width;
+      }
+      
+});
+</script>
+</dom-module>
+<!--
+
 		displayedDateObject:{
 				type:Object,
 			value:function(){
@@ -193,102 +266,6 @@ FcThreeSectionDisplay=Polymer({
 			type: Object,
 			notify: true,
 		},
-	
-		isResizing:{
-			type: Boolean,
-			notify: true,
-			value:function(){return true;},
-		}
-
-  },
-  _computeSpanOne(arrow){
-  	this.$.spanLeft.innerHTML=arrow;
-  },
-
-
-  computeDisplayHeaderOne(displayedIndex){
-  		return "This is the Data Grid";
-  },
-
-
-_heightOfHeaderArea(calendarData, gridData){
-		var retVal=(calendarData.length>5)?"min-height: 45px; max-height: 135px;":"height:65px!important;";
-		return "min-height: 45px; background: #005c00;";
-},
-  computeDisplayHeaderTwo(displayed){
-return "The Data Grid Rocks!";
-
-  },
- computeDisplayedLeft(displayedIndexLeft)
-{		console.log
-	if(itemsArraysOne && itemsArraysOne.length>0){
-		console.log(itemsArraysOne);
-	return itemsArraysOne[indexItemsArraysOne];
-	}
-},
-
- 	 _resize: function(e){
-          var self=this;
-          console.log(e.target);
-          e.preventDefault();
-           
-           var resizer=e.target;
-           var elem=Polymer.dom(resizer).parentNode;
-          //  var elem=Polymer.dom(resizer).parentNode
-          var width=Math.floor(parseFloat(window.screen.width)*.96);
-          var height=Math.floor(parseFloat(window.screen.height)*.999);
-          if(this.isResizing==true){
-          switch(e.detail.state) {
-                case 'start':
-                // var theId=this.relId;
-                // var elem=this.$.myPanel;
-                var sWidth =window.getComputedStyle(elem, null).getPropertyValue("width");
-               var marginLeft= window.getComputedStyle(resizer, null).getPropertyValue("margin-left");
-				console.log(marginLeft, sWidth, "here, here, here");
-				//  var marginLeft= window.getComputedStyle(resizer, null).getPropertyValue("margin-right");
-
-                // var sheight =window.getComputedStyle(self.$.myPanel, null).getPropertyValue("height");
-                // self.set("currentHeight", sheight);
-              
-                 break;
-                case 'track':
-                  // var newheight = parseInt(self.currentHeight) + e.detail.ddy;
-                  var nwidth = parseInt(elem.style.width) + e.detail.ddx;
-      					console.log(nwidth);
-                  // var nheight2=(newheight<parseFloat(self.minHeight))?self.minHeight:(newheight>height)?height: newheight;
-                  var max=this.maxCurrentWidth-80;
-                  var nwidth2=(nwidth<50)?50:(nwidth>=max)? max:nwidth;
-                  var trueWidth = nwidth2.toString()+'px';
-                  // var trueHeight = nheight2.toString()+'px';
-                  
-                  
-                  self.set("currentWidth",nwidth2);
-                  // self.set("currentHeight",trueHeight);
-                  elem.style.width= trueWidth;
-                  resizer.style.marginLeft=trueWidth;
-                  // self.style.height= trueHeight;
-                
-                  break;
-                case 'end':
-                 elem.style.width= trueWidth;
-                 resizer.style.marginLeft=trueWidth;
-                  this.set("widthHolder", self.currentWidth);
-                  console.log(self.currentWidth);
-                  // self.notifyResize();
-                  this.toggleColor=true;
-                  // self._onIronResize();
-                  self.set("refit", true);
-                 // self.afterStartResize();
-                  Polymer.dom.flush();
-                  break;
-              }
-            }
-        },
-      
-});
-</script>
-</dom-module>
-<!--
 
 _forward: function(){
 		if(this.indexItemsArraysOne===this.itemsArraysOne.length-1)
