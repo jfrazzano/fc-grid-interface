@@ -4,8 +4,9 @@
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="../fc-app-elements/fc-iss-input/fc-iss-input-behavior.html">
 
-<dom-module id="fc-iss-input">	
+<dom-module id="fc-iss-input-old">	
 <template>
 <style>
 
@@ -237,616 +238,617 @@ min-width: 210px;
 	</div>
 	</template>
 <script>
-FcIssInput=Polymer({
-	is:"fc-iss-input",
+FcIssInputOld=Polymer({
+	is:"fc-iss-input-old",
+  behaviors:[FCBehaviors.FcIssInputBehavior],
 	properties:{
-    baseScrollTop:{
-          type: Number,
-          notify: true
-        },
-    selectCheck:{
-      type: Boolean,
-      value:function(){return false;},
-      notify: true
-    },  
-    localPropertyValue:{
-        type: String, 
-        computed: "computeLocalPropertyValue(issName, valueObject.*)",
-        notify: true,
-    },
-		dropdownItems:{
-			type:Array,
-      value:function(){return[];},
-			 notify: true,
-      observe:"observeDropdownItems",
-		},
+ //    baseScrollTop:{
+ //          type: Number,
+ //          notify: true
+ //        },
+ //    selectCheck:{
+ //      type: Boolean,
+ //      value:function(){return false;},
+ //      notify: true
+ //    },  
+ //    localPropertyValue:{
+ //        type: String, 
+ //        computed: "computeLocalPropertyValue(issName, valueObject.*)",
+ //        notify: true,
+ //    },
+	// 	dropdownItems:{
+	// 		type:Array,
+ //      value:function(){return[];},
+	// 		 notify: true,
+ //      observe:"observeDropdownItems",
+	// 	},
 	
-         dropdownOpen:{
-          type: Boolean,
-          value:function(){return false;},
-          notify: true,
-          observer:"observeDropdown",
-        },
-  		dropdownlist:{
-  			type: Object,
-  			value:function(){
-  				return this.$.dropdownlist;
-  			},
-        notify: true
-  		},
+ //         dropdownOpen:{
+ //          type: Boolean,
+ //          value:function(){return false;},
+ //          notify: true,
+ //          observer:"observeDropdown",
+ //        },
+ //  		dropdownlist:{
+ //  			type: Object,
+ //  			value:function(){
+ //  				return this.$.dropdownlist;
+ //  			},
+ //        notify: true
+ //  		},
     
-       issClass:{
-          type: String,
-          notify: true,
-          observer:"observeIssClass",
-        },
+ //       issClass:{
+ //          type: String,
+ //          notify: true,
+ //          observer:"observeIssClass",
+ //        },
   
-  		issId:{
-  				type: String,
-  				notify: true,
-  		},
-      issIcon:{
-        type:String,
-        value:function(){return "icons:dashboard";},
-        notify: true,
-      },
-      issLabel:{
-          tinpiype:String,
-          value:function(){return "";},
-          notify: true
-      },
-  		issName:{
-  			type: String,
-        value:function(){return null;},
-  			notify: true
-  		},
-      issValue:{
-      type: String,
-      notify: true,
-      observer:"observeIssInput",
-    },
-      issValueArray:{
-        type:Array,
-        value:function(){return [];},
-        notify: true,
-      },
-      isToggle:{
-          type:Boolean,
-          value: function(){return false;},
-          notify: true
-      },
-      counter:{
-        type: Number,
-        value: function(){return 0;},
-        notify: true
-      },
-      isChecked:{
-        type: Boolean, 
-        value:function(){return false;},
-        notify: true,
-      },
-  	itemSelectProperty:{
-  			type: String,
-  			value: function(){return "";},
-  			notify: true
-  		},
-  	itemKeyStrokeIndex:{
-  			type: Number,
-  			value: function(){return 0;},
-  			notify: true,
-  		},
+ //  		issId:{
+ //  				type: String,
+ //  				notify: true,
+ //  		},
+ //      issIcon:{
+ //        type:String,
+ //        value:function(){return "icons:dashboard";},
+ //        notify: true,
+ //      },
+ //      issLabel:{
+ //          tinpiype:String,
+ //          value:function(){return "";},
+ //          notify: true
+ //      },
+ //  		issName:{
+ //  			type: String,
+ //        value:function(){return null;},
+ //  			notify: true
+ //  		},
+ //      issValue:{
+ //      type: String,
+ //      notify: true,
+ //      observer:"observeIssInput",
+ //    },
+ //      issValueArray:{
+ //        type:Array,
+ //        value:function(){return [];},
+ //        notify: true,
+ //      },
+ //      isToggle:{
+ //          type:Boolean,
+ //          value: function(){return false;},
+ //          notify: true
+ //      },
+ //      counter:{
+ //        type: Number,
+ //        value: function(){return 0;},
+ //        notify: true
+ //      },
+ //      isChecked:{
+ //        type: Boolean, 
+ //        value:function(){return false;},
+ //        notify: true,
+ //      },
+ //  	itemSelectProperty:{
+ //  			type: String,
+ //  			value: function(){return "";},
+ //  			notify: true
+ //  		},
+ //  	itemKeyStrokeIndex:{
+ //  			type: Number,
+ //  			value: function(){return 0;},
+ //  			notify: true,
+ //  		},
    
- maxHeight: {
-      type: String,
-      value:function(){return "180";},
-      notify:true,
-     },
+ // maxHeight: {
+ //      type: String,
+ //      value:function(){return "180";},
+ //      notify:true,
+ //     },
    
-        multiSelect:{
-        	type:Boolean,
-        	value:function(){return false;},
-        	notify: true,
-        },
+ //        multiSelect:{
+ //        	type:Boolean,
+ //        	value:function(){return false;},
+ //        	notify: true,
+ //        },
      
-        searchOff:{
-          type: Boolean,
-          value:function(){return false;},
-          notify: true,
-        },
-          selected:{
-      notify: true,
-    },
-     selectedArray:{
-        type: Array,
-        notify: true
-      },
-      dropDownChildren:{
-        type:Array, 
-        value:function(){return [];},
-        notify: true,
-      },
+ //        searchOff:{
+ //          type: Boolean,
+ //          value:function(){return false;},
+ //          notify: true,
+ //        },
+ //          selected:{
+ //      notify: true,
+ //    },
+ //     selectedArray:{
+ //        type: Array,
+ //        notify: true
+ //      },
+ //      dropDownChildren:{
+ //        type:Array, 
+ //        value:function(){return [];},
+ //        notify: true,
+ //      },
     
-        shadowIndex:{
-        		type:Object,
-        		computed:"_computedSetterForIndex(multiSelect, dropdownOpen)",
-        		notify: true,
-        },
-      showDropButton:{
-      type:Boolean,
-      value:function(){return true;},
-      notify: true,
-    },
-        startScrollTop:{
-          type: Number,
-          notify: true
-        },
-      target: {
-        type: Object,
-        value: function() {
-          return this.$.issInput;
-          },
-        // observer:"_observeInput", 
-        notify: true
-      },
-        toggleClassOn:{
-        type: String,
-        value:function(){return "";},
-        notify: true,
-      },
-      toggleOn:{
-        type:Boolean,
-        value:function(){return false;}, 
-        notify: true,
-      },
-        toggleClassOff:{
-        type: String,
-        value:function(){return "";},
-        notify: true,
-      },
-      topHolder:{
-          type:Number,
-          value:function(){return 0;},
-          notify: true
-      },
-      holder:{
-         type: String,
-        value:function(){"";},
-        notify: true,
-      }, 
-      isInvalid:{
-        type: Boolean, 
-        value: function(){return false;},
-        notify: true, 
-      },
-      isCheckbox:{       
-        type: Boolean, 
-        value: function(){return false;},
-        notify: true, 
-      },
+ //        shadowIndex:{
+ //        		type:Object,
+ //        		computed:"_computedSetterForIndex(multiSelect, dropdownOpen)",
+ //        		notify: true,
+ //        },
+ //      showDropButton:{
+ //      type:Boolean,
+ //      value:function(){return true;},
+ //      notify: true,
+ //    },
+ //        startScrollTop:{
+ //          type: Number,
+ //          notify: true
+ //        },
+ //      target: {
+ //        type: Object,
+ //        value: function() {
+ //          return this.$.issInput;
+ //          },
+ //        // observer:"_observeInput", 
+ //        notify: true
+ //      },
+ //        toggleClassOn:{
+ //        type: String,
+ //        value:function(){return "";},
+ //        notify: true,
+ //      },
+ //      toggleOn:{
+ //        type:Boolean,
+ //        value:function(){return false;}, 
+ //        notify: true,
+ //      },
+ //        toggleClassOff:{
+ //        type: String,
+ //        value:function(){return "";},
+ //        notify: true,
+ //      },
+ //      topHolder:{
+ //          type:Number,
+ //          value:function(){return 0;},
+ //          notify: true
+ //      },
+ //      holder:{
+ //         type: String,
+ //        value:function(){"";},
+ //        notify: true,
+ //      }, 
+ //      isInvalid:{
+ //        type: Boolean, 
+ //        value: function(){return false;},
+ //        notify: true, 
+ //      },
+ //      isCheckbox:{       
+ //        type: Boolean, 
+ //        value: function(){return false;},
+ //        notify: true, 
+ //      },
 
-      changeEvent:{
-        type:Object,
-        value:function(){return {};},
-        notify: true,
-        reflectToAttribute:true,
+ //      changeEvent:{
+ //        type:Object,
+ //        value:function(){return {};},
+ //        notify: true,
+ //        reflectToAttribute:true,
 
-      },
-      valueObject:{
-        type: Object,
-        value: function(){return {};},
-        notify: true,
+ //      },
+ //      valueObject:{
+ //        type: Object,
+ //        value: function(){return {};},
+ //        notify: true,
 
-      },
+ //      },
      
 	},//end properties
      hostAttributes:{
           value: true,
       },
-	ready(){
-    var retVal=(this.multiSelect===true)?[]:"";
-    this.set("selected",retVal);
-    retVal=(this.multiSelect===true)?Array:String;
-    this.set("selected.type", retVal);
-     },
- attached(){
-    var children = this.getDropdownChildren();
-    this.set("dropdownChildren",children);
-  //console.log(this.onChange, this.onChange,this.onChange, this.dropdownChildren);
-  var scrollWithMargin=(this.$.dropdownlist.scrollTop +35)
-  this.set("startScrollTop",scrollWithMargin);
-  this.set("baseScrollTop",scrollWithMargin);
-  // if((this.dropdownItems&&this.dropdownItems.length>0)||this.issClass==="menuItem"){
-  //   this.set("showDropButton",true);
-  // }
-  console.log(this.$.dropdownlist.scrollTop);
-  if(this.isToggle===true){
-    this.set("toggleClassOff", "toggleOff");
-    this.toggleToggleButton();
-   // this.$.dropdownbutton.toggleClass(this.toggleClassOff,!this.toggleOn);
-    //this.set("searchOff",true);
-    }
-  this.set("showDropButton", true);
- },
-computeLocalPropertyValue(issName, valueObject){
-    //console.log(issName, valueObject);
-      if(issName!=null){
+// 	ready(){
+//     var retVal=(this.multiSelect===true)?[]:"";
+//     this.set("selected",retVal);
+//     retVal=(this.multiSelect===true)?Array:String;
+//     this.set("selected.type", retVal);
+//      },
+//  attached(){
+//     var children = this.getDropdownChildren();
+//     this.set("dropdownChildren",children);
+//   //console.log(this.onChange, this.onChange,this.onChange, this.dropdownChildren);
+//   var scrollWithMargin=(this.$.dropdownlist.scrollTop +35)
+//   this.set("startScrollTop",scrollWithMargin);
+//   this.set("baseScrollTop",scrollWithMargin);
+//   // if((this.dropdownItems&&this.dropdownItems.length>0)||this.issClass==="menuItem"){
+//   //   this.set("showDropButton",true);
+//   // }
+//   console.log(this.$.dropdownlist.scrollTop);
+//   if(this.isToggle===true){
+//     this.set("toggleClassOff", "toggleOff");
+//     this.toggleToggleButton();
+//    // this.$.dropdownbutton.toggleClass(this.toggleClassOff,!this.toggleOn);
+//     //this.set("searchOff",true);
+//     }
+//   this.set("showDropButton", true);
+//  },
+// computeLocalPropertyValue(issName, valueObject){
+//     //console.log(issName, valueObject);
+//       if(issName!=null){
 
-        //console.log(issName, valueObject);
-        if(valueObject.value && valueObject.base){
-        if(valueObject.base[issName]&&valueObject.base[issName]!=undefined)
-          {return valueObject[issName];}
-      }
-      else{return null;}
-  }
-},
-  _setUtfSymbol(dropdownItems, localPropertyValue){
-        //console.log("I was calculated");
-      if(this.issValue!=undefined&&this.dropdownItems!=false){ 
-            var children=this.getDropdownChildren();
-            //console.log(children, children.length);
-              if(this.dropdownItems.length===1){
-                    //console.log(children,this.issValue, this.localPro, this.dropdownItems); 
-                    return '\✅';
-              }//here is if we have a match
-              else if(this.issValue&&children.length>1){ 
-                    //console.log(children.length); 
-                    //console.log(children); 
-                    if(children.length>1){  
-                      return '\❓';
-                    } 
-              }
-              else if(children.length===0){
-                    return '\❌';
-              } //condition for no match
-              else{
-                      return '\🌍';
-              }//safety to get an icon
-      }
-      else{
-                return '\🌐';
-          }
-  },
-  setValueItem(e){
-            //console.log(e, this.valueObject);
-            var input=this.$.issInput;
-          this.set([input,"value"], e.target.value);
-          this.$.issInput.value=e.target.value;
-          //console.log(e.target.value, e.target);
-          var valConstruct="valueObject."+e.target.name;
-          //console.log(valConstruct);
-          this.set(valConstruct, e.target.value);
-          this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
-          //if(e.model||e._templateInstance){
-   // var model=e._templateInstance;
-    //console.log(model);
-   // model.set("item.value", e.target.value);
-   // }
-    this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
-  },
- _computeLabelSpanClass(isToggle,toggleClass,issClass){
-        return this.issClass;
- },
- observeIssInput(nv, ov){
-  if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="";}
-  else{this.$.dropdownlist.style.color="#009";}
-   if(nv&&nv!=undefined){this.set("iconTrigger", !this.iconTrigger);}
- },
- _computeItemSelectedPropValue(item, index,isp){
-	 		var retval=(isp==="")?item:item[isp];
-       return retval;
-	 },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
-   _computeItemSelectedPropertyName(item, index,isp){
-    var retVal=(isp==""&& item.name==undefined)?"value":item.name;
-    return retVal;
-   },
-  observeDropdownItems(newVal,oldVal){
-    if(newVal&&newVal.length>0){
-      //console.log(newVal);
-    }
-  }, 
-  observeIssClass(nv,ov){
-    // if(nv){console.log(nv, ov)};
-  },
-	focusInput(){
-    this.set("dropdownOpen",true);
-    this.$.issInput.focus();
-    this.async(function(){
-          this.$.issInput.focus;},50);
-  },
-   blurInput(){
-     //   this.$.dropdownMenuButton.set("opened", false);
-    this.set("dropdownOpen",false);
-         this.$.issInput.blur();
-    this.async(function(){
-          this.$.issInput.blur;},20);
- },
-  observeDropdown(newVal,oldVal){
-    if(newVal===true){
-        var self=this;
-        this.async(function(){Polymer.dom(this.$.dropdownlist).classList.add("show");}, 320);
-      }
-    else{
-        this.async(function(){Polymer.dom(this.$.dropdownlist).classList.remove("show");}, 500);
-          }
-        },
-  inputToggle(e){
-    //console.log(this.isToggle, this.dropdownOpen, this.showDropButton);
-      var retFunc=(this.isToggle===true)?"toggleToggleButton":(this.dropdownOpen===false&&this.showDropButton===true)?"focusInput":"blurInput";
-     // console.log(retFunc, this.issLabel, this.issName, this.issValue, this.value);
-      this[retFunc](e); 
-      //console.log(this.key, this.value, this.issValue,this.issValueArray, this.selected);
-  },
-  toggleToggleButton(e){
-        var label="";
-        var newLabel="";
-      if(this.issLabel!=null){this.actualToggleFunction(e);}
-      else{this.async(this.actualToggleFunction,250);}
-      },
-  actualToggleFunction(){
-    if(this.issLabel!=null){
-     if(this.issLabel.charAt(this.issLabel.length-3)!=="O")
-        {
-          newLabel=this.issLabel + " OFF";
-        }
-        else if(this.issLabel.charAt(this.issLabel.length-2)==="F"){
-          label=this.issLabel.slice(0,-4);
-          newLabel=label+" ON ";
-             this.$.dropdownbutton.toggleClass(this.toggleClassOff, this.toggleOn);
-             this.$.dropdownbutton.toggleClass(this.toggleClassOn, !this.toggleOn);
-          }
-        else{
-          label=this.issLabel.slice(0,-4);
-          newLabel=label+" OFF"; 
-          this.$.dropdownbutton.toggleClass(this.toggleClassOff, !this.toggleOn);
-          this.$.dropdownbutton.toggleClass(this.toggleClassOn, this.toggleOn);
-          // Polymer.dom(this.$.dropdownbutton).classList.remove(this.toggleClassOn);
-          // Polymer.dom(this.$.dropdownbutton).classList.add(this.toggleClassOff);
-        }  
-        this.set("issLabel",newLabel);
-        }
-      else{ 
-        this.set("issLabel", " OFF");
-      }
-    },
-createFilter(issValue, searchOff){
-    if(searchOff)return function(item){return true;}
-    else{
-      var jason=this, isp=jason.itemSelectProperty;
-        var regex = new RegExp('.*' + issValue + '.*', 'i');
-        return function(item) {
-          if(jason.multiSelect===true){return true;}
-          else if(jason.itemSelectProperty!=undefined&&item[jason.itemSelectProperty]!=undefined&& typeof item[jason.itemSelectProperty]==="string"){return item[jason.itemSelectProperty].match(regex);}
-          else if(item.value){return item.value.match(regex);}
-        };
-      }
-  },
-_computedSetterForIndex(multi, ddo){
-     //console.log("insetter for index",ddo, multi);
-   		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
-   		this.set("itemKeyStrokeIndex", setVal);
-   		return setVal;
-   	},
-  getDropdownChildren(){
-    var children=Polymer.dom(this.$.dropdownlist).children;
-        itemChildren=children.filter(function(val,index, array){
-              return (val.nodeName==="PAPER-ITEM");});
-        return itemChildren;
-  },
-  removeColorFromChildren(children){
-    var retChildren=children.map(function(val,index, array){
-      if(val.classList.contains("selectColor")){val.classList.remove("selectColor");}
-        return val;
-        });
-    return retChildren;
-    },
-  sortArrayForMultiSelect(e){
-    var valArr=this.issValue.split(",");
-    //console.log(valArr);
-    var length=valArr.length;
-    var arr=this.issValueArray;
-    var size=arr.length;
-    var diff=size-length;
-    //console.log(diff,valArr, arr);
-  },
-  toggleSelection(e){
-    var item = this.$.controllerList.itemForElement(e.target);////console.log(item);
-    var model=this.$.controllerList.modelForElement(e.target);
-    //console.log(model, e, " I am in the tap",model );
-    //console.log(item," I am in the tap", item);
-    var frankenInput="valueObject." + this.$.issInput.namel;
-    this.set(frankenInput, item);
-    var property= model._rootDataHost.__data__.issName;
+//         //console.log(issName, valueObject);
+//         if(valueObject.value && valueObject.base){
+//         if(valueObject.base[issName]&&valueObject.base[issName]!=undefined)
+//           {return valueObject[issName];}
+//       }
+//       else{return null;}
+//   }
+// },
+//   _setUtfSymbol(dropdownItems, localPropertyValue){
+//         //console.log("I was calculated");
+//       if(this.issValue!=undefined&&this.dropdownItems!=false){ 
+//             var children=this.getDropdownChildren();
+//             //console.log(children, children.length);
+//               if(this.dropdownItems.length===1){
+//                     //console.log(children,this.issValue, this.localPro, this.dropdownItems); 
+//                     return '\✅';
+//               }//here is if we have a match
+//               else if(this.issValue&&children.length>1){ 
+//                     //console.log(children.length); 
+//                     //console.log(children); 
+//                     if(children.length>1){  
+//                       return '\❓';
+//                     } 
+//               }
+//               else if(children.length===0){
+//                     return '\❌';
+//               } //condition for no match
+//               else{
+//                       return '\🌍';
+//               }//safety to get an icon
+//       }
+//       else{
+//                 return '\🌐';
+//           }
+//   },
+//   setValueItem(e){
+//             //console.log(e, this.valueObject);
+//             var input=this.$.issInput;
+//           this.set([input,"value"], e.target.value);
+//           this.$.issInput.value=e.target.value;
+//           //console.log(e.target.value, e.target);
+//           var valConstruct="valueObject."+e.target.name;
+//           //console.log(valConstruct);
+//           this.set(valConstruct, e.target.value);
+//           this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
+//           //if(e.model||e._templateInstance){
+//    // var model=e._templateInstance;
+//     //console.log(model);
+//    // model.set("item.value", e.target.value);
+//    // }
+//     this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
+//   },
+//  _computeLabelSpanClass(isToggle,toggleClass,issClass){
+//         return this.issClass;
+//  },
+//  observeIssInput(nv, ov){
+//   if(nv===undefined&&this.dropdownItems!==false){this.$.dropdownlist.style.color="#efefef"; this.$.dropdownlist.style.background="";}
+//   else{this.$.dropdownlist.style.color="#009";}
+//    if(nv&&nv!=undefined){this.set("iconTrigger", !this.iconTrigger);}
+//  },
+//  _computeItemSelectedPropValue(item, index,isp){
+// 	 		var retval=(isp==="")?item:item[isp];
+//        return retval;
+// 	 },// doItAgain(){return this.call(this.doItAgainTempVar());}, REVISIT WHEN HOOKING UP SCHOOL CHOICE
+//    _computeItemSelectedPropertyName(item, index,isp){
+//     var retVal=(isp==""&& item.name==undefined)?"value":item.name;
+//     return retVal;
+//    },
+//   observeDropdownItems(newVal,oldVal){
+//     if(newVal&&newVal.length>0){
+//       //console.log(newVal);
+//     }
+//   }, 
+//   observeIssClass(nv,ov){
+//     // if(nv){console.log(nv, ov)};
+//   },
+// 	focusInput(){
+//     this.set("dropdownOpen",true);
+//     this.$.issInput.focus();
+//     this.async(function(){
+//           this.$.issInput.focus;},50);
+//   },
+//    blurInput(){
+//      //   this.$.dropdownMenuButton.set("opened", false);
+//     this.set("dropdownOpen",false);
+//          this.$.issInput.blur();
+//     this.async(function(){
+//           this.$.issInput.blur;},20);
+//  },
+//   observeDropdown(newVal,oldVal){
+//     if(newVal===true){
+//         var self=this;
+//         this.async(function(){Polymer.dom(this.$.dropdownlist).classList.add("show");}, 320);
+//       }
+//     else{
+//         this.async(function(){Polymer.dom(this.$.dropdownlist).classList.remove("show");}, 500);
+//           }
+//         },
+//   inputToggle(e){
+//     //console.log(this.isToggle, this.dropdownOpen, this.showDropButton);
+//       var retFunc=(this.isToggle===true)?"toggleToggleButton":(this.dropdownOpen===false&&this.showDropButton===true)?"focusInput":"blurInput";
+//      // console.log(retFunc, this.issLabel, this.issName, this.issValue, this.value);
+//       this[retFunc](e); 
+//       //console.log(this.key, this.value, this.issValue,this.issValueArray, this.selected);
+//   },
+//   toggleToggleButton(e){
+//         var label="";
+//         var newLabel="";
+//       if(this.issLabel!=null){this.actualToggleFunction(e);}
+//       else{this.async(this.actualToggleFunction,250);}
+//       },
+//   actualToggleFunction(){
+//     if(this.issLabel!=null){
+//      if(this.issLabel.charAt(this.issLabel.length-3)!=="O")
+//         {
+//           newLabel=this.issLabel + " OFF";
+//         }
+//         else if(this.issLabel.charAt(this.issLabel.length-2)==="F"){
+//           label=this.issLabel.slice(0,-4);
+//           newLabel=label+" ON ";
+//              this.$.dropdownbutton.toggleClass(this.toggleClassOff, this.toggleOn);
+//              this.$.dropdownbutton.toggleClass(this.toggleClassOn, !this.toggleOn);
+//           }
+//         else{
+//           label=this.issLabel.slice(0,-4);
+//           newLabel=label+" OFF"; 
+//           this.$.dropdownbutton.toggleClass(this.toggleClassOff, !this.toggleOn);
+//           this.$.dropdownbutton.toggleClass(this.toggleClassOn, this.toggleOn);
+//           // Polymer.dom(this.$.dropdownbutton).classList.remove(this.toggleClassOn);
+//           // Polymer.dom(this.$.dropdownbutton).classList.add(this.toggleClassOff);
+//         }  
+//         this.set("issLabel",newLabel);
+//         }
+//       else{ 
+//         this.set("issLabel", " OFF");
+//       }
+//     },
+// createFilter(issValue, searchOff){
+//     if(searchOff)return function(item){return true;}
+//     else{
+//       var jason=this, isp=jason.itemSelectProperty;
+//         var regex = new RegExp('.*' + issValue + '.*', 'i');
+//         return function(item) {
+//           if(jason.multiSelect===true){return true;}
+//           else if(jason.itemSelectProperty!=undefined&&item[jason.itemSelectProperty]!=undefined&& typeof item[jason.itemSelectProperty]==="string"){return item[jason.itemSelectProperty].match(regex);}
+//           else if(item.value){return item.value.match(regex);}
+//         };
+//       }
+//   },
+// _computedSetterForIndex(multi, ddo){
+//      //console.log("insetter for index",ddo, multi);
+//    		var setVal=(!ddo)?0:this.itemKeyStrokeIndex;
+//    		this.set("itemKeyStrokeIndex", setVal);
+//    		return setVal;
+//    	},
+//   getDropdownChildren(){
+//     var children=Polymer.dom(this.$.dropdownlist).children;
+//         itemChildren=children.filter(function(val,index, array){
+//               return (val.nodeName==="PAPER-ITEM");});
+//         return itemChildren;
+//   },
+//   removeColorFromChildren(children){
+//     var retChildren=children.map(function(val,index, array){
+//       if(val.classList.contains("selectColor")){val.classList.remove("selectColor");}
+//         return val;
+//         });
+//     return retChildren;
+//     },
+//   sortArrayForMultiSelect(e){
+//     var valArr=this.issValue.split(",");
+//     //console.log(valArr);
+//     var length=valArr.length;
+//     var arr=this.issValueArray;
+//     var size=arr.length;
+//     var diff=size-length;
+//     //console.log(diff,valArr, arr);
+//   },
+//   toggleSelection(e){
+//     var item = this.$.controllerList.itemForElement(e.target);////console.log(item);
+//     var model=this.$.controllerList.modelForElement(e.target);
+//     //console.log(model, e, " I am in the tap",model );
+//     //console.log(item," I am in the tap", item);
+//     var frankenInput="valueObject." + this.$.issInput.namel;
+//     this.set(frankenInput, item);
+//     var property= model._rootDataHost.__data__.issName;
 
-    var value=item.value;
-    //console.log(property, value, model._rootDataHost.__data__.issName);
-    this.set("changeEvent",{"event":e, "value": value, "name": property, "target":e.target, "model":model})
-    var targ=e.target;
+//     var value=item.value;
+//     //console.log(property, value, model._rootDataHost.__data__.issName);
+//     this.set("changeEvent",{"event":e, "value": value, "name": property, "target":e.target, "model":model})
+//     var targ=e.target;
  
-    	if(this.dropdownOpen===true){//&& this.$.controllerList
-        //console.log("i have an open dropdown");
-        var setval=(this.itemSelectProperty=="" )?item:model.item[this.itemSelectProperty];
-        var children=this.getDropdownChildren();
-        //console.log(setval);
-          if(this.multiSelect==false && this.searchOff==false){
-                this.set("issValue",setval);
-                //console.log(this.issValue, "DID I GET TO HERE?");
-                Polymer.dom(children[0]).classList.add("selectColor");
-                //console.log("search is on and multi is false");
-              }
-          else if(this.multiSelect==false && this.searchOff==true){
-                this.removeColorFromChildren(children);
-               this.async(function(){
-                  Polymer.dom(targ).classList.add("selectColor");
-                  this.set("issValue",setval);},30);
-               //console.log("search off multi off");
-          }
-          else if(this.$.selector.multi===true&&model.item.selectCheck===true){
-    		    this.$.selector.deselect(setval); 
-    		    model.set("item.selectCheck",false);
-            var index=this.issValue.indexOf(setval);
-            this.set("issValue"," ");//fix this to choose type for value at attached and get rid oif the double value bullshit
-            index=this.issValueArray.indexOf(setVal);
-    		    this.splice("issValueArray",index, 1);
-            var showvalue=this.issValueArray.toString();
-            this.set("issValue", showvalue);
-            Polymer.dom(targ).classList.remove("selectColor");
-            //console.log("multi plus select check");
-            //console.log(this.issValue, typeof this.issValue, this.issValue.length);
-          }    		  
-          else if(this.$.selector.multi===true&&model.item.selectCheck===false){
-            this.$.selector.select(item[this.itemSelectProperty]);
-            this.push("issValueArray",item[this.itemSelectProperty]);
-            model.set("item.selectCheck", true);
-            this.set("issValue",null);
-            Polymer.dom(targ).classList.add("selectColor");
-            var showvalue=this.issValueArray.toString();
-            this.async(function(){this.set("issValue", showvalue);}, 50);
-            // this.valueMap.set(item,this.issValue);
-            //console.log("multi no chekc");
-          }
-          else{this.set("issValue",setval);}
-        }
-        //console.log("leaving dropdown, closing on exit");
-		  this.set("dropdownOpen",false);
-  },
-  updateAllyKeyChangedItemInColumnPosition(dy, elem){
-        this.trackDelta = dy || this.trackDelta || 0;
-        console.log(this.trackDelta);
-        var scrollDelta = this.$.dropdownlist.scrollTop -this.startScrollTop;
-        var pos = this.trackDelta;
+//     	if(this.dropdownOpen===true){//&& this.$.controllerList
+//         //console.log("i have an open dropdown");
+//         var setval=(this.itemSelectProperty=="" )?item:model.item[this.itemSelectProperty];
+//         var children=this.getDropdownChildren();
+//         //console.log(setval);
+//           if(this.multiSelect==false && this.searchOff==false){
+//                 this.set("issValue",setval);
+//                 //console.log(this.issValue, "DID I GET TO HERE?");
+//                 Polymer.dom(children[0]).classList.add("selectColor");
+//                 //console.log("search is on and multi is false");
+//               }
+//           else if(this.multiSelect==false && this.searchOff==true){
+//                 this.removeColorFromChildren(children);
+//                this.async(function(){
+//                   Polymer.dom(targ).classList.add("selectColor");
+//                   this.set("issValue",setval);},30);
+//                //console.log("search off multi off");
+//           }
+//           else if(this.$.selector.multi===true&&model.item.selectCheck===true){
+//     		    this.$.selector.deselect(setval); 
+//     		    model.set("item.selectCheck",false);
+//             var index=this.issValue.indexOf(setval);
+//             this.set("issValue"," ");//fix this to choose type for value at attached and get rid oif the double value bullshit
+//             index=this.issValueArray.indexOf(setVal);
+//     		    this.splice("issValueArray",index, 1);
+//             var showvalue=this.issValueArray.toString();
+//             this.set("issValue", showvalue);
+//             Polymer.dom(targ).classList.remove("selectColor");
+//             //console.log("multi plus select check");
+//             //console.log(this.issValue, typeof this.issValue, this.issValue.length);
+//           }    		  
+//           else if(this.$.selector.multi===true&&model.item.selectCheck===false){
+//             this.$.selector.select(item[this.itemSelectProperty]);
+//             this.push("issValueArray",item[this.itemSelectProperty]);
+//             model.set("item.selectCheck", true);
+//             this.set("issValue",null);
+//             Polymer.dom(targ).classList.add("selectColor");
+//             var showvalue=this.issValueArray.toString();
+//             this.async(function(){this.set("issValue", showvalue);}, 50);
+//             // this.valueMap.set(item,this.issValue);
+//             //console.log("multi no chekc");
+//           }
+//           else{this.set("issValue",setval);}
+//         }
+//         //console.log("leaving dropdown, closing on exit");
+// 		  this.set("dropdownOpen",false);
+//   },
+//   updateAllyKeyChangedItemInColumnPosition(dy, elem){
+//         this.trackDelta = dy || this.trackDelta || 0;
+//         console.log(this.trackDelta);
+//         var scrollDelta = this.$.dropdownlist.scrollTop -this.startScrollTop;
+//         var pos = this.trackDelta;
 
-        console.log(this.$.dropdownlist.scrollHeight-this.trackDelta, this.$.dropdownlist.scrollHeight-this.$.dropdownlist.scrollTop, this.$.dropdownlist.scrollTop, this.itemKeyStrokeIndex);
-          if(this.trackDelta>310){this.translate3d(0, -pos + 'px', 0, this);}
-    },
-  onDownArrow(e){
-          this.set("startScrollTop", this.$.dropdownlist.scrollTop);
-      	 var children=this.getDropdownChildren(); var setterBase=this.itemKeyStrokeIndex;
-         var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
-         console.log(this.itemKeyStrokeIndex);
-         var bool=children[last]._templateInstance.item.selectCheck;
-         var element=children[oneMore]; 
-         var preSib=children[setterBase];
-         var clas="selectColor";
-         var func="classFollows";
-         // //console.log(clas, bool, elem,previous);
-          if(this.itemKeyStrokeIndex<0||this.itemKeyStrokeIndex===last){
-            this.set("itemKeyStrokeIndex", 0);
-            var elem=children[this.itemKeyStrokeIndex];
-            var previous=children[last];
-            var setVal=[func, clas,elem,previous,0];
-            Polymer.dom(elem).classList.add(clas); 
-            this[setVal[0]](setVal[1],setVal[2],setVal[3]);
-            element=elem;
-          }
-          else{
+//         console.log(this.$.dropdownlist.scrollHeight-this.trackDelta, this.$.dropdownlist.scrollHeight-this.$.dropdownlist.scrollTop, this.$.dropdownlist.scrollTop, this.itemKeyStrokeIndex);
+//           if(this.trackDelta>310){this.translate3d(0, -pos + 'px', 0, this);}
+//     },
+//   onDownArrow(e){
+//           this.set("startScrollTop", this.$.dropdownlist.scrollTop);
+//       	 var children=this.getDropdownChildren(); var setterBase=this.itemKeyStrokeIndex;
+//          var last=(children.length-1),oneLess=(setterBase-1),oneMore=(setterBase+1);
+//          console.log(this.itemKeyStrokeIndex);
+//          var bool=children[last]._templateInstance.item.selectCheck;
+//          var element=children[oneMore]; 
+//          var preSib=children[setterBase];
+//          var clas="selectColor";
+//          var func="classFollows";
+//          // //console.log(clas, bool, elem,previous);
+//           if(this.itemKeyStrokeIndex<0||this.itemKeyStrokeIndex===last){
+//             this.set("itemKeyStrokeIndex", 0);
+//             var elem=children[this.itemKeyStrokeIndex];
+//             var previous=children[last];
+//             var setVal=[func, clas,elem,previous,0];
+//             Polymer.dom(elem).classList.add(clas); 
+//             this[setVal[0]](setVal[1],setVal[2],setVal[3]);
+//             element=elem;
+//           }
+//           else{
    
-          var setVal=(setterBase===last&&children[last]._templateInstance.item.selectCheck===false)?["classFollows",clas, children[0],children[last],0, "ONE"]:["classFollows",clas, children[oneMore], children[setterBase],oneMore, "TWO"];
-          //console.log("inelse else", setVal,setVal[5]);
+//           var setVal=(setterBase===last&&children[last]._templateInstance.item.selectCheck===false)?["classFollows",clas, children[0],children[last],0, "ONE"]:["classFollows",clas, children[oneMore], children[setterBase],oneMore, "TWO"];
+//           //console.log("inelse else", setVal,setVal[5]);
         
-            this.set("itemKeyStrokeIndex",setVal[4]);
-            this[setVal[0]](setVal[1],setVal[2],setVal[3]);
-          }
-            var boundRect=element.getBoundingClientRect();
-            this.set("bound",boundRect);
-            var delta=(Math.ceil(boundRect.height));
-            console.log(delta, this.itemKeyStrokeIndex);
-              var elem=children[this.itemKeyStrokeIndex];
-        elem.classList.add("selectColor");
+//             this.set("itemKeyStrokeIndex",setVal[4]);
+//             this[setVal[0]](setVal[1],setVal[2],setVal[3]);
+//           }
+//             var boundRect=element.getBoundingClientRect();
+//             this.set("bound",boundRect);
+//             var delta=(Math.ceil(boundRect.height));
+//             console.log(delta, this.itemKeyStrokeIndex);
+//               var elem=children[this.itemKeyStrokeIndex];
+//         elem.classList.add("selectColor");
 
-        this.counter++;
-        this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop+delta+1;
-              console.log(delta);
-              var dy=this.itemKeyStrokeIndex*delta;
-              this.updateAllyKeyChangedItemInColumnPosition(dy, this);
-                  if(setterBase===last||this.counter==last){this.$.dropdownlist.scrollTop=0;}
-           },
+//         this.counter++;
+//         this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop+delta+1;
+//               console.log(delta);
+//               var dy=this.itemKeyStrokeIndex*delta;
+//               this.updateAllyKeyChangedItemInColumnPosition(dy, this);
+//                   if(setterBase===last||this.counter==last){this.$.dropdownlist.scrollTop=0;}
+//            },
         
         
-  onUpArrow(e){
-      	var children=this.getDropdownChildren();
-        console.log(children);
-        var last=(children.length-1);
-        var setVal=(this.itemKeyStrokeIndex==0)?(this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollHeight, last):(this.itemKeyStrokeIndex-1);
+//   onUpArrow(e){
+//       	var children=this.getDropdownChildren();
+//         console.log(children);
+//         var last=(children.length-1);
+//         var setVal=(this.itemKeyStrokeIndex==0)?(this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollHeight, last):(this.itemKeyStrokeIndex-1);
 
-        this.set("itemKeyStrokeIndex",setVal);
+//         this.set("itemKeyStrokeIndex",setVal);
   
-       children[last].scrollIntoView(false);
-       children[last].style.backgrou
-        this.removeColorFromChildren(children);
-      	var elem=children[this.itemKeyStrokeIndex];
-      	elem.classList.add("selectColor");
-      	var rect=elem.getBoundingClientRect();
-        var ht=rect.height;
-        console.log(ht, rect);
- 		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(ht+3);
-      },
-  onEnter(e){
-    //console.log(e);
-    if(this.$.issInput.value!=undefined&&this.searchOff===true){
-      this.set("issValue", this.$.issInput.value); 
-      var nom="valueObject."+this.issName;
-      this.set(nom, this.issValue);
-    }
-      else{
-        var children=this.getDropdownChildren();
-        var fvali="valueObject."+this.$.issInput.name;
-        //console.log(this.itemKeyStrokeIndex, "the mythic power if the index");
-               if(children[this.itemKeyStrokeIndex]!=undefined&&children[this.itemKeyStrokeIndex]._templateInstance!=undefined){
-                                   this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item); 
-                    } 
-               if(this.$.issInput.value!=undefined){
-                         this.set("issValue", this.$.issInput.value); 
-                         var nom="valueObject."+this.issName;
-                         this.set(nom, this.issValue);
-                    } 
-                     if(this.searchOff===true){
-                       this.removeColorFromChildren(children);
-                     }
-                     if(this.itemSelectProperty===""){
-                       this.set("issValue",children[this.itemKeyStrokeIndex]._templateInstance.item);   
-                       var elem=children[0];
-                       Polymer.dom(elem).classList.add("selectColor"); 
-                     }
-                     else if(this.multiSelect===false && this.searchOff===true){
-                       var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-                       this.set("issValue", value);
-                       }
-                     else if(this.multiSelect==false && this.searchOff==false){
-                       //console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
-                         var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-                       this.set("issValue", value); 
-                     }
-                     else if(this.multiSelect===true){
-                        var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
-                       var model=children[this.itemKeyStrokeIndex]._templateInstance;
-                        this.set("issValue","");
-                       if(children[this.itemKeyStrokeIndex]._templateInstance.item.selectCheck===true){
-                         model.set("item.selectCheck", false);
-                         var index = this.issValueArray.indexOf(value);
-                         this.splice("issValueArray",index, 1);
-                         var newVal=this.issValueArray.toString();
-                         this.set("issValue", newVal);
-                       }
-                       else{ 
-                             model.set("item.selectCheck", true);
-                             this.push("issValueArray", value);
-                              var newVal=this.issValueArray.toString();
-                             this.set("issValue", newVal);
-                           }
-                     }
-                      else if(children[this.itemKeyStrokeIndex]){ 
-                         var value=children[this.itemKeyStrokeIndex].value;
-                         var elem=children[this.ItemKeyStrokeIndex];
-                         var name=this.$.issInput.name;
-                         //console.log(value, this.$.issInput.name);
-                         this.set("changeEvent", {"event":e, "model": null, "target": null, "name": name, "value": value});
-                         //console.log(this.changeEvent);
-                       this.set("issValue", value); 
-                     }
-                   }
-                     this.blurInput();
-                     //console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
-                   },
+//        children[last].scrollIntoView(false);
+//        children[last].style.backgrou
+//         this.removeColorFromChildren(children);
+//       	var elem=children[this.itemKeyStrokeIndex];
+//       	elem.classList.add("selectColor");
+//       	var rect=elem.getBoundingClientRect();
+//         var ht=rect.height;
+//         console.log(ht, rect);
+//  		   this.$.dropdownlist.scrollTop=this.$.dropdownlist.scrollTop-(ht+3);
+//       },
+//   onEnter(e){
+//     //console.log(e);
+//     if(this.$.issInput.value!=undefined&&this.searchOff===true){
+//       this.set("issValue", this.$.issInput.value); 
+//       var nom="valueObject."+this.issName;
+//       this.set(nom, this.issValue);
+//     }
+//       else{
+//         var children=this.getDropdownChildren();
+//         var fvali="valueObject."+this.$.issInput.name;
+//         //console.log(this.itemKeyStrokeIndex, "the mythic power if the index");
+//                if(children[this.itemKeyStrokeIndex]!=undefined&&children[this.itemKeyStrokeIndex]._templateInstance!=undefined){
+//                                    this.set(fvali,children[this.itemKeyStrokeIndex]._templateInstance.item); 
+//                     } 
+//                if(this.$.issInput.value!=undefined){
+//                          this.set("issValue", this.$.issInput.value); 
+//                          var nom="valueObject."+this.issName;
+//                          this.set(nom, this.issValue);
+//                     } 
+//                      if(this.searchOff===true){
+//                        this.removeColorFromChildren(children);
+//                      }
+//                      if(this.itemSelectProperty===""){
+//                        this.set("issValue",children[this.itemKeyStrokeIndex]._templateInstance.item);   
+//                        var elem=children[0];
+//                        Polymer.dom(elem).classList.add("selectColor"); 
+//                      }
+//                      else if(this.multiSelect===false && this.searchOff===true){
+//                        var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+//                        this.set("issValue", value);
+//                        }
+//                      else if(this.multiSelect==false && this.searchOff==false){
+//                        //console.log(children[this.itemKeyStrokeIndex], "FIRE FIRE FIRE");
+//                          var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+//                        this.set("issValue", value); 
+//                      }
+//                      else if(this.multiSelect===true){
+//                         var value=children[this.itemKeyStrokeIndex]._templateInstance.item[this.itemSelectProperty];
+//                        var model=children[this.itemKeyStrokeIndex]._templateInstance;
+//                         this.set("issValue","");
+//                        if(children[this.itemKeyStrokeIndex]._templateInstance.item.selectCheck===true){
+//                          model.set("item.selectCheck", false);
+//                          var index = this.issValueArray.indexOf(value);
+//                          this.splice("issValueArray",index, 1);
+//                          var newVal=this.issValueArray.toString();
+//                          this.set("issValue", newVal);
+//                        }
+//                        else{ 
+//                              model.set("item.selectCheck", true);
+//                              this.push("issValueArray", value);
+//                               var newVal=this.issValueArray.toString();
+//                              this.set("issValue", newVal);
+//                            }
+//                      }
+//                       else if(children[this.itemKeyStrokeIndex]){ 
+//                          var value=children[this.itemKeyStrokeIndex].value;
+//                          var elem=children[this.ItemKeyStrokeIndex];
+//                          var name=this.$.issInput.name;
+//                          //console.log(value, this.$.issInput.name);
+//                          this.set("changeEvent", {"event":e, "model": null, "target": null, "name": name, "value": value});
+//                          //console.log(this.changeEvent);
+//                        this.set("issValue", value); 
+//                      }
+//                    }
+//                      this.blurInput();
+//                      //console.log(this.issValue, this.value, this.valueObject,this.$.issInput);
+//                    },
   
 });
 </script>

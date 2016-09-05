@@ -1,5 +1,3 @@
-<link rel="import" href="fc-header-behavior.html">
-
 <dom-module id="fc-animated-header">
 <template id="fc-animated-header-template">
 <style>
@@ -91,12 +89,13 @@ left:12px;
 }
 </style>
 <iron-media-query full="true"></iron-media-query>
-	<div hidden$="{{!sectionsHidden.zero}}" style="padding: 2px; border-bottom: silver solid 1px; position: relative; top: 0px; left: 0px; right: 0px; overflow: hidden; cursor: pointer; white-space: nowrap;" class="horizontal layout block justified"><span on-tap="seewhatsup">{{menuButton}}&nbsp;</span><span style="font-size: 14px;">{{title}}</span> </div>
+	<div hidden$="{{!sectionsHidden.zero}}" style="padding: 2px; border-bottom: silver solid 1px; position: relative; top: 0px; left: 0px; right: 0px; overflow: hidden; cursor: pointer; white-space: nowrap;" on-tap="selectFeatures">{{toolButton}}&nbsp;<span style="font-size: 10px;">{{title}}</span></div>
 	<div class="header vertical layout end-justified" hidden$="{{sectionsHidden.zero}}" style$="margin-bottom: 0px; padding: 8px 12px 2px 12px; z-index: 11; background:white;height:{{headerHeight}}px!important;">
 		    <section hidden$="{{sectionsHidden.one}}" class="horizontal layout block top justified  subTitle top-header">
-		     		<section on-tap="seewhatsup" class="top-header" style="border-radius: 50%; padding:0px 18px 18px 18px; cursor: pointer; color: silver;font-size: 1.4em;" >{{menuButton}}</section> 			
+		     		<section on-tap="seewhatsup" class="top-header" style="padding:0px 18px 18px 18px; cursor: pointer; color: silver;font-size: 1.4em;" >{{menuButton}}</section> 			
 		     		<section style="color: silver; font-size: 1.2em;" class="top-header">[[time]]</section>					
-		     		<section  style="color: silver;" class="top-header"><span class="pages">Page&nbsp;[[pageReference]]</span><span>&nbsp;of&nbsp;[[pageTotal]]&nbsp;</span></section>
+		     		<section  style="color: silver;" class="top-header"><span class="pages">Page&nbsp;[[pageReference]]</span><span>&nbsp;of&nbsp;[[pageTotal]]&nbsp;</span>
+		     		</section>
 		    </section>
 		    <section hidden$="{{sectionsHidden.two}}" class="horizontal layout block center-justified">
 		    		<span btn="changeAppInterfaceForInputs" class="title layout horizontal" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px; opacity: 0;">	☯	
@@ -125,7 +124,7 @@ left:12px;
 <script>
 Polymer({
 	is:"fc-animated-header",
-	behaviors:[ FCBehaviors.FocusedDataManagerBehavior, Polymer.IronResizableBehavior, FCBehaviors.FcHeaderBehavior],
+	behaviors:[ FCBehaviors.FocusedDataManagerBehavior, Polymer.IronResizableBehavior],
 	listeners:{"notifyResize": "resize"},
 	properties:{
 		//container width is a property passed down from the container holding the animated header
@@ -401,7 +400,7 @@ Polymer({
 	},
 	seewhatsup(e){
 		this.set("menuType", "dropdown");
-	//console.log(e, e.target,e.target.innerHTML);
+	console.log(e, e.target,e.target.innerHTML);
 	this.set("showMenu",!this.showMenu);
 	var menu= this.$.dropdownMenu;
 	Polymer.dom(menu).setAttribute("style.left", e.detail.x);
@@ -411,19 +410,19 @@ Polymer({
 	},
 observehh(newVal, oldVal){
 	if(newVal&&newVal!==oldVal){
-		//console.log(newVal, oldVal, "you should see header height here");
+		console.log(newVal, oldVal, "you should see header height here");
 	}
 },
 
 titleObserver(newVal, oldVal){
 	if(newVal&&newVal!==oldVal){
-		//console.log(newVal, oldVal, "you should trigger a selected reset, on this api change");
+		console.log(newVal, oldVal, "you should trigger a selected reset, on this api change");
 	}
 },
 
 subTitleObserver(newVal, oldVal){
 	if(newVal&&newVal!==oldVal){
-		//console.log(newVal, oldVal, "you should trigger a dataRelated Prechoice loads on this page/topic/api change");
+		console.log(newVal, oldVal, "you should trigger a dataRelated Prechoice loads on this page/topic/api change");
 	}
 },
 _computeToolBarFills(day, date, time, title, subTitle,toolbars, isTitleComputed, numberOfRows,pageTotal, pageReference){},
@@ -433,10 +432,10 @@ observeContainerWidth(newVal, oldVal){
 		var hh=Math.ceil(newVal*.2285);
 		if(hh>120){hh=120;}
 		else{hh=hh;}
-		//console.log(hh, "loook here");
+		console.log(hh, "loook here");
 		this.set("headerHeight", hh);
 		var str=hh.toString()+"px";
-		//console.log(str);
+		console.log(str);
 		Polymer.dom(this).setAttribute("style.height", str);
 	//	console.log(margin);
 		if(newVal>480){
@@ -450,7 +449,7 @@ observeContainerWidth(newVal, oldVal){
 			this.set("sectionsHidden.one", true);
 			this.set("sectionsHidden.two", true);
 			this.set("sectionsHidden.six", true);
-		//	console.log(this.headerHeight, this.style.height, this, "I AM SHRINKING HEADER");
+			console.log(this.headerHeight, this.style.height, this, "I AM SHRINKING HEADER");
 			// this.set("headerHeight", 4);
 			// Polymer.dom(this).setAttribute("style.height", "65px");
 
@@ -496,14 +495,14 @@ resize(){
 },
 observeContainerHeight(newVal, oldVal){
 	if(newVal){
-		//console.log(newVal, oldVal, "container height");
+		console.log(newVal, oldVal, "container height");
 		var height=Math.ceil(newVal*.1);
 		if(newVal<510){
 			this.set("sectionsHidden.one", true);
 			this.set("sectionsHidden.two", true);
 			this.set("sectionsHidden.six", true);
 			this.set("headerHeight", 78);
-			//console.log("I hid 1,2,6");
+			console.log("I hid 1,2,6");
 		}
 
 
@@ -522,7 +521,7 @@ observeContainerHeight(newVal, oldVal){
   _modifySizeRatio(ciw){
     var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.6230;
    var retVal=Math.ceil(r*19);
-    //console.log(r, retVal);
+    console.log(r, retVal);
     return retVal; 
   },
 

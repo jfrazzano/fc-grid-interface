@@ -163,68 +163,53 @@ paper-tabs.slidingtabs:hover{
         data="{{routeData}}"
         tail="{{subroute}}">
     </app-route>
-    <!-- <app-location id="pageUnderGrid" route="{{subroute}}" use-hash-as-path></app-location>
+  <!--   <app-location id="rightDrawerLocation" route="{{subroute}}" use-hash-as-path></app-location>
         <app-route
-        id="appRouteCenterRightDrawer"
+        id="appRouteRightDrawer"
         route="{{subRoute}}"
-        pattern="/:gridPage"
-        data="{{routeData}}"
+        pattern="#/:rightDrawerPage"
+        data="{{rightDrawerSelectedViewsArray}}"
         tail="{{pageIndexSelected}}">
     </app-route> -->
 
 <iron-media-query query="max-width: 680px" query-matches="{{smallScreen}}"></iron-media-query>
 <fc-two-drawer-layout fullbleed left-drawer-curerent-width="{{leftCurrentWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
  
- <!--attr-for-selected="{{displayandData}}" {{displayAndData[i,j]-->
     
         <fc-app-drawer id="dashboardLeftDrawer" limitone="{{totalWidthLost}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" style="margin-right: 8px;" opened persistent swipe-open align="left">
-       <!--  <iron-pages selected="{{selected}}}}"> -->
-                 <!--  <fc-triad style="z-index: 9999;position: absolute; top: 240px; bottom: -220px; left: 0px; right: -30px;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">></fc-triad> -->
-
-                 <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style="z-index: 9999;position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">
-                   
+                 <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style="z-index: 9999;position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">   
                  </fc-three-section-display>
-              <!--      <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows> -->
-                <!--   <fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
-                   </fc-drawer-form> -->
-     <!--       </iron-pages> -->
         </fc-app-drawer>
-        <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open>
-                <fc-drawer-form current-inner-width="{{rightCurrentWidth}}" page-type="{{gridPage}}" route="{{subroute}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right: 0px; left: 22px;  width:calc({{rightCurrentWidth}}-80)px;">
-              
+        <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open persistent>
+                <fc-drawer-form current-inner-width="{{rightCurrentWidth}}" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right: 0px; left: 22px;  width:calc({{rightCurrentWidth}}-80)px;">
                 </fc-drawer-form>
         </fc-app-drawer>
 
       <!-- Main content -->
   <div class="layout vertical flex" style$="left:{{leftCurrentWidth}}px; right:{{rightCurrentWidth}}px; position: absolute;" has-scrolling-region>
- <section style="background: silver;">
-        <span style="cursor: pointer; font-size: 26px; color: white; position: absolute; right: 45%; left: 45%;">{{nowChosen}}</span>
-   </section>
         <paper-tabs 
           id="protoTabMenu" 
           data="{{localDashboard}}"
           scrollable="true"
           class="horizontal layout end slidingtabs"
-          selected="{{_computedSelect(localDashboard,gridPage,localIndex)}}"  
+          selected="{{_computeSelected(localDashboard,gridPage,localIndex)}}"  
           attr-for-selected="name" 
           bar="true">   
        <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> 
      
-        <div class="horizontal layout flex" style="overflow-x: scroll;" hidden$="{{!notRouter}}">
+        <div class="horizontal layout flex" style="overflow-x: scroll;">
         <template is="dom-repeat" items="{{localDashboard.array}}">
         <paper-tab   selected="{{gridPage}}" attr-for-selected="name" style="min-width: 160px">
           <a name="{{item.value}}" href="#/{{item.value}}">{{_computeTabTitles(item.value)}}</a>
         </paper-tab>
         </template>
         </div>
-         <!--   <fc-dialog-toolbar hidden$="{{notRouter}}" data-dialog$="{{dataDialog}}">
-        </fc-dialog-toolbar> -->
             </paper-tabs>
    
-            <array-selector items="{{localDashboard.array}}" selected="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></array-selector>
+            <array-selector id="mainArraySelector" items="{{localDashboard.array}}" item="{{_computeSelected(localDashboard,gridPage, localIndex)}}" selected="{{selected}}"></array-selector>
         
-          <template is="dom-repeat" items="{{_computedSelect(localDashboard,gridPage, localIndex)}}">
-                      <fc-grid id="liveGrid" name="{{item.value}}" chosen="[[item.value]]" inputs-display-array="{{item.inputsArray}}" grid-display-array="{{item.gridArray}}">
+          <template is="dom-repeat" items="{{_computeSelected(localDashboard,gridPage, localIndex)}}">
+                      <fc-grid id="liveGrid" name="[[item.value]]" chosen="[[item.value]]" grid-display-array="{{item.gridArray}}">
                     </fc-grid>
           </template>
       </div>
@@ -239,6 +224,17 @@ paper-tabs.slidingtabs:hover{
       is: 'my-app',
        behaviors:[ FCBehaviors.FocusedDataManagerBehavior],
       properties: {
+         arePanelsSynched:{
+          type: Boolean, 
+          value: function(){return false;},
+          notify: true
+        },
+
+        interfaceView:{
+          type:Object, 
+          value: function(){return {};},
+          notify: true,
+        },
         isLeftLinked:{
           type: Boolean, 
           value: function(){return false;},
@@ -249,46 +245,21 @@ paper-tabs.slidingtabs:hover{
           value: function(){return true;},
           notify: true
         },
-      arePanelsSynched:{
-          type: Boolean, 
-          value: function(){return false;},
-          notify: true
-        },
-
+     
         nowChosen:{
           type: String,
           notify: true,
           observer:"createFinancialsEtc",
         },
 
-        interfaceView:{
-          type:Object, 
-          value: function(){return {};},
-          notify: true,
-        },
-        formDisplayArray:{
-           type: Array, 
-           value: function(){return [];},
-          notify: true, 
-
-        },
-
-        focusedManager:{
-          type: Object, 
-          notify: true,
-        },
         inputsChosen:{
           type:String,
           notify: true,
         },
-        rightDrawerPage:{
-          type: String,
-          reflectToAttribute: true,
-          computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched)'
-
-        },
+       
         gridPage: {
           type: String,
+          value: function(){return "intakes";},
           reflectToAttribute: true,
           observer: '_gridPageChanged'
         },
@@ -297,35 +268,31 @@ paper-tabs.slidingtabs:hover{
           reflectToAttribute: true,
           computed: '_gridPageLeftDrawerChanged(gridPage, isLeftLinked, arePanelsSynched)'
         },
-
-        notRouter:{
-          type: Boolean,
-          value: function(){return true;},
-          notify: true,
-
-        },
-        formsDisplayArray:{type: Array, value: function(){return [];}, notify: true},
-        leftCurrentWidth:{
-          type: Number, 
-            value: function(){return 18;},
-          notify: true,
+         rightDrawerPage:{
+          type: String,
+          reflectToAttribute: true,
+          computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched, rightDrawerControls)',
 
         },
-        rightCurrentWidth: {
-          type: Number,
-          value: function(){return 285;},
-          notify: true,
-        }, 
-        totalWidthLost: {
-          type:Number, 
-          computed:"_computeTotalWidthLost(leftCurrentWidth,rightCurrentWidth)",
+        selected:{
+          type: Array, 
+          value: function(){return [];},
           notify: true,
         },
-        centerContentAreaWidth:{
-          type: Number,
-          computed: "_computeContentAreaWidth(totalWidthLost)",
+        rightDrawerControls:{
+          type: String,
+          value: function(){return "intake-inputs";},
           notify: true
         },
+        routeData:{
+          type: Object,
+          notify: true,
+          observer:"observeRouteData",
+
+
+        },
+
+       
         localDashboard:{
           type: Object, 
           value:{},
@@ -353,21 +320,60 @@ paper-tabs.slidingtabs:hover{
 
         }, 
       
+//width management is all beloow
+      leftCurrentWidth:{
+          type: Number, 
+            value: function(){return 18;},
+          notify: true,
+
+        },
+        rightCurrentWidth: {
+          type: Number,
+          value: function(){return 285;},
+          notify: true,
+        }, 
+        totalWidthLost: {
+          type:Number, 
+          computed:"_computeTotalWidthLost(leftCurrentWidth,rightCurrentWidth)",
+          notify: true,
+        },
+        centerContentAreaWidth:{
+          type: Number,
+          computed: "_computeContentAreaWidth(totalWidthLost)",
+          notify: true, 
+          observer: "observeCenterContentArea",
+        },
+
+
       },
 
       observers: [
         '_routePageChanged(routeData.gridPage)'
       ],
+
+ 
     attached(){
         this.async(function(){this.set("rightCurrentWidth", 245);
           this.set("leftCurrentWidth", 18);}, 200);
-        console.log(this.routeData);
+        console.log(this.routeData, this.rightDrawerPage);
       }, 
+observeCenterContentArea(newVal, oldVal){
+  if(newVal){var width=parseInt(newVal);
+    if(width<2 &&this.leftCurrentWidth>15){this.set("leftCurrentWidth", this.leftCurrentWidth-10);}
+    if(this.leftCurrentWidth<16&&width<2){this.set("rightCurrentWidth", this.rightCurrentWidth-10);}
+  }
 
+},
 _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
-   _computedSelect(localDashboard,gridPage,localindex){
+   
+
+
+  _computeSelected(localDashboard,gridPage,localindex){
     var count=localindex.indexOf(gridPage);
-    console.log(localDashboard[gridPage], count, count, count, count);
+    console.log(localDashboard[gridPage], gridPage, localindex, count, count, count, count);
+    this.$.protoTabMenu.select(gridPage);
+    this.$.mainArraySelector.select([localDashboard[gridPage]]);
+    this.set("selected",[localDashboard[gridPage]]);
     return [localDashboard[gridPage]];
 
    },
@@ -431,36 +437,40 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
             return retWidth;
       },
      
-      _routePageChanged: function(gridPage) { 
-        this.gridPage = gridPage || gridPage;
+      _routePageChanged(gridPage) { 
+        console.log(gridPage);
+        this.gridPage = gridPage || "intakes";
        if(this.focusedManager &&this.routeData){
        
-        if(this.localDashboard[gridPage]==undefined&&this.counter===0){
+        if(this.localDashboard[gridPage]==undefined&&this.counter<40){
 
           //here we add archive for last position to get from data
           var data=this.focusedManager.dashboardMap.get("intakes");
+          console.log(data, this.counter);
+                this.set("routeData.dataset",data);
           this.counter++;
         }
         else{
          var data=this.localDashboard[gridPage];
+               this.set("routeData.dataset",data);
          }
-         var dataObject="routeData."+gridPage;
-        this.set(dataObject,data);
-        // var setup="routeData.gridPage"
-        this.set("routeData.data",data);
-       var formset=this.routeData.data.forms.map((item)=>{
+       //   var dataObject="routeData."+gridPage;
+       //  this.set(dataObject,data);
+       // console.log(data.forms, this.routeData[gridPage].forms);
+  
+       var formset=this.routeData.dataset.forms.map((item)=>{
           var form={"form": item};
           return form;
             }); 
        console.log(formset);
-       var inputset=this.routeData.data.inputsArray.map((item)=>{
+       var inputset=this.routeData.dataset.inputsArray.map((item)=>{
             var input=item;
             return input;
        });
       var selectedArray=  formset.concat(inputset);
       this.set("rightDrawerSelectedViewsArray", selectedArray);
       //this.set("leftDrawerSelectedViewsArray", selectedArray);
-        console.log(this.rightDrawerSelectedViewsArray, selectedArray);
+        console.log(this.rightDrawerSelectedViewsArray, selectedArray, this.routeData.dataset, this.routeData);
         }
       },
 
@@ -498,10 +508,12 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
        }
       },
 
-       _rightDrawerChanged(gridPage, rightLinked, synched){
-       // if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
-       //  if(this.isRightLinked===true){
-       //      this.rightDrawerPage="right-drawer-"+gridPage;
+       _rightDrawerChanged(gridPage, rightLinked, synched, rightDrawerControls){
+       if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
+          if(rightLinked===true){
+            return "right-drawer-"+gridPage;
+          }
+          else {return "right-drawer-"+rightDrawerControls;} 
        //       this.importHref(
        //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
         
@@ -512,7 +524,7 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
          
        //   }
        //    return this.rightDrawerPage;        
-       //  }
+        }
     },
 
     
@@ -521,3 +533,27 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
   </script>
 
 </dom-module>
+<!--
+ <iron-pages selected="{{selected}}}}"> -->
+                 <!--  <fc-triad style="z-index: 9999;position: absolute; top: 240px; bottom: -220px; left: 0px; right: -30px;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">></fc-triad> 
+                   <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows>
+                  <fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
+                   </fc-drawer-form> 
+          </iron-pages> 
+
+        notRouter:{
+          type: Boolean,
+          value: function(){return true;},
+          notify: true,
+
+        },
+     
+
+ formDisplayArray:{
+           type: Array, 
+           value: function(){return [];},
+          notify: true, 
+
+        },
+
+   formsDisplayArray:{type: Array, value: function(){return [];}, notify: true},

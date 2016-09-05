@@ -1,0 +1,651 @@
+
+
+<link rel="import" href="../fc-grid/data-manager.html">
+<link rel="import" href="../fc-call-center/fc-course-calendar-creation-behavior.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+ <link rel="import" href="../fc-call-center/fc-calendar-behavior-beta-prime.html"> 
+<link rel="import" href="../fc-call-center/fc-profile-class.html">
+<link rel="import"  href="../fc-call-center/fc-calendar-controller-behavior.html">
+
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-runner-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation-behavior.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animations.html">
+<link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../fc-grid/fc-iss-input.html">
+<link rel="import" href="../fc-app-elements/fc-panel/fc-panel.html">
+
+<link rel="import" href="../fc-call-center/fc-call-center-form-one.html">
+<link rel="import" href="../fc-call-center/fc-call-center-form.html">
+<dom-module id="fc-inputs-interface">
+
+<template>
+<style>
+
+:host{
+      background: white
+      height: 100%;
+      width: 100%;
+      top: 0;
+      right: 0;
+      left: 0;
+      bottom: 0;
+      margin-right: -19px;
+     position: absolute;
+      opacity: 1;
+      display: block;
+      visibility: visible;
+      overflow-x: scroll;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+       @apply(--layout-reverse);
+      }
+   
+.header{
+/*  position: absolute;
+  top: 0px;
+  right: 0px;
+  left:0px;*/
+  margin: 30px 0px -45px 20px; 
+  padding-bottom: 30px; 
+  font-family: merriweather; 
+  line-height: 1;
+  color: #009; 
+  font-size: 1.2em;
+  font-weight: 300; 
+  max-height: 23vh; 
+  min-height: 20vh;
+
+}
+paper-tab{
+  --paper-tab:{
+      color: white;
+      background: silver;
+      font-size: 1.2em;
+      @apply(--paper-tab);
+    }
+}
+.title{
+
+  z-index: 220;
+  color: black;
+  position: absolute;
+  left:12px;
+  top: 150px;
+ font-family:merriweather;
+  font-size: 2.1em; 
+  color: #009;
+  margin-bottom: 3px;
+}
+.timestamp{
+    font-weight: 300;
+    color: #009;
+    font-family: merriweather;
+   font-size: 13px;
+    position: absolute;
+    color: brown;
+    font-family: times;
+   top: 198px;
+   left: 12px;
+   margin-bottom: 4px;
+    }
+  .subheading{
+    font-size: .8em;
+    position: absolute;
+    color: brown;
+    font-family: times;
+    top: 180px;
+    right: 12px;
+    margin-bottom: 4px;
+
+  }
+      neon-animated-pages {
+        @apply(--layout-flex);
+        @apply(--layout-horizontal);
+        margin: 12px 0px 12px 0px;
+        padding: 18px;
+        background: white;
+        @apply(--layout-self-stretch);
+        height: 720px;
+        max-height: 80vh;
+      }
+      neon-animatable {
+        color: white;
+        @apply(--layout-horizontal);
+        @apply(--layout-center-center);
+        margin: 0px;
+        padding: 0px;
+      }
+
+
+    .container1{
+      position: relative;
+      min-height: 65vh;
+      overflow-y:scroll;
+    }
+
+  
+     .bar{
+      min-width:280px; 
+      height: 2px;
+      background:silver;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+      @apply(--layout-self-stretch);
+      position: absolute;
+      left: 12px;
+      top: 195px;
+      right: 12px;
+      width: auto;
+
+    }
+    .last {
+      color:brown; 
+      font-family: merriweather; 
+      float: left; 
+      text-align: left;
+    }
+    .reverseArrow{
+
+   transform: matrix(-1, 0, 0, 1, 0, -.5);
+   display: inline-block;
+   filter: flipH;
+        -ms-filter: flipH;
+    }
+
+    .check{
+    font-size:26px;
+    color: green;
+    position: absolute;
+    left: 5px;
+    }
+    .inner-container1{
+      max-width: 510px!important;
+        }
+    .column-container{
+      height: 95vh;
+      width: 100%;
+      @apply(--vertical-layout);
+      @apply(--layout-flex);
+    }
+    .footer-container{
+    border-top: solid 1px silver; 
+    margin-top: 18px; 
+    margin-left: 20px; 
+    width: 92%; 
+    overflow-x: hidden; 
+    min-height: 8vh; 
+    max-height: 12vh;
+    position: relative;
+    }
+    .next{
+      color:#005c00;
+      font-family: merriweather; 
+      float: right; 
+      text-align: right;
+
+    }
+    .one{
+    font-family: merriweather; 
+    font-weight: 600;
+    color: #080808;
+    font-size: 14px;
+    white-space: nowrap;
+    display: inline-block;
+    }
+
+@media(max-height: 580px){
+    #content{
+      @apply(--layout-vertical);
+      @apply(--layout-center-justified);
+        }
+      }
+@media(max-width: 360px){.byebye{display: none;}}
+
+@media(max-height: 320px){
+/*  .next{
+    display: none;
+  }*/
+  .middleheader, .bar, .timestamp, .subheading, .last,.next{display: none;}
+    /*.bar{display: none;}
+  .last{display: none;}*/
+  .title{font-size: .95em;top: 125px; left: 2px;}
+}
+
+      .intakeForm{
+      	border: 1px #efefef solid;
+      	margin: 12px 0px;
+      }
+
+    
+   
+		.show {display:block; z-index: 45; right: 0;}
+
+  </style>
+
+  <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+<div class="column-container">
+
+  
+    <div class="header" style="margin-bottom: 14px; z-index: 11; background: white;">
+      <section class="horizontal layout flex">
+    <span btn="changeAppInterfaceForInputs" class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(localDashboard, interface, currentInnerWidth)}}</span>
+    </section>
+             <section class="bar"></section>
+        <section class="horizontal layout flex middleheader">
+          <span btn="leftClick" class="timestamp">
+                [[time]] on [[date]]
+          </span>
+            <span btn="rightClick" class="subheading"><span class="byebye">Page</span> {{shadowIndex}} of {{pageTotal}}</span>
+        </section>
+        </div>
+
+ <div class="flex layout vertical center-justified innerContainer" style$="width:{{_computeCurrentWidth(currentInnerWidth)}}px; min-height: 57vh; max-height: 75vh; margin-top: -14px; margin-bottom: 23px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
+
+    <array-selector items="{{routeData.data}}" selected="{{_computeSelected(routeData.data)}}"></array-selector>
+        <neon-animated-pages id="pages" selected="{{selected}}" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+          <template is="dom-repeat" items="{{selected}}">
+              <div class="container1">
+                <fc-dropdown-libre hidden="{{}}" forms-display="{{_computeNextPage(item)}}" selected-checked="{{choiceSelected}}"  select-check check-event="{{checkEvent}}"></fc-dropdown-libre>
+               <!--  forms="{{forms}}" form-selected="{{formSelected}}" first-free-row="{{rowIndex}}" grid-display-array="{{gridDisplayArray}}"// all from top- formsDisplayArray,selected,interface --> 
+                <fc-call-center-form hidden="{{}}" value-object="{{selected}}" id="generalForm" style="min-height: 650px; overflow-y: scroll;"  search-off="{{searchOff}}" id="ioForm"  focused-manager="{{focusedManager}}" page-number="{{computePageNumber(selected)}}" item-object="{{item}}">
+                </fc-call-center-form>
+              </div>
+          </template>
+      </neon-animated-pages>
+</div>
+
+   <div class="footer-container vertical layout center-justified" style="max-height: 14vh; min-height: 3vh; top: 43px; margin-top: 80px; bottom: 248px; position: relative;">
+   
+              <div class="horizontal flex layout justified">
+                  <section class="last" btn="leftClick" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;"><section class="last reverseArrow">&#10148; </section> &nbsp; LAST PAGE</section>
+                  <section class="next" style$="font-size:{{_modifySizeRatio(currentInnerWidth)}}px;" btn="rightClick">NEXT PAGE <span style="display: inline-block;">&#10148;</span></section>
+              </div>
+              <section class="horizontal layout flex around-justified buttons">
+                  <paper-button class="flex-1 one" style="max-width: 100px;" btn="wipeCleanInputs">clear</paper-button>
+                  <paper-button style="max-width: 100px;" class='one' btn="submitHandler">Submit</paper-button>
+              </section>
+        </div>
+      
+</div><!-- end container-->
+</form>
+</template>
+<script>
+FcInputsInterface=Polymer({
+	is:"fc-inputs-interface",
+		 behaviors:[Polymer.NeonAnimatableBehavior,
+                Polymer.NeonAnimationBehavior,
+                Polymer.NeonAnimationRunnerBehavior,
+                FCBehaviors.FcCalendarOptionsSelectorBehavior,
+                FCBehaviors.FcGridStyleBehavior, 
+                FCBehaviors.FocusedDataManagerBehavior,
+                FCBehaviors.FcCalendarControllerBehavior,
+                FCBehaviors.FcFormDataRoutingBehavior],
+          
+        listeners: {
+                    "on-tap":"_tapHandler"
+                        },
+        observers:['observerForSearch(isSearchRequired.isPreviousCaller, isSearchRequired.callerRole)', 'observeInputsDisplayArray(inputsDisplayArray)','deepObserveValueObject(valueObject.*)', 
+            'observeInterfaceObjectAndForms(interfaceObject.value, forms.Intakes, interfaceObject.inputsArray)'
+        ],
+    properties:{
+      localDashboard:{
+        type: Object,
+        notify: true,
+      },
+      time:{
+      type:Date,
+      value:function(){
+          var time=new Date().toLocaleTimeString();
+          console.log(time);
+          return time;
+      },
+      notify: true
+    },
+    date:{
+        type: Date,
+        value: function(){
+          var date=new Date().toLocaleDateString();
+          return date;
+            },
+        notify: true,
+        },
+      entryAnimation:{
+          type: String,
+          value: function(){ return "";},
+          notify: true
+        },
+        shadowIndex:{
+            type: Number,
+            computed: "_computeShadowIndex(selected)",
+            notify: true
+        },
+        exitAnimation:{
+            type: String,
+            value: function(){return "";},
+            notify: true
+        },
+      interface:{
+        type: String,
+        value: function(){return "profiles";},
+        notify: true, 
+       // observer: "observeInterface",
+      },
+ 
+    valueObject:{
+      type: Object,
+      value: function(){return {};}, 
+      notify: true,
+    },
+  
+    searchOff:{
+      type: Boolean,
+      notify: true, 
+      observer:"observeSearchOff",
+     
+    },
+    formsDisplayArray:{
+      type: Array, 
+      value: function(){return [];},
+      notify: true,
+      obserer:"observeFormsDisplayArray",
+    },
+    currentWidth:{
+      type:String,
+      notify: true,
+    },
+    currentInnerWidth:{
+      type:Number, 
+      notify: true
+    },
+
+    selected: {
+          type: Number,
+          value: function(){return 0;},
+          notify: true,
+          observer: "observeSelected",
+        },
+  
+    isFormSubmitted:{
+        type: Boolean,
+        value: false,
+        notify: true
+      },
+      isNotToggle:{
+        type: Boolean, 
+        value: false, 
+        notify: true
+
+      }, 
+    pageTotal:{
+         type: Number,
+            computed: "_computePageTotal(inputsDisplayArray)",
+            notify: true
+        },
+   
+  },//end of properties
+		
+    _computeSelected(data){
+      console.log(data, data.inputsArray, data.forms, data.value);
+
+
+    },
+
+
+  ready(){
+   
+  },
+  _computeCurrentWidth(ciw){
+    var retVal=ciw>=530?530:ciw;
+    return retVal;
+  },
+  observeSelected(nv, ov){
+    if(nv){console.log(nv,ov);}
+
+
+  },
+
+  observeFormsDisplayArray(newArr, oldArr){
+      if(newArr){console.log(newArr);}
+
+
+  }, 
+  _computeShadowIndex(selected){
+    return selected+1;
+  },
+  _computePageTotal(inputsDisplayArray){
+    if(inputsDisplayArray!=undefined&&this.localDashboard&&this.localDashboard[this.interface]&&this.localDashboard[this.interface].forms){
+      var addTo=this.localDashboard[this.interface].forms.length;
+    var retVal=inputsDisplayArray.length+addTo;}
+    else if(inputsDisplayArray!=undefined){
+           var retVal=inputsDisplayArray.length+1;
+         }
+    else{var retVal=1;}
+    return retVal;
+
+  },
+  computePageNumber(){},
+  _computeMinWidthHidden(cwidth){
+      var retVal=(cwidth-20<200)?true: false;
+      return retVal;
+  },
+  _modifySizeRatio(ciw){
+    var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.650;
+   var retVal=Math.ceil(r*22);
+    console.log(r, retVal);
+    return retVal; 
+  },
+
+
+  _computeTitle(localDashboard, interface, currentInnerWidth){
+    this.title= this.focusedManager.propertyNameToLabel(interface);
+     var pxWidt= this.fitTextInDrawer(this.title);
+    this.set("titleFontSize",pxWidt);
+    console.log(this.titleFontSize);
+    var top=150+(48-this.titleFontSize)*.955;
+    this.set("titleTop", top);
+    return this.title;
+  },
+
+    fitTextInDrawer(text){
+    var size=48;  
+    var c=document.createElement("CANVAS");
+    var ctx=c.getContext("2d");
+        var txt=text;
+    while(size>0){
+      ctx.font =size+"px"+ " "+"merriweather";
+        var width=ctx.measureText(txt).width;
+       if(((this.currentInnerWidth)*.60)>=width){this.set("titleSize", width); console.log(width, this.currentInnerWidth);break;}
+      size--;
+    }
+    console.log(size);
+    return size;
+  },
+
+
+
+  computeIsSearchRequired(hasFocusedProfile){},
+  observeSearchOff(nv, ov){if(nv){
+      console.log(nv);}},
+  
+
+    deepObserveValueObject(nv, ov){ 
+
+  }, 
+
+  doStuffOnLoad(e){
+         this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");//console.log(ht, wt);
+          this.style.width="440px"; this.style.height="660px";}, 4);
+        //console.log(window.getComputedStyle(this.$.container1, null).getPropertyValue("height"), e);
+     },
+  observeInputsDisplayArray(inputs){
+      // var vo={}, triple=this.focusedManager.propertiesLabelsAndValuesFromInputs(inputs);
+      // var valueObject=triple.name.reduce((vo, val,i)=>{ 
+      //               vo[val]="";
+      //               return vo;}, vo);
+      // this.set("valueObject", valueObject);
+      // console.log(this.valueObject);
+  },
+  _computeSiblingHeight(childHeight){
+    return childHeight;
+       },
+
+  attached(){
+    this.set("interfaceType", "inputs");
+  },
+  observeInterfaceObjectAndForms(name,inputsArray, forms){
+    if(inputsArray&& inputsArray.length){
+      this.set("inputsDisplayArray", inputsArray);
+      }
+    },
+    _computeNextPage(formsDisplayArray, shad){
+        var pickle=formsDisplayArray[shad-1];
+      if(formsDisplayArray.length<=shad){return formsDisplayArray[shad-1];}
+    },
+
+
+    submitHandler(event){
+    if(this.selectedStoreNumber==2){this.focusedManager.createIndexedDatabase(2);}
+    else{
+          var formResults = this.$.callIntakeForm.serialize();
+            var keys=Object.keys(formResults);
+            var trueForm=keys;
+         var val=this.superValue;
+         console.log(this.selectedStoreNumber);
+        var type= (this.seachOff===true)?"newClient":"repeatCaller";
+        var base=this.focusedManager.databaseIndex[this.selectedStoreNumber];
+
+         var args={
+            role:"student",
+            type: type,
+            grid:this.gridDisplayArray,
+            valueObject: this.valueObject, 
+            "context": this,
+            gridStoreKeys:{"dbName": base.dbName,"storeName":base.storeName, "verion":base.version, "displayIndex":base.displayIndex, "context": this},  
+         };
+                                
+                                this.addCallerTypeToGrids(args);
+              this.wipeCleanInputs();
+            }
+     },
+
+
+    wipeCleanInputs(){
+         this.set("superValue",{});
+          var pro=new ProfileReformer({});
+          this.set("valueObject", pro);
+          var count=this.inputsDisplayArray.length;
+              for(var i=0;i<count;i++)
+              {
+               this.inputsDisplayArray[i].forEach((val, j, arr)=>{
+                console.log(val, this.inputsDisplayArray[i][j]);
+                     this.set(["inputsDisplayArray",i,j,"value"],"");
+                     this.set(["inputsDisplayArray",i,j,"valueA"],"");
+                     this.set(["inputsDisplayArray",i,j,"valueB"],"");
+                    });
+               }
+        },
+
+
+   _computeNextPage(formsDisplayArray, selected){
+          if(formsDisplayArray[selected]){return formsDisplayArray[selected];}
+
+     },
+
+
+    observeChangeB(event, value, name){},
+
+    observeChangeA(event, value, name){},
+
+
+	_tapHandler(e){
+		var targ=e.target;
+    if(e==null){console.log(null);}
+    else if(e.target==null){console.log(null);}
+     else if(targ!=null){
+            console.log("not null"); 
+            if(targ!=undefined&&targ!=null&&targ.attributes&&targ.attributes!=undefined&&targ.attributes!=null)
+            {
+	
+              while(targ.attributes.btn==undefined && targ.nodeName!=="FORM")
+		          { 
+                console.log(targ);
+			             targ=targ.parentElement;
+		        }
+	         	if(targ.attributes.btn){
+		              this[targ.attributes.btn.value](e);
+	           }
+          }
+        }
+	},
+	    
+
+    
+       rightClick: function() {
+        this.entryAnimation = 'slide-from-left-animation';
+        this.exitAnimation = 'slide-right-animation';
+        
+        
+       this.selected = (this.selected === (this.inputsDisplayArray.length))? 0 : (this.selected + 1);
+       
+      },
+      leftClick: function() {
+        this.entryAnimation = 'slide-from-right-animation';
+        this.exitAnimation = 'slide-left-animation';
+        console.log(this.inputsDisplayArray, "look here");
+       this.selected = this.selected === 0 ?(this.inputsDisplayArray.length): (this.selected - 1);
+         
+      },
+      observerForSearch(isPreviousCaller, callerRole){
+        if(isPreviousCaller===true){
+             if("2".match(callerRole)){this.leftClick();this.leftClick();}
+                  else{this.leftClick();}
+        }
+      },
+
+_computeTimeStampUseful: function(timeStamp, callLogFormOneObject){
+    var d = new Date();
+    var n = -d.getTime();
+    console.log(n);
+    return n;
+
+},
+layWaste(e){
+
+
+  this.focusedManager.getReviseResaveAllBasicProfiles(0, "deleteDatabase", "build");
+
+  }
+    
+});
+
+</script>
+</dom-module>
+
+
+<!--     <!--  <fc-call-center-form-one style="padding: 6px 38px 14px 38px; min-height: 380px; max-height: 650px; overflow-y: scroll;" selected-forms="{{selectedForms}}" page-index="{{selected}}" search-off="{{searchOff}}" value-object='{{valueObject}}' id="childOne" current-height="{{childHeight}}" forms-display="{{formsSent}}"  selected-forms="{{computeSelectedForms(selectedForms, chosen}}">
+                </fc-call-center-form-one> 
+    /* @media(max-width: 1080px){
+    #content{
+      @apply(--layout-vertical);
+      @apply(--layout-center-justified);
+        }
+      .title{font-size: 1.7em; top: 135px; left: 18px;}
+      .bar{ left: 18px;top:165px; }
+      .timestamp{
+        left: 18px; top: 170px;
+
+        } 
+            
+        .subheading{top: 150px;}
+      .innerContainer2{
+        max-height: 75vh!important;
+        min-height: 68vh;
+        overflow-y: scroll;
+         max-width: 480px!important;
+        }
+}*/-->
+
+

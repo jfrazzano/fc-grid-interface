@@ -1,0 +1,61 @@
+
+
+
+<link rel="import" href="../../bower_components/iron-flex-layout/classes/iron-flex-layout.html">
+<link rel="import" href="../../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
+<link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
+<link rel="import" href="fc-iss-input-behavior.html">
+<link rel="import" href="fc-iss-input-css-shared-styles.html">
+
+<dom-module id="fc-iss-input">	
+<template>
+     <style is="custom-style" include="fc-iss-input-css-shared-styles"></style>
+
+     <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}">
+     </array-selector>
+     <iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y2" target="[[target]]" keys="up" on-keys-pressed="onUpArrow"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y3" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y4" target="[[target]]" keys="esc" on-keys-pressed="onEsc"></iron-a11y-keys>
+
+     <div class="horizontal layout flex self-stretch wrapper">
+               <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: silver; opacity: .3;  cursor: pointer;" on-tap="inputToggle">
+               {{_setUtfSymbol(dropdownItems, localPropertyValue)}}
+               </span>
+               <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
+                    <input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
+                         <label for="issInput" class$="{{issClass}}">
+                              <span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}
+                              </span>
+                         </label>
+                    	<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
+                    		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
+                    					   <paper-item class$="block {{issClass}}" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection"> <!-- hidden="{{!item.selectCheck}}" &#10148;-->
+                                        <span  class="check">[[_computeSelectCheck(item.selectCheck, option)]]</span>
+                                        <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
+                                  </paper-item>
+                    		 		</template>
+                    	</paper-listbox>
+               </div>
+     </div>
+</template>
+<script>
+FcIssInput=Polymer({
+	is:"fc-iss-input",
+  behaviors:[FCBehaviors.FcIssInputBehavior],
+	properties:{
+
+	},//end properties
+     hostAttributes:{
+          value: true,
+      },
+
+});
+</script>
+</dom-module>
+
+
+
+

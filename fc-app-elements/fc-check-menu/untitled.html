@@ -1,0 +1,15 @@
+ 
+<template is="dom-repeat" items="{{fields}}" as="property" filter="{{removeElemebts(oneToFour)}}" observe="left right menu area">
+<div>
+  <textarea id="mytxxtarea" type="text" contenteditable on-keyup="setValue" style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{taValue::input}}" class="layout vertical arround-justified">
+ </textarea> 
+ <fc-check-menu>
+ </fc-check-menu>
+ </div>
+ <div>
+  <fc-iss-input class="left" iss-class="fullpage" iss-name="fullName" name="fullName" iss-label="Caller Full Name"  value-object="{{valueObject}}"  item-select-property="value"  select-check="false" dropdown-items="{{callerRoleList}}">
+          </fc-iss-input> 
+    <fc-iss-input class="right" iss-class="fullpage" iss-name="fullName" name="fullName" iss-label="Caller Full Name"  value-object="{{valueObject}}"  item-select-property="value"  select-check="false" dropdown-items="{{callerRoleList}}">
+  </fc-iss-input>
+  </div>
+  </template>

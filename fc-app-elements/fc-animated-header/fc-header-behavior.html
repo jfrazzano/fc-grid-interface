@@ -1,0 +1,179 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcHeaderBehaviorImpl={
+	
+listeners:{"notifyResize": "determinHeightAndWidth"},
+properties: {	
+	containerWidth:{
+			type: Number,
+			notify: true,
+			observer:"observeContainerWidth",
+		},
+		containerHeight:{
+			type: Number,
+			value: function(){return 780;},
+			observer: "observeContainerHeight",
+		},
+		headerHeight:{
+			type: Number,
+			value: function(){return 45;},
+			notify: true,
+			computed: "computeHeaderHeight(containerHeight, containerWidth)",
+		},
+		titleFromInterface:{type: Boolean, value: function(){return true;},notify: true},
+		canvasOne:{
+    		type: Object,
+    		value: function(){
+    			var one=	document.createElement("CANVAS");
+    			return one;
+    		},
+
+    	},
+    	canvasTwo:{
+    		type: Object,
+    		value: function(){
+    			var two=	document.createElement("CANVAS");
+    			return two;
+    		},
+    	},
+    	maxTitleFontSize:{
+			type: Number,
+			value: function(){return 38;},
+			notify: true,
+		},
+		titleFontSize:{
+			type: Number,
+			notify: true,
+		},
+		otherFonts:{
+			type: Object,
+			value: function(){
+				return {one: .64,two: .56,three: .45,four: .32,five: .18,
+				};
+			},
+			computed:"computeOtherFonts(titleFontSize)",
+			notify: true,
+
+		},
+
+
+	},
+	computeHeaderHeight(ht,wt){
+
+
+	},
+	computeOtherFonts(titleSize){
+		var one= Math.floor(.64*titleSize),
+			two=Math.floor(.56*titleSize),
+			three=Math.floor(.45*titleSize),
+			four=Math.floor(.32*titleSize),
+			five= Math.floor(.18*titleSize);
+		return {one:one,two:two,three:three,four: four,five:five};
+	},
+
+	 _computeMinWidthHidden(cwidth){
+      var retVal=(cwidth-20<200)?true: false;
+      this.set("needToolsMenu", true);
+      return retVal;//here an animated menu should replace the container 
+  },
+
+   _computeTitle(title, subtitle, containerWidth, interface){
+    if(titleFromInterface===true){var title= propertyNameToLabel(interface);}
+     var pxWidt= this.fitTextInDrawer(title, subtitle, containerWidth);
+    this.set("titleFontSize",pxWidt[0]);
+    this.set("subtitleFontSize",pxWidt[1]);
+  //  console.log(this.titleFontSize);
+    var top=(this.headerHeight>55)?((this.headerHeight)/2+(38-this.titleFontSize)*.955): 12;
+    this.set("titleTop", top);//this is the displacement from top of header
+    return title;
+  },
+
+   fitTextInDrawer(text, subtext, containerWidth){
+    var size=this.maxTitleFontSize; 
+    var size2=Math.ceil(size/1.7);
+    var c2=this.canvasTwo;	
+    var c=this.canvasOne; 
+    var ctx=c.getContext("2d");
+    var ctx2=c2.getContext("2d");
+        var txt=text; var txt2=subtext;
+    while(size>16&&size2>10){
+      ctx.font =size+"px"+ " "+"merriweather";
+      ctx2.font=size2+"px"+ " "+"merriweather";
+      	var width2=ctx2.measureText(txt2).width;
+        var width=ctx.measureText(txt).width;
+       if((Math.floor((containerWidth)*.60))>=width+width2){this.set("titleSize", width); this.set("subtitleSize", width2); 
+       //console.log(width, this.containerWidth);
+       break;}
+       else{
+      size--;size2=Math.ceil(size/2);
+  		}
+    }
+  //  console.log(size);
+    return [size,size2];
+  },
+
+  observeContainerWidth(newVal, oldVal){
+		if(newVal){
+			var hh=Math.ceil(newVal*.2285);
+			if(hh>120){hh=120;}
+			else{hh=hh;}
+			console.log(hh, "loook here");
+			this.set("headerHeight", hh);
+			var str=hh.toString()+"px";
+			console.log(str);
+			Polymer.dom(this).setAttribute("style.height", str);
+				if(newVal>480){
+						this.set("sectionsHidden.one", false);
+					this.set("sectionsHidden.two", false);
+					this.set("sectionsHidden.six", false);
+				}
+				if(newVal<480){
+					this.set("sectionsHidden.one", true);
+					this.set("sectionsHidden.two", true);
+					this.set("sectionsHidden.six", true);
+					console.log(this.headerHeight, this.style.height, this, "I AM SHRINKING HEADER");
+					// this.set("headerHeight", 4);
+					// Polymer.dom(this).setAttribute("style.height", "65px");
+
+				}
+				if(newVal>180){
+					this.set("sectionsHidden.zero", false);
+				}
+				if(newVal>280){
+					this.set("subTitleHidden",false);
+					}
+				if(newVal<280){
+					this.set("subTitleHidden",true);
+
+				}
+				if(newVal<180){
+					this.set("sectionsHidden.zero", true);
+					Polymer.dom(this).setAttribute("style.height", "28px");
+
+
+
+				}
+
+
+			}
+
+
+		},
+	determinHeightAndWidth(e){
+		var height=Polymer.dom(this.root).getBoundingClientRect().height;
+		var width=Polymer.dom(this.root).getBoundingClientRect().width;
+		console.log(width, height, width, height, width, height, e, e, e);
+
+	}
+
+
+
+}
+
+FCBehaviors.FcHeaderBehavior=[FCBehaviors.FcHeaderBehaviorImpl];
+</script>
+
+
+
+
+

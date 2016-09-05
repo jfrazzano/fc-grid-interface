@@ -1,7 +1,7 @@
 
-<link rel="import" href="../../fc-call-center/fc-course-calendar-creation-behavior.html">
+<!-- <link rel="import" href="../../fc-call-center/fc-course-calendar-creation-behavior.html">
 <link rel="import" href="../../fc-call-center/fc-calendar-list-widget-behavior.html">
-<link rel="import" href="../../fc-call-center/fc-calendar-behavior-beta-prime.html">
+<link rel="import" href="../../fc-call-center/fc-calendar-behavior-beta-prime.html"> -->
 <link rel="import" href="../../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../../fc-grid/data-manager.html">
@@ -21,18 +21,11 @@
         text-align: left;
         max-width: 480px;
         background: white;
-      
 
-
-          
-            --paper-item:{padding: 0px;
-                max-width: 500px;
-                outline: 0px white solid;
-                @apply(--paper-item);
-            };
-
+       --paper-item-focused-before:{background: white;}
+        @apply(--paper-item-focused-before); 
     }
- 
+        
      paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
       paper-item.tools{ border-bottom: silver 1px solid; display: flex; width: 100%;}
     paper-item:focus{background: orange; outline: 0px dashed white;};
@@ -43,7 +36,7 @@
         paper-item-body.tools{width: 100%; @apply(--layout-flex);}
 
       textarea:focused{outline: 0px white solid;}
-      textarea{border: 11px solid green;}
+      textarea{border-bottom: 2px solid green; font-size: 1.5em; font-family: merriweather; font-weight: 600;}
       details:focus{outline: 0px white solid;}
       summary{outline:0px;padding-left: 8px;}
     section{
@@ -51,8 +44,8 @@
         text-align: left;
         font-size: 14px;
         text-overflow: clip;
-        text-overflow: ellipsis;
-        text-overflow: "…";
+  /*      text-overflow: ellipsis;
+        text-overflow: "…";*/
 
     }
     paper-listbox.tools{ 
@@ -67,6 +60,46 @@
     section.label.tools{color: red;}
     .selectColor{
         border: 1px green solid;
+    }
+    
+    .checkHolder{
+        cursor: pointer; 
+         padding: 14px 4px 14px 4px; 
+        margin: 8px 5px 12px 0px; 
+        text-align: left;
+        font-size: 1.4em; 
+        color: green;
+        @apply(--layout-vertical);
+        @apply(--layout-start-justified);
+        
+    }
+
+    .label.surveyPage{
+        color: #005c00;
+        font-size: 1.4em;
+       text-decoration-style:underline;
+       font-weight: 600;
+    }
+    .label.dropdown{
+           color: #005c00;
+        font-size: 1.15em;
+        font-weight: 300;
+       text-decoration-style:underline;
+    }
+    .dropdown{
+        color: #009;
+        font-size: .9em;
+        font-weight: 300;
+
+    }
+
+ .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
+        cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
     }
     .check{
   
@@ -87,57 +120,84 @@
         cursor: pointer;
 
     }
-     .checkMinus.dropdown{
-        color: brown;
-        font-size: 1.6em;
-        cursor: pointer;
-        margin-right: -12px;
-        margin-left: 0px;
-        padding-left: 0px;
-    }
-    .label.surveyPage{
-        color: #005c00;
-        font-size: 1.4em;
-       text-decoration-style:underline;
-       font-weight: 600;
-    }
-    .label.dropdown{
-           color: #005c00;
-        font-size: 1.15em;
-        font-weight: 300;
-       text-decoration-style:underline;
-    }
-    .dropdown{
-        color: #009;
-        font-size: .9em;
-        font-weight: 300;
+    .checkmark{
+        padding: 3px 4px 14px 4px; 
+        margin: 4px -8px 12px 0px; 
+        text-align: left;
+        font-size: 1.4em; 
+        color: green;
 
     }
+    .padded{
+    padding: 16% 10%;
+    margin: 12px;
+
+    }
+
+    .pad{padding: 5%; max-width: 610px;
+    width: 510px;
+    min-width: 300px;}
 
 </style>
-  <textarea contenteditable style="resize: none; width: 100%; outline: 0px solid;" hidden$="{{textareaHidden}}" value="{{item.value::input}}" class="layout vertical arround-justified">
- </textarea>
-    <paper-listbox  id="myDropdown" class$="{{listType}}" form-name="[[formName]]" style="{{_computeStyleByType(listType)}};" attr-for-selected="value" my-selected="{{value}}">
-        <template is="dom-repeat"  style="font-size: 1.2em;" items="{{formsDisplay}}" id="optionsRepeater">
-            <paper-item hidden$="{{!item}}" form-name="[[formName]]"  class$="{{listType}} horizontal layout flex self-stretch" name="{{item.name}}" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value="{{item.value}}"> 
-            <section class="horizontal layout" hidden$="{{_computeHiddenCheck(listType)}}" style="cursor: pointer; font-size: 1.9em; color: green; white-space:nowrap; overflow: hidden;">
+<div class="layout horizontal flex self-stretch justified wrap pad" hidden$="{{!inputTwoShow}}" >
+<fc-iss-input class="left" hidden$="{{!inputOneShow}}" class="padded" iss-name="firstName" name="firstName" iss-label="Caller First Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1FirstName}}">
+    </fc-iss-input> 
+    <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded" iss-name="lastName" name="lastName" iss-label="Caller Last Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1LastName}}">
+    </fc-iss-input>
+    </div>
 
-            <section style=" padding: 0px 4px 4px 4px; margin: 12px 5px 0px 0px; text-align: left;font-size: 1em; color: green;" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]">✅</section><section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]" style="font-size: 1.47em;" >[[item.checkbox]]</section></section>
-            <paper-item-body class="layout vertical flex-7">
-                    <section class$="label {{listType}}" style$="font-weight:{{computeFontSelected(item.selectedChecked, mySelected, item.value, listType)}};">{{item.label}}</section>
-                    <details hidden="{{computeDetails(listType)}}" open="{{computeOpened(listType)}}"><summary hidden="{{summHidden}}">Show Details</summary>
-                    <section class$="{{listType}}">[[item.text]]</section>
-                </details>
-            </paper-item-body>       
-             </paper-item>
+<div class="layout horizontal flex self-stretch justified wrap pad" hidden$="{{!inputTwoShow}}" >
+<fc-iss-input class="left" hidden$="{{!inputOneShow}}" iss-class="" class="padded" iss-name="callerTelephone" name="callerTelephone" iss-label="Caller Telephone"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1Telephone}}">
+    </fc-iss-input> 
+    <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded"iss-name="callerEmail" name="callerEmail" iss-label="Caller Email"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1Email}}">
+    </fc-iss-input>
+    </div>
+    <div class="layout horizontal flex self-stretch justified pad wrap" hidden$="{{!inputTwoShow}}" >
+<fc-iss-input class="left" hidden$="{{!inputOneShow}}" class="padded" iss-class="" iss-name="studentFirstName" name="studentLastName" iss-label="Student First Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.studentFirstName}}">
+    </fc-iss-input> 
+    <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded" iss-name="studentLastName" name="studentLastName" iss-label="Student Last Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.studentLastName}}">
+    </fc-iss-input>
+    </div>
+        <div class="layout horizontal flex self-stretch justified pad wrap" hidden$="{{!inputTwoShow}}" >
+<fc-iss-input class="left" hidden$="{{!inputOneShow}}" iss-class="" class="padded"  iss-name="gradeLevel" name="gradeLevel" iss-label="Grade Level"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.gradeLevel}}">
+    </fc-iss-input> 
+    <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded" iss-name="currentSchool" name="currentSchool" iss-label="Current School"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.currentSchool}}">
+    </fc-iss-input>
+    </div>
+  <textarea id="mytxxtarea" type="text" contenteditable on-keyup="setValue" style="resize: none; width: 100%; outline: 0px solid; border: solid silver 1px;" hidden$="{{!textareaShow}}" placeholder="Message" maxlength="1000" rows="20" columns="60" value="{{taValue::input}}" class="layout vertical arround-justified">
+
+ </textarea> 
+
+    <paper-listbox  id="myUniversalMenu" class$="[[listType]]" multi="[[isMulti]]" style$="[[_computeStyleByType(listType)]];" attr-for-selected="value">
+            <template is="dom-repeat"  items="{{formsDisplay}}" filter="{{_createFilter(taValue, formsDisplay)}}" observe="taValue searchOn value label" id="optionsRepeater" >
+                <paper-item hidden$="{{!item}}" class$="[[listType]] horizontal layout flex self-stretch" name="[[item.name]]" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value$="[[item.value]]">  
+                    <section class="horizontal layout checkHolder" hidden$="[[_computeHiddenCheck(listType)]]">
+                            <section class="checkmark" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]">
+                            ✅
+                            </section>
+                            <section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]" class="checkmark" style="font-size: 1.75em;" >
+                            [[item.checkbox]]
+                            </section>
+                            <section class="checkmark" style$="font-size:[[item.fontEm]]em;">
+                            [[item.symbol]]
+                            </section>
+                    </section>
+                    <paper-item-body class="layout vertical flex-7">
+                        <section class$="label [[listType]]" style$="font-weight:[[computeFontSelected(item.selectedChecked, mySelected, item.value, listType)]];">
+                            [[item.label]]
+                        </section>
+                            <details hidden$="[[computeDetails(listType)]]" open="[[computeOpened(listType)]]">
+                                <summary hidden$="[[summHidden]]">Show Details</summary>
+                                <section class$="[[listType]]" style$="font-weight:[[computeFontSelected(item.selectedChecked, mySelected, item.value, listType)]]">[[item.text]]</section>
+                            </details>
+                    </paper-item-body>       
+                </paper-item>
         </template>
     </paper-listbox>      
     </template>  
  <script>
  FcCheckMenu=Polymer({
     is:"fc-check-menu",
-    listeners:{'openDropdown': 'setGetAndScroll'
-            },
     behaviors: [FCBehaviors.FocusedDataManagerBehavior],
     properties:{
 
@@ -147,11 +207,18 @@
             notify: true,
 
         },
+        callerRoleList:{
+            type: Object,
+            value: null,
+            notify: true,
+            observer: "observeCallerRoleArray",
+        },
         hideListbox:{
             type: Boolean,
             value: function(){return false;},
             notify: true,
         },
+        shadowIndex:{type: Number, notify: true,},
         formName:{
             type: String, 
             notify: true
@@ -166,6 +233,8 @@
             value: function(){return null;},
             notify: true,
         },
+        inputOneShow:{type: Boolean, value: function(){return false;},computed: "_computedShow(shadowIndex)", notify: true},
+        inputTwoShow:{type: Boolean, value: function(){return false;}, computed: "_computedShow(shadowIndex)", notify: true},
         isMulti:{
             type: Boolean,
             value: function(){return false;},
@@ -190,8 +259,6 @@
         selected:{
             type: Array,
             notify: true, 
-
-
         },
          mySelected:{
             type: String,
@@ -200,15 +267,15 @@
         },
         symbols:{
             type:Array,
-            value: function(){return ['\➔','\❶','\✂','\✎','\✒','\✜','\❚','\❶','\➀','\➞','\☚','\☛','\☰','\☱','\☷','\☑','\☐','\☎','\☏','\►','\▼','\▲','\◄','\⇒','\Δ','\▐','\█','\▄','\▀','\⛔','\🌐','\🌎','\🌎','\🌍','\🌏','\❓','\❗','\❌','\⏩','\⏪','\⏫','\⏬','\⏭','\⏮','\⏯','\✅','\❎','\✍','\✉','\✊','\✋','\✌','\⬛','\⬜','\','\⏰','\⏱','\⏲','\⏳','\⚙'];
+            value: function(){return ['\➔','\❶','\✂','\✎','\✒','\✜','\❚','\❶','\➀','\➞','\☚','\☛','\☰','\☱','\☷','\☑','\☐','\☎','\☏','\►','\▼','\▲','\◄','\⇒','\Δ','\▐','\█','\▄','\▀','\⛔','\🌐','\🌎','\🌎','\🌍','\🌏','\❓','\❗','\❌','\⏩','\⏪','\⏫','\⏬','\⏭','\⏮','\⏯','\✅','\❎','\✍','\✉','\✊','\✋','\✌','\⬛','\⬜','\','\🕐','\⏰','\⏱','\⏲','\⏳','\⚙', '\🕰','\⇦','\⇧','\⇨','\⇩','\␁','\🔘','\🔙', '\🔜', '/🔗', '\🔔','\🔕','\🔑','\🔐','\🔏', '\🔎', '\🔍','\🔊','\🔉','\🔈','\🔇', '\🔄', '\📰','\📑','\📔','\📖','\📎','\📎','\📍','\📌','\📋','\📊','\📉','\📈','\📄','\📃','\📂','\📁','\📥','\📤','\📞','\📝','\📙','\📧','\📨','\📩','\📮','\📲','\📴','\📵','\📶','\🔴','\🔵','\🔷','\🔶','\🔸','\🔹','\🙈','\🙉','\🙊','\╦','\╔', '\␦',];
             },
             notify: true,
         },
-        selectedChecked:{
-            type: Boolean,
-            value: function(){return false;},
-            notify: true
-        },
+        // selectedChecked:{
+        //     type: Boolean,
+        //     value: function(){return false;},
+        //     notify: true
+        // },
        
         selectedIndexArchive:{
             type: Array,
@@ -226,9 +293,10 @@
             value:function(){return false;},
             notify: true,
         },
-         textareaHidden:{
+         textareaShow:{
             type: Boolean, 
-            value: true, 
+            value: function(){return false;}, 
+            computed: "_computedShow(shadowIndex)",
             notify: true,
         },
          valueObject:{
@@ -237,75 +305,137 @@
             observer:"observeValueObject",
             notify: true
         },
-        profilesArray:{
-            type: Array,
-            value: function(){return [];},
+         profilesArray:{
+             type: Array,
+             value: function(){return [];},
+             notify: true
+         },
+         searchOn:{
+            type: Boolean,
+            value: function(){return false;},
             notify: true
-        },
+         },
+         itemSelectProperty:{
+            type: String,
+            value: "label",
+            notify: true
+
+         },
+         taValue:{
+            type: String,
+            notify: true,
+            observer: "observeTaValue",
+
+
+         },
+
       
     },
     ready(){},
+
+     setValue(e){
+            console.log(e, e.target.value, "here");
+            var input=this.$.mytxxtarea;
+          this.set([input,"value"], e.target.value);
+          this.$.mytxxtarea.value=e.target.value;
+          console.log(this.$.mytxxtarea.value);
+          console.log(this.taValue, "tavalue1");
+          this.set("taValue", this.$.mytxxtarea.value);
+            console.log(this.taValue);     
+
+            },
+
+    _computedShow(shadowIndex){
+        if(shadowIndex===3){return true;} else{ return false;}
+    },
+
     attatached(){
          
-        console.log("i am in the attached");
-        
+        console.log("i am in the attached", this.valueObject);
+    
+    },
+    observeCallerRoleArray(newval, oldval){
+            if(newval!==null){
+              
+              this.async(function(){
+                                    
+                                    this.set("searchOn", true);
+                                    this.set("listType", "surveyPage");
+                                    var inputs=Polymer.dom(this.root).querySelectorAll("fc-iss-input");
+                                    console.log(inputs);
+                                    inputs.forEach((elem)=>{
+                                                var usefulArray=elem+".dropdownItems";
+                                            this.set(usefulArray,this.callerRoleList[elem.name]);
+                                        console.log(usefulArray);
+
+                                    });
+
+                                    
+            }, 700);
+              
+
+            }
+
+
 
     },
-    //  computeItem(datum, listType){
-    //   if(datum&&datum!=undefined){
-    //     console.log(datum, datum, datum);
-    //     if(listType==="dropdown"){
-    //         this.set("hideListbox", false);
-    //         return datum;
-    //     }
-    //     else if(!datum.form){
-    //       this.set("hideListbox", true);
-    //       return [];
-    //     }
-    //     else if(datum.form&&datum.form[0].isForm===true){
-    //       this.set("hideListbox",false);
-    //       return datum.form[0];
-          
-    //     }
-    //     else{ this.set("hideListbox",true); return [];}
-      
-    //   }
-    // }, 
-   
-
-    get listbox(){return this.$.myDropdown;},
-    _computeItems(items){if(items!=undefined){return items[0];}},
+    observeTaValue(nv, ov){
+        if(nv&&nv!=undefined){console.log(nv,ov);}
 
 
+    },
+
+
+    get listbox(){return this.$.myUniversalMenu;},
+  
     getDropdownChildren(type){
             var children=Polymer.dom(this.listbox).children;
             var itemChildren=children.filter((val,index,array)=>{return (val.nodeName===type); });
                 return itemChildren;
     },
-     getProfiles(){
-        var profiles=this.focusedManager.dashboardMap.get("profiles");
-        var arrayProfiles= profiles.gridArray[15];
-        var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{         
-        console.log(pro.valueObject);    
-                  return pro.valueObject;
-                });
-        this.set("profilesArray",  profileObjectsArr);
-        console.log(this.profilesArray);
-        return this.profilesArray;
-            },
-    searchInputProfiles(profiles, property, input){
-                  var regex = new RegExp('.*' + input + '.*', 'i');
-           var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
-                 if((obj[property].match(regex))!=null){
-                    return obj;}});
-           return filteredProfiles;
-            },
+
+_createFilter: function(taValue){
+    console.log("hello", taValue, "fuck thus");
+    console.log(item, "tard");
+    // if(searchOn===false){return function(item){return false;}}
+    // else{console.log(item, item, "here item");
+        var regex = new RegExp('.*' + taValue + '.*', 'i');
+        return function(item){return item.label.match(regex);};
+       // if(item.value){return item.value.match(regex);}
+          // else{return false;}
+        // };
+      // }
+  },
+
+
+    //        this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
+       
+    // this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
+
+
+    //  getProfiles(){
+    //     var profiles=this.focusedManager.dashboardMap.get("profiles");
+    //     var arrayProfiles= profiles.gridArray[15];
+    //     var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{         
+    //     console.log(pro.valueObject);    
+    //               return pro.valueObject;
+    //             });
+    //     this.set("profilesArray",  profileObjectsArr);
+    //     console.log(this.profilesArray);
+    //     return this.profilesArray;
+    //         },
+    // searchInputProfiles(profiles, property, input){
+    //               var regex = new RegExp('.*' + input + '.*', 'i');
+    //        var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
+    //              if((obj[property].match(regex))!=null){
+    //                 return obj;}});
+    //        return filteredProfiles;
+    //         },
     computeFontSelected(sc, myselected, value, listType){
         
                 if(this.heldValue===value||myselected!==value){return "300";}
                 if(myselected===value){return "600";}
-                // else {console.log("you got here");
-                //     return "300"};
+               
             
         },
     _computeStyleByType(listType){
@@ -333,7 +463,7 @@
         var valObjProp= "valueObject." + e.model.item.name;
         this.listbox.select(model.item.value);
         this.set("mySelected", e.model.item.value);
-        this.set("valueObject.currentForm",this.formName);
+      //  this.set("valueObject.currentForm",this.formName);
         this.set(valObjProp, this.model.item.value);
         this.model.set("item.selectedChecked",!this.model.item.selectedChecked);
        
@@ -362,26 +492,12 @@
   },
   observeValueObject(newVal, oldValue)
   {
-    // if(newVal)
-    //     {
-    //     console.log("newValue: ", newVal, "and oldManHouse: ", oldValue);
-    //     if(newVal.callerType!="newCaller" || newVal.callerType.matches("ServiceSeeking")!=null)
-    //     {
-    //         var profiles=  this.getProfiles();
-    //         console.log(profiles);
-    //         if(newVal.callerRole&&newVal.callerRole!="--"&&newVal.callerRole.match("nonServiceSeeker"!=null)
-    //         {
-    //         //searchInputProfiles(this.profilesArray, newVal.callerRole, "input");
-    //         }        
-        
-    //     } 
-    //   }    
+    if(newVal)
+         {
+         console.log("newValue: ", newVal, "and oldManHouse: ", oldValue);
+        }     
+ 
   },
-     
-  formTypeObserver(newVal, oldVal){
-    if(newVal.match("ntakes")!=null){}
-  },
-    
 
     removeValueFromPropertyStringArrayAndObject(e){console.log("will do something cool here", e, e._templateInstance, e.target, e.target.left, etc);},
             
@@ -393,19 +509,12 @@
         return false;
     },
 
-    
-    computeCheckedClass(selectedChecked, index, ind, isNotToggle){
-        if(isNotToggle===false){
-        this.set("checked",!this.checked);
-         this.toggleClass("checked",this.checked, this.$.checkcheck);
-           }//unless updated does nothing i believe
-        },
-    
+   
 
 
 
 
-//cut and paste relics... from calendar creator... this drawer now functions as a resiving, right left drawer to hold checkbox or button lists, searchable inputs with drop downs, toggle buttons, the text inputs are animated can hold lists (arrays but presented as comma separated lists, arrays, or just plain strings)
+//cut and paste relics... from calendar creator... this drawer now functions as a resizing, right left drawer to hold checkbox or button lists, searchable inputs with drop downs, toggle buttons, the text inputs are animated can hold lists (arrays but presented as comma separated lists, arrays, or just plain strings)
 
 /*the list itself, once fully completed should be instantiated once on teh top level page with the largest scorp... that single page should then be repeatedly stamped and removed from the dom to facillirtate all dropdowns, single page forms, check boxes etc, which can brought up and removed as needed anywhjere on screen.  
 
@@ -419,3 +528,44 @@ complex as a result of closure (Read I would hjave no idea how to get so much ou
  });
  </script>
  </dom-module> 
+
+ <!--
+
+ .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
+        cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    .check{
+  
+        font-size: 9px;
+        cursor: pointer;
+    }
+
+    .check.surveyPage{
+
+        font-size: 1em;  
+    }
+    .check.dropdown{
+        font-size: 9px
+    }
+    .checkMinus{
+        color: brown;
+        font-size: 2.2em;
+        cursor: pointer;
+
+    }
+     //if(newVal.callerType!="newCaller" || newVal.callerType.matches("ServiceSeeking")!=null)
+    //     {
+    //         var profiles=  this.getProfiles();
+    //         console.log(profiles);
+    //         if(newVal.callerRole&&newVal.callerRole!="-"&&newVal.callerRole.match("nonServiceSeeker"!=null)
+    //         {
+    //         //searchInputProfiles(this.profilesArray, newVal.callerRole, "input");
+    //         }        
+        
+    //     } 
+    //   }   

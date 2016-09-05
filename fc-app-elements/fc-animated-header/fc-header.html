@@ -1,0 +1,72 @@
+<dom-module id="fc-header">
+<template>
+<style>
+.header{
+	margin-bottom: 0px; 
+	padding: 8px 12px 10px 12px; 
+	z-index: 11; 
+	background:white;
+	line-height: 1;
+  	color: #009; 
+  	font-size: 1.2em;
+  	font-weight: 300;
+  	min-height: 12vh;
+  	box-shadow:3px 8px 17px 5px #bfbfbf;
+  	@apply(--layout-vertical);
+	@apply(--layout-block);
+	@apply(--layout-end-justified);
+}
+.mini-header{
+	padding: 2px; 
+	border-bottom: silver solid 1px; 
+	position: relative; 
+	top: 0px; 
+	left: 0px; 
+	right: 0px; 
+	overflow: hidden; 
+	cursor: pointer; 
+	font-size: 14px;
+	white-space: nowrap;
+	@apply(--layout-horizontal);
+	@apply(--layout-block);
+	@apply(--layout-justified);
+}
+.header-rows{
+	@apply(--layout-horizontal);
+	@apply(--layout-block);
+	@apply(--layout-justified);
+}
+</style>
+
+<iron-media-query full="true"></iron-media-query>
+	<div class$="{{headerClass}}" hidden$="{{sectionsHidden.zero}}" style$="height:{{headerHeight}}px!important;">
+		<template is="dom-repeat" items="{{widgetRows}}" as="row">
+		    <section hidden$="[[row.hidden]]" class="header-rows">
+		    		<template is="dom-repeat" items="{{headerWidgets}}">
+		     				<span on-tap="{{item.name}}" class$="[[item.name]]" style$="[[_computeStyle(item.name)]]">[[item.value]]</span>
+		     		</template>
+		    </section>
+		</template>
+	</div> 
+	  	<fc-check-menu id="dropdownMenu" list-type="[[menuType]]"  forms-display="{{menuItems}}" style="position: fixed; z-index: 1000000;" hidden$="{{!showMenu}}"></fc-check-menu>
+</template>
+<script>
+
+
+
+</script>
+</dom-module>
+
+
+
+
+
+
+
+
+
+
+
+
+
+

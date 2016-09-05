@@ -30,6 +30,24 @@ function surfaceCopy(target, listOrArrayOfObjectsToStripOrderMatters){
     }
 
 }
+function propertyNameToLabel(propertyName){
+    var label =propertyName;
+            label=label.replace(/([A-Z])/g, ' $1'),  
+            label=label.replace(/^./, function(label){ return label.toUpperCase(); }),
+            label=label.replace("1", " One"),
+            label=label.replace("2", " Two");
+            return label;
+}
+function labelToPropertyName(label){
+    var propertyName=label;        
+        propertyName = propertyName.replace(" ", "");
+        propertyName[0] = propertyName[0].toLowerCase();
+        propertyName = propertyName.replace("one", "1");
+        propertyName = propertyName.replace("One", "1");
+        propertyName = propertyName.replace("two", "2");
+        propertyName = propertyName.replace("Two", "2");
+        return propertyName;
+}
 
 function methodAssignment(objectThatIsToBeExtended, funktionToAdd, rg1, [argArray]){
 	Object.assign(objectThatIsToBeExtended, [objectThatIsToBeExtended].prototype[funktionToAdd]([argArray]));
@@ -96,9 +114,9 @@ var stuff=this.gridMaker.dataForPresetDatabases();
 
     this.getShorthandIndex();
 
-    //issues with map consider plain object-- or object with array in it
-    //fix dropdowns you tried to make more efficient
-  console.log(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs);
+  //   //issues with map consider plain object-- or object with array in it
+  //   //fix dropdowns you tried to make more efficient
+  // console.log(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs);
     this.multiGridArray=this.buildGridFromInputs(this.profileInputs, this.courseCalendarInputs, this.inquiryInputs, this.inputsIndex);
     var updater=this.multiGridArray;
     var keys=[0,1,2];
@@ -329,7 +347,7 @@ DataManager.prototype.mappedDashboardDataset=function(args){
                             {isForm: true, toggles: true, name: "callerRole", text: "This caller is not seeking Focused services.", booleanValue: undefined, value: "nonServiceSeeker", selectedChecked: false, label: "Other", text: "This caller has no direct relationship to a Focused Student and is not interested in Focused Services. As above, if you please select this option, a dropdown and text area will appear which will allow you to specify relevant details regarding this caller.",route: "callIntakes", subRoute: "callerRole", tail: "userResponses", ind: 4, checkbox: '\☐',}
                             ],
                     form3:[
-                            {isForm: true, toggles: true, name: "callerFullName", booleanValue: undefined, value: '', selectedChecked: true, label: "Caller Full Name", text: null, checkbox: '\☐',},
+                            {isForm: true, toggles: true, name: "callerFullName", booleanValue: undefined, value: "selected", selectedChecked: false, text: null, checkbox: '\☐',},
 
                         ],
                         },
@@ -933,7 +951,8 @@ constructor (gradeLevel, currentSchool, previousEducation, educationalAspiration
                     }
                     var retVal=(isOnlyChoices===true)?returnOnlyChoices: returnArray;
                     //console.log(returnArray);
-                    this[propertyName]=retVal;
+                    var returnValue=retVal.reverse();
+                    this[propertyName]=returnValue;
                 }
 
                  setCurrentSchool(){
@@ -952,7 +971,7 @@ constructor (gradeLevel, currentSchool, previousEducation, educationalAspiration
                     }
                    
                  getIncrementingAcademicProperties(){
-                    var arrays=[["startTotalScore", 700, 1600, "Total: ", " ",10, true],["startReadingScore", 340, 800, "Reading: ", " ",10, true],["startMathScore", 340, 750, "Math: ", " ",10, true],["gradeLevel", 1, 12, "Grade: ", " ",1, true],["goalTotalScore", 1100, 1600, "Your Goal: ", " ",10, true],["gradeLevel", 1, 12, "Grade: ", " ",1, true], ["gradeLevel", 1, 12, "Grade: ", " ",1, true]];
+                    var arrays=[["startTotalScore", 700, 1600, "Total: ", " ",10, true],["startReadingScore", 340, 800, "Reading: ", " ",10, true],["startMathScore", 340, 800, "Math: ", " ",10, true],["gradeLevel", 1, 12, "Grade: ", " ",1, true],["goalTotalScore", 1100, 1600, "Your Goal: ", " ",10, true],["gradeLevel", 1, 12, "Grade: ", " ",1, true], ["gradeLevel", 1, 12, "Grade: ", " ",1, true]];
                     
                     arrays.forEach((val)=>{var isOnlyChoices=true; var setValue =this.objectArrayGeneratorForStaticGettersUsingIncrementalValuesForOnlyVariablesInChoiceArray(val); 
                         //console.log(setValue);

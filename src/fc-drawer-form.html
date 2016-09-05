@@ -14,7 +14,7 @@
 <link rel="import" href="../bower_components/paper-listbox/paper-listbox.html">
 <link rel="import" href="../bower_components/paper-item/paper-item.html">
 <link rel="import" href="../bower_components/iron-resizable-behavior/iron-resizable-behavior.html">
-<link rel="import" href="../fc-grid/fc-iss-input.html">
+<link rel="import" href="../fc-app-elements/fc-iss-input/fc-iss-input.html">
 <link rel="import" href="../fc-app-elements/fc-panel/fc-panel.html">
 <link rel="import" href="../fc-call-center/fc-call-center-form.html">
 <dom-module id="fc-drawer-form">
@@ -245,14 +245,14 @@ position: absolute;
    
     .show {display:block; z-index: 45; right: 0;}
   </style>
- <app-location route="{{newRoute}}"  use-hash-as-path></app-location> 
+<!--  <app-location route="{{newRoute}}"  use-hash-as-path></app-location> 
   <app-route 
         id="rightInteriorDrawerRouterForms"
         route="{{newRoute}}" 
         pattern="/:formName" 
         data="{{data}}"
         active="{{this.$.dashboardRightDrawer.opened}}">
-    </app-route>
+    </app-route> -->
 
   <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
 <div class="column-container">
@@ -275,7 +275,7 @@ position: absolute;
       <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
           <div id="innerContainer1" class="container1">
-              <fc-check-menu form-name="[[pageType]][[index]]" style="position: absolute; left: 1px;" forms-display="{{item.form}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; left: 1px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}"value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
                <fc-call-center-form form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
                 </fc-call-center-form> 
               </div>
@@ -318,13 +318,7 @@ properties:{
       },
       notify: true
     },
-    formName:{
-      type: String,
-      value: function(){return "profiles0";},
-      notify: true,
 
-
-    },
     pageType:{
       type: String,
       value:function(){return "";},
@@ -370,6 +364,7 @@ properties:{
       type: Object,
       value: function(){return {};}, 
       notify: true,
+      observer:"observeValueObject",
     },
     dataSelected:{
       type: Array,
@@ -433,6 +428,20 @@ properties:{
         notify: true
 
       },
+      formName:{
+        type: String, 
+        notify: true
+      },
+    profiles:{
+      type: Array,
+      value: null,
+      notify: true
+    },
+    callerRoleList:{
+      type: Object,
+      value: null,
+      notify: true
+    },
 
     pageTotal:{
          type: Number,
@@ -477,13 +486,18 @@ properties:{
       this.set("scroller", this.$.outerContentContainer);
     // this.set("interfaceType", "inputs");
     // console.log(this.dataSelected);
-
+console.log(this.formName);
     // var time=setInterval(()=>{console.log(this.style.height); this.set("deNowHeight",this.style.height); this.arrat=[];
     //   this.push("arrat",this.deNowHeight)},500);
   }, 
 
   get scrolly(){
     return this.$.outerContentContainer;
+
+  },
+  get formName(){
+    this.$.mycheckMenu.formName;
+
 
   },
 
@@ -559,9 +573,58 @@ properties:{
     return size;
   },
 
-    observeValueObjectStar(nv, ov){ 
+    observeValueObjectStar(val){
+    if(val&&val.base){console.log(val.base, val.value);
+      this.set("intakeObject", val.base);
+      this.intakeProtocol(val.base);
+
+    } 
 
   }, 
+  observeValueObject(newValue, oldValue){
+    if(newValue){console.log(newValue, oldValue);}
+
+  },
+  intakeProtocol(obj){
+    if(obj!=undefined){
+    if(obj.callerType!=="New Caller" && (obj.callerType!=="other" ||obj.callerType!=="Other")){
+      var d=new Date().getTime();
+      if(this.profiles==null||((d-this.profiles.timestamp)/60000)>1.5){
+    var mymap=this.focusedManager.dashboardMap.get("profiles");
+    var profiles= mymap.gridArray[15].map((cell, index)=>{
+                return cell.valueObject;//this should be a filter by caller type
+        });
+    profiles.timestamp=new Date().getTime();
+    this.set("profiles", profiles);
+    console.log(profiles, profiles.timestamp); 
+      }
+    if(obj.callerType!=undefined){if(obj.callerRole==null){   this.async(this.rightClick, 150);}
+    if(obj.callerRole!=undefined&&obj.callerRole!="other"){
+          if(this.callerRoleList==null){this.async(this.rightClick, 750);}
+          var arrayObject={parent1FirstName:[], parent1LastName:[], parent1Telephone: [], parent1Email:[], parent2FirstName:[], parent2LastName:[], parent2Telephone: [], parent2Email:[], studentFirstName:[], studentLastName: [], gradeLevel:[], currentSchool:[], callerFullName:[], studentFullName:[]};
+      var callerRoleArray=this.profiles.reduce((pre, prof, i)=>{
+              var first= obj.callerRole+"FirstName",last=obj.callerRole+"LastName", email=obj.callerRole+"Email", tele=obj.callerRole+"Telephone";
+              if(prof!=undefined){
+          var full=prof[first]+" "+prof[last];
+          var args=[first, last, email, tele];
+          for(var p=0;p<4;p++){
+            if(prof&&prof[args[p]])
+            arrayObject[args[p]].push(prof[args[p]]);
+          }
+            return arrayObject;
+         } }, arrayObject); 
+          console.log(arrayObject);
+      // filter((val, ind, arr)=>{if(val==undefined){return false;}else{return true;}});
+        console.log(callerRoleArray, "look here");
+
+      this.set("callerRoleList",arrayObject); 
+  }
+    }
+  }
+  }
+
+  },
+
 
   doStuffOnLoad(e){
          this.async(function(){var ht=window.getComputedStyle(this.$.container1, null).getPropertyValue("height"); var wt=window.getComputedStyle(this.$.container1, null).getPropertyValue("width");//console.log(ht, wt);
