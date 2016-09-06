@@ -43,6 +43,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template>
 <style is="custom-style">
+*{
+ -webkit-user-select: none;  /* Chrome all / Safari all */
+  -moz-user-select: none;     /* Firefox all */
+  -ms-user-select: none;      /* IE 10+ */
+  user-select: none;          /* Likely future */      
+
+}
 paper-tab {
   --paper-tab-background-color: silver;
   --paper-tab-border: snow;
@@ -173,15 +180,30 @@ paper-tabs.slidingtabs:hover{
     </app-route> -->
 
 <iron-media-query query="max-width: 680px" query-matches="{{smallScreen}}"></iron-media-query>
-<fc-two-drawer-layout fullbleed left-drawer-curerent-width="{{leftCurrentWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
- 
+<fc-two-drawer-layout fullbleed left-drawer-curerent-width="{{leftCurrentWidth}}" window-width="{{windowWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
+  {{centerContentAreaWidth}}
     
-        <fc-app-drawer id="dashboardLeftDrawer" limitone="{{totalWidthLost}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" style="margin-right: 8px;" opened persistent swipe-open align="left">
-                 <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style="z-index: 9999;position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">   
+        <fc-app-drawer id="dashboardLeftDrawer" limitone="{{totalWidthLost}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" style$="{{_computeMaxWidthVariable(windowWidth, leftCurrentWidth)}}px!important;" opened persistent swipe-open align="left">
+                 <fc-three-section-display max-current-width="{{leftCurrentWidth}}" style$="z-index: 9999; position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; max-width:calc({{leftCurrentWidth}}-80)px!important; min-width:22px!important;" window-width="{{windowWidth}}" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}"> 
+
+                 <fc-drawer-form hide-header current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px;                  width:calc({{leftCurrentWidth}}-80)px;">
+                    </fc-drawer-form>
+
+                      <fc-value-object class="centerPanel">
+                      
+                      </fc-value-object>
+
+                      <fc-calendar-app class="bottomPanel">
+             
+
+                      </fc-calendar-app>
+
+
+
                  </fc-three-section-display>
         </fc-app-drawer>
         <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open persistent>
-                <fc-drawer-form current-inner-width="{{rightCurrentWidth}}" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right: 0px; left: 22px;  width:calc({{rightCurrentWidth}}-80)px;">
+                <fc-drawer-form current-inner-width="{{rightCurrentWidth}}" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right:0px; left:22px;  width:calc({{rightCurrentWidth}}-80)px;">
                 </fc-drawer-form>
         </fc-app-drawer>
 
@@ -288,8 +310,12 @@ paper-tabs.slidingtabs:hover{
           type: Object,
           notify: true,
           observer:"observeRouteData",
+        },
 
-
+        windowWidth:{
+          type: Number, 
+          notify: true, 
+          observer: "observeWindowWidth",
         },
 
        
@@ -323,13 +349,12 @@ paper-tabs.slidingtabs:hover{
 //width management is all beloow
       leftCurrentWidth:{
           type: Number, 
-            value: function(){return 18;},
+            // value: function(){return 18;},
           notify: true,
-
         },
         rightCurrentWidth: {
           type: Number,
-          value: function(){return 285;},
+          // value: function(){return 285;},
           notify: true,
         }, 
         totalWidthLost: {
@@ -343,20 +368,123 @@ paper-tabs.slidingtabs:hover{
           notify: true, 
           observer: "observeCenterContentArea",
         },
+        windowHeight:{
+          type: Number, 
+          value: function(){return window.innerHeight;},
+          notify: true,
+
+          },
+        windowWidth:{
+          type: Number, 
+          value: function(){return window.innerWidth;},
+          notify: true,
+          observer:"observeWindowWidth",
+
+          },
+          funcCounter:{
+            type: Number, 
+            value: function(){return 0;},
+            notify: true
+
+
+          },
 
 
       },
 
       observers: [
-        '_routePageChanged(routeData.gridPage)'
+        '_routePageChanged(routeData.gridPage)',
+        // 'observeLeftAndRightWidth(leftCurrentWidth, rightCurrentWidth, windowWidth)',
       ],
 
+      ready(){
+        this.dashboardSetterFunction();
+        if(this.windowWidth==undefined&&window.innerWidth!=undefined){
+              this.set("windowWidth", window.innerWidth);
+              this.setDrawersAtInitial();
+        }
+        else if(this.windowWidth==undefined&&window.innerWidth!=undefined){
+          console.log(window.innerWidth, "innerWidthAtReady");
+          this.set("windowWidth", window.innerWidth);
+          this.setDrawersArInitial()
+        }
+        else{}
+
+
+            
+
+        },
+
+    attached(){    
+       // this.async(function(){this.set("rightCurrentWidth", 245);
+       //    this.set("leftCurrentWidth", 18);}, 200);
+       //  console.log(this.routeData, this.rightDrawerPage);
+  
+        }, 
+
+    setDrawersAtInitial(){
+      this.set("rightCurrentWidth", 18);
+      this.set("leftCurrentWidth",18);
+      if(this.windowWidth&&this.windowWidth!=undefined){
+              console.log(this.windowWidth, window.innerWidth);
+              if(this.windowWidth>900&&this.windowWidth<1220){
+                    this.set("rightCurrentWidth", 380);
+                    var leftWidth=Math.floor(this.windowWidth-380);
+                    this.set("leftCurrentWidth", leftWidth);
+                    console.log(this.windowWidth, this.rightCurrentWidth, this.leftCurrentWidth);
+              }
+              else{
+                  var rightWidth=Math.floor(((this.windowWidth-1220)/2)+380);
+                      if((this.windowWidth-window.innerWidth)<3)
+                      {
+                        var leftWidth=Math.floor(this.windowWidth-rightWidth);
+                        this.set("rightCurrentWidth", rightWidth);
+                        this.set("leftCurrentWidth",leftWidth);
+                      }
+                      else{
+                        var windowInnerWidth=window.innerWidth;
+                          if(windowInnerWidth &&window.innerWidth!=undefined)
+                          {
+                              this.set("windowWidth", parseInt(window.innerWidth));
+                              this.async(this.setDrawersAtInitial, 450);
+                          }
+                      }
+              }
+        }
+       else{this.async(function(){this.setDrawersAtInitial;}, 500);} 
+    },
+
+
+      observeWindowWidth(newVal, oldVal){
+          if(newVal&&newVal!=undefined){
+            console.log("WINDOW WIDTH PAY ATTENTION:", newVal);
+            if(this.counter<5){
+
+              this.setDrawersAtInitial();
+            }
+            this.setDrawersAtInitial();
+            console.log(this.counter, this.windowWidth, this.rightCurrentWidth, this.leftCurrentWidth);
+
+
+        }
+
+
+      },
+      observeRouteData(newVal, oldVal){
+
+
+      },
+      _computeMaxWidthVariable(win, left){
+        console.log(win, left, "his box bitty");
+        if(win&&left&&win!=undefined&&left!=undefined&&win!=NaN&&left!=NaN){
+        var retVal=win-left-4;
+        console.log(retVal, "look hjere");
+        return retVal;
+      }
+      else{console.log("bitches cant get nothing right");}
+      },
  
-    attached(){
-        this.async(function(){this.set("rightCurrentWidth", 245);
-          this.set("leftCurrentWidth", 18);}, 200);
-        console.log(this.routeData, this.rightDrawerPage);
-      }, 
+   
 observeCenterContentArea(newVal, oldVal){
   if(newVal){var width=parseInt(newVal);
     if(width<2 &&this.leftCurrentWidth>15){this.set("leftCurrentWidth", this.leftCurrentWidth-10);}
@@ -391,7 +519,7 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
         return retVal;
       },
    
-      ready(){
+      dashboardSetterFunction(){
         this.set("gridPage", "intakes");
         var object=this.dashboardMapToObjectArray(this.focusedManager.dashboardMap);
         this.set("localDashboard", object);

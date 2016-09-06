@@ -22,64 +22,6 @@ in/out to hide/reveal the main content.
 
 By default the drawer is aligned to the start, which is left in LTR layouts:
 
-```html
-<app-drawer-layout>
-  <app-drawer>
-    drawer content
-  </app-drawer>
-  <div>
-    main content
-  </div>
-</app-drawer-layout>
-```
-
-Align the drawer at the end:
-
-```html
-<app-drawer-layout>
-  <app-drawer align="end">
-     drawer content
-  </app-drawer>
-  <div>
-    main content
-  </div>
-</app-drawer-layout>
-```
-
-With an app-header-layout:
-
-```html
-<app-drawer-layout>
-  <app-drawer>
-    drawer-content
-  </app-drawer>
-  <app-header-layout>
-    <app-header>
-      <app-toolbar>
-        <div title>App name</div>
-      </app-toolbar>
-    </app-header>
-
-    main content
-
-  </app-header-layout>
-</app-drawer-layout>
-```
-
-Add the `fullbleed` attribute to app-drawer-layout to make it fit the size of its container:
-
-```html
-<app-drawer-layout fullbleed>
-  <app-drawer>
-     drawer content
-  </app-drawer>
-  <div>
-    main content
-  </div>
-</app-drawer-layout>
-```
-
-### Styling
 
 Custom property                          | Description                          | Default
 -----------------------------------------|--------------------------------------|---------
@@ -165,8 +107,21 @@ Custom property                          | Description                          
           type: Boolean, 
           value: function(){return false;},
           notify: true
-        }
-      },
+        },
+      windowWidth:{
+        type: Number, 
+        
+        value:function(){
+          var retVal=window.innerWidth; 
+          if(retVal!=undefined){
+                  return retVal;}
+          else{
+              return this.async(()=>{return window.innerWidth;}, 500);}
+            },
+        observer: "observeWindowWidth",
+        notify: true, 
+      }
+    },
 
       listeners: {
         'tap': '_tapHandler',
@@ -177,16 +132,21 @@ Custom property                          | Description                          
        // 'resetLayout(_narrow, isAttached)'
       ],
 
-      /**
-       * A reference to the app-drawer element.
-       *
-       * @property drawer
-       */
+       observeWindowWidth(windowWidth,oldVal){
+        var right=380;
+          if(windowWidth&&windowWidth!=undefined){
+            right=(windowWidth<680)?20:(windowWidth<900)?300:(windowWidth<1220)?380:windowWidth<1550?460:510;
+            this.set("rightDrawerCurrentWidth", right);
+            var left=windowWidth-right-2;
+            this.set("leftDrawerCurrentWidth",left); 
+          }
+      },
       get drawer() {
         console.log("am getting my drawer", this.nodeName, this.$.drawerContent, Polymer.dom(this.$.drawerContent).getDistributedNodes()[0], "getting drawer");
         console.log(Polymer.dom(this.$.drawerContent).getDistributedNodes()[0]);
         return Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
       },
+
 
       _tapHandler: function(e) {
         var target = Polymer.dom(e).localTarget;
@@ -206,7 +166,7 @@ Custom property                          | Description                          
 
           var drawerWidth = (this.drawer.position==="left")?this.leftDrawerCurrentWidth:this.rightDrawerCurrentWidth;
           var contentContainer = this.$.contentContainer;
-          console.log(this.$.contentContainer);  console.log(this.$.contentContainer);
+          console.log(this.$.contentContainer);  console.log(this.drawer.style.width, this.$.contentContainer);
 
           // if (this._narrow) {
           //   drawer.opened = drawer.persistent = false;
@@ -232,7 +192,7 @@ Custom property                          | Description                          
       },
 
       _computeMediaQuery: function(forceNarrow, responsiveWidth) {
-        return forceNarrow ? '(min-width: 0px)' : '(max-width: ' + responsiveWidth + ')';
+        return forceNarrow ? '(min-width: 18px)' : '(max-width: ' + responsiveWidth + ')';
       }
     });
   </script>

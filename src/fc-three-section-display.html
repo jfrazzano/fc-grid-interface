@@ -4,7 +4,7 @@
 
 
 <link rel="import" href="../fc-app-elements/fc-animated-header/fc-animated-header.html">
-<!-- <link rel="import" href="../fc-grid/fc-grid-rows"> -->
+<!-- <link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-light.html">  -->
 <dom-module id="fc-three-section-display">
 <template>
 <style>
@@ -32,6 +32,8 @@
   	font-size: 1em;
   	color: #009;
   	overflow: hidden;
+  	 -webkit-margin-bottom-collapse: separate;
+            -webkit-margin-top-collapse: separate;
   }
 
 .container{
@@ -41,8 +43,11 @@
 	padding-bottom: 50%;
 	overflow-y: scroll;
 	margin-top: 8px;
+	width: 100%;
+	overflow-x: hidden;
 	background: aliceblue;
 	border: solid 1px red;
+	@apply(--layout-wrap);
 	@apply(--layout-flex);
 	@apply(--layout-vertical);
 }
@@ -69,30 +74,40 @@
 	 display: flex;
 	 max-width:6px!important;
 	 margin-left: 2px;
-	 min-width: 5px!important;
+	 max-width: 6px!important;
 	 cursor:ew-resize;
-	 padding: 2px 4px;
+	 padding: 2px 1px 1px 12px;
+	 border-left: solid 2px white;
+	 border-right: solid silver 2px;
 	 opacity: 1;
+	 margin-right: -25px;
 	 min-height: 19px;
-	 background: steelblue;
+	 background: #eaeaea;
 	 z-index:10;
-	 height: auto;
-		@apply(--layout-horizontal);
+	 	 height: auto;
+	 	 mask: luminance;
+	 	box-shadow: 4px 11px 21px 7px #9fafaf;
 	
+    visibility: visible;
+    transition: visibility 0.2s 
 	@apply(--layout-flex);
+	@apply(--layout-wrap);
 
 	}
 
   .fullPanel{
   position:static;
-  border: 1px silver solid;
+  border-bottom: 1px silver solid;
   overflow: hidden;
   overflow-y: scroll;
+  background: white;
+  display: Block;
   @apply(--layout-vertical);
 	@apply(--layout-flex); 
+	@apply(--layout-wrap);
 }
 .horizontalResizer{
-	width: 110%;
+	width: 140%;
 	position: static;
 	background: silver;
 	border: 1px black solid;
@@ -100,11 +115,13 @@
 	cursor: ns-resize;
 	display: block;
 	z-index: 100;
+
 }
 
 .rightPanel{
 	position:static; 
 	height: 100%;
+	background: white;
 	border: 2px silver solid; 
  	  overflow: hidden; 
  	  	overflow-y: scroll;
@@ -117,36 +134,71 @@
 <div id="containerLeftDrawer" class="horizontal layout flex">
 	<div id="columnOne" class="columnOne">
 			<div id="myPanel" class="fullPanel vertical layout"> 
-				<fc-animated-header container-height="{{currentHeight}}" container-width="{{currentWidth}}">
-				I am the Header
-				</fc-animated-header>		
+				<fc-animated-header container-height="{{currentHeight}}" style="padding-left: 24px; padding-right: 24px; margin-left:-24px; margin-right: -24px;"container-width="{{currentWidth}}">
+				</fc-animated-header>
+				
 				<div class="column container">
-				{{windowHeight}}
-					   <content select=".leftPanel"></content>
+				
+					   <content select=".leftPanel">
+					   	
+
+
+
+
+
+
+
+
+
+
+
+					   </content>
 				</div>    
 		 	</div>
 	</div>
-	<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer">	{{windowHeight}}</section>
-<div class="vertical layout flex justified">
+	<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer"></section>
+<div class="vertical layout flex justified" style="padding-left: 24px; margin-right:-24px;">
 <div id="columnTwo1" class="columnTwo">	
  	<div id="columnTwo" class="columnTwo">	
-		<div class="rightPanel vertical layout">
-			<fc-animated-header container-height="{{currentHeight}}" container-width="{{computeContainerWidth(maxCurrentWidth, currentWidth)}}">I am Header2</fc-animated-header>
-			<div class="column container">
-   				<content select=".centerPanel"></content>
+		<div class="rightPanel vertical layout justified">
+			<fc-animated-header container-height="{{currentHeight}}" container-width="{{computeContainerWidth(maxCurrentWidth, currentWidth)}}"></fc-animated-header>
+			<div class="column container" style="border: ridge 6px red;">
+			
+
+			<!-- <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector>  -->
+<!--       <neon-animated-pages id="pages" selected="0"  class="layout center-justified" style="margin-top:{{centerHeaderHeight}}px;" entry-animation="[[centerEntryAnimation]]" exit-animation="[[centerExitAnimation]]"> -->
+          
+ 
+
+			<iframe id="player" name="myIframe" type="text/html" width="{{width}}" height="{{height}}" class="flex layout vertical self-stretch: style="position: sticky;" src="http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com frameborder="0">
+			</iframe>
+
+
+
+   				<content select=".centerPanel">
+   					
+
+
+
+   				</content>
+<!--    			</neon-animated-pages>	 -->
 			</div> 
 		</div>
  	</div>
 </div>
-<section on-track="_upDown" hidden="{{!isResizing}}" class="horizontalResizer">	{{windowHeight}}</section>
-<div id="containerLeftDrawer1" class="vertical layout flex justified">
+<section on-track="_upDown" hidden="{{!isResizing}}" class="horizontalResizer"></section>
+<div id="containerLeftDrawer1" class="vertical layout flex justified" style="margin-right: -24px; padding-right: 24px;">
 	<div id="columnOne109" class="columnOne">
-			<div id="myPanel" class="fullPanel vertical layout" > 
+			<div id="myPanel" class="fullPanel vertical layout"> 
 				<fc-animated-header container-height="{{currentHeight}}" container-width="{{currentWidth}}">
-				I am the Header
 				</fc-animated-header>		
 				<div class="column container">
-					   <content select=".leftPanel"></content>
+					   <content select=".bottomPanel">
+					   	
+
+
+
+					   </content>
 				</div>    
 		 	</div>
 	</div>
@@ -155,6 +207,47 @@
  </div>
 </template>
 <script>
+
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement('script');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName('script')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player('player', {
+          height: '390',
+          width: '640',
+          videoId: 'M7lc1UVf-VE',
+          events: {
+            'onReady': onPlayerReady,
+            'onStateChange': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player's state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+        if (event.data == YT.PlayerState.PLAYING && !done) {
+          setTimeout(stopVideo, 6000);
+          done = true;
+        }
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
 FcThreeSectionDisplay=Polymer({
 	is: "fc-three-section-display",
 	behaviors:[
@@ -211,18 +304,68 @@ FcThreeSectionDisplay=Polymer({
 			notify: true,
 
 		},
+		windowHeight:{
+			type: Number,
+			notify: true,
+		},
+		selected:{
+			type: Number,
+			value:function(){return 0;},
+			notify: true,
+
+
+		},
+		topPanelMargin:{
+			type: Number,
+			value: function(){return -402;},
+			notify: true,
+
+		},
+		bottomPanelMargin:{
+			type: Number,
+			value: function(){return 402;},
+			notify: true,
+
+		},
 
 		isResizing:{
 			type: Boolean,
 			notify: true,
 			value:function(){return true;},
-		}
+		},
+		centerEntryAnimation:{
+				value: "fade-in-animation",
+				notify: true,
+
+		},
+		centerExitAnimation:{
+				value: "fade-out-animation",
+				notify: true,
+		},
+
+  },
+  ready(){
+
+
+var player;
+function onYouTubeIframeAPIReady() {
+  player = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    videoId: 'M7lc1UVf-VE',
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+
 
   },
   attached(){
   	this.$.columnOne.style.width=this.currentWidth+"px";
-  	setInterval(()=>{ this.set("windowHeight", window.innerHeight);}, 1200);
-
+  	
   },
 
 
@@ -239,7 +382,7 @@ FcThreeSectionDisplay=Polymer({
                 case 'track':
                 next.style.width="auto";
                   var nwidth = parseInt(elem.style.width) + e.detail.ddx;
-      			  var max=this.maxCurrentWidth-80;
+      			  var max=this.maxCurrentWidth-10;
                   var nwidth2=(nwidth<50)?50:(nwidth>=max)? max:nwidth;
                   var trueWidth = nwidth2.toString()+'px';  
                   this.set("currentWidth",nwidth2);
@@ -265,9 +408,9 @@ FcThreeSectionDisplay=Polymer({
             var elemMargin;
             var nextMargin;
             var visibleBottom;
-            	if(this.counter>0){ next.style.marginBottom=this.bottomPanelMargin+"px";
+         next.style.marginBottom=this.bottomPanelMargin+"px";
             					elem.style.marginBottom=this.topPanelMargin+"px";
-            				}
+            			
             		this.set("counter",this.counter++);
 	            var eheight =parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
 	            var nexHi=parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
@@ -282,12 +425,12 @@ FcThreeSectionDisplay=Polymer({
             	var bottom=nheight;
            		 var top=eheight;
            		 e.preventDefault();
-           		 Polymer.dom.flush();
+           		 // Polymer.dom.flush();
             console.log(elem.style.marginBottom, next.style.marginBottom);
         switch(e.detail.state){
             case 'start':
-               if(this.counter>0){next.style.marginBottom=this.bottomPanelMargin+"px";
-            					elem.style.marginBottom=this.topPanelMargin+"px";}
+               next.style.marginBottom=this.bottomPanelMargin+"px";
+            					elem.style.marginBottom=this.topPanelMargin+"px";
 	         //   console.log(newheight, this.currentHeight, top, bottom, this.totalHeight, "currentHeight");
 	             
             break;
@@ -315,7 +458,7 @@ FcThreeSectionDisplay=Polymer({
 	         //  
 	          // elem.style.marginBottom=elemMargin.toString() + "px";
 	             elem.style.height=elemH;
-	           // next.style.marginBottom=nextMargin.toString()+"px";
+	           next.style.marginBottom=nextMargin.toString()+"px";
 	           next.style.paddingBottom=nextMargin.toString()+"px";
 	           Polymer.dom(next).setAttribute("style.height", hite);
 	           resizer.style.bottom=visibleBottom.toString()+"px";

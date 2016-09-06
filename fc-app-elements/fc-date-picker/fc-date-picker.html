@@ -1,0 +1,600 @@
+
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="../../bower_components/paper-dialog-scrollable/paper-dialog-scrollable.html">
+
+
+<dom-module id="fc-date-picker">
+<template>
+	<style>
+		:host{
+			position: fixed;
+		
+		}
+		.calendardaysofweek{
+			text-align: center;  
+			width:calc(100%/7.3)!important; 
+			font-size: 18px; 
+			align-content: 	center;
+			font-weight: 600; 
+			padding: 1px 1px 1px 1.4px;
+			color: #fff;
+			background: #009;
+			height: 24px!important;
+				@apply(--layout-self-stretch);
+				@apply(--layout-center-justified);
+				@apply(--layout-flex);
+				@apply(--layout-horizontal)
+				@apply(--layout-flex);
+				@apply(--layout-horizontal);
+		}
+		.calendarcontainer{
+			background: white; 
+			border: 1px solid #009;
+			box-shadow: -2px 6px 17px 4px #9fafaf;
+			max-width: 2100px;
+			min-width: 280px;
+			min-height: 220px;
+			max-height: 1260px;
+			@apply(--layout-hotizontal);
+			@apply(--layout-self-stretch);
+		}.small{
+			font-size: 14px;
+			font-weight: 400px;
+			font-family: times;
+		}
+		.standard{
+			font-size: 16px;
+			font-weight: 500px;
+			font-family: times
+		}
+		.large{
+			font-size: 18px;
+			font-weight: 600px;
+			font-family: times;
+		}
+		.large-thin{
+				font-size: 18px;
+			font-weight: 400px;
+			font-family: times;
+		}
+		.larger-heavy{
+				font-size: 20px;
+				font-weight: 600px;
+				font-family: times;
+		}
+		.calendarborder{
+			background: #009; 
+			width: 100%;
+			@apply(--layout-horizontal);
+			@apply(--layout-center-justified);
+		}
+		.headerMonthYear{
+			text-rendering: center;
+			text-align: center;
+			color: white; 
+			font-size:18px;
+			padding-top: 6px;
+			font-weight: 600;
+			}
+		.headerTop{
+		height: 100%;
+		}
+		.headerArrowRight{
+			padding-top: 4px;
+			 color: white; 
+			 @apply(--layout-horizontal);
+			@apply(--layout-flex);
+			@apply(--flex-self-shrink);
+		}
+		.headerArrowLeft{
+			padding-top: 4px;
+			color: white;
+			@apply(--layout-horizontal);
+			@apply(--layout-flex);
+			@apply(--flex-self-shrink);
+		}
+		  .card{
+		  	text-align: right; 
+		  	width:calc(100.00%/7.0375); 
+		  	margin: 0px -1.125px 0px 0px;
+		  	font-size: 18px;
+		  	font-weight: 400;
+		  	display: flex;
+		  	border-right: 1px solid #efefef;
+		  	border-top: 1px solid #efefef;
+		  	padding: 3px 0px 0px 0px;
+			@apply(--layout-self-stretch);
+			@apply(--layout-center-justified);
+				@apply(--layout-horizontal);
+				
+		  } 
+		  .cardcontainer{
+		  	background: white; 
+		  	overflow-y:scroll;
+		  	min-height: 185px; 
+		 
+		  }
+		  .cardcontainer2{
+		  	overflow:scroll;
+		  }
+	</style>
+	<paper-dialog id="sizeDialog" on-mousedown="dragsNo" on-mouseup="dragsYes"no-cancel-on-outside-click style="width: 480px; height: 380px; background: aliceblue; border: 2px solid #009;overflow: hidden;">
+	<div style="height: 65px; width: 100%;">
+		Height: {{currentHeight}}, Width: {{currentWidth}}
+	</div>
+		<paper-scroll-dialog>
+		<fc-input-prime input-type="number" min="" max="" step="8" value="{{currentWidth}}" label="Width">
+		</fc-input-prime>
+		<fc-input-prime input-type="number" step="8" value="{{currentHeight}}" label="Height">
+		</fc-input-prime>
+		</paper-scroll-dialog>
+		<div style="height: 65px; width: 100%;">
+		<paper-button on-tap="closeModal">close</paper-button>
+		<paper-button on-tap="swap">swap</paper-button>
+		</div>
+	</paper-dialog>
+
+	<div class$="{{orientation}} layout flex wrap calendarcontainer" style$="height:{{currentHeight}}px!important; width: {{currentWidth}}px!important;">
+		<paper-material class$="{{vertOrient}} [[_computeHeaderHeight(orientation)]] calendarborder">
+			<section class$="{{vertOrient}} layout flex center headerTop">		
+				<section class$="headerMonthYear [[_computeMonthClass(currentHeight, currentWidth, orientation)]]" style$="[[_computeMonthStyle(currentWidth, currentHeight, orientation)]]">
+					[[computeViewMonth(displayedIndex, monthsList, orientation)]]
+				</section>
+				<section id="navigationBlock" class$="[[computeGlobeButtonClass(orientation)]]" style$="[[_computeGlobeButtonStyles(orientation,currentWidth, currentHeight)]]">
+					<div class="layout horizontal center center-justified">
+						<section on-tap="_backOne" class="headerArrowLeft">
+							<iron-icon icon="icons:chevron-left" style$="[[_computeBackHidden(backHidden)]];">
+							</iron-icon>
+						</section>
+						<section on-tap="launchDialog" class="layout flex center center-justified" style$="[[_computeGlobeSize(currentWidth, currentHeight, orientation)]] color: white;">
+							<iron-icon icon="social:public" style$="[[_computeGlobeSize(currentWidth, currentHeight, orientation)]]"></iron-icon>
+						</section>
+						<section on-tap="_forward" class=" headerArrowRight">
+							<iron-icon icon="icons:chevron-right" style$="[[_computeBackHidden(forwardHidden)]];">
+							</iron-icon>
+						</section>
+					</div>
+				</section>
+				<section id="yearBlock" class="horizontal flex layout end-justified" style="[[_computeYearStyle(orientation, currentWidth, currentHeight)]]">
+				 [[computeYear(displayed)]]
+				</section>
+			
+		</section> 
+	</paper-material>
+		<div class="vertical flex-9 layout cardcontainer" style$="width: {{currentWidth}}px!important overflow-y: scroll;">
+		<section class="horizontal layout flex" style="padding:0px; top: 2px; margin-bottom: 0px; max-height: 30px!important;">
+			<template is="dom-repeat" class="horizontal layout nowrap" items="[[computeDayStringLength(orientation, currentWidth, currentHeight)]]">
+			<!--example of stupid-->
+				<paper-material class$="calendardaysofweek [[_daysOfWeekClass(orientation, currentWidth, currentHeight)]]">
+					{{item}}
+				</paper-material><!--days of week header-->
+			</template>
+		</section>
+			<section class="horizontal layout flex wrap"  style$="overflow-y: scroll; width: {{currentWidth}}!important;">
+				<template 
+					is="dom-repeat" 
+					class="horizontal layout wrap" 
+					items="{{displayed}}" 
+					as="day">
+						<fc-date-mini
+						 	class="card"
+						 	in-month="[[day.inMonth]]"
+						 	day="{{day}}"
+						 	day-id="{{day.dayId}}"
+						 	calendar-day={{day}}
+						 	id$={{day.dateId}}
+						 	is-holiday="{{day.isHoliday}}"
+						 	is-test-date="{{day.isTestDate}}"
+						 	is-selected="{{day.isSelected}}"
+						 	parent-current-width="{{currentWidth}}"
+						 	parent-current-height="{{currentHeight}}"
+						 	event-list="{{day.eventList}}"
+						 	>
+							<span class="date center center-justified layout horizontal flex" style$="font-size:18px; font-weight: 600; color: {{computeNumberColor(day,displayedIndex, day.inMonth, day.isTestDate,day.isHoliday, day.isSelected)}}; computeInMonth(day.InMonth)" id="button">[[_computeDate(day.date)]]</span>
+						</fc-date-mini>	
+				</template>
+				
+			</section>
+		</div>
+	</div>
+
+	
+</template>
+<script>
+FcDatePicker=Polymer({
+	is: "fc-date-picker",
+	behaviors:[FCBehaviors.FcCalendarBehaviorPrime, FCBehaviors.DraggableBehavior, Polymer.NeonAnimatableBehavior, Polymer.IronResizableBehavior, Polymer.NeonAnimationRunnerBehavior
+  ],
+	observers:[],
+	listeners:{"onload": "trigger", "onmousemove":"trigger", 'neon-animation-finish': '_onNeonAnimationFinish'},
+	properties: {
+		
+		day:{
+			type: FcCalendarDay, 
+			value: {},
+			notify: true
+		},
+  
+		fcCourse:{
+			type: FcCourse,
+			value: function(){return new FcCourse({});},
+			notify: true
+		},
+		days:{
+			type: Array,
+			computed: "computeDayStringLength(orientation, currentWidth, currentHeight)",
+			notify: true
+		},
+		orientation:{
+			type: String,
+			value: function(){
+				return "vertical";
+			},
+			notify: true,
+		},
+		currentWidth: {
+			type: String,
+			value: function(){return "auto";},
+			notify: true,
+		},
+		currentHeight: {
+			type: String,
+			notify: true,
+		},
+		maxIndex:{
+			type: Number,
+			notify: true,
+		},
+		displayedIndex:{
+			type:Number,
+			value: 0,
+			notify: true
+		},
+		displayed:{
+			type: Array,
+			notify: true
+		},
+		displayedCalendarMonth:{
+			type: String,
+			computed: "computeDisplayedMonth(displayedIndex, monthsList)",
+			notify: true
+		},
+		vertOrient:{
+			type: String,
+			value: function(){return "horizontal";},
+			notify: true
+		},
+		units: {
+			type: String,
+			value: "months",
+			notify: true 
+		},
+		forwardHidden:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		backHidden:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		startHt:{
+			type: String,
+			notify: true
+		},
+		event:{
+			type: Array,
+			value: [],
+			notify: true
+		},
+		drags:{
+			type: Boolean,
+			value: false,
+			notify: true,
+			reflectToAttribute: true
+		},
+		monthsList: {
+			type: Array,
+			value: function(){return["January","February","March","April","May","June","July","August","September","October","November","December","January","February","March","April","May","June","July","August","September","October","November","December","January","February","March","April","May","June","July","August","September","October","November","December","January","February","March","April","May","June","July","August","September","October","November","December"];
+			},
+			notify: true
+		},
+   },
+	_outToLeftInFromRight: function() {
+      
+      this.playAnimation('exit');
+    },
+    _onNeonAnimationFinish: function() {
+      
+    },
+    computeNumberColor: function(day, displayedIndex, inMonth, isTestDate,isHoliday, isSelected){
+		var retVal=(inMonth==false)?"white": (isTestDate ===true && isSelected==false)?"red": (isHoliday===true &&isSelected==false)?"green":(isSelected===true)?"white":(inMonth===true)?"#009": "white";
+		return retVal;
+	},
+_computeGlobeSize: function(currentWidth, currentHeight, orientation){
+		// if(orientation=="horizontal"){
+			 var w=(parseFloat(currentWidth));var h=(parseFloat(currentHeight));
+				var retVal=(w<360 ||h<310)?"width:14px; height: 12px; padding-bottom: 6px;":(w<480 ||h<480)?"width:18px; height: 18px; padding-bottom: 6px;":(w<660 ||h<660)?"width:28px; height: 28px; padding-bottom: 6px;":(w<920 ||h<920)?"width:32px; height:32px; padding-bottom:6px;":"32px; height: 32px; padding-bottom: 6px;";
+		// 		}
+		// else{var retVal="width:20px; height: 20px;"}
+		return retVal;
+},
+_computeHeaderHeight: function(orientation){
+	var retVal=(orientation=="horizontal")?"layout flex-2": "layout flex-1 flex-shrink";
+	return retVal;
+},
+dragsYes:function(){
+	this.async(function(){this.set("drags",true);}, 1000);
+},
+dragsNo:function(){
+	this.set("drags", false);
+},
+ computeInMonth: function(inMonth){
+ 		var retVal=(inMonth==false)?"color: white;":"";
+ 		return retVal;
+ },
+computeDayStringLength: function(orientation, currentWidth, currentHeight){
+	var daysArray=["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"];
+	var size=parseInt(currentWidth);
+	var nocs=(size>400&&size<480)?2:(size>480&& size<1080)?3:(size>1080)?4:1;
+	
+	var returnArray=daysArray.map(function(val){
+		if(nocs===2){var pick = val.split("").slice(0,3); var pickle = pick[0]+pick[1]; return pickle;}
+		else if(nocs===3){var pick = val.split("").slice(0,3);pickle=pick[0]+pick[1]+pick[2]; return pickle;}
+		else if(nocs===4){
+			var pickle=val;
+			return pickle;}
+		else {var pickle=val.split("").shift(); return pickle;}
+	});
+//console.log(returnArray);
+	return returnArray;
+	},
+_computeMonthStyle:function(one, two, orientation){
+	var w=parseFloat(one);
+	var h=parseFloat(two);
+	var size=(w<360 ||h<310)?"font-size: 16px;":(w<480 ||h<480)?"font-size: 18px;":(w<660 ||h<660)?"font-size: 22px;":(w<920 ||h<920)?"font-size: 24px;":"font-size:32px;";
+	var retVal=(orientation=="horizontal")?"text-direction: vertical; width: 1em; padding-top: 24px;"+size: "text-direction: horizontal;padding-left: 16px;"+size+"padding-top:0px; font-weight: 500;";
+	Polymer.updateStyles();
+return retVal;
+},
+_computeDate:function(date){
+		return date.getDate();
+},
+_daysOfWeekClass: function(orientation, currentWidth, currentHeight){
+		var w=Math.floor(parseFloat(currentWidth));
+		var h=Math.floor(parseFloat(currentHeight));
+		var o=(orientation=="vertical")?false:true;
+		var retVal=(o===false &&(w<360||h<320))?"small": (o===false &&(w<420||h<360))?"standard":(o===false &&(w<720||h<480))?"large":"large-heavy";
+			return retVal;
+		},
+_computeMonthClass: function(orientation){
+	var retVal=(orientation=="horizontal")?"layout vertical flex-12 headerMonthYear": "layout horizontal flex headerMonthYear";
+	return retVal;
+},
+launchDialog: function(){
+	this.$.sizeDialog.alwaysOnTop=true;
+	this.$.sizeDialog.opened=true;
+},
+_computeYearStyle: function(orientation, w, h){
+	var nw=parseInt(w);
+	// var smid="left:" +middle+"px;";
+	// var backUp ="left:" + Math.floor(parseFloat(w/48))+"px;";
+	var height=parseInt(h);
+	if(orientation=="horizontal"){ 
+		var elem=this.$.yearBlock;
+	var ew=window.getComputedStyle(elem, null).getPropertyValue("width");
+	//console.log(ew);
+	var middle=Math.floor(((parseFloat(w)*(2/11)-(parseFloat(ew)))/2));
+	//console.log(middle, w, ew, h);
+	// var nw=parseInt(w);
+	var smid="left:" +middle+"px;";
+	var backUp ="left:" + Math.floor(parseFloat(w/24))+"px;";
+	// var height=parseInt(h);
+	var baseStyle ="color: white; font-weight: 500;  font-style: italic; position: absolute;";
+	var size = (nw<345||height<260)?"bottom: 4px;font-size: 18px;":(nw<380|| height<330)?"bottom: 6px;font-size: 20px;":(nw<405||height<385)?"bottom: 7px;font-size: 22px;":(nw<480||height<440)?"bottom: 8px;font-size: 22px;": (nw<620)?"bottom: 12px;font-size: 24px;":"bottom: 12px;font-size: 26px;";
+	var retVal=(middle && parseInt(middle)>0)?baseStyle+smid+size:(backUp)?baseStyle+backUp+size: baseStyle +"left: 2px;"+size;
+	}
+	else {
+		var size = (nw<345||height<280)?"font-size: 14px;":(nw<380|| height<330)?"font-size: 16px;":(nw<405||height<385)?"font-size: 18px;":(nw<480||height<440)?"font-size: 20px;": (nw<620)?"font-size: 22px;":"font-size: 24px;";
+			var retVal="color: white;  position: relative; font-weight:500;padding-top: 4px;font-style: italic; padding-right: 18px;"+ size;
+		}
+	return retVal;
+},
+swap:function(){
+	var retVal=(this.orientation=="horizontal")? "vertical": "horizontal";
+	var setOpposite=(this.orientation=="horizontal")?"horizontal": "vertical";
+	this.set("vertOrient", setOpposite);
+	this.set("orientation",retVal);
+},
+computeGlobeButtonClass: function(orientation){
+var retVal=(orientation=="vertical")?"horizontal layout flex center center-justified":"horizontal layout center end-justified";
+return retVal;
+},
+closeModal: function(){
+	this.$.sizeDialog.close();
+	this.$.sizeDialog.opened=false;
+},
+_computeGlobeButtonStyles: function(orientation, w, h){
+	if(orientation=="horizontal"){ 
+		var elem=this.$.navigationBlock;
+	var ew=window.getComputedStyle(elem, null).getPropertyValue("width");
+	//console.log(ew);
+	var middle=Math.floor(((parseFloat(w)*2/11)-(parseFloat(ew)))/2);
+	//console.log(middle, w, ew, h);
+	var smid=middle+"px;";
+	var nw=parseFloat(w);
+	var height=parseFloat(h);
+	var bottom = (nw<310||height<260)?"bottom: 24px":(nw<360|| height<330)?"bottom: 28px;":(nw<405||height<385)?"bottom: 32px;":(nw<480||height<440)?"bottom: 38px;":(nw<620)?"bottom: 42px;": "bottom: 48px;";
+	var base="color: white; position:absolute; right:";
+	var backUp =(parseFloat(w)/12)+"px;";
+	var retVal=(smid)?base +smid+ bottom:(backUp)?base +backUp+bottom:"color: white; position:absolute; right: 9px;"+bottom;
+	return retVal;
+	}
+	else{return "position: relative;"}
+},
+attached: function()
+{	
+	alert("date picker attached");
+		var today = new Date();
+		var index=today.getMonth();
+ 		this.set("displayedIndex",index);
+		this.async(this.initialize, 40);
+		this.startHeight();
+		// this.async(function(){this.startWidth();},3100);
+},
+ready: function(){
+		alert("datepicker ready");
+},
+startHeight: function(){
+	var ht=Math.ceil(parseFloat(screen.availHeight)*.41);
+	var setVal;
+	if(this.startHt){
+	setVal=(this.startHt.length>0)?this.startHt:ht;
+	}
+	else {setVal=ht;} 
+		//console.log(setVal);
+		this.set("currentHeight",setVal.toString());
+		this.style.height=setVal.toString()+"px";
+},
+startWidth: function(){
+	this.widthArray=[this.nextElementSibling.style.width,this.previousElementSibling.style.width,this.nextElementSibling.nextElementSibling.style.width,
+	this.previousElementSibling.previousElementSibling.style.width];
+	var wt=this.widthArray.reduce(function(prev, val, i, array){
+		var retVal=(i<array.length-1)?Math.floor(parseFloat(prev)+parseFloat(val)):Math.floor(((parseFloat(prev)+parseFloat(val))/array.length)*1.5);
+			return retVal;
+	},0);
+		this.set("currentWidth", wt);
+		//console.log(wt, wt, wt, wt, wt);
+},
+initialize:function(days){
+	var startYear =new Date().getFullYear();
+   	var endYear =startYear + 3;
+	var date=new Date(startYear, 0, 1);
+	var dateEnd =new Date(endYear, 11, 31);
+	if(days){
+	this.calendarCreator(date, dateEnd, "months", days);
+	}
+	else{
+		this.calendarCreator(date, dateEnd, "months");
+	}
+ var counter=this.monthsArray.length;
+ 	this.set("maxIndex", counter-1);
+		var self=this;
+		this.calendarDayArray=[];
+		this.calendarMonthsArray=[];
+ for(var i=0;i<counter; i++)
+		 { 	
+		 	var array = this.monthsArray[i];
+		 	this.monthsArray.length;
+			self.push("calendarMonthsArray",array);
+		 	array.forEach(function(item, index, arr){
+		   		self.push("calendarDayArray", item);
+		 	});
+		}
+		this.set("displayed", this.calendarMonthsArray[this.displayedIndex]);
+		var calendar =[];
+		calendar = this.calendarDayArray;
+		this.set("fcCourse.courseCalendarDaysArray", calendar);
+		this.set("fcCourse.calendarDayArray", calendar);
+},
+_computeBackHidden: function(backHidden){
+	if(backHidden===true){this.async(this.takeAwayArrow, 100);	return "color: #008";}
+	else {return"color: white";}
+},
+takeAwayArrow: function(){
+			Polymer.updateStyles();
+			//console.log("I updated styles, not");		
+             Polymer.dom.flush();		
+        },
+computeDisplayed: function (displayedIndex)
+{
+	return this.calendarMonthsArray[displayedIndex];
+},
+_forward: function(){
+		if(this.displayedIndex ==this.maxIndex)
+ 		{
+ 			this.set("forwardHidden",true);
+ 		}
+ 		else
+ 		{	//this.playAnimation('exit');
+ 			
+ 			this.set("backHidden",false);
+ 			this.set("forwardHidden",false);
+    		this.set("displayedIndex", this.displayedIndex+1);
+    		this.set("displayed", this.calendarMonthsArray[this.displayedIndex]);
+    		  //this.playAnimation('entry');
+    	}
+    },
+ _backOne: function(){	
+ 		if(this.displayedIndex===0)
+ 		{ 
+ 			this.set("backHidden",true);
+ 		}
+ 		else
+ 		{	
+ 			this.set("forwardHidden",false);
+ 			this.set("backHidden",false);
+    		this.set("displayedIndex", this.displayedIndex-1);
+    		this.set("displayed", this.calendarMonthsArray[this.displayedIndex]);
+ 		}
+ 	
+    },
+  
+  computeYear:function(displayed)
+  		{
+  		var	y =  new Date();
+  		y=y.getFullYear();
+  		var	m = new Date();
+  		var retVal=y+Math.floor((this.displayedIndex)/12);
+		return retVal;
+		},
+computeNotInMonths: function(dayDate, displayedIndex, inMonth){
+	var z=inMonth;
+	var x=new Date(dayDate).getFullMonth();
+	var y=this.displayedCalendarMonth;
+	var retVal = (x===y);
+	return retVal;
+},
+computeDisplayedMonth: function(displayedIndex, monthsList){
+	if(monthsList && displayedIndex){
+	return monthsList[displayedIndex];
+}
+},
+computeViewMonth: function(displayedIndex, monthsList, orientation){
+ 	if(monthsList && displayedIndex){
+	var month=monthsList[displayedIndex].split("").map(function(val){return val+" ";});
+	var sMonth=	month.toString().replace(/,/g,"").toUpperCase();
+	var retVal=(orientation=="horizontal")?sMonth: monthsList[displayedIndex];
+	//console.log(retVal);
+	return retVal;
+}
+	},
+ _resize: function(e){
+          var self=this;
+          e.preventDefault();
+              switch(e.detail.state) {
+                case 'start':
+                  //console.log(e.detail);
+                  break;
+                case 'track':
+                  var newheight = parseInt(self.currentHeight) + e.detail.ddy;
+                  var nwidth = parseInt(self.currentWidth) + e.detail.ddx;
+                  var trueWidth = nwidth.toString()+'px';
+                  var trueHeight = newheight.toString()+'px';
+                  self.currentWidth=trueWidth;
+                  self.currentHeight=trueHeight
+                  this.style.width= trueWidth;
+                  this.style.height= trueHeight;
+                  //console.log(this, 'w:' + trueWidth, 'h:' + trueHeight, 'ddx:' + e.detail.ddx, 'ddy: ' + e.detail.ddy);
+                
+                  break;
+                case 'end':
+               
+                  break;
+          }
+        },
+});
+</script>
+</dom-module>

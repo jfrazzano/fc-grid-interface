@@ -128,6 +128,7 @@ Custom property                  | Description                            | Defa
       :host([swipe-open][position=right]) > #contentContainer::after {
         right: 100%;
         left: auto;
+        margin-right: 20px;
       }
 
       :host([opened]) > #contentContainer {
@@ -324,12 +325,14 @@ FcAppDrawer=Polymer({
         // may need to set the initial opened state which should not be transitioned).
         this._setTransitionDuration('0s');
 
-        var maxWidth=window.innerWidth-80;
+        var maxWidth=window.innerWidth-40;
         console.log(maxWidth);
         this.set("maxWidth",maxWidth);
+
       },
 
       attached: function() {
+        this.set("")
         this.set("dashboardLeftDrawerCurrentWidth",18);
        //  this.set("dashboardRightDrawerCurrentWidth",20);
 
@@ -346,7 +349,8 @@ FcAppDrawer=Polymer({
           this.addEventListener('transitionend', this._transitionend.bind(this));
           this.addEventListener('keydown', this._tabKeydownHandler.bind(this))
         });
-         this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",18);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
+        var left=(parseInt(this.maxWidth)-295); console.log(left);
+         this.async(function(){this.set("dashboardLeftDrawerCurrentWidth",left);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[0];
            this.async(function(){this.set("dashboardRightDrawerCurrentWidth",295);},380); Polymer.dom(this.$.drawerContent).getDistributedNodes()[1];
       },
 

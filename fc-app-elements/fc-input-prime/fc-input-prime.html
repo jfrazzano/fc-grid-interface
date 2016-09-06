@@ -1,0 +1,1162 @@
+
+<dom-module id="fc-input-prime">
+<style>
+:host{
+	display: block;
+	padding: 2px;
+	margin: 2px;
+	background: inherit;
+	@apply(--vertical-layout);
+}
+section[name=section1].animateLabel{
+    display: flex;
+    height: 55px;
+}
+label.animateLabel {
+    font-size: 16px;
+    font-weight: 400;
+    opacity: 0.4;
+    pointer-events: none;
+    position: absolute;
+    transform: translate3d(0, 22px, 0) scale(1);
+    transform-origin: left top;
+    transition: 240ms;
+}
+section[name=section1].animateLabel.onfocus, input.animateLabel {
+    opacity: 1;
+    transform: scale(0.75);
+}
+input.animateLabel, select.animateLabel {
+    align-self: flex-end;
+}
+input.animateLabel::-webkit-input-placeholder, 
+select.animateLabel::-webkit-input-placeholder {
+    color: transparent;
+    transition: 240ms;
+}
+input.animateLabel:focus::-webkit-input-placeholder, select.animateLabel:focus::-webkit-input-placeholder {
+    transition: none;
+}
+section[name=section1].animateLabel.onfocus, input.animateLabel::-webkit-input-placeholder, select.animateLabel::-webkit-input-placeholder {
+    color: #bbb; 
+}
+span.radio: {
+	position: absolute;
+	right: 0px;
+	top: 10px;
+	left: 8px;
+	left-margin: 3px;
+}
+input{ padding: 4px;
+margin: 2px;
+@apply(--horizontal-layout-flex);}
+input.inpright{
+text-align: right;}
+input.inpleft{ 
+text-align: left;}
+input.inpcenter{
+text-align: center;}
+section[name=section1].text, section.select {
+ border: 0px solid #999;
+  font-family: merriweather;
+  font-size: 16px;
+  color: #008;
+  font-weight: 600;
+ 
+  padding: 8px;
+}
+label {
+font-family: merriweather;
+ font-size: 16px;
+ font-weight: 600;
+	padding-left: 4px;
+	color: #008;
+}
+iron-icon{display: none;}
+.select, input.text, input.datetime-local, input.date,  input.range, input.tel,  input.email{
+  border: 0px solid #999;
+  border-bottom: 1px solid #008;
+  font-family: merriweather;
+  font-size: 16px;
+  color: #008;
+  background: inherit;
+}
+section: {
+	min-width: 75px;
+	max-width: 620px;
+	}
+.wrapper{max-width: 660px;}
+.wrapper-text-focus{
+	color: blue;
+	font-weight: 600;
+}
+input.text:focus, input.text, input.datetime-local, input.datetime-local:focus, input.date:focus,  input.range:focus,  .number:focus, input.tel:focus,  input.email:focus {
+	border: 0px dashed #fff;
+	outline: 0px;
+	box-shadow:0px;
+	border-bottom:1px solid #008;
+	color:  brown;
+	font-weight: 600;
+}
+input[type=datetime-local]{
+	line-height: .85;
+}
+input[type=button]{
+background: #efefef;
+	/*min-width: 16px;*/
+	/*min-height: 16px;*/
+	color: black;
+	outline: 0px;
+	font-size: 16px;
+	font-family: merriweather;
+	font-weight: 500;
+	opacity: 0;
+}
+input[type=button]:hover, input[type=button]:active,{
+	/*color: gold;
+	outline: 2px solid silver;*/
+	}
+span[name=span1].button{
+	color: black;
+}
+span[name=span4].checkbox{display: none; opacity: 0; visibility: none;}
+iron-icon[name=icon]{display: block;}
+/*icon3 moves to right of inputs*/
+input.number{ border: 0px solid #999;
+	border-bottom:2px solid #008;
+  	font-family: merriweather;
+  	font-size: 16px;
+  	color: #008;
+	padding:4px;
+	margin: 4px;
+	line-height: .5;
+	background: inherit;}
+label.datetime-local{
+font-family: merriweather;
+ font-size: 16px;
+ font-weight: 600;
+ line-height: .9;
+	color: #008;
+	padding: 0px 0px 0px 6px;
+}
+label.number {
+	margin-left: 4px;
+	padding: 2px 2px 0px 2px;
+	margin: 0px; height: 16px;
+	font-size: 16px;}}
+}
+.twocolumn{
+}
+iron-icon[name=icon5].checkbox{display: inline-block;}
+label.checkbox {
+    display: inline-block;
+    background: inherit;
+	float: right;
+    padding:2px;
+    margin: 2px;
+}
+label.checkbox.tight {
+    display: inline-block;
+    background: inherit;
+	float: right;
+    padding:8px;
+    margin: 8px;
+}
+input[type=checkbox]{
+	outline:4px;
+	
+}
+input[type=checkbox]{
+    width : 24px;
+    height: 24px;
+    color: green;
+    
+}
+label.range{
+	font-size: 16px;
+	font-size: 16px;
+color: #008;
+font-family: merriweather;
+font-weight: 600;
+}
+span.range{
+	font-size: 16px;
+}
+input[type=checkbox]:checked{
+  
+   background: inherit;
+}
+input{text-align: left;}
+:host.wrapper-checkbox-checked, label.wrapper-checkbox-checked{
+	color: #008;
+	font-weight: 600;
+	
+}
+label.checkbox{
+	font-size: 14px;
+	padding-right: 4px;
+	margin-right: 4px;
+	@apply(--horizontal-layout);
+}
+label.checkbox.isInline{font-weight: 600px;padding-right: 10px; padding-left: 10px;}
+label.select{white-space: nowrap; padding: 0px;margin: 0px;}
+select.select{ width: 100%;
+min-width: 100px; min-height: 20px;}
+select{padding: 4px; margin: 2px;}
+/*radio buttons*/
+input[type=radio]:checked {}
+label.radio{
+	font-size: 14px;
+	float: right;
+}
+label.radio.test{
+font-size: 12pt;
+}
+.select{border: 0px grey solid;}
+input[type=radio]{
+	outline: 0px;
+	width: 24px;
+	height: 24px;
+}
+span.select, iron-icon.select {display: none;}
+input[type=radio]:checked {
+	width: 24px;
+	height: 24px;
+	color: green;
+}
+.tight{display: inline-block;margin-left: -8px;}
+label.tight{
+			display: inline
+			float: bottom;
+			font-size: 10px;
+			height: 15px;
+			padding: 0px 0px 0px 0px;
+			margin: 0px 0px -12px -5px;					
+								}
+input.tight{ 
+			display: inline;
+			font-size: 12px;
+			margin: 0px 1px;
+			padding: 0px;
+			height: 20px;
+			}
+select.digit{
+	display: none;
+}
+span.digit{display: none;}
+iron-icon.digit{display: none;}
+section.digit{max-width: 28px; max-height: 32px; padding: 2px; margin: 0px; outline:0px; display: block; @apply(--horizontal-layout);@appy(--layout--flex-none);@apply(--layout-block);};
+label.digit{font-size: 12px; margin-left: -3px;color:#009;font-family: merriweather; font-weight: 500;}
+input.digit{height: 23px; border: 0px; font-size: 18px; font-weight: 600; font-family: roboto; outline:0px; color: #008; @apply(--layout-block);
+}
+label.datetime-local{margin-bottom: 0px; margin-top: 2px; margin-left: -2px; font-weight: 600; line-height: .75;}
+select{max-height: 75px; padding: 4px; font-weight: 600; font-family: merriweather; font-size: 16px; font-color: brown;}
+section.range{ 
+font-size: 16px;
+color: #008;
+font-family: merriweather;
+font-weight: 600;
+@apply(--horizontal-layout);
+@apply(--flex-layout);
+@apply(--layout-center);
+}
+span.button-set-person, label.button-set-person, input.button-set-person{
+ display: inline-block;
+ border:6px solid #2435C9;
+ color: #FFFFFF;
+ border-radius: 180px 180px 180px 180px;
+ -webkit-border-radius: 180px 180px 180px 180px;
+ -moz-border-radius: 180px 180px 180px 180px;
+ font-family: Merriweather;
+width: 20px;
+ height: 20px;
+ margin: 2px;
+ margin-top: 4px;
+ font-size: 13px;
+ padding: 3px;
+ /*box-shadow: 3px 14px 11px 4px #9fafaf;*/
+ /*box-shadow: 3px 4px 11px 3px #bebebe;
+ -moz-box-shadow: 3px 4px 11px 3px #41398A;
+ -webkit-box-shadow: 3px 4px 11px 3px #41398A;*/
+ /*text-shadow: 0 1px 0 #FFFFFF;*/
+ background-color: #5DD7FC;
+}
+input.button-set-person{opacity: 0;}
+section.button-set-person{@apply(--layout-vertical)@apply(--layout-center-justified); @apply(--layout-flex);@apply(layou-self-stretch);}
+input.range{
+	@apply(--horizontal-layout);
+@apply(--flex-layout);
+@apply(--flex-self-stretch);
+width: 100%;
+font-size: 16px;
+color: #008;
+font-family: merriweather;
+font-weight: 600;
+padding: 2px 12px;
+}
+select {outline: 0px solid white; border: 0px solid white; background: inherit;, float: top; border-bottom: 1px solid #006; margin-bottom: 26px;}
+/*input.select{opacity: .2;}*/
+label.tiny{ background: inherit; padding: 1px; font-size: 10px; font-weight: 600; font-family: merriweather;color: #008;}
+input.tiny{ border: 0px; font-size: 11px; padding: 1px; font-weight: 600; font-family: merriweather; background: inherit;}
+@import "compass/css3";
+input[type=datetime-local].display{text-align: center; margin: auto; padding: 0px;}
+input[type=datetime-local].display::after{content:  '▲';}
+input[type=datetime-local].display::-webkit-outer-spin-button, /* Removes arrows */
+input[type=datetime-local].display::-webkit-inner-spin-button, /* Removes arrows */
+input[type=datetime-local].display::-webkit-clear-button { /* Removes blue cross */
+  -webkit-appearance: none;
+  margin: 0;
+  width: 0px;
+  padding: 0px;
+  display: none;
+}
+input[type=datetime-local].display::-webkit-calendar-picker-indicator {
+    -webkit-appearance: none;
+  margin: 0;
+}
+ 
+</style>
+<template>
+
+<section 
+	name="section0" class$="horizontal [[inputType]] [[_computeHorizontal(inputType)]] [[_computeLayout0(inputType,isIcon)]] [[horizontal]]" style$="[[_computeOuterSectionStyle(inputType)]]">
+	<!--icon button one-->		<span id="span0"
+									hidden$="[[span0hide]]"
+									name$="[[span0]]"
+									class$="[[_computeSpan0Class(inputType)]]">
+									<iron-icon
+										hidden$="[[icon0hide]]"
+										icon$="[[icon0]]"
+										>
+									</iron-icon>
+								</span>
+	<!--end icon button one-->
+	<section 
+		id="section1"
+		name="section1"
+		class$="horizizontal layout [[inputType]] [[_computeLayout2(icon2)]] [[horizontal]][[_computeHorizontal(inputType)]]"
+		style="[[computeSection1Layout(inputType)]]">
+
+<!--begin icon-button two-->			
+		<span name="span1" id="span1" class$="[[inputType]]" hidden$="[[!_computeLayout3(inputType, icon1)]]" for="[[myInputName]]"><!-- [[inputType]] 3A -->
+			<iron-icon 
+				name="icon1"
+				icon="[[icon1]]" 
+				class$="[[inputType]]" 
+				hidden$="[[!icon1]]">
+			</iron-icon>
+		</span>
+<!--end icon button two--><!-- [[isTimeStamp]] -->
+<!-- <section class$="[[isInline]]"> -->
+		<label
+			name$="[[labelName]]"
+			hidden$="[[labelHidden]]" 
+			id$="[[labelId]]"
+			style$="[[labelStyle]]" 
+			for$="[[inputId]]" 
+			class$="[[inputType]] [[isTest]]"
+			>
+			[[label]] 
+		</label>
+		<select hidden$="[[unlessSelect]]" class="{{inputType}}" data-selections={{selectItems}} on-change="_onChange" value="{{selectedValue}}" input-value="{{selected}}">
+			
+        		<optgroup hidden="[[_computeRepeater(isRepeaterSelect)]]">
+						<template 
+							style="color: #008; font-weight: 600; font-size: 14px;"
+							class="option"
+							is="dom-repeat" 
+							items="{{selectItems}}" as="item">
+								<option value="{{item}}">
+								[[item]]
+								</option>
+						</template>
+					</optgroup>
+			<optgroup hidden="[[_computeNotRepeater(isRepeaterSelect)]]"> 	
+				<option value="{{optionOne}}">{{optionOne}}</option>
+	            <option value="{{optionTwo}}">{{optionTwo}}</option>
+	            <option value="{{optionThree}}">{{optionThree}}</option>
+	            <option value="{{optionFour}}">{{optionFour}}</option>
+	            <option value="{{optionFive}}">{{optionFive}}</option>
+	            <option value="{{optionSix}}">{{optionSix}}</option>
+	            <option value="{{optionSeven}}">{{optionSeven}}</option>
+	            <option value="{{optionEight}}">{{optionEight}}</option>
+	            <option value="{{optionNine}}">{{optionNine}}</option>
+	            <option value="{{optionTen}}">{{optionTen}}</option>
+	        </optgroup>
+	    </select>
+	    <!-- on-change="theSetter" -->
+		<input 
+			hidden$="{{!unlessSelect}}"
+			is="iron-input" 
+			id="fcinput"
+			style$="{{inputStyle}}"
+			bind-value="{{value}}"
+			checked="{{checkedProp::change}}"
+			inputValue="{{bindValue}}"
+			on-change="_onChange"
+			on-focus="doAnimation" 
+			on-blur="unDoAnimation"
+			multiple$="[[item.multiple]]"
+			disabled$="[[disabled]]"
+       		title$="[[title]]"
+        	invalid="{{invalid}}"
+        	prevent-invalid-input="[[preventInvalidInput]]"
+        	allowed-pattern="[[allowedPattern]]"
+        	validator="[[validator]]"
+        	pattern$="[[pattern]]"
+        	autocomplete$="[[autocomplete]]"
+        	autofocus$="[[autofocus]]"
+        	inputmode$="[[inputmode]]"
+        	minlength$="[[minlength]]"
+        	maxlength$="[[maxlength]]"
+        	min$="[[min]]"
+        	max$="[[max]]"
+        	step$="[[step]]"
+        	placeholder$="[[placeholder]]"
+        	readonly$="[[readonly]]"
+        	range$="{{inputRange}}"
+        	size$="[[size]]"
+        	autocapitalize$="[[autocapitalize]]"
+        	autocorrect$="[[autocorrect]]"
+        	on-change="_onChange"
+        	tabindex$="[[tabindex]]"
+        	autosave$="[[autosave]]"
+        	results$="[[results]]"
+        	accept$="[[accept]]"
+			name="{{name}}" 
+			class$="[[inputType]] [[_computeTdClass(isTimeDisplay, inputType)]]"
+			label$="{{item.inputLabelB}}"
+			 type$="[[_computeType(inputType)]]" 
+			list$="[[list]]"  	
+			on-track="trackRanger"
+			required$="[[required]]"  
+			multiple$="[[multiple]]"
+			meta="{{inputMeta}}"
+			disabled$="[[disabled]]"
+			readonly$="[[readonly]]"
+			size$="[[item.size]]"
+			results$="[[item.results]]"
+			tab-index='{{item.tabIndexB}}' 
+			>
+
+			<!-- </section> -->
+			<!-- data-input-type$=[[]]
+			data-layout$=[[]]
+			data-source$=[[]] -->
+			<!-- invalid$={{item.nothing}}
+			prevent-invalid-input=[[item.preventInvalidInput]] 
+			allowed-pattern="[[item.allowedPattern]]"
+			validator="[[item.validator]]"
+			pattern$="[[item.pattern]]"
+			accept$="[[item.accept]]"
+			-->
+<!--icon-button-three-->
+					
+		<span 
+			id="span2"
+			name="span2"
+			class$="[[inputType]]" 
+			>
+		<span id="span3" hidden$="{{isNotRange}}">
+		</span>
+			<iron-icon 
+
+				name="icon2"
+				icon="[[icon2]]"
+				class$="[[inputType]]"
+				hidden$="{{!isIcon2}}">
+			</iron-icon>
+		</span>
+<!--end Icon button 3-->
+	</section>
+	<!-- [[myInputName]] 4.5 -->
+</section>
+</template>
+<script>
+FcInputPrime=Polymer({
+	is: 'fc-input-prime',
+	behaviors:[
+	// Polymer.PaperInputBehavior,
+			 // Polymer.IronFormElementBehavior
+			 ],
+	listeners:{
+		'uncheck':"_radioUncheck"
+	},
+	properties:{
+		inputStyle: {
+			type: String,
+			notify: true,
+			reflectToAttribute: true
+		},
+		myInputeName:{
+			type:String,
+			value: "",
+			notify: true,
+		},
+		selectItems: {
+			type: Array,
+			value: [],
+			notify: true
+		},
+		isRepeaterSelect: {
+			type: Boolean,
+			notify: true,
+			value: true,
+			reflectToAttribute: true
+		},
+		isInline:{
+			type: String,
+			value: function(){return "layout-horizontal block";},//note switch direction on flex for checkboxes
+			notify: true,
+			reflectToAttribute: true
+		},
+		icon0:{
+			type:String,
+			value:function(){
+				return "icons:today";},
+			notify: true
+		},
+		readonly: {
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		isSelect: {
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		selectedValue:{
+			type: String,
+			notify: true,
+			reflectToAttribute: true
+		},
+		isNotRange:{
+			type:Boolean,
+			computed: "_computeIsNotRange(inputType)",
+			notify: true
+		},
+		unlessSelect:{
+			type: Boolean,
+			computed: "computeUnlessSelected(inputType)",
+			notify: true
+		},
+		pattern:{
+			type: String,
+			value:"",
+			notify: true
+		},
+		min: {
+			type: Number,
+			notify: true
+		},
+		max: {
+			type: Number,
+			notify: true
+		},
+		inputValue:{
+			type: String, 
+			notify: true
+		},
+		icon1:{
+			type:String,
+			notify: true,
+			value:function(){
+				return "icons:dashboard";}
+			
+		},
+		autocorrect:{
+			type: String,
+			value: function(){return "on";},
+			notify: true
+		},
+		autosave:{
+			type: String,
+			value: function(){return "";},
+			notify: true
+		},
+		title:{
+			type: String,
+			value:"",
+			notify: true,
+		},
+		autocomplete:{
+			type: String,
+			value: function(){return "on";},
+			notify: true
+		},
+		icon2:{
+			type:String,
+			value:function(){
+		 	return "icons:alarm-on";},
+			notify: true
+		},
+		inputId: {
+			type: String,
+			computed: "_computeInputId(inputType, inputName)", /*this should be hostId, hostContextpartially or mostly for mapping and avoiding weak key maps*/
+			notify: true,
+			
+		},
+		alloweedPattern:{
+			type: String,
+			notify: true
+		},
+		preventInvalidInput:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		inputType:{
+			type: String,
+			observer: '_triggerInputTransformation',
+			value: function(){return "text";},
+			notify: true
+		},
+		isIcon: {
+			type: Boolean,
+		 	value: false,
+			notify: true
+		},
+		isIcon1: {
+			type: Boolean,
+		 	value: false,
+			notify: true
+		},
+		isIcon2: {
+			type: Boolean,
+		 	value: false,
+			notify: true
+		},
+		isIcon3: {
+			type: Boolean,
+		 	value: false,
+			notify: true
+		},
+		 
+		isTest: {
+			type: String,
+			notify: true
+						//if is test, enter "test", will change font-size on radio buttons
+		},
+		label: {
+		 	type: String,
+		 	notify: true, 
+		 	reflectToAttribute: true
+		},
+		labelId: {
+			type: String,
+			value: function(){
+				var rndNum = new Date();
+				var labelId = "labelId_" + (rndNum.getTime() + Math.floor((Math.random() * 10000) + 1)).toString();
+				return labelId;
+				},
+			notify: true
+			},
+		name:{
+			type: String,
+			notify: true, 
+			reflectToAttribute: true
+		},
+		optionOne:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionTwo:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionThree:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionFour:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionFive:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionSix:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionSeven:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},optionEight:{
+			type: String,
+			notify: true,
+			reflectToAttribute:true
+		},
+		localName:{
+			type: String,
+			notify: true //local option is the type the use and the count in the page element--we are going to map the mother f
+		},
+		cuTimeSet:{
+			type: String,
+			computed: "_computeSetCurrentTime(inputType, currentTime, isCurrentTime)",
+			notify: true,
+		},
+		isTight: {
+			type: Boolean,
+			value: false, 
+			notify: true
+		},
+		doAgain:{
+			type: Number,
+			value: function(){
+				// var self=this;
+				// setInterval(function(){self.updateTime(); }, 999);
+				return 1;
+			},
+			notify: true
+		},
+		type:{
+			type:String,
+			value: "text",
+			notify: true
+		}, 
+		checkedProp: {
+			type: Boolean,
+			observer: "checkObserver",
+			notify: true
+		},
+		hostAttribute:{
+			value:{
+				notify: true,
+	
+			}, 
+			class: {
+				type: String,
+				value: function(){
+					return this.inputType;
+				},
+				notify: true
+			}
+		},
+		horizontal:{
+			type: String,
+			computed: '_computeHorizontal(inputType)',
+			notify: true,
+		
+		},
+		buttonName: {
+			type: String,
+			value: function(){
+				return "";
+			},
+			notify: true,
+		
+		},
+		isCurrentTime: {
+				type: Boolean, 
+				value: false,
+				notify: true
+		}, 
+		myChecked: {
+			type: Boolean,
+			value: function(){
+				return false;
+			},
+			notify: true,
+		},
+		eventsOneThroughFive:{
+			type: Function,
+			notify: true
+		},
+		radioGroupNameFC: {
+			type: String,
+			value: function(){
+				var rndNum = new Date();
+				var radioGroupNameFC="thisRadioGroupName";
+				return radioGroupNameFC;
+			},//move up to the controller
+			notify: true	
+		},
+		timeBind: {
+			type: Date,
+			observer: "makeTime",
+			notify: true
+		},
+		inputName:{
+			type: String,
+			computed: "_computeInputName(inputType, name)",//localName Could be replaced with inputId
+			notify: true
+		},
+		inputDefaultValue: {
+			type: String,
+			value:"text",
+			notify: true
+		},
+		isTimeDisplay:{
+			type: Boolean,
+			value: false,
+			notify: true
+		},
+		isTimeStamp:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true, 
+			reflectToAttribute: true
+		},
+		labelHidden:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true, 
+			reflectToAttribute: true
+		},
+		labelStyle:{
+			type: String,
+			notify: true
+		},
+		maxlength:{
+			type: Number,
+			notify: true
+		},		
+		isCallback:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true, 
+			reflectToAttribute: true
+		},		
+		timeStamp: {
+			type: String,
+			computed: "_computeTimeStamp(inputType, currentTime, isTimeStamp)",
+			notify: true
+		},
+		callback: {
+			type: String,
+			computed: "_computeCallback(inputType, isCallback)",
+			notify: true
+		},
+		inputRange:{
+			type: Number,
+			observer: "trackRanger",
+			notify: true
+		},
+		currentTime:{
+			type: Object,
+			computed: '_computeCurrentTime(inputType, doAgain)',
+			notify: true
+		}, 
+		digit:{
+			type: String,
+			computed: "_computeDigit(inputType)",
+			notify: true
+		}
+	},
+_computeNotRepeater: function(isRepeaterSelect){
+	var retVal =isRepeaterSelect;
+	return retVal;
+},
+_computeRepeater: function(isRepeaterSelect){
+	var retVal =!isRepeaterSelect;
+	return retVal;
+},
+	_computeType: function(inputType){ var returnVal = inputType=="digit"? "text": inputType; return returnVal;
+	},
+	_computeTdClass: function(is){
+		if(is && this.inputType=="datetime-local"){
+			return "display";
+		}
+	},
+	
+_computeIsDigit: function(it){
+	console.log(it);
+	if(it=="digit"){
+		return true;
+	}
+	else {return false;}
+},
+	_computeDigit: function(inputType){
+		if(inputType=="digit"){
+		this.$.fcinput.name=this.name;
+		this.set("type", "text");
+		this.set("pattern", "[0-9AP]{1}")
+		this.set("allowedPattern", "[0-9AP]{1}");
+		this.set("preventInvalidInput", true);
+		this.set("class", "digit");
+		this.set("title", "Input a digit between 0 and 9, inclusive.");
+		this.set("maxlength", 1);
+		}
+	},
+	computeSection1Layout: function (inputType){
+		if(inputType!=="digit"){
+		return "padding: 2px; margin: 0px;";
+		}
+		else {return "padding: 0px; outline: 0px; margin:-2px;"}
+	},
+	computeUnlessSelected: function(inputType){
+		var returnValue=(inputType=="select")?false: true;
+		return returnValue;
+	},
+	_computeSelectOne: function(isRepeaterSelect){
+		if(isRepeaterSelect==true){return "none;";}
+		else{ return "flex;";}
+	},
+	_computeIsNotRange: function(inputType){
+		var returnVal=(inputType=="range")?false:true;
+		return returnVal;
+	},
+	checkObserver: function(){
+		if(this.inputType=="radio" || this.inputType=="checkbox"){
+			this.set('value',this.checkedProp);
+			if(this.checkedProp == true && this.inputType=="radio"){
+				this.fire('radio-checked-changed',{'name': this.inputName, 'id':this.inputId});//NOTE HERE ON RADIO
+				//console.log("IN CHECKOBSERVER", this);
+				}
+		}
+	},
+	makeTime:function(newVal, oldVal){
+			if(newVal && this.inputType=="datetime-local")
+			{	d=new Date(newVal);
+				console.log(d, newVal, oldVal);
+				if(d){
+				var time= this.dateTimeInputs(d);
+				this.set("bindValue", time.toInputDateTimeLocal);
+				console.log(time, time);
+				this.set("value",time.toInputDateTimeLocal);
+				console.log(this.value);
+				}
+				else if(!d){
+					var j=new Date();
+					var temp=new FcClock("temp", "Clock","tempClock",0,j);
+					var p = temp.convertFromTenths(newVal);
+					var p=new Date(p);
+					var time=this.dateTimeInputs(p);
+					this.set("bindValue", time.toInputDateTimeLocal);
+					console.log(time, time);
+					this.set("value",time.toInputDateTimeLocal);
+					console.log(this.value);
+				}
+			}
+	},
+	trackRanger: function(e){
+		if(this.inputType=="range"){
+		this.$.span1.styles="float: right; right: 2px; margin-left: 60%;"
+        switch(e.detail.state) {
+          case 'start':
+           // this.$.span3.innerHTML=this.value;
+            break;
+          case 'track':
+             // this.$.span3.innerHTML=this.value;
+          
+            break;
+          case 'end':
+             // this.$.span3.innerHTML=this.value;
+            break;
+        	}
+    	}
+     },
+     _triggerInputTransformation:function(){
+     	var self =this;
+     	if(this.inputType=="range" && (this.value==NaN ||this.value==undefined ||this.value ==null)){
+			var average = Math.ceil((parseInt(this.min)+parseInt(this.max))/2);
+     		this.value=average.toString();}
+     	else if(this.inputType == "range"){this.value=this.value.toString();}
+     	},
+	_computeOuterSectionStyle: function(inputType){
+		var returnValue="padding: 0px; margin:0px; border: 0px; outline: 0px;";
+		if(inputType=="range"){returnValue="z-index: 3; border: 1px silver solid; padding:6px;"}
+			return returnValue;
+	},
+	_computeSpan0Class: function(inputType){return inputType},
+	_computeSpan0Class: function(inputType){return inputType},
+	eventsOneThroughFive: function(e){
+	},
+	_onChange:function(e){
+		if(this.inputType=="select"){this.set("value", e.target.value);this.set("inputValue", e.target.value); this.set("bindValue", e.target.value);
+		//console.log(this.value, e.target.value, this.inputValue, "I am in the on-change in the input Prime");
+	}
+	},
+	_computeInputId: function(inputType,inputName)
+	{
+		var d = new Date();
+		var n = d.getMilliseconds();
+		var rnd = new Uint32Array(10);
+		window.crypto.getRandomValues(rnd);
+			for (var i = 0; i < rnd.length; i++) {
+    			var joe=rnd[0];
+    			joe+=rnd[i];
+    		}
+    	var uniqueId=this.inputType +"_" +this.inputName.toString() +"_"+joe.toString();
+    		return uniqueId;
+	},
+	
+	_computeCurrentTime: function(inputType, doAgain){
+		if(inputType=="datetime-local"){
+			var theDate = this.dateTimeInputs();
+			return theDate;
+		}
+	},
+dateTimeInputs: function(dateObj){
+			var theDate = (dateObj)?new Date(dateObj): new Date();	
+			var yearNjs = theDate.getYear();
+			var yearN = (yearNjs + 1900);
+			var year = yearN.toString();
+			var monthN = theDate.getMonth() + 1;
+			var month = (monthN<10)? "0" + monthN.toString(): monthN.toString();
+			var dateN = theDate.getDate();
+			var date = dateN<10? "0" + dateN.toString(): dateN.toString();
+			var hoursN = theDate.getHours();
+			var ampm = hoursN >= 12? "PM": "AM"; 
+			var minutesN = theDate.getMinutes();
+			var minutes = minutesN<10 && minutesN>0? "0" + minutesN.toString():minutesN==0? "0" +"0": minutesN.toString();
+			var secondsN = theDate.getSeconds();
+			var seconds =secondsN<10 && secondsN>0? "0" + secondsN.toString():secondsN==0? "0" +"0": secondsN.toString();
+			var millisecondsN = theDate.getMilliseconds();
+			var milliseconds = millisecondsN ==0? "0" + "0" + "0":millisecondsN >0 && millisecondsN<10? "0" +"0" + millisecondsN.toString(): millisecondsN >=10 && millisecondsN<100? "0" + millisecondsN.toString(): millisecondsN.toString(); 
+			var milliseconds = millisecondsN.toString();
+			var hoursNUS= hoursN>0 && hoursN>12? (hoursN-12): hoursN == 0? 12: hoursN;
+			var hours = hoursNUS <10? "0" + hoursNUS.toString(): hoursNUS.toString();
+			var hours24 = hoursN == 0? "0" + "0": hoursN<10 && hoursN>0?"0" + hoursN.toString(): hoursN.toString();
+			var timeNow = year+"-"+month+"-"+date+" "+hours+":"+minutes+" "+ampm;
+			var timeNowTwo = "Date: " + month + "/"+date+"/"+year+" Time: "+hours+":" + minutes+":"+ seconds+" " + ampm;
+			var toInputDateTimeLocal = year+"-"+month+"-"+date+"T"+hours24+":"+minutes;
+			var holderObject={
+				"year":year, 
+				"month":month, 
+				"date":date, 
+				"hours":hours, 
+				"minutes":minutes, 
+				"seconds":seconds, 
+				"milliseconds":milliseconds,
+				"ampm": ampm,
+				"yearN": yearN,
+				"monthN": monthN,
+				"dateN": dateN,
+				"hoursN": hoursN,
+				"minutesN": minutesN,
+				"secondsN": secondsN,
+				"millisecondsN": millisecondsN, 
+				"yearNjs": yearNjs, 
+				"timeNow": timeNow,
+				"timeNowTwo":timeNowTwo,
+				"toInputDateTimeLocal":toInputDateTimeLocal
+									};
+			return holderObject;
+		
+	},
+	_computeTimeStamp: function(inputType, currentTime, isTimeStamp)
+		{ ////console.log("value time");
+			if(inputType=="datetime-local" && this.doAgain>0 && isTimeStamp==
+				true){//console.log("dateTime-local", this.isTimeStamp);
+			 var returnVal=currentTime.toInputDateTimeLocal;
+			 this.set("value", returnVal);
+			 this.set("inputValue", returnVal);
+			 this.set("bindValue", returnVal);
+			 this.set("readonly", true);
+			 //console.log("value time");
+			  return returnVal;
+			}
+		},
+	_computeSetCurrentTime:function(inputType, currentTime, isCurrentTime)
+		{ ////console.log("value time");
+			if(inputType=="datetime-local" && this.doAgain>0 && isCurrentTime==
+				true){//console.log("dateTime-local", this.isTimeStamp);
+			 var returnVal=currentTime.toInputDateTimeLocal;
+			 this.set("value", returnVal);
+			 this.set("inputValue", returnVal);
+			 this.set("bindValue", returnVal);
+			 this.set("readonly", false);
+			 //console.log("value time");
+			  return returnVal;
+			}
+		},
+		_computeCallback: function(inputType, isCallback)
+		{ //console.log("value time");
+			if(inputType=="datetime-local" && isCallback==true){//console.log("callback?", this.isCallback);
+			 var d= new Date();
+				var cbtime = d.setHours(+24);
+				cbtime = cbtime.toLocaleString();
+				//console.log(d, cbtime, cbtime, cbtime, "this is callback time");
+			 var returnVal=d.toInputDateTimeLocal;
+			 this.set("value", returnVal);
+			 this.set("inputValue", returnVal);
+			 this.set("bindValue", returnVal);
+			 this.set("readonly", true);
+			 //console.log("value time");
+			  return returnVal;
+			}
+		},
+	
+	attached: function(){
+		if(this.inputType=="button"){; this.set('icon4', false); this.set("buttonName", this.label);this.set("value", this.label); this.set('label',"");}
+		if(this.inputType=="select"){this.set("readonly", true);}
+		if(this.inputType=="button-set-person"){  
+				this.set("span0hide", false);
+				this.set("icon0hide", false);
+				this.set("icon2", "social:person-add"); 
+				this.set("icon1", "icons:date-range");
+				this.set("icon2hide", false);
+				this.set("isIcon2", true);
+		}
+		if(this.inputType=="tight") {this.set("type", "text");}
+	},
+	_computeHorizontal: function (inputType){
+		var layoutCheck = (inputType!=="radio"&&inputType!=="checkbox")?
+			"layout vertical flex": "layout horizontal-layout";
+		return layoutCheck;
+	},
+	_computeLayout0: function(inputType, icon0){
+		var returnClass = (icon0)? inputType.toString() + " icon": inputType.toString();
+		return returnClass; 
+	},
+	_computeLayout2: function(inputType, icon2){
+		var returnClass = (icon2)? inputType.toString() + " icon": inputType.toString();
+		return returnClass; 
+	},
+	_computeLayout3: function(inputType, icon3){
+		var returnClass = (icon3)? inputType.toString() + " icon":inputType=="button-set-person"?false: inputType.toString();
+		this.classList.add("icon");
+		if(inputType=="button-set-person"){		this.set("myInputName", "Teacher");	this.set("icon1", "social:school");}
+		return returnClass; 
+	},
+	_computeLayout4: function(inputType, icon4){
+		var returnClass = (icon4)? inputType.toString() + " icon": inputType.toString();
+		return returnClass; 
+	},
+	_computeLayout5: function(inputType, icon5){
+		var returnClass = (icon5)? inputType.toString() + " icon": inputType.toString();
+		return returnClass; 
+	},
+	_computeLayout6: function(inputType, icon6){
+		var returnClass = (icon6)? inputType.toString() + " icon": inputType.toString();
+		return returnClass; 
+	},
+	doAnimation: function(e){
+		var wrapper=document.getElementById(this.labelId);
+		if(e.target.type=="text"|| e.target.type=="datetime-local"|| e.target.type== "date" || e.target.type== "number" || e.target.type=="tel" || e.target.type=="email"){
+			Polymer.dom(wrapper).classList.add("wrapper-text-focus");
+		}
+		else if(e.target.type=="checkbox"){
+			if(e.target.checked){this.classList.add("wrapper-checkbox-checked");}
+			else if(!e.target.checked){this.classList.remove("wrapper-checkbox-checked");}
+		}
+		
+	},
+	
+	unDoAnimation: function(){
+		if (this.inputType=="checkbox")
+		{	
+			var wrapper = '#' + this.labelId;
+			var labelElm=this.$$(wrapper);
+			Polymer.dom(labelElm).classList.remove("wrapper-checkbox-checked");
+		}
+		else
+		{
+			var wrapper = '#' + this.labelId;
+			var labelElm=this.$$(wrapper);
+			Polymer.dom(labelElm).classList.remove("wrapper-text-focus");
+		}
+	},
+/* FIX BELOW */
+	_computeInputName: function(inputType, localName){
+		var inputNameReturnValue = (inputType=="radio")?"frank": this.inputName;
+		return inputNameReturnValue;
+	}
+});
+</script>
+</dom-module>

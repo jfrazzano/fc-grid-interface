@@ -175,10 +175,14 @@ position: absolute;
       right: -8px;
       padding-right: 8px;
       margin-bottom: -80px;
+
+      max-width: 410px;
+      white-space: wrap;  
       height: calc(96.5vh+120px);
       @apply(--vertical-layout);
       @apply(--layout-center);
-      position: relative;
+      position: static;
+      display: block ;
     }
     .footer-container{
     position: absolute;
@@ -192,9 +196,9 @@ position: absolute;
     width: 100%; 
     background: white;
     overflow-x: hidden; 
-    min-height: 4vh; 
-    max-height: 6vh!important;
-    max-height: 80px!important;
+    min-height: 11vh; 
+    max-height: 17vh!important;
+    /*max-height: 80px!important;*/
     top: 92%;
     }
     .next{
@@ -254,13 +258,13 @@ position: absolute;
         active="{{this.$.dashboardRightDrawer.opened}}">
     </app-route> -->
 
-  <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+  <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;padding: 4px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
 <div class="column-container">
 
   
-    <div class="header" style$="margin-bottom: 0px; z-index: 11; background: white; height:{{headerHeight}}px;">
+    <div class="header" hidden$="{{hideHeader}}" style$="margin-bottom: 0px; margin-left: 4.5px; z-index: 11; background: white; height:{{headerHeight}}px;">
       <section class="horizontal layout block">
-    <span class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
+    <span class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px; padding-left: 4.5px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
     </section>
              <section class="bar"></section>
         <section class="horizontal layout flex middleheader">
@@ -275,7 +279,7 @@ position: absolute;
       <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
           <div id="innerContainer1" class="container1">
-              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; left: 1px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}"value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; left: 1px; padding-right: 18px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
                <fc-call-center-form form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
                 </fc-call-center-form> 
               </div>
@@ -318,7 +322,7 @@ properties:{
       },
       notify: true
     },
-
+    hideHeader:{type: Boolean, value: function(){return false;}, notify: true}, 
     pageType:{
       type: String,
       value:function(){return "";},

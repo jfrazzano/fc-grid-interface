@@ -1,0 +1,873 @@
+
+<link rel="import" type="shared-styles" href="fc-time-keeper-shared-styles.html">
+<link rel="import" href="fc-time-keeper-behavior.html">
+<link rel="import" href="fc-time-keeper-digits.html">
+ <link rel="import" href="../../fc-app-elements/fc-input-prime/fc-input-prime.html">
+ <link rel="import" href="../../fc-app-elements/fc-hissi-menu/fc-hissi-menu.html">
+ <link rel="import" href="../../fc-app-elements/fc-date-picker/fc-date-picker-dropdown">
+ <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+ <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+  <link rel="import" href="../../fc-app-elements/fc-draggable-behavior/fc-draggable-behavior.html">
+  <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<dom-module id="fc-time-keeper-light">
+<template>
+<style>
+    :host{position: fixed; top: 5px;left: 85%; z-index: 120; padding: 4px 8px; display: block;
+            filter: blur(5px);
+  
+     box-shadow: 2px 4px 8px 2px #efefef;}
+    :host::before, :host::after {
+    padding: 2px; border: 1px #fefefe solid;
+   opacity:.4;
+    filter: blur(5px);
+    background: white;
+    }
+    .timer{ opacity: 1; font-weight: 600; font-family: times; color: #009; padding:4px; border: 1px solid #efefef;}
+    .hovering{
+        position: relative; 
+      
+      /*box-shadow: 4px 16px 24px 10px; */
+        padding: 4px 6px; 
+        margin: 2px; 
+        margin-left: -6px;
+        outline: 8px 4px;
+        max-width: 148px!important;
+         min-width: 147px!important;
+     
+    }
+    .hbutton{border-radius:50%;}
+    .hovering2{
+                position: relative; 
+      
+      /*box-shadow: 4px 16px 24px 10px; */
+        padding: 4px 6px; 
+        margin: 2px; 
+        margin-left: -6px;
+        outline: 8px 4px;
+        box-shadow: 2px 4px 8px 2px #efefef;
+    }
+    span.hovering2:active, span.hovering2:hover{
+        box-shadow: 2px 4px 8px 2px;
+    }
+    .solidone{
+            margin-right: -11px;
+    }
+ 
+    .newclass{
+        margin-right: -1px;
+        padding: 0px;
+    }
+    .newclass::after{
+        font-weight: 700;
+        font-size: 20px;
+        z-index: 2200997887;
+        padding-right: 4px;
+        color: #009;
+        font-family: times;
+     
+        margin-left: -6px;
+        margin-top:2px;
+        content: ":";
+    }
+    .subclass::after{
+        font-weight: 700;
+        padding:2px 0px 0px 0px;
+        font-family: times;
+        margin-top:6px;
+        content: "."; 
+    }
+    .closer{margin-right: -2px;
+        margin-left:-4px;
+       font-family: times;
+        font-weight: 600;
+    }
+    .closer::after{
+        margin-top:4px;
+        margin-left:-7px;
+        margin-right: 2px;
+        padding: right:2px;
+            content: ":"}
+    .closerleft{
+        margin-right: -4px; padding-right: 0px;
+    }
+    .digitsmall{ font-family:  merriweather;
+                   width: 30px!important;
+                   font-weight: 500;
+                   margin-left: -2px;
+                   z-index: 4px;
+                   margin-right: -12px;
+        }
+    .nodot{
+    margin:0px 4px;
+    margin-left: -1px;
+    }
+    .fatems{
+            font-family:  times;
+              
+        }
+        .invisoZero{
+                opacity: 0;
+                visibility: hidden;
+            
+        }
+        .fatems::after{
+            content:"."; 
+            opacity: 0;
+            width:2px;
+            padding:2px;
+        }
+    .nodot::after{
+        margin:0px;
+        padding:3px;
+        width: 0px;
+    }
+    .leftP{
+        margin-left:-9px;
+        margin-right:-2px;
+        max-width: 11px;
+        width: 10px;
+    }
+    .zeropacity{
+        
+            box-shadow:0px;
+    -webkit-transition: opacity .8s, box-shadow 1.4s, visibility .8s; /* Chrome, Safari, Opera */ 
+    transition: opacity: .8s,box-shadow: 1.4s, visibility: .8s;
+}
+    .zeropacity:hover{
+        visibility: visible;
+        opacity: 1; 
+        cursor: pointer;
+        box-shadow: 2px 3px 6px 1px #afafef;
+}
+    input::-webkit-inner-spin-button {
+    div#spin{max-width: 6px!important;}
+    };
+    fc-input-prime{
+        @apply(--horizontal-layout);
+        @apply(--layout-flex);
+        display: flex;
+    }
+    .slight{
+        padding-top: 12px;
+        font-weight: 400;
+        color: #009;
+        font-size: 14px;
+        border: 1px ridge #efefef;
+    }
+</style>
+<div style="padding:6px 8px; border: 1px #008 ridge ; text-align: center;" class="layout vertical flex"  >
+        <div style="padding: {{topBottomPaddingGrowth}}; 22px;" draggable drags  class="horizontal flex layout center-justified" on-track="focusedDragMe">
+            <div style="padding: 4px; text-align: center;cursor:pointer;" class="layout horizontal flex nowrap center center-justified">
+                  <section style="position: absolute; top: 5px; left: 10px; padding: 2px; font-size: 12px!important; color: #007; visibility: [[setTimeInCorner(nool)]];" on-tap="downAction">
+        {{theDate}}
+        </section>
+          <section style=" font-size: 12px; position: absolute; top: 5px; right: 10px; padding: 2px; color: #007; visibility: [[setTimeInCorner(nool)]];" on-tap="initCollapser">
+           {{theTime}}
+          </section>
+                    <section hidden="{{!clockApiOne}}" vertical layout flex>
+                        <section on-tap="selectNext" >
+                        <iron-icon style="width: 32px; height: 32px;z-index: 22; color: #009; opacity: .65; position: absolute; z-index: 999909090909; right: 4px; bottom: 40%;" icon="icons:chevron-right">
+
+                            </iron-icon>
+                        </section>
+                        <section class="horizontal layout flex">
+                        <iron-icon  on-tap="selectApi" class="layout flex-9" style="color: #008; font-size: 16px; cursor:pointer; min-height: 32px; min-width: 24px;" icon="{{computeHeaderIcon(currentClock)}}">
+                        </iron-icon>
+                        </section>
+                      <!--   <div style="height:16px; font-size: 16px; width: 16px; margin: 3px; border-radius: 50%;" class=""    on-tap="" >  &#9899;</div>    -->  
+                        <section on-tap="selectPrevious"> 
+                        <iron-icon style="width: 32px; height: 32px;z-index: 22; color: #009; opacity: .65; position: absolute; z-index: 999909090909; left: 4px; bottom: 40%;" on-tap="selectPrevious"  icon="icons:chevron-left">
+                            </iron-icon>
+                            </section>
+                    </section>
+                <div class="layout vertical center center-justified self-stretch" style$="background: white; opacity: 1; padding: 4px 8px; border-radius: 2px; height: 54px; border:4px #aecdfe edge; max-width: {{paperWidth}}!important; " elevation="2">
+                        <section   class="vertical layout flex-3 center center-justified self-stretch" style="font-weight: 400; color: #007; [[_computeTimeOnOffColorAndFontSize(onOffColor, currentClock)]]; border: 1px #efefef solid; padding: 2px;" on-tap="toggleIsRunning">&nbsp;[[computeCurrentDisplayTop(currentClock)]]&nbsp;
+                     </section>
+                        <section  id="holder" class$="{{orientation}} layout flex-4 center center-justified hovering" style="">
+                                <template is="dom-repeat" items="{{_computeDataset(currentClock, currentClock.clockData.*)}}">
+                                  <fc-input-prime
+                                        id="{{item.name}}"
+                                        input-type="{{item.inputType}}" 
+                                        label="{{item.label}}"
+                                        input-style="{{inputStyle}} {{specialStyle}} margin-left: -4.5px; padding: 0px;padding-left: 2px; border: 0px silver solid; font-weight: 600; font-size: [[clockTextSize]]px; min-width: 10px;width: 19px; min-height: 30px; text-align: left; font-family: times;  {{specialStyle}}; background:hidden;"
+                                        hidden$="{{item.hidden}}"
+                                        label-hidden="true"
+                                        name$="{{item.name}}"
+                                        min="{{item.min}}"
+                                        max="{{item.max}}"
+                                        style="max-width: 23px!important;"
+                                        value="{{item.value}}"
+                                        input-value="{{increment}}"
+                                        bind-value="{{value.name}}"
+                                        class$="{{item.class}} {{item.newclass}}"
+                                        min="{{item.min}}"
+                                        max="{{item.max}}"
+                                        step="{{item.step}}"
+                                        fcid="{{item.fcid}}"
+                                        on-change="handleInputChange"  
+                                       >
+                                    </fc-input-prime>
+                                </template>
+                               
+                        </section>
+                </div>
+                <section class="vertical layout flex self-stretch center center-justified" on-tap="handleClockApi" style="padding: 0px 2px margin:0px 2px;" hidden="[[!clockApiOne]]" > 
+                    <span    style=" margin: 1px 2px; padding: 4px 6px; font-size: 16px; color: green;" class="hovering2 hbutton" data-clockApi="incrementUp">
+                            &#9650;
+                    </span>   
+                                 
+                    <span style="color: red; margin: 1px 2px; padding: 4px 6px; font-size: 16px;" class="hovering2 hbutton" data-clockApi="incrementDown"> 
+                        &#9660;
+                    </span>
+                </section> 
+         
+            </div>
+          <!--   <fc-datepicker-dropdown id="friend" class="dropdown-content" on-tap="dateTimeSetter" style="max-width: 191px;position: absolute; z-index: 99998798797987987897; padding: 1px;right: 12px; top: 142px;" hidden="{{!calendarButton}}">
+            </fc-datepicker-dropdown> -->
+            
+            <audio loop id="myAlarmNoise" style="border: green 2px solid; width: 220px; height: 35px;">
+               <!--  <source src="fc-clock/beep-06.mp3" type="audio/mp3">
+                <source src="fc-clock/beep-10.mp3" type="audio/mp3"> -->
+            </audio>
+           
+        </div>
+        <div id="collapserInit"  class="horizontal layout center-justified glass">     
+            <div class="content" id="content" class="vertical layout" style="overflow-x: scroll; overflow-y: hidden; width: 210px;">
+                    <fc-hissi-menu 
+                        class="content" 
+                        class="horizontal layout flex justified-around nowrap" 
+                        style="width: 1020px;"
+                        app="{{dialogObj}}">
+                    </fc-hissi-menu>
+                    <section class="horizontal flex layout nowrap center-justified" style="padding:2px; margin: 2px;">
+                        <span class="arrows" on-tap="otherWayNow">{{downarrow}}</span>
+                            <iron-icon class="ironOne" name="Countdown" on-tap="pressed" icon="device:access-alarm"></iron-icon>
+                            <iron-icon class="ironOne" name="Clock" on-tap="pressed" icon="device:access-time"></iron-icon>
+                            <iron-icon class="ironOne" name="Stopwatch" on-tap="pressed" icon="device:add-alarm"></iron-icon>
+                        <span class="arrows" on-tap="goNow">{{uparrow}}</span>
+                    </section>
+                </div> 
+        </div>
+    </div>
+
+
+</template>
+<script>
+FcTimeKeeperLight=Polymer({
+    is:"fc-time-keeper-light",
+    properties:{
+        nool:{
+            type: Boolean,
+            value: false,
+            notify: true
+        },
+        orientation: {
+            type: String,
+            value: "horizontal",
+            notify: true
+        }, 
+        apiChoices:{
+            type:Array,
+            value:function(){
+                return ["Clock",
+                        "Countdown",
+                        "Stopwatch",
+                        "Alarmclock"            
+                            ];
+            },
+            notify: true
+        }, 
+        drags:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true
+        },
+        inputStyle:{
+            type: String,
+            notify: true,
+        },
+        clockApi0:{
+            type: Boolean,
+            value: false,
+            notify: true
+        },
+        increment:{
+            type: Number,
+            notify: true
+        },
+        theDate:{
+          type: Date,
+            value:function(){
+                var d=new Date();
+                return d.getFullMonth() + " " + d.getDate() +", "+ d.getFullYear(); 
+            },
+            notify: true
+        },
+        date: {
+                notify: true
+        },
+        theTime:{
+            type: String,
+            value:function(){
+                var newtime = new Date();
+                var update = newtime.toLocaleTimeString();
+                return update;
+            },
+            notify: true
+        }, 
+        dataset:{
+            type: Array,
+            computed: "_computeDataset(currentClock, currentClock.clockData.*)",
+            observer: "observeDataset",
+            notify: true
+        },
+        digitsArray:{
+            type:Array,
+            value:function(){return[];},
+            notify: true
+            },
+        currentClock: {
+            type: FcClock,
+            value: {},
+            observer: "observeCurrentClock",
+            notify: true,
+        },
+        dragCounter:{
+            type: Number,
+            value: 0,
+            notify: true
+        },
+        primaryClock: {
+            type: FcClock,
+            value: function(){return{};},
+            notify: true
+        }, 
+        clockArray:{
+            type: Array,
+            value: function(){return [];},
+            notify: true,
+            reflectToAttribite: true
+        },
+        displayedArray:{
+            type: Array,
+            value:function(){return[];},
+            notify: true
+        },
+        primaryClock: {
+            type: FcClock,
+            value: function(){return{};},
+            notify: true
+        },
+        
+        clockTextSize:{
+            type: Number,
+            value: function(){return 22;},
+            notify: true
+        },
+        clockApiOne:{
+            type: Boolean,
+            value: false,
+            notify: true
+        },
+        paperWidth:{
+            type: String,
+            value: "148px",
+            notify: true
+        },
+        topBottomPaddingGrowth:{
+            type: String, //remember to parse float on resize
+            value:function(){return "12px";}, //NOTE: expanded is 112px bottom
+            notify: true
+        },
+     
+        iconArray:{
+            type:Array,
+            value:function(){ return[
+                {   
+                    dataTarget:1,
+                    newIcon:"device:access-time"
+                },
+                {       
+                        dataTarget: 2,                      
+                        newIcon: "icons:alarm-add"
+                 },
+                
+                {       dataTarget:3,
+                        newIcon: "icons:alarm-off"
+                },
+                        
+                 {      dataTarget: 4, 
+                         newIcon: "device:access-time"
+                },
+                {       dataTarget: 5, 
+                        newIcon: "icons:date-range",
+                },      
+                {       dataTarget: 6, 
+                        newIcon: "icons:swap-vertical-circle"
+                },  
+                {       dataTarget: 7, 
+                         newIcon: "notification:event-available"
+                },      
+                {       dataTarget: 8, 
+                         newIcon: "social:notifications-active"
+                },  
+                {       dataTarget: 9, 
+                         newIcon: "notification:event-busy"     
+                },
+                {       dataTarget: 10, 
+                        newIcon: "notification:event-note"              },      
+                {       dataTarget: 11, 
+                         newIcon: "social:notifications-off"
+                },              
+                {       dataTarget: 12, 
+                         newIcon: "icons:swap-horiz"
+                },  
+                {       dataTarget: 13, 
+                         newIcon: "icons:alarm-off"
+                },  
+                {       onMyTap: 14, 
+                        newIcon: "icons:gavel"
+                },
+                        
+                {       dataTarget: 15, 
+                         newIcon: "social:person-add"
+                },
+                {       dataTarget: "tocircle", 
+                         newIcon: "icons:language",
+                },
+                {       dataTarget: "toCircle", 
+                         newIcon: "maps:local-library"
+                }];
+            },
+            notify: true
+        },
+        calendarButton:{
+            type: Boolean,
+            value: false,
+            notify: true
+        },
+        makeCircle:{
+            type: String,
+            value:function(){return "border-radius: 180;";},
+            notify: true
+        },
+        muteButton:{
+            type: String,
+            value:function(){
+                var muted = this.$.myAlarmNoise.muted;
+                var getVal="av:volume-up";
+                return getVal;
+            },
+            notify: true
+         },
+    },
+    _computeTimeOnOffColorAndFontSize: function(onOffColor, currentClock){
+            if(currentClock.clockType=="Clock"){
+                this.set("nool",false);
+                    return "color: #008; font-size: 14px; font-weight: 400;";
+            }
+            else{
+                    this.set("nool",true);
+                return "color:"+onOffColor+"; font-size: 12px: font-weight: 600;";
+            }
+        },
+    setDateInCorner:function(nool){
+           
+           console.log(nool); 
+           if(nool){
+        return this.date;
+    }
+        else{return " ";}
+    },
+    setTimeInCorner:function(nool){
+           
+           console.log(nool); 
+           if(nool){
+        return "visible";
+    }
+        else{return "hidden";}
+    },
+    _computeFunctionRunning: function(currentClock){
+           
+            },
+    toggleIsRunning: function(){
+        this.currentClock.toggleRunning();
+         this.set("onOffColor", this.onOffColor=="green"?"red":"green");
+         if(this.currentClock.clockType=="Clock"){this.downAction();}
+},
+    computeCurrentDisplayTop:function(currentClock){
+               if(currentClock.clockType=="Clock"){ return this.theDate;}
+                else{ return currentClock.clockName;}
+            },
+    observeCurrentClock: function(newVal, oldVal){
+        console.log(newVal, oldVal);
+    }, 
+    observeDataset(newVal, oldVal){
+       // console.log(newVal, oldVal);
+    },
+    
+    initCollapser:function()
+    {
+             this.$.collapserInit.opened=!this.$.collapserInit.opened;
+    },
+    toggleRunning: function()
+    {
+        var d = (new Date()).getTime();
+        if(this.isRunning)
+        {
+            this.lastTurnedOff = d;
+            this.lastTurnedOffTenths = this.clockData.convertToTenths();
+        }
+        else
+        {
+            this.lastTurnedOn = d;
+            this.lastTurnedOnTenths = this.clockData.convertToTenths();
+        }
+        this.isRunning = !this.isRunning;
+    },
+ 
+    ready: function(){
+ 
+        this.setClockConstructor();
+         this.set("orientation", "horizontal");
+     },
+    attached: function(){
+     
+        this.set("drags",true);
+        this.orientation = this.orientation==""? "horizontal": this.orientation;
+        this.initializeClocks();
+    },
+    setClockConstructor:function(){
+        var self=this;
+        var nowish = (new Date()).getTime() + 50000;
+        var laterish = (new Date()).getTime() + 123290;
+        nowish=new Date(nowish);
+        laterish=new Date(laterish);
+        var date=new Date();
+        this.clockArray = [];
+        this.push("clockArray", new FcClock("Local-Time", "Clock", "", 0,date));
+        this.push("clockArray", new FcClock("Start-Time", "Clock", "", 0,date));
+        this.push("clockArray", new FcClock("Now-ish", "Alarmclock", "", 0,nowish));
+        this.push("clockArray", new FcClock("Later-ish", "Alarmclock","", 0,laterish));
+        this.push("clockArray", new FcClock("Reading", "Countdown","Focused SAT Reading Countdown", 39000));
+        this.push("clockArray", new FcClock("Writing", "Countdown", "Focused SAT Writing Countdown", 21000));
+        this.push("clockArray", new FcClock("Math 25min", "Countdown","Focused SAT Math Countdown", 15000));
+        this.push("clockArray", new FcClock("Math 55min", "Countdown","Focused SAT Math Countdown 2", 33000));
+        this.push("clockArray", new FcClock("Essay", "Countdown","Focused Essay Writing Countdown", 30000));
+        this.push("clockArray", new FcClock("Timer 1", "Countdown", "Focused Programable Countdown ",0));
+        this.push("clockArray", new FcClock("Timer 2", "Countdown", "Focused Programable Countdown 2",0));
+        this.push("clockArray", new FcClock("Stopwatch 1", "Stopwatch", "Focused Fastback Stopwatch", 0));
+        this.push("clockArray", new FcClock("Stopwatch 2", "Stopwatch", "Focused Section Split Stopwatch", 0));
+        
+        var temp=this.clockArray.filter(function(val,index){
+            return(val.clockType=="Alarmclock");
+        });
+        this.set("activeAlertsArray", temp);//this will have to be a push when outside data comes in//
+        this.set("primaryClock", this.clockArray[0]);
+        var displayed=this.clockArray.filter(function(val, i, arr){
+                return (val.clockType=="Clock");
+        }, this);
+        //console.log(displayed, displayed, displayed);
+        this.set("displayedArray", displayed);
+        this.set("displayedAlertsArray",temp);
+        this.async(function(){this.set("currentClock", this.displayedArray[0]);},1);
+    },
+    handleClockApi:function(e){
+       var topData=e.target.dataset;
+     var keys=Object.keys(topData),
+        k2=Object.keys(keys);
+        this.property=topData[keys[0]]
+        console.log(this.property, this.property, keys);
+        if(this.property=="incrementUp"){
+        var setVal = (this.clockTextSize<25)?this.clockTextSize+1:22; 
+            if(setVal){
+                this.set("clockTextSize", setVal);
+                // var pw= Math.ceil(parseFloat(this.paperWidth)+1.8);
+                // pw=pw.toString()+"px";
+                // this.set("paperWidth", pw);
+                setVal=undefined;
+          }
+        }
+        else if(this.property=="incrementDown"){
+        var setVal=(this.clockTextSize>11)?this.clockTextSize-1:11;
+            if(setVal)
+            {
+            this.set("clockTextSize",setVal);
+           
+                setVal=undefined;
+            }
+        }
+    },
+    downAction:function(e){
+        this.set("clockApiOne", !this.clockApiOne);
+        this.initCollapser();
+    
+      
+        
+    }, 
+    handleInputChange: function(e)
+    {
+        console.log(e.target,"#", e);
+        this.dataobject[e.target.name].value = e.target.value;
+    },
+    _computeDataset: function(cc, ccd)
+    {      if(ccd && ccd.base){
+        var special="";
+        var keys = Object.keys(ccd.base);
+        var numKeys = keys.length;
+        var styl="text-align: left; margin-left: -1px; padding: 0px 1px; border: 0px silver solid; font-weight: 600; min-width: 7px; max-width: 20px;"
+        var dataset = [];
+        for(var i = 0; i < numKeys; i++)
+        {
+            var val = ccd.base[keys[i]];
+            if(val.inclock===true)
+            {
+            var newclass="";
+            if(val.value=="P" || val.value=="A"){newclass="leftP" }
+                else if ((val.name==="thours" && this.currentClock.clockType=="Clock") && (val.value=="0" || val.value==0)){newclass="invisoZero";}
+            else if ((val.name==="thours" && this.currentClock.clockType=="Clock") && (val.value!="0" || val.value!=0)){newclass="solidone";}
+            else if(val.colon==false){newclass="closerleft"}
+           else if(val.name=="sec" && val.colon==":" && val.isAmPm===true){
+                newclass="nodot"; styl="";
+            }
+            else if(val.label=="s"){newclass="digitsmall"; var styl="text-align: left; font-size:14px; margin: 1px; margin-left: -1px; padding: 1px; font-weight: 600;min-width: 8px;max-width: 12px;"}
+           
+            else if(val.name=="sec" && val.colon==":" && val.isAmPm===true){
+                newclass="nodot"; styl="";
+            }
+            else if(val.name=="hundredth" && val.isAmPm===true){
+                newclass="fatems"; special="text-align: left; margin-left: -1px; padding: 0px 1px; border: 0px silver solid; font-weight: 600; min-width: 20px; max-width: 25px;"; this.async(function(){Polymer.dom(this.$.thours).setAttribute("style.width","28px");},1190);
+            }
+            else if(val.label=="S" && val.colon==":" && val.isAmPm==false){ newclass="subclass"; styl=""}
+            else if(val.colon==":" && val.isAmPm==false){newclass="newclass";}
+            else{}
+           
+            dataset.push({
+                "value": val.value,
+                "name": val.name, //keys[i], //"tenth",
+                "label": val.label?val.label: "", //keys[i][0], //"d",
+                "hidden": val.hidden,
+                "inputType": val.inputType,
+                "inputStyle":styl, //"digit",
+                "class": "",
+                "step":"",
+                "fcid":"",
+                "colon": val.colon, 
+                "newclass": newclass,
+                "specialStyle": special, 
+                });
+           } 
+        }
+       return dataset;
+        this.set("digitsArray",dataset);
+    }
+},
+      initializeClocks:function(){
+        var self = this;
+        var runningClockArray=[];
+        var timer =1;
+        setInterval(function(){
+            var currentTime = new Date();
+            var time = currentTime.toLocaleTimeString();
+            var date=currentTime.toLocaleDateString();
+            self.set("theTime", time);
+            self.set("date",date);
+           if (self.currentClock.clockType=="Clock"){self.currentClock.setClock();}
+            //console.log(self.currentClock.clockData, self.currentClock);
+            var stamp=currentTime.getTime();
+            self.clockArray.forEach(function(cl, i, arr)
+            {   var s=stamp;
+                if(cl.clockType=="Clock"){cl.isRunning=true;}
+                if(cl.isRunning && cl.clockType!="Alarmclock")
+                {
+                    var d=Math.floor((s - cl.lastTurnedOn)/100);
+                    var delta = (cl.clockType=="Countdown")?cl.lastTurnedOnTenths-d:(cl.clockType=="Stopwatch")?cl.lastTurnedOnTenths+d: 0;
+                    var newTenths=(delta>0)?delta:0;
+                    if(cl.clockType=="Countdown" || cl.clockType=="Stopwatch")
+                    {
+                    cl.convertFromTenths(newTenths);
+                    }
+                    if(delta<=0 && (cl.clockType=="Countdown"))
+                    {
+                        cl.isRunning=false; 
+                    }
+                    var path = "currentClock.clockData.tenth.value";
+                     var path2 = "currentClock.clockData.sec.value";
+                    if(cl.clockType!="Alarmclock"){
+                    self.notifyPath("currentClock.clockData.tenth.value", self.currentClock.clockData.tenth.value);
+                   
+                    }
+                }
+                if(cl.clockType=="Alarmclock" && cl.isActive)
+                    {
+                        var alarmtime =cl.dto.getTime();
+                        //console.log(alarmtime, alarmtime,alarmtime,alarmtime);
+                        if(currentTime.getTime() > alarmtime)
+                        {   console.log("AM IN THE DAMNED ALARM", cl.clockName);
+                            cl.isActive = false;
+                            cl.isRunning=false;
+                           // self.ringAlarm(cl);
+                            var completedAlarm=cl;
+                            self.set(["clockArray", i, "isActive"], false);
+                            self.set(["clockArray", i, "isRunning"], false);                    
+                            self.notifyPath("clockArray." + i + ".isActive", false);
+                        }
+                      
+                    }
+                },self);
+                    }, 100);
+    },
+    selectApi: function(e){     
+        var compareVal=this.currentClock.clockType;
+        var len=this.apiChoices.length-1;
+        var apiIndex=this.apiChoices.indexOf(compareVal);
+        if(apiIndex==len){apiIndex=0;}
+        else{apiIndex=apiIndex+1;}
+        this.set("clockApi",this.apiChoices[apiIndex]);
+        var dispArr=this.clockArray.filter(function(val, i, arr){
+                return(val.clockType==this.apiChoices[apiIndex]);
+        }, this);
+        this.set("displayedArray",dispArr);
+        this.set("currentClock", this.displayedArray[0]);
+    },
+    selectPrevious: function(e){
+        console.log(this.clockArray, this.displayedArray);
+        var previous=-1;
+        var last=this.displayedArray.length-1;
+        var num =(this.clockIndex>0)?(this.clockIndex-1):last;
+            this.switchClock(num);
+    },
+    selectNext: function(){
+        console.log(this.clockArray, this.displayedArray);
+        var last=this.displayedArray.length-1;
+        var num =(this.clockIndex<last)?(this.clockIndex+1):0;
+        var next=1;
+            this.switchClock(num);          
+    },
+    selectClock: function(){
+        var last=this.displayedArray.length-1;
+        var num =(this.clockIndex<last)?(this.clockIndex+1):0;
+            this.switchClock(num);      
+    },
+    switchClock: function(num){ 
+        if(this.displayedArray){
+        this.set("clockIndex", num);
+        this.set("currentClock", this.displayedArray[num]);
+        this.set("onOffIcon", this.currentClock.isRunning?"icons:close":"icons:forward");
+        this.set("onOffColor", this.currentClock.isRunning?"red":"green");
+        }   
+    },
+    computeHiddenCalendarIcon: function(clockType)
+        {
+        return !(clockType=="Alarmclock");
+        },
+    toggleDatePicker:function(ev){
+        this.calendarButton=!this.calendarButton;
+        this.drags=!this.drags;
+    }, 
+    computeHeaderIcon: function(currentClock){
+        console.log("I AM IN THE COMPUTED FIUNCTION");
+        var clockType=(currentClock)?currentClock.clockType: "Clock";
+        var retVal=(clockType=="Clock")?"device:access-time": (clockType=="Alarmclock")? "device:access-alarm": (clockType=="Stopwatch")?"social:whatshot": (clockType=="Countdown")?"social:notifications":(clockType=="Newalert")?"icons:clock-add": "social:public";
+        return retVal; 
+    },
+    computeHeaderIconColor: function(currentClock){
+                this.set("lastColor", this.lastColor+1);
+                var retVal=(this.lastColor%2!=0)?"#C87533; height:24px; width: 24px;  font-weight: 700; stroke: 800; padding: 0px; margin: 0px; border: 1px solid silver; outline: grey; border-radius: 180px;":"#4285f4";
+                return retVal;
+         },
+    _computeSecondaryDisplay:function(type, clock, name, lat, long){
+    var c=clock.clockData;
+    if(type=="Alarmclock"){ return "Event Date: " + c.monthString + " " + c.dayOfMonth + ", " + c.yearN;}
+    else if(type=="Clock"){
+        console.log("I was Here");
+        var self=this;
+    var latLong=navigator.geolocation.getCurrentPosition(function(position){
+            var lat=position.coords.latitude;
+            console.log(lat);
+            self.set("lat", lat);
+            var long= position.coords.longitude;
+            console.log(long);
+            self.set("long",long);
+    return position;});
+    
+        return "Lg: " + self.long + " Lt: " + self.lat;
+    }
+    else{ 
+        return clock.subType;
+    }
+},//CUT???? FIND OTHER METHODS???
+showPosition: function(){
+        var lat=position.coords.latitude;
+        console.log(lat);
+        this.set("lat", lat);
+        var long= position.coords.longitude;
+        console.log(long);
+        this.set("long",long);
+        var pickle= this.long +" " + this.lat;
+        return pickle;
+    },
+//final row of clock... The chevrons are in the navigation api above, toggle running works, I believe, but it has not been used consistently;  I am about to fix that, then I will hit the clock handler;  
+toggleRunning: function(event)
+    {   
+        var bool= !this.currentClock.isRunning;
+        this.currentClock.toggleRunning();
+        var setVal = this.onOffIcon=="icons:forward"?"icons:close":"icons:forward";
+        this.set("onOffIcon", setVal);
+        this.set("onOffColor", this.onOffColor=="green"?"red":"green");
+        this.set("currentClock.isRunning",bool);
+    },
+    dragsOff: function(){this.set("drags", false);},
+    dragsOn: function(){this.async(this.dragSwitch, 50);},
+    dragSwitch: function(){this.set("drags", true);},
+    focusedDragMe:function(e){
+        if(this.drags==true){
+            var self=this;
+            e.preventDefault();
+            switch(e.detail.state)
+            {
+              case 'start':
+                // console.log('START NoWayAreWe Draggin');
+                self._leftprime = parseInt(window.getComputedStyle(self, null).getPropertyValue("left"))-e.detail.x;
+                self._topprime = parseInt(window.getComputedStyle(self, null).getPropertyValue("top"))-e.detail.y;
+                console.log('top distance differenced?' + self._topprime);
+               if(self.counter==0){   self.translate3d(0, 0, 0);}
+                Polymer.dom(self).setAttribute("style.position", "fixed"); 
+               Polymer.dom(self).setAttribute("style.left", "0px"); Polymer.dom(self).setAttribute("style.left",self._leftprime+"px");
+               Polymer.dom(self).setAttribute("style.top", "0px"); Polymer.dom(self).setAttribute("style.top",self._topprime+"px");
+                
+                self.set("refit",true);
+                self.changeX=0;
+                self.changeY=0;
+                Polymer.dom.flush();
+                break;
+              case 'track':
+                self.changeX=e.detail.ddx + self.changeX;
+                self.changeY=e.detail.ddy + self.changeY;
+                self.translate3d(self.changeX.toString() + 'px', self.changeY.toString() + 'px', 0);
+                break;
+              case 'end':
+                console.log(self._topprime);
+                self._right = parseInt(window.getComputedStyle(self, null).getPropertyValue("right"))
+                self._bottom = self.getBoundingClientRect().top;
+                self._x= ((self._leftprime + e.detail.x)>=0)?(self._leftprime + e.detail.x): 0;
+                self._y=((self._topprime + e.detail.y)>=0)?Math.ceil(self._topprime + e.detail.y):0;
+            
+                console.log("ENDING", self._x, e.detail.x, e.detail.y, e.detail.dx);
+              
+                self.style.left=self._x.toString()+'px';
+                self.style.top=self._y.toString()+'px';
+ Polymer.dom(self).setAttribute("style.top", e.detail.y+'px'); Polymer.dom(self).setAttribute("style.left",e.detail.x+'px');
+          self.translate3d(0, 0, 0);
+                console.log('y: ' + e.detail.y);
+                    
+                self.dragging=false;
+                self.set("refit",true);
+                Polymer.dom.flush();
+                break;
+            }
+        }
+    }
+});
+</script>
+</dom-module>
