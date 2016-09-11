@@ -1,0 +1,283 @@
+<script>
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcCheckedMenuBehaviorImpl={
+ properties:{
+
+         checkedEvent:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
+        callerRoleList:{
+            type: Object,
+            value: null,
+            notify: true,
+            observer: "observeCallerRoleArray",
+        },
+        hideListbox:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
+        },
+        shadowIndex:{type: Number, notify: true,},
+        formName:{
+            type: String, 
+            notify: true
+        },
+          formsDisplay:{
+            type: Array,
+            value: function(){return [];},
+            notify: true,
+        },
+        heldValue:{
+            type: String, 
+            value: function(){return null;},
+            notify: true,
+        },
+        inputOneShow:{type: Boolean, value: function(){return false;},computed: "_computedShow(shadowIndex)", notify: true},
+        inputTwoShow:{type: Boolean, value: function(){return false;}, computed: "_computedShow(shadowIndex)", notify: true},
+        isMulti:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true,
+        },
+         isNotToggle:{
+            type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+         listType: {
+            type: String, 
+            value: function(){return "surveyPage";},
+            notify: true, 
+        }, 
+        model:{
+            type: Object,
+            value: function(){return {};},
+            notify: true,
+
+        },
+        selected:{
+            type: Array,
+            notify: true, 
+        },
+         mySelected:{
+            type: String,
+            value: function(){return "";},
+            notify: true,
+        },
+        symbols:{
+            type:Array,
+            value: function(){return ['\➔','\❶','\✂','\✎','\✒','\✜','\❚','\❶','\➀','\➞','\☚','\☛','\☰','\☱','\☷','\☑','\☐','\☎','\☏','\►','\▼','\▲','\◄','\⇒','\Δ','\▐','\█','\▄','\▀','\⛔','\🌐','\🌎','\🌎','\🌍','\🌏','\❓','\❗','\❌','\⏩','\⏪','\⏫','\⏬','\⏭','\⏮','\⏯','\✅','\❎','\✍','\✉','\✊','\✋','\✌','\⬛','\⬜','\','\🕐','\⏰','\⏱','\⏲','\⏳','\⚙', '\🕰','\⇦','\⇧','\⇨','\⇩','\␁','\🔘','\🔙', '\🔜', '/🔗', '\🔔','\🔕','\🔑','\🔐','\🔏', '\🔎', '\🔍','\🔊','\🔉','\🔈','\🔇', '\🔄', '\📰','\📑','\📔','\📖','\📎','\📎','\📍','\📌','\📋','\📊','\📉','\📈','\📄','\📃','\📂','\📁','\📥','\📤','\📞','\📝','\📙','\📧','\📨','\📩','\📮','\📲','\📴','\📵','\📶','\🔴','\🔵','\🔷','\🔶','\🔸','\🔹','\🙈','\🙉','\🙊','\╦','\╔', '\␦',];
+            },
+            notify: true,
+        },
+        // selectedChecked:{
+        //     type: Boolean,
+        //     value: function(){return false;},
+        //     notify: true
+        // },
+       
+        selectedIndexArchive:{
+            type: Array,
+            value:function(){return [];},
+            notify:true,
+        },
+      
+        selectedName:{
+            type: String, 
+            value: function(){"";},
+            notify: true
+        },
+
+        summHidden:{  type:Boolean, 
+            value:function(){return false;},
+            notify: true,
+        },
+         textareaShow:{
+            type: Boolean, 
+            value: function(){return false;}, 
+            computed: "_computedShow(shadowIndex)",
+            notify: true,
+        },
+         valueObject:{
+            type: Object, 
+            value: function(){return {};},
+            observer:"observeValueObject",
+            notify: true
+        },
+         profilesArray:{
+             type: Array,
+             value: function(){return [];},
+             notify: true
+         },
+         searchOn:{
+            type: Boolean,
+            value: function(){return false;},
+            notify: true
+         },
+         itemSelectProperty:{
+            type: String,
+            value: "label",
+            notify: true
+
+         },
+         taValue:{
+            type: String,
+            notify: true,
+            observer: "observeTaValue",
+
+
+         },
+
+      
+    },
+    ready(){},
+
+     setValue(e){
+            console.log(e, e.target.value, "here");
+            var input=this.$.mytxxtarea;
+          this.set([input,"value"], e.target.value);
+          this.$.mytxxtarea.value=e.target.value;
+          console.log(this.$.mytxxtarea.value);
+          console.log(this.taValue, "tavalue1");
+          this.set("taValue", this.$.mytxxtarea.value);
+            console.log(this.taValue);     
+
+            },
+
+    _computedShow(shadowIndex){
+        if(shadowIndex===3){return true;} else{ return false;}
+    },
+
+    attatached(){
+         
+        console.log("i am in the attached", this.valueObject);
+    
+    },
+    observeCallerRoleArray(newval, oldval){
+            if(newval!==null){
+              
+              this.async(function(){
+                                    
+                                    this.set("searchOn", true);
+                                    this.set("listType", "surveyPage");
+                                    var inputs=Polymer.dom(this.root).querySelectorAll("fc-iss-input");
+                                    console.log(inputs);
+                                    inputs.forEach((elem)=>{
+                                                var usefulArray=elem+".dropdownItems";
+                                            this.set(usefulArray,this.callerRoleList[elem.name]);
+                                        console.log(usefulArray);
+
+                                    });
+
+                                    
+            }, 700);
+              
+
+            }
+
+
+
+    },
+    observeTaValue(nv, ov){
+        if(nv&&nv!=undefined){console.log(nv,ov);}
+
+
+    },
+
+
+    get listbox(){return this.$.myUniversalMenu;},
+  
+    getDropdownChildren(type){
+            var children=Polymer.dom(this.listbox).children;
+            var itemChildren=children.filter((val,index,array)=>{return (val.nodeName===type); });
+                return itemChildren;
+    },
+
+    computeFontSelected(sc, myselected, value, listType){
+        
+                if(this.heldValue===value||myselected!==value){return "300";}
+                if(myselected===value){return "600";}
+               
+            
+        },
+    _computeStyleByType(listType){
+            var styleType={
+                dropdown:"border: silver 1px solid; max-width: 220px; min-width: 220px; background: white; color:#009; max-height: 320px; overflow-y: scroll;",
+                surveyPage:"",
+            };
+            return styleType[listType];
+    },
+    
+    _computeSelectedCheck(sc, myselected, value, listType){
+        if(myselected!==value||this.heldValue===value){return false;}//toggle
+        if(myselected===value){return true;}
+    },
+    
+    makeSelection(e){ 
+        var children = this.getDropdownChildren("PAPER-ITEM");
+        if(children&&children.length>0)
+        {
+            var nodes=children.length-1;
+        }
+        var model=e.model;
+        this.set("model",model);
+        this.set("selectedName", e.model.item.name);
+        var valObjProp= "valueObject." + e.model.item.name;
+        this.listbox.select(model.item.value);
+        this.set("mySelected", e.model.item.value);
+      //  this.set("valueObject.currentForm",this.formName);
+        this.set(valObjProp, this.model.item.value);
+        this.model.set("item.selectedChecked",!this.model.item.selectedChecked);
+       
+        var d=new Date().getTime();
+      
+        var vals;
+        if(this.heldValue!=null&&e.model.item.value===this.heldValue){
+            vals="--";
+        }
+        else{vals=e.model.item.value;}
+       
+        var entry={index: e.model.index, name:e.model.item.name, value: vals, fcIndex: e.model.item.ind, timestamp: d, user: this.focusedManager.fcid,formName: this.formName};
+        this.push("selectedIndexArchive",entry);
+       var archive= "focusedManager.archive";
+        this.push(archive, entry);
+        this.set("checkedEvent", e);
+        var last=this.selectedIndexArchive.length-1;
+        this.set("heldValue", this.selectedIndexArchive[last].value);
+        console.log(this.selectedIndexArchive);
+    
+      
+  },
+  _computeHiddenCheck(listType){
+    if(listType&&listType==="dropdown"){return true;}
+    else{return false;}
+  },
+  observeValueObject(newVal, oldValue)
+  {
+    if(newVal)
+         {
+         console.log("newValue: ", newVal, "and oldManHouse: ", oldValue);
+        }     
+ 
+  },
+
+    removeValueFromPropertyStringArrayAndObject(e){console.log("will do something cool here", e, e._templateInstance, e.target, e.target.left, etc);},
+            
+    computeDetails(listType){return(listType==="dropdown");},
+
+    computeOpened(listType){
+        if(listType=="surveyPage"){ this.async(function(){this.set("summHidden", true);}, 180); return true;}
+        if(listType==="tools"){    return true;}
+        return false;
+    },
+
+FCBehaviors.FcCheckedMenuBehavior={
+        FCBehaviors.FcCheckedMenuBehaviorImpl
+};
+
+
+
+    </script>

@@ -139,7 +139,7 @@
     min-width: 300px;}
 
 </style>
-<div class="layout horizontal flex self-stretch justified wrap pad" hidden$="{{!inputTwoShow}}" >
+<!-- <div class="layout horizontal flex self-stretch justified wrap pad" hidden$="{{!inputTwoShow}}" >
 <fc-iss-input class="left" hidden$="{{!inputOneShow}}" class="padded" iss-name="firstName" name="firstName" iss-label="Caller First Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1FirstName}}">
     </fc-iss-input> 
     <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded" iss-name="lastName" name="lastName" iss-label="Caller Last Name"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.parent1LastName}}">
@@ -164,12 +164,12 @@
     <fc-iss-input class="right" hidden$="{{!inputTwoShow}}" class="padded" iss-name="currentSchool" name="currentSchool" iss-label="Current School"  value-object="{{valueObject}}"  item-select-property=""  select-check="false" dropdown-items="{{callerRoleList.currentSchool}}">
     </fc-iss-input>
     </div>
-  <textarea id="mytxxtarea" type="text" contenteditable on-keyup="setValue" style="resize: none; width: 100%; outline: 0px solid; border: solid silver 1px;" hidden$="{{!textareaShow}}" placeholder="Message" maxlength="1000" rows="20" columns="60" value="{{taValue::input}}" class="layout vertical arround-justified">
-
+  <textarea id="mytxxtarea" type="text" contenteditable on-keyup="setValue" style="resize: none; width: 100%; outline: 0px solid; border: solid silver 1px;" hidden$="{{!textareaShow}}" placeholder="Message" maxlength="1000" rows="20" columns="60" value="{{taValue::input}}" class="layout vertical arround-justified"> -->
+<!-- filter="{{_createFilter(taValue, formsDisplay)}}" 
  </textarea> 
-
+ -->
     <paper-listbox  id="myUniversalMenu" class$="[[listType]]" multi="[[isMulti]]" style$="[[_computeStyleByType(listType)]];" attr-for-selected="value">
-            <template is="dom-repeat"  items="{{formsDisplay}}" filter="{{_createFilter(taValue, formsDisplay)}}" observe="taValue searchOn value label" id="optionsRepeater" >
+            <template is="dom-repeat"  items="{{formsDisplay}}" observe="taValue searchOn value label" id="optionsRepeater" >
                 <paper-item hidden$="{{!item}}" class$="[[listType]] horizontal layout flex self-stretch" name="[[item.name]]" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value$="[[item.value]]">  
                     <section class="horizontal layout checkHolder" hidden$="[[_computeHiddenCheck(listType)]]">
                             <section class="checkmark" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]">
@@ -394,43 +394,6 @@
                 return itemChildren;
     },
 
-_createFilter: function(taValue){
-    console.log("hello", taValue, "fuck thus");
-    console.log(item, "tard");
-    // if(searchOn===false){return function(item){return false;}}
-    // else{console.log(item, item, "here item");
-        var regex = new RegExp('.*' + taValue + '.*', 'i');
-        return function(item){return item.label.match(regex);};
-       // if(item.value){return item.value.match(regex);}
-          // else{return false;}
-        // };
-      // }
-  },
-
-
-    //        this.set("changeEvent",{"event": e, "model": e._templateInstance, "value": e.target.value, "target":e.target, "name":e.target.name});
-       
-    // this.fire("valueObjectEvent", {changeEvent: this.changeEvent});
-
-
-    //  getProfiles(){
-    //     var profiles=this.focusedManager.dashboardMap.get("profiles");
-    //     var arrayProfiles= profiles.gridArray[15];
-    //     var profileObjectsArr=arrayProfiles.map((pro, i, array)=>{         
-    //     console.log(pro.valueObject);    
-    //               return pro.valueObject;
-    //             });
-    //     this.set("profilesArray",  profileObjectsArr);
-    //     console.log(this.profilesArray);
-    //     return this.profilesArray;
-    //         },
-    // searchInputProfiles(profiles, property, input){
-    //               var regex = new RegExp('.*' + input + '.*', 'i');
-    //        var filteredProfiles =this.profiles.filter((obj, i, arr)=>{
-    //              if((obj[property].match(regex))!=null){
-    //                 return obj;}});
-    //        return filteredProfiles;
-    //         },
     computeFontSelected(sc, myselected, value, listType){
         
                 if(this.heldValue===value||myselected!==value){return "300";}

@@ -176,7 +176,7 @@ position: absolute;
       padding-right: 8px;
       margin-bottom: -80px;
 
-      max-width: 410px;
+     /* max-width: 410px;*/
       white-space: wrap;  
       height: calc(96.5vh+120px);
       @apply(--vertical-layout);
@@ -275,8 +275,8 @@ position: absolute;
         </section>
         </div>
  <div id="outerContentContainer" class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh; overflow-y: scroll;"  on-scroll="handleHeaderOnScroll" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
-         <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector> 
-      <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" style="margin-top:{{headerHeight}}px;" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
+         <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector> <!--removed margin-top for the new headers-they dont rely on the -150 margins-->
+      <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
           <div id="innerContainer1" class="container1">
               <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; left: 1px; padding-right: 18px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
@@ -517,12 +517,14 @@ console.log(this.formName);
     return retVal;
   },
   observeSelected(nv, ov){
-    if(nv){console.log(nv,ov);}
+    if(nv){
+
+      console.log(nv,ov, "look here too");}
   },
   computeHiddenForm(obj){
     var retVal=(obj.isForm===true)?false:true;
     this.set("hideInputs", !retVal);
-    console.log(obj.name, obj.isForm, obj.name);
+   // console.log(obj.name, obj.isForm, obj.name);
     return retVal;
   },
   computeTwo(one){return !one},
@@ -547,7 +549,7 @@ console.log(this.formName);
   _modifySizeRatio(ciw){
     var r=(ciw>520)?1.205:(ciw/530)>.80?(ciw/480):(ciw)>289?.73:.6230;
    var retVal=Math.ceil(r*19);
-    console.log(r, retVal);
+    //console.log(r, retVal);
     return retVal; 
   },
 
@@ -556,7 +558,7 @@ console.log(this.formName);
     this.title= this.focusedManager.propertyNameToLabel(interface);
      var pxWidt= this.fitTextInDrawer(this.title);
     this.set("titleFontSize",pxWidt);
-    console.log(this.titleFontSize);
+    //console.log(this.titleFontSize);
     var top=170+(38-this.titleFontSize)*.955;
     this.set("titleTop", top);
     return this.title;
@@ -573,12 +575,13 @@ console.log(this.formName);
        if(((this.currentInnerWidth)*.60)>=width){this.set("titleSize", width); console.log(width, this.currentInnerWidth);break;}
       size--;
     }
-    console.log(size);
+  //  console.log(size);
     return size;
   },
 
     observeValueObjectStar(val){
-    if(val&&val.base){console.log(val.base, val.value);
+    if(val&&val.base){
+      //console.log(val.base, val.value);
       this.set("intakeObject", val.base);
       this.intakeProtocol(val.base);
 
@@ -586,7 +589,10 @@ console.log(this.formName);
 
   }, 
   observeValueObject(newValue, oldValue){
-    if(newValue){console.log(newValue, oldValue);}
+    if(newValue){
+
+      //console.log(newValue, oldValue);
+    }
 
   },
   intakeProtocol(obj){
@@ -600,7 +606,7 @@ console.log(this.formName);
         });
     profiles.timestamp=new Date().getTime();
     this.set("profiles", profiles);
-    console.log(profiles, profiles.timestamp); 
+    //console.log(profiles, profiles.timestamp); 
       }
     if(obj.callerType!=undefined){if(obj.callerRole==null){   this.async(this.rightClick, 150);}
     if(obj.callerRole!=undefined&&obj.callerRole!="other"){
@@ -617,9 +623,9 @@ console.log(this.formName);
           }
             return arrayObject;
          } }, arrayObject); 
-          console.log(arrayObject);
+       //   console.log(arrayObject);
       // filter((val, ind, arr)=>{if(val==undefined){return false;}else{return true;}});
-        console.log(callerRoleArray, "look here");
+        //console.log(callerRoleArray, "look here");
 
       this.set("callerRoleList",arrayObject); 
   }
@@ -649,7 +655,10 @@ console.log(this.formName);
     },
 
 
- observeDeNowHeight(newVal, oldVal){if(newVal){console.log(newVal,this.style.height, oldVal);}},
+ observeDeNowHeight(newVal, oldVal){
+  if(newVal){
+  // console.log(newVal,this.style.height, oldVal);
+}},
     submitHandler(event){
     
           var formResults = this.$.callIntakeForm.serialize();

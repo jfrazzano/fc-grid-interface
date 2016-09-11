@@ -1,0 +1,136 @@
+ <dom-module id="fc-check-menu-shared-styles">
+ <template id="fc-check-menu-shared-styles template"> 
+ <style> 
+    paper-item{
+        position: static;
+        padding: 4px 4px 4px 0px; 
+        margin: 4px;
+        font-size: 12px; 
+        font-weight: 300; 
+        font-family: merriweather; 
+        color: #009;
+        margin-top: 3px; 
+        min-width: 200px; 
+        text-align: left;
+        max-width: 480px;
+        background: white;
+
+       --paper-item-focused-before:{background: white;}
+        @apply(--paper-item-focused-before); 
+    }
+        
+     paper-item.dropdown{border-bottom: silver 1px solid; margin: 0px auto; padding: 0px 4px 0px 4px; white-space: nowrap; height: 46px;};
+      paper-item.tools{ border-bottom: silver 1px solid; display: flex; width: 100%;}
+    paper-item:focus{background: orange; outline: 0px dashed white;};
+     paper-item.tools:focus{background: aliceblue; outline: 0px dashed white;}
+   @apply(--paper-item);
+  
+        paper-item-body{padding-left:4px;}
+        paper-item-body.tools{width: 100%; @apply(--layout-flex);}
+
+      textarea:focused{outline: 0px white solid;}
+      textarea{border-bottom: 2px solid green; font-size: 1.5em; font-family: merriweather; font-weight: 600;}
+      details:focus{outline: 0px white solid;}
+      summary{outline:0px;padding-left: 8px;}
+    section{
+            padding: 0px 4px 0px 4px; 
+        text-align: left;
+        font-size: 14px;
+        text-overflow: clip;
+  /*      text-overflow: ellipsis;
+        text-overflow: "…";*/
+
+    }
+    paper-listbox.tools{ 
+        min-width: 360px;
+        max-width: 100%;
+        max-height: 43vh;
+        border: red 13px ridge;
+           overflow-y: scroll;
+        /*add here a media query for smaller phones*/
+
+     }
+    section.label.tools{color: red;}
+    .selectColor{
+        border: 1px green solid;
+    }
+    
+    .checkHolder{
+        cursor: pointer; 
+         padding: 14px 4px 14px 4px; 
+        margin: 8px 5px 12px 0px; 
+        text-align: left;
+        font-size: 1.4em; 
+        color: green;
+        @apply(--layout-vertical);
+        @apply(--layout-start-justified);
+        
+    }
+
+    .label.surveyPage{
+        color: #005c00;
+        font-size: 1.4em;
+       text-decoration-style:underline;
+       font-weight: 600;
+    }
+    .label.dropdown{
+           color: #005c00;
+        font-size: 1.15em;
+        font-weight: 300;
+       text-decoration-style:underline;
+    }
+    .dropdown{
+        color: #009;
+        font-size: .9em;
+        font-weight: 300;
+
+    }
+
+ .checkMinus.dropdown{
+        color: brown;
+        font-size: 1.6em;
+        cursor: pointer;
+        margin-right: -12px;
+        margin-left: 0px;
+        padding-left: 0px;
+    }
+    .check{
+  
+        font-size: 9px;
+        cursor: pointer;
+    }
+
+    .check.surveyPage{
+
+        font-size: 1em;  
+    }
+    .check.dropdown{
+        font-size: 9px
+    }
+    .checkMinus{
+        color: brown;
+        font-size: 2.2em;
+        cursor: pointer;
+
+    }
+    .checkmark{
+        padding: 3px 4px 14px 4px; 
+        margin: 4px -8px 12px 0px; 
+        text-align: left;
+        font-size: 1.4em; 
+        color: green;
+
+    }
+    .padded{
+    padding: 16% 10%;
+    margin: 12px;
+
+    }
+
+    .pad{padding: 5%; max-width: 610px;
+    width: 510px;
+    min-width: 300px;}
+
+</style>
+</template>
+</dom-module>

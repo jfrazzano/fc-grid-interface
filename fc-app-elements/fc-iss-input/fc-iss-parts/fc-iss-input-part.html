@@ -1,0 +1,74 @@
+<link rel="import" href="fc-parts-import-links.html">
+<link rel="import" href="fc-iss-input-css-shared-styles.html">
+
+
+
+<dom-module id="fc-iss-input-part">
+<template id="fc-iss-input-part-template">
+<link rel="import" href="../fc-iss-parts/fc-parts-import-links.html">
+   <style is="custom-style" include="fc-iss-input-css-shared-styles"></style>
+
+     <array-selector id="selector" items="{{dropdownItems}}" selected="{{selected}}" multi="{{multiSelect}}">
+     </array-selector>
+     <iron-a11y-keys id="a11y1" target="[[target]]" keys="down" on-keys-pressed="onDownArrow"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y2" target="[[target]]" keys="up" on-keys-pressed="onUpArrow"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y3" target="[[target]]" keys="enter" on-keys-pressed="onEnter"></iron-a11y-keys>
+     <iron-a11y-keys id="a11y4" target="[[target]]" keys="esc" on-keys-pressed="onEsc"></iron-a11y-keys>
+
+     <div class="horizontal layout flex self-stretch wrapper">
+               <span id="dropdownbutton" class$="dropbtn dropdown-trigger {{issClass}}" style="font-size:18px;  color: silver; opacity: .3;  cursor: pointer;" on-tap="inputToggle">
+               {{_setUtfSymbol(dropdownItems, localPropertyValue)}}
+               </span>
+               <div class="vertical layout dropdown inputcontainer" on-down="focusInput">
+                    <input id="issInput" class$="question {{issClass}}" required value="{{issValue::input}}" multi-select="{{multiSelect}}" on-change="setValueItem" name="[[issName]]">
+                         <label for="issInput" class$="{{issClass}}">
+                              <span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}
+                              </span>
+                         </label>
+                         <content id="dropdownElement" select=".dropdownList"></content>
+                        </div>
+                     </div>
+                </template>
+          </dom-module>
+    <script>
+   FcIssInputPart=Polymer({
+   		is:"fc-iss-input-part",
+   		properties:{
+   			dropdownMenu:{
+   				type: Object,  
+   				notify: true,    
+			}
+
+
+
+   		},
+
+   		get dropdownElement(){var elem=Polymer.dom(this.dropdownElement).children;},
+   		attached(){this.set("dropdownMenu", this.dropdownElement);
+   				console.log(this.dropdownMenu);
+
+   			}
+
+
+   });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

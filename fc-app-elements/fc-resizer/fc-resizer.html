@@ -1,0 +1,186 @@
+<dom-module id="fc-resizer">
+<template id="fc-resizer-template">
+<style>
+:host{
+  background: red;
+  border: ridge 2px red;
+  cursor: ew-resize;
+
+}
+:host.leftRight{
+
+  position: relative;
+  display: flex;
+   max-width:6px!important;
+   margin-left: 2px;
+   max-width: 6px!important;
+   cursor:ew-resize;
+   padding: 2px 1px 1px 2px;
+   border-left: solid 1px silver;
+   border-right: solid silver 1px;
+   opacity: 1;
+   padding-right: 9px;
+   min-height: 19px;
+   background: #eaeaea;
+   z-index:10;
+     height: auto;
+     mask: luminance;
+    box-shadow: 4px 11px 21px 7px #9fafaf;
+  overflow: hidden;
+    visibility: visible;
+    transition: visibility 0.2s 
+  @apply(--layout-block);
+  @apply(--layout-wrap);
+
+  }
+:host {.upDown{
+  max-width: 100%;
+  position: static;
+  background: silver;
+  border: 1px black solid;
+  height: 12px;
+  cursor: ns-resize;
+  display: block;
+  z-index: 100;
+  margin-bottom: 1px;
+
+}
+}
+</style>
+
+
+
+</template>
+<script>
+FcResizer=Polymer({
+  is: "fc-resizer",
+  listeners:{"ontrack":"_resize"
+  },
+  properties: {
+    resizerType:{
+      type: String,
+      value: function(){return "leftRight";},
+      notify: true,
+    },
+    isResizing: {
+      type: Boolean, 
+      value: function(){return true;},
+      notify: true,
+    }, 
+    leftInnerWidth:{
+      type: Number, 
+      notify: true,
+
+
+    },
+
+
+  },
+ 	 _resize: function(e){
+      if(this.resizerType=="leftRight"){
+        this.leftRight(e);
+       }
+       else {
+     	    this.upDown(e);
+        }
+      },
+    upDown(e){
+
+            var resizer=e.target;
+            var next=Polymer.dom(resizer).nextElementSibling;
+            var elem=Polymer.dom(resizer).previousElementSibling;
+            var neg=window.innerHeight;
+            var max=Math.ceil(window.innerHeight-18);
+            var min=18;
+            var eheight =parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
+              var nexHi=parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
+       
+        if(parseInt(elem.style.height)==NaN&&parseInt(next.style.height==NaN))
+          {
+            var elemNumHt=(Math.ceil(.65*(neg))-10),
+            nextNumH=(Math.floor(neg*.35));
+          elem.style.height=elemNumHt.toString()+"px";
+          next.style.height=nextNumHt.toString()+"px";
+          var tot=elemNumHt+nextNumHt;
+           console.log(elem.style.height,"<--elemheight", next.style.height, eheight,"<--elemHeight", nexHi, "heights");
+          } 
+        else if(typeof nexHi ==="number" && eheight==NaN){eheight=neg-10-nexHi;}
+        else if(typeof eheight ==="number" && nexHi==NaN){nexHi=neg-10-eheight;}
+              this.set("counter",this.counter++);
+              var incrementChange;
+              var bottom=nexHi;
+               var top=eheight;
+               console.log(top, top, top, bottom, bottom, bottom, "TOP");
+               e.preventDefault();
+            console.log(elem.style.marginBottom, next.style.marginBottom);
+        switch(e.detail.state){
+            case 'start':
+               // next.style.height=bottom.toString()+"px";
+               // elem.style.height=top.toString()+"px";
+            break;
+            case 'track':
+            
+            top=(top>max+2)?max:(top<min-2)?min:top+e.detail.ddy;
+             bottom=window.innerHeight-top;
+             var bottomString=bottom.toString()+"px";
+             var topString=top.toString()+"px";
+             next.style.height=bottomString;
+             elem.style.height=topString;
+             Polymer.dom(next).setAttribute("style.height", bottomString);
+             Polymer.dom(elem).setAttribute("style.height",topString);
+             resizer.style.bottom=(bottom+7).toString()+"px";
+             resizer.style.top=topString; 
+         
+               console.log(top, top, top, bottom, bottom, bottom, "TOP");
+      break;
+            case 'end':
+        
+                Polymer.dom.flush();
+                this.translate3d(0,0,0,elem);
+                this.translate3d(0,0,0,next);
+                this.translate3d(0,0,0,elem);
+                console.log(elem.style.height, next.style.height);
+            break;
+            }
+
+    },
+    leftRight(e){
+      e.preventDefault();
+           var resizer=e.target;
+           var next=Polymer.dom(resizer).nextElementSibling;
+              next.style.width="auto";
+           var elem=Polymer.dom(resizer).previousElementSibling;
+           var max=this.currentWidth;
+           var leftWidth=parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));  
+           console.log(leftWidth, leftWidth, this.leftInnerWidth); 
+           elem.style.width=this.leftInnerWidth.toString() +"px";
+         
+          switch(e.detail.state) {
+                case 'start':  
+                break;
+                case 'track':
+                next.style.width="auto";
+                  var width = parseInt(elem.style.width) + e.detail.ddx;
+              var width2=(width<50)?50:(width>=max)? max:width;
+                  var trueWidth = width2.toString()+'px';  
+                  // this.set("currentWidth",nwidth2);
+                  elem.style.width= trueWidth;
+                  this.set("leftInnerWidth",width2);
+                  console.log(width2-width, "this is the width");
+                  next.marginLeft=(width2-width).toString(); + "px";
+                break;
+                case 'end':
+                  elem.style.width= trueWidth;
+                  //this.set("currentWidth", nwidth2);
+                    Polymer.dom.flush();
+                    resizer=null;
+                elem=null;
+                next=null;
+                break;
+              }
+
+    }
+
+  });
+</script>
+</dom-module>

@@ -20,6 +20,19 @@ properties: {
 			notify: true,
 			computed: "computeHeaderHeight(containerHeight, containerWidth)",
 		},
+		sectionsHidden:{
+			type: Object, 
+			value: function(){return {
+					zero: true, 
+					one: false, 
+					two: false, 
+					three: false, 
+					four: false, 
+					five: false,
+			}; 
+			}, 
+			notify: true,
+		},
 		titleFromInterface:{type: Boolean, value: function(){return true;},notify: true},
 		canvasOne:{
     		type: Object,
@@ -55,9 +68,151 @@ properties: {
 			notify: true,
 
 		},
+		menuButton:{
+			type: String,
+			value: function(){return '\☰';},
+			notify: true,
+		},
+		showMenu:{
+			type: Boolean,
+			value: function(){
+				return false;
+			},
+			notify: true,
+		},
+
+		day:{
+			type: Date,
+			value: function(){
+				var d=new Date().getDay();
+				var dayArray=["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+				console.log(dayArray[d]);
+				return dayArray[d];
+			},
+		notify: true,
+		},
+		toolButton:{
+			type: String,
+			value: function(){return '\⚙';},
+			notify: true,
+		},
+		needToolsMenu:{
+			type: Boolean, 
+			value: function(){return false;},
+			notify: true,
+		},		
+		triggers:{
+			type: Array, 
+			value:function(){
+				var array=[
+						{effect: "hidden", trigger: "containerHeight", isProgressive: false, triggerValue: 220, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "hidden", trigger: "containerWidth", isProgressive: false, triggerValue: 180, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "minimize",  trigger:"elapsedTime", isProgressive: true, triggerValue: [12000,15000, 18000, 20000], delay: 0, animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]},
+						{"effect": "minimize", trigger: "scrollTop", isProgressive: true, triggerValue: [70,140,210, 280, 350, 420],animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]}
+						];
+				return array;
+				},
+
+		},
+		menuItems:{
+			type: Array,
+			value:function(){
+				return [
+							  {isForm: true, name: "displayTitle",toggles: true, propertyName: "displayTitle", booleanValue: false, value: "addTitle", selectedChecked: false, text: "Would you like to add an interface or section title to your header?", label: "Display Title",ind: 0 , checkbox: '\☐', symbol:'\📰',hex:'\&#x372;\Ͳ', fontEm: 1.67,}, 
+							  {isForm: true, name: "displaySubtitle",toggles: true, propertyName: "displaySubtitle", booleanValue: false, value: "addSubtitle", selectedChecked: false, text: "Would you like to add a section or subsection subtitle to your header? Subtitles are often helpful when sections of an interface have multiple pages or parts.  We encourage subtitles.", label: "Display Subtitle",ind: 0 , checkbox: '\☐',symbol: '\📃',fontEm: 1.6}, 
+							 {isForm: true, name: "displayClock",toggles: true, propertyName: "displayClock", booleanValue: false, value: "addClock", selectedChecked: false, text: "Do you want to add a clock to your header?", label: "Display Clock",ind: 0 , checkbox: '\☐', symbol: '\🕐', fontEm: 1.6},
+							 {isForm: true, name: "displayTimer",toggles: true, propertyName: "displayTimer", booleanValue: null, value: "addTimer", selectedChecked: false, label: "Display Timer", text:"Would you like to add a timer to your header? A stopwatch timer can help you pace yourself as you work on different sections of this project.  Similarly, the timer can help you log the amount of time you spend on each portion of this project.", ind: 4, checkbox: '\☐',symbol:'\⏱', fontEm: 1.62 },
+                  			{isForm: true, name: "displayCountdown",toggles: true, propertyName: "displayCountdown", booleanValue: null, value: "addCountdown", selectedChecked: false, label: "Display Countdown", text:"Would you like to add a countdown timer set for a fixed period of time? Countdown timers are extremely useful in timed testing situtions and can help you manage your time for any task.  The countdown timer can be set for periods of time less than 100 hours.", ind: 4, checkbox: '\☐',symbol:  '\⏲', fontEm: 1.6 },
+                  			{isForm: true, name: "displayAlarm",toggles: true, propertyName: "displayAlarm", booleanValue: null, value: "addAlarm", selectedChecked: false, label: "Display Alarm", text:"Would you like to add an alarm to your header? Alarms can be set for any time, day, date or year in the future.  Alarms will notify you via a message, as a well as a sound or visual cue, based on your preferences.", ind: 4, checkbox: '\☐',symbol:  '\⏰', fontEm: 1.6 }, 
+                            {isForm: true, name: "displayDate",toggles: true, propertyName: "displayDate", booleanValue: true, value: "addDate", label: "Display Date", selectedChecked: false, text: "Would you like to add the Date to your header?", ind: 1, checkbox: '\☐',symbol: '\📅', fontEm: 1.6}, 
+                            {isForm: true, name: "displayDayOfTheWeek",toggles: true, propertyName: "displayDayOfTheWeek", booleanValue: true, value: "addDayOfTheWeek", selectedChecked: false, text: "Would you like to display the day of the week on your header?", label: "Display Day Of The Week", ind: 2, checkbox: '\☐',symbol: '\📆', fontEm:1.6}, 
+                            {isForm: true, name: "displayPageNumber",toggles: true, propertyName: "displayPageNumber", booleanValue: true, value: "addPageNumber", selectedChecked: false, label: "Display Page Number", text: "Would you like to add the 'Page Number' of the current page in the current interface to your header?", ind: 3, checkbox: '\☐', symbol: '\🔢', fontEm: 1.6,},
+                            {isForm: true, name: "displayTotalPages",toggles: true, propertyName: "displayTotalPages", booleanValue: true, value: "addTotalPages", selectedChecked: false, label: "Display Total Pages", text: "Would you like to add the total number of pages for this interface to your header? (Note: Usually, page totals are added along with the current page number, with thepage total placed to the right of the current page number. Example: 'Page 3 of 7'.", ind: 3, checkbox: '\☐',symbol: '1 of \⑥', fontEm: 1 }, 
+                            {isForm: true, name: "pageForwardArrow",toggles: true, propertyName: "pageForwardArrow", booleanValue: true, value: "addPageForwardArrow", selectedChecked: false, label: "Page Forward Arrow", text: "Would you like to add a 'Page Forward' arrow to you header?", ind: 3, checkbox: '\☐',symbol: '\🔜', fontEm: 1.6,},
+                           {isForm: true, name: "pageBackArrow",toggles: true, propertyName: "pageBackArrow", booleanValue: null, value: "addPageBackArrow", selectedChecked: false, label: "Page Back Arrow", text:"Would you like to add a page back arrow to your header?", ind: 4, checkbox: '\☐', symbol: '\🔙', fontEm: 1.6},
+                              {isForm: true, name: "displayNavMenu",toggles: true, propertyName: "displayNavMenu", booleanValue: null, value: "addNavMenu", selectedChecked: false, label: "Display Nav Menu", text:"Would you like to add a dropdown 'Nav Menu' to your header, so that you might navigate in this pane to other interfaces in the app, which are not directly accessible via the next and back arrows?", ind: 4, checkbox: '\☐', symbol: '\☰', fontEm: 1.6},
+                                {isForm: true, name: "displayToolsMenu",toggles: true, propertyName: "displayToolsMenu", booleanValue: false, value: "addToolsMenu", selectedChecked: false, label: "Display Tools Menu", text:"Would you like to add a full page, navigable 'Tools Menu' to your header, so that your will be able to customize their headers just as you are now?", ind: 4, checkbox: '\☐', symbol: '\⚙', fontEm: 1.6},
+                                {isForm: true, name: "unrelatedFunctionality",toggles: true, propertyName: "unrelatedFunctionality", booleanValue: false, value: "addUnrelatedFunctionality", selectedChecked: false, label: "Unrelated Functionality", text:"Would you like to add 'unrelated functionality' to some of the icons or displays you have already selected and placed in your header? For Example, in an early version of the Focused Animated Header, pages could be advanced in an app by simply tapping the page number.  To go back, one needed only to tap the sections subheading. Similarly, changing the API could be accomplished by clicking the API title.  Such a click would advance the view to the next alphabetical API.  Such functionality can be added.  If you select this option a second list of 'unrelated functionality' will be presented for you to add to your header icons, if you so desire.", ind: 4, checkbox: '\☐', symbol: '\🗿', fontEm: 1.6},
+                  			
+                                    
+				];
+			},
+			notify: true,
+
+		},
+
+		title:{
+			type: String,
+			value: function(){return "Focus On Progress";},
+			notify: true,
+			observer: "titleObserver", 
+		}, 
+		propertyForTitle:{
+				type: String,
+			value: function(){return "focusOnProgress";},
+			notify: true,
+		},
+		isTitleComputed:{
+			type: Boolean,
+			value: function(){return false;},
+			notify: true,
+		},
+		multiLayerArray:{
+			type: Array,
+			value:function(){return [];},
+			notify: true,
+
+		},
+		titleFontSize: {
+			type: Number,
+			value: function(){return 38;},
+			notify: true,
+		},
+		subTitle:{
+			type: String,
+			value: function(){return "The Syllabus";},
+			notify: true,
+			observer: "subTitleObserver", 
+		}, 
+
+		subtitleFontSize:{
+			type: Number,
+			value:function(){return 18;}, 
+			notify: true
+
+		},
+		pageReference:{
+			type: String,
+			value: function(){return "1";},
+			notify: true,
+		}, 
+		pageTotal:{
+			type: String, 
+			value: function(){return "4";},
+		},
+		date:{
+			  type: Date,
+        value: function(){
+          var date=new Date().toLocaleDateString();
+          return date;
+            },
+        notify: true,
+		}, 
+
+		time:{
+      		type:Date,
+      		value:function(){
+          		var time=new Date().toLocaleTimeString();
+          		console.log(time);
+          		return time;
+      		},
+      	notify: true
+    	},
 
 
 	},
+	ready(){
+		this.setMultiArray();},
 	computeHeaderHeight(ht,wt){
 
 
@@ -108,17 +263,21 @@ properties: {
       size--;size2=Math.ceil(size/2);
   		}
     }
+    this.set("titleFontSize", size);
+    this.set("subtitleFontSize", size2);
   //  console.log(size);
     return [size,size2];
   },
 
   observeContainerWidth(newVal, oldVal){
 		if(newVal){
+			var parent = Polymer.dom(this).parentNode;
+				console.log(parent, "monkey", newVal);
 			var hh=Math.ceil(newVal*.2285);
 			if(hh>120){hh=120;}
 			else{hh=hh;}
 			console.log(hh, "loook here");
-			this.set("headerHeight", hh);
+			//this.set("headerHeight", hh); check getter computed proep
 			var str=hh.toString()+"px";
 			console.log(str);
 			Polymer.dom(this).setAttribute("style.height", str);
@@ -126,6 +285,7 @@ properties: {
 						this.set("sectionsHidden.one", false);
 					this.set("sectionsHidden.two", false);
 					this.set("sectionsHidden.six", false);
+
 				}
 				if(newVal<480){
 					this.set("sectionsHidden.one", true);
@@ -137,7 +297,7 @@ properties: {
 
 				}
 				if(newVal>180){
-					this.set("sectionsHidden.zero", false);
+					this.set("sectionsHidden.zero", true);
 				}
 				if(newVal>280){
 					this.set("subTitleHidden",false);
@@ -146,19 +306,82 @@ properties: {
 					this.set("subTitleHidden",true);
 
 				}
-				if(newVal<180){
+				if(newVal<275){
 					this.set("sectionsHidden.zero", true);
 					Polymer.dom(this).setAttribute("style.height", "28px");
 
 
 
 				}
+				for(var i=0;i<7; i++){
+					var wordarray= ["zero","one","two","three","four","five","six"];
+					for(var j=0; j<3;j++){
+						this.set(["multiLayerArray",i,j,"shown"],this.sectionsHidden[wordarray[i]]);
+						if(this.multiLayerArray&&this.multiLayerArray.length>0&&this.multiLayerArray[i]!=undefined&&this.multiLayerArray[i][j]!=undefined){
 
-
+							if(this.multiLayerArray[i][j].type=="mainTitle"){
+							var newFontSizes=this.fitTextInDrawer(this.title, this.subTitle, this.containerWidth);
+							this.set(["multiLayerArray",i,j,"fontSize"],this.titleFontSize);
+							console.log(this.titleFontSize,this.multiLayerArray[i][j].fontSize, "see if there is anything here");
+							}
+							if(this.multiLayerArray[i][j].type==="subTitle"){
+							this.set(["multiLayerArray",i,j,"fontSize"],this.subtitleFontSize);
+							}
+						}
+					}
+				}
 			}
-
-
 		},
+
+		setMultiArray(){
+				var dayVar=this.day;
+				var dateVar=this.date;
+				var timeVar=this.time;
+				var zero=this.sectionsHidden.zero;
+				var one=this.sectionsHidden.one;
+				var two=this.sectionsHidden.two;
+				var three=this.sectionsHidden.three;
+				var four=this.sectionsHidden.four;
+				var five=this.sectionsHidden.five;
+				var six=this.sectionsHidden.six;
+				var combined=timeVar.toString() + " on " + dateVar.toString();
+				console.log(dayVar, dateVar, timeVar);
+				var val= [ 				[	
+											{row:0, totalRows: 5,shown:zero},
+											{row:0, totalRows: 5,shown:zero},
+											{row:0, totalRows: 5, shown:zero}
+										],
+										[
+											{fontSize:"", text: '\☰', class: "menuButton", shown:one,  type: "textIcon", row: 1, column: 1, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: "", class: "time", type: "api", row: 1, shown:one, column: 2, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: "page 1 of 4", class: "numberedPages",shown: one, type: "api", row: 1, column: 3, funct:"", totalRows:  5, totalColumns: 3},
+										 ],
+										   [
+											 {fontSize:"", text: "", shown: two, class: "rowSpacer", type: "spacer", row: 2, column: 1, funct:"", totalRows:  5, totalColumns: 3},
+											 {fontSize:"", text: "\🕐", shown: two, class: "rowSpacer", type: "spacer", row: 2, column: 2, funct:"", totalRows:  5, totalColumns: 3},
+											 {fontSize:"", text: "", shown: two, class: "rowSpacer", type: "spacer", row: 2, column: 3, funct:"", totalRows:  5, totalColumns: 3},
+										  ],
+										 [
+											{fontSize:"", text: 'Focus On Progress', shown: three, class: "title", type: "mainTitle", row: 3, column: 1, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: "", class: "", type: "", shown: three, row: 3, column: 2, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: "The Syllabus", class: "subtitle", shown: three, type: "subTitle", row: 3, column: 3, funct:"", totalRows:  5, totalColumns: 3},
+										 ],
+										 [
+										 	{type:"bar", class: "silver bar", shown: four, funct:"", totalRows:  4, row: 3, column: "na",totalColumns: 3}
+										 ],
+										 [
+										 	{fontSize:"", text: combined, class: "day date afterbar", shown: five, type: "text", row: 4, column: 1, funct:"", totalRows:  4, totalColumns: 3},
+											{menu: true, class:"afterbar", row: 4, column: 1, shown: five, funct:"", totalRows:  4},
+											{fontSize:"", text: "\⚙", class: "tools afterbar", shown: five, type: "toolsMenu", row: 4, column: 3, funct:"addToolMenuSlider", totalRows:  4, totalColumns: 3},
+										 ]
+									];
+				this.set("multiLayerArray", val);
+								},
+	_computeFontSize(size,type){
+		
+			return size;
+	},
+
 	determinHeightAndWidth(e){
 		var height=Polymer.dom(this.root).getBoundingClientRect().height;
 		var width=Polymer.dom(this.root).getBoundingClientRect().width;

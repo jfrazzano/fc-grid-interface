@@ -1,0 +1,149 @@
+<link rel="import" href="../fc-iss-input/fc-iss-parts/fc-parts-import-links.html">
+<dom-module id="fc-value-object-scoreboard">
+<template id="fc-value-object-scoreboard-template">
+<style>
+:host{
+background: plum;
+border: snow bevel 5px; width: 100%;
+height: 100%;
+margin: 12px;
+padding: 8px;
+@apply(--layout-horizontal);
+@apply(--layout-flex);
+@apply(--layout-justified);
+@apply(--layout-wrap);
+
+}
+
+</style>
+<array-selector id="asterix" items="{{_setItems(dataSelected)}}"></array-selector>
+<template is="dom-repeat" id="inputTemplate" items="{{selected}}">
+      <div >
+        <section class="horizontal layout flex"> 
+        <span hidden$="{{computeItemHeaderHidden(item.nameA)}}" class="questionHeader">{{item.nameA}}.</span>  <span hidden$="{{computeItemHeaderHidden(item.nameB)}}" class="questionHeader">{{item.label}}.</span>
+      </section>`
+      <div class="horizontal layout flex wrap center-justified" style="margin-left: -12px;">
+        <section class="container">
+          <fc-iss-input-part class="left" id$="{{item.nameA}}_{{counter}}" on-keyup="_sendInputChanged" iss-name="{{item.nameA}}" on-focus="setBackgroundAndBlink" name="{{item.nameA}}" iss-name="{{item.nameA}}"  iss-label="{{item.labelA}}"  iss-value="{{item.valueA}}"  value-object="{{valueObject}}"  item-select-property="value"  select-check="[[item.selectCheckA]]" value="{valueArray.inmdex}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsA, item.dropdownItemsB)}}" select-index="{{item.selectIndex}}" change-event="{{changeEventA}}" dropdown-items="{{item.dropdownItemsA}}" multi-select="[[item.isMultiSelectA]]">
+          </fc-iss-input-part>
+       [[_anotherFunctionInTheRepeater(item, item.value, item.name, item.inddex)]]
+        </section>
+        <section class="container">
+          <fc-iss-input-part id$="{{item.nameB}}_{{counter}}" select-index="{{item.selectIndex}}" change-event="{{changeEventB}}" on-focus="setBackgroundAndBlink" value-object="{{valueObject}}" on-keyup="_sendInputChanged" iss-name="{{item.nameB}}" name="{{item.nameB}}" iss-label="{{item.labelB}}" select-check="{{item.selectCheckB}}" item-select-property="value" iss-value="{{item.valueB}}" class="right" dropdown-items="{{item.dropdownItemsB}}" value="{{item.valueB}}" show-drop-button="{{_computeShowDropButton(item.dropdownItemsB, item.dropdownItemsA)}}" multi-select="{{item.isMultiSelectB}}">
+          </fc-iss-input-part>
+        </section>
+        </div>  
+    </div>
+  </template>
+[[_computeNextSelected(valueObject, item.value, item.name)]]
+<template is="dom-repeat" items="{{_computeArray(valueObject});}}">
+<fc-iss-input-parts id="issInput_{{item.name}}_{{item.index}}" iss-value="{{item.value}}" iss-label="[[item.label]]" iss-name="[[item.name]]" name="[[item.name]]" dropdownItems="[[_computeDropdownItems(item.dropdownItems, item)]]" style="min-width: 360px; font-size:1.8em; font-family: merriweather; color: black; margin: 18px; padding: 12px" value-object="{{valueObject}}">
+
+
+
+</fc-iss-input-parts>
+</template>
+
+</array-selector>
+</template>
+</dom-module>
+<script>
+Polymer({
+	is:"fc-value-object-scorecard",
+	properties:{
+		dataSelected:{
+			type:Array,
+			notify: true,
+
+		},
+	 valueObject:{
+	 	type: Object,
+	 	value:function(){return {};},
+	 	notify: true
+	 },
+	 dataSelected:{
+	 	type: Array,
+	 	notify: true,
+
+	 },
+	 valueArray:{
+	 	type: Array,
+	 	computed:"computeValueArray(valueObject)",
+	 	notify: true,
+
+	 }, 
+	 valKeysLength: {
+	 	type: Number,
+	 	value: function(){return 0;},
+	 	notify: true,
+ 
+	 }, 
+	 factory:{ß
+	 	type: Object,
+	 notify: true,
+
+	 },
+
+
+
+	}, 
+	computeValueArray(valueObject){
+		var keys=Object.keys(valueObject);
+		var size=keys.length-1;
+		this.set("valKeysLength", size);
+	var valsArray = keys.map((key, index)=>{
+			valsSet="key, " + valueObject[key] + " " + index;
+			var obj={
+				name:key,
+				value:valueObject[key],
+				index:index,
+				valSet:valsSet,
+			};
+			console.log(obj);
+			return obj;
+		});
+		var menu=new FcIssMenu();
+		console.log(menu);
+		this.set("valuesArray", valsArray);
+		this.set(menu.dropdownItems, valsArry;
+var name=this.valueArray[this.valKeysLength].name;
+var theId="#issInput_"+name+"_"+ this.valKeysLength;
+		var parent=	Polymer.dom(this.root).querySelector(theId);
+		console.log(parent);
+	},
+
+	_anotherFunctionInTheRepeater(item, value, name, index)
+	{
+	
+	}
+        
+
+
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -357,16 +357,16 @@ DataManager.prototype.mappedDashboardDataset=function(args){
  
 
 var array=[ 
-            {"value": "profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: [],forms:[]},
-                    {"value": "courseCalendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 1, inputsArray: this.courseCalendarInputs, gridArray:[], archive: [], forms:[]},
-                    {"value": "allMessages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayIndex": 2, inputsArray: this.inquiryInputs, gridArray:[], archive: [], forms:[]},
-                    {"value": "homeworkResults", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: [], forms:[]},
-                    {"value": "testResults", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 4, inputsArray:[], gridArray:[], archive: [], forms:[]},
-                    {"value": "intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayIndex": 5, inputsArray:[], gridArray:[], archive: [], forms:[]},
-                    {"value": "fcFinancials", "dbName": "indexOfDatabases", "storeName": "fcFinancials", version: 4, "tag": ["shortFormProfile", "Financials", "eachFieldUsesFunctions", "smartContentOrdering"], "inputIndex": 7, "displayIndex": 6, inputsArray:[], gridArray:this.gridMaker.financialGrid, archive: [], forms:[]},
-                    {"value": "fcCallRecords", "dbName": "indexOfDatabases", "storeName": "fcCallRecords", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.june2015CallSheet, archive: [], forms:[]},
-                    {"value": "fcCourseResults", "dbName": "indexOfDatabases", "storeName": "fcCourseResults", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.courseResultsByStudent, archive: [], forms:[]},
-                    {"value": "fcCalendar", "dbName": "indexOfDatabases", "storeName": "fcCalendar", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.calendarGrid, archive: [], forms:[]},
+            {"name": "profiles", value: "profiles","dbName": "Profiles","version": 3,  "storeName":"studentProfiles","tag":"studentIntakes", "inputsIndex":0, "displayIndex":0, indicies: ["studentFirstName", "studentLastName", "parent1FirstName", "parent1LastName", "parent2FirstName", "parent2LastName", "studentEmail",  "studentTelephone", "parent1Email",  "parent1Telephone", "parent2Email",  "parent2Telephone"], inputsArray:this.profileInputs, gridArray:[], archive: [],forms:[]},
+                    {"name": "courseCalendars", value: "courseCalendars", "storeName": "courseCalendars", version: 2, "dbName": "Course", "tag": "calendarsAtCourseSignUp", indicies: ["coach", "time"], "inputsIndex": 1, "displayindex": 1, inputsArray: this.courseCalendarInputs, gridArray:[], archive: [], forms:[]},
+                    {"name": "allMessages", value: "allMessages", "dbName": "callCenter", version: 4, "storeName": "allMessages","tag": "dailyMessageList", "inputIndex": 2, "displayIndex": 2, inputsArray: this.inquiryInputs, gridArray:[], archive: [], forms:[]},
+                    {"name": "homeworkResults", value: "homeworkResults", "dbName": "studentResults", version: 1, "storeName": "homeworkResults","tag": "byPercentCorrect", "inputIndex": 4, "displayedIndex": 3, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"name": "testResults", value: "testResults", "dbName": "studentResults", version: 1, "storeName": "testResults","tag": "byImprovementTotal", "inputIndex": 3, "displayedIndex": 4, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"name": "intakes", value: "intakes", "dbName": "callCenter", "storeName": "callIntakes", version: 1, "tag": ["shortFormProfile", "messageDetails", "eachFieldTextSearch", "smartContentSearch"], "inputIndex": 6, "displayIndex": 5, inputsArray:[], gridArray:[], archive: [], forms:[]},
+                    {"name": "fcFinancials", value: "fcFinancials", "dbName": "indexOfDatabases", "storeName": "fcFinancials", version: 4, "tag": ["shortFormProfile", "Financials", "eachFieldUsesFunctions", "smartContentOrdering"], "inputIndex": 7, "displayIndex": 6, inputsArray:[], gridArray:this.gridMaker.financialGrid, archive: [], forms:[]},
+                    {"name": "fcCallRecords", value: "fcCallRecords", "dbName": "indexOfDatabases", "storeName": "fcCallRecords", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.june2015CallSheet, archive: [], forms:[]},
+                    {"name": "fcCourseResults", value: "fcCourseResults", "dbName": "indexOfDatabases", "storeName": "fcCourseResults", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.courseResultsByStudent, archive: [], forms:[]},
+                    {"name": "fcCalendar", value: "fcCalendar", "dbName": "indexOfDatabases", "storeName": "fcCalendar", version: 4, "tag": ["shortFormProfile", "callRecords", "shortForm", "smartContentOrdering"], "inputIndex": 8, "displayIndex": 7, inputsArray:[], gridArray:this.gridMaker.calendarGrid, archive: [], forms:[]},
                     ];
 
 
@@ -379,7 +379,7 @@ var array=[
             keys.forEach((k)=>{
             array[i].forms.push(forms[array[i].value][k]);
         });}
-                var key=val.value;
+                var key=val.name;
                 myMap.set(key,val);
                 myMap.set(i, val);
             });
@@ -433,6 +433,7 @@ DataManager.prototype.getShorthandIndex=function(){
             this.shorthandIndex[counter]={
                     "index": counter,
                     "value": val.value,
+                    name:val.name,
                     "dbName": val.dbName, 
                     "storeName":val.storeName,
                     "version": val.version, 
@@ -1192,7 +1193,7 @@ _computeInterfaceObject(key,interfaceType){
     var  objectKeyForDisplayArray=interfaceType+"Array";
     var interfaceObject=this.interfaceMap.get(key);
     var displayArray=interfaceObject[objectKeyForDisplayArray];
-    var label=this.focusedManager.propertyNameToLabel(interfaceObject.value);
+    var label=this.focusedManager.propertyNameToLabel(interfaceObject.name);
     this.set("chosen", label);
     var ida=interfaceType+"DisplayArray";
     this.set(ida, displayArray);

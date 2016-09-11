@@ -1,21 +1,92 @@
+<link rel="import" href="../../fc-grid/data-manager.html">
+<link rel="import" href="../../fc-app-elements/fc-tab-menu/fc-tab-menu.html">
+<link rel="import" href="fc-header-behavior.html">
 <dom-module id="fc-header">
 <template>
 <style>
-.header{
-	margin-bottom: 0px; 
-	padding: 8px 12px 10px 12px; 
-	z-index: 11; 
-	background:white;
-	line-height: 1;
-  	color: #009; 
-  	font-size: 1.2em;
-  	font-weight: 300;
-  	min-height: 12vh;
-  	box-shadow:3px 8px 17px 5px #bfbfbf;
-  	@apply(--layout-vertical);
+:host{
+	/*padding: 2px; */
+	/*border: solid 1px orange;*/
+	z-index: 90000000;
+	border-bottom: silver solid 1px; 
+	position: relative; 
+	top: 0px; 
+	left: 0px; 
+	right: 0px; 
+	overflow: hidden; 
+	cursor: pointer; 
+	/*min-height: 124px;*/
+	min-width: 100%;
+	background: white;
+	color: black
+	font-weight: 600;
+	font-family: times;
+	white-space: nowrap;
+	box-shadow:3px 8px 17px 5px #bfbfbf;
+	@apply(--layout-horizontal);
 	@apply(--layout-block);
-	@apply(--layout-end-justified);
+	@apply(--layout-justified);
 }
+.title{
+  color: black;
+  z-index: 222;
+/*left:12px;*/
+/*  top: 218px;*/
+ font-family:merriweather;
+  font-size: 2.1em; 
+  color: #009;
+  margin-bottom: -3px;
+}
+.timestamp{
+    font-weight: 300;
+
+    font-family: merriweather;
+   font-size: .7em; 
+    color: brown;
+    font-family: times;
+   left: 24px;
+   margin-bottom: 1px;
+    }
+
+   .date, .day{
+    font-weight: 300;
+
+    font-family: merriweather;
+   font-size: .9em; 
+    color: brown;
+    font-family: times;
+   left: 24px;
+   margin-bottom: 1px;
+    }
+  .subtitle{
+
+  	font-size: 1.4em;
+    text-align: right;
+    color: brown;
+    z-index: 3;
+    font-family: times;
+    @apply(--layout-block);
+    @apply(--layout-vertical);
+
+
+  }
+  .top-header{
+  	display: flex;
+  }
+     .bar{
+      min-width:268px; 
+      height: 1px;
+      background:silver;
+  
+      margin-left: 22px;
+  	padding: 0px;
+      margin-right: 22px;
+      max-height: 1px!important;
+      margin-top: -7px;
+      
+      /*width: auto;*/
+    }
+
 .mini-header{
 	padding: 2px; 
 	border-bottom: silver solid 1px; 
@@ -31,29 +102,153 @@
 	@apply(--layout-block);
 	@apply(--layout-justified);
 }
-.header-rows{
+
+.headerRow{
 	@apply(--layout-horizontal);
-	@apply(--layout-block);
+	@apply(--layout-flex);
+	@applay(--layout-justified);
+	
+
+}
+.titleReverse{
+	
+
+}
+.rowSpacer{
+	visibility: hidden;
+	opacity: 0;
+}
+
+.first{
+	margin-left: 18px;
+	@apply(--layout-left-justified);
+}
+.top{
+	
+	padding-top:14px;
+
+}
+.tools {
+	font-size:1.225em;
+}
+
+.afterbar{
+	margin-top: -7px;
+	padding-bottom: 0px;
+}
+
+.middle{
+	@apply(--layout-around-justified);
+}
+
+.end{
+	margin-right:18px;
+	@apply(--layout-end-justified);
+}
+section{
+	padding: 2px 4px 0px 4px;
+	@apply(--layout-horizontal);
+
+	@apply(--layout-flex);
 	@apply(--layout-justified);
 }
 </style>
 
 <iron-media-query full="true"></iron-media-query>
-	<div class$="{{headerClass}}" hidden$="{{sectionsHidden.zero}}" style$="height:{{headerHeight}}px!important;">
-		<template is="dom-repeat" items="{{widgetRows}}" as="row">
-		    <section hidden$="[[row.hidden]]" class="header-rows">
-		    		<template is="dom-repeat" items="{{headerWidgets}}">
-		     				<span on-tap="{{item.name}}" class$="[[item.name]]" style$="[[_computeStyle(item.name)]]">[[item.value]]</span>
-		     		</template>
-		    </section>
+	<div class$="{{headerClass}}" style$="height:[[headerHeight]]px!important;">
+		<template is="dom-repeat" items="{{multiLayerArray}}" as="row">
+		    <div class="headerRow"> 
+		    	<template is="dom-repeat" id="headerSectionRepeater" items="{{row}}" filter="myResizeFilter" observe="shown fontSize">	
+     				<section hidden$="{{_computeHidden(item.menu, item.row, item.shown)}}" class$="[[item.class]] [[_computedClass(item.row, item.column, item.class)]]" style$="font-size:[[_computeFontSize(item.fontSize, item.type)]]px;; height:{{_computeHeight(item.row, item.totalRows, headerHeight)}}px!important;">
+     				&nbsp;[[item.text]] &nbsp;
+     				</section>
+     				<template is="dom-if" if="[[item.menu]]">
+						<fc-tab-menu class="layout flex-10 justified vertical self-stretch" style="width: 100%;"local-dashboard="{{localDashboard}}">
+ 						</fc-tab-menu>
+     				</template>
+		    
+		     	</template>
+		    </div>
 		</template>
 	</div> 
 	  	<fc-check-menu id="dropdownMenu" list-type="[[menuType]]"  forms-display="{{menuItems}}" style="position: fixed; z-index: 1000000;" hidden$="{{!showMenu}}"></fc-check-menu>
 </template>
 <script>
+FcHeader=Polymer({
+	is:"fc-header",
+	behaviors: [FCBehaviors.FcHeaderBehavior],
+	properties:{
+		rows: {
+			type: Number, 
+			value: function(){return 4;},
+			notify: true
+		},
+		columns:{
+			type: Number, 
+			value: function(){return 3;},
+			notify: true	
+		},
+		
+		multiLayerArray:{
+			type: Array,
+			value:function(){return [];},
+			notify: true,
+
+		},
+		localDashboard:{
+			type: Object,
+			notify: true,
+
+		},
 
 
+	},
+	
+	_computedClass(row,col, cls){
+		var rowVal=(row===1)?"top":"not"
+		var colVal=(col==1)?"first":(col==2)?"middle":(col===3)?"end":"flat";
+		var classVal=(cls.match("title"))?"reverse": "not";
+		var retVal=rowVal+" " +colVal+"  "+classVal;
+		return retVal;
+	},
+	
+	observeContainerHeight(){},
+	_computeHidden(menu, row){
+			console.log(this.containerWidth, "salmon");
+		
+		var wordarray= ["zero","one","two","three","four","five","six"];
+		var roe=wordarray[row];
+		console.log("turkey", roe);
+		console.log(this.sectionsHidden[roe], roe);
+		var retVal= this.sectionsHidden[roe];
+		if(menu==true){return menu;}
 
+		return retVal;
+		// }
+	},
+	_computeTextSize(one, two, three, four){
+			//create sizing behavior
+
+			return four;
+
+	},
+	
+	myResizeFilter:function(item){
+		console.log(!item.shown, "lowDown"); return !item.shown;
+
+	},
+	_computeHeight(row, rows, height){
+		retVal=(row===rows)?26:height;
+		return retVal;
+	}, 
+	titleObserver(nv,ov){
+
+	},
+	subTitleObserver(nv,ov){
+
+	},
+
+});
 </script>
 </dom-module>
 

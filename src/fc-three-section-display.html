@@ -1,28 +1,23 @@
 
 
 
-
-
+<link rel="import" href="../fc-app-elements/fc-animated-header/fc-header.html">
+<link rel="import" href="../fc-app-elements/fc-resizer/fc-resizer.html">
 <link rel="import" href="../fc-app-elements/fc-animated-header/fc-animated-header.html">
 <!-- <link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-light.html">  -->
 <dom-module id="fc-three-section-display">
 <template>
 <style>
 :host{
-	position: relative;
+	position: absolute;
 	overflow:hidden;
-
-/*margin-top:-150px;
-	margin-bottom: -150px;*/
 	background: white;
 	box-shadow: 4px 11px 21px 7px #9fafaf;
 	max-width: 110%;
 	right: 0px;
-	top:-1px;
+	top:0px;
 	bottom: -1px;
 	left: 0px;
-	/*padding: 150px 0px;*/
-	overflow-y: scroll;
 	@apply(--layout-vertical);
 	@appply(--layout-flex);
 }
@@ -36,78 +31,59 @@
             -webkit-margin-top-collapse: separate;
   }
 
-.container{
+.column-container{
 	position: static;
-	max-height: 2500px;
-	min-height: 2000px
+	max-height: 96vh;
+	min-height: 76vh
 	padding-bottom: 50%;
-	overflow-y: scroll;
-	margin-top: 8px;
+	
 	width: 100%;
-	overflow-x: hidden;
 	background: aliceblue;
-	border: solid 1px red;
-	@apply(--layout-wrap);
-	@apply(--layout-flex);
 	@apply(--layout-vertical);
+		@apply(--layout-wrap);
+	@apply(--layout-block);
 }
-.colummnOne{
-	max-height: 100%; 
-	margin-right: 12px; 
-	position: static;
-	bottom: -2px;
-	margin-bottom: 10px;
-	@apply(--layout-vertical);
-		@apply(--layout-flex);
-}
-.columnTwo{
-	max-height: 100%; 
-	margin-right: 12px; 
-	position: static;
-	margin-bottom: 10px;
-	bottom:-2px;
-	@apply(--layout-vertical);
-	@apply(--layout-flex);
 
-}
 .rightSideOfPanelResizer{
-	 display: flex;
+	position: relative;
+	display: flex;
 	 max-width:6px!important;
 	 margin-left: 2px;
 	 max-width: 6px!important;
 	 cursor:ew-resize;
-	 padding: 2px 1px 1px 12px;
-	 border-left: solid 2px white;
-	 border-right: solid silver 2px;
+	 padding: 2px 1px 1px 2px;
+	 border-left: solid 1px silver;
+	 border-right: solid silver 1px;
 	 opacity: 1;
-	 margin-right: -25px;
+	 padding-right: 9px;
 	 min-height: 19px;
 	 background: #eaeaea;
 	 z-index:10;
 	 	 height: auto;
 	 	 mask: luminance;
 	 	box-shadow: 4px 11px 21px 7px #9fafaf;
-	
+	overflow: hidden;
     visibility: visible;
     transition: visibility 0.2s 
-	@apply(--layout-flex);
+	@apply(--layout-block);
 	@apply(--layout-wrap);
 
 	}
 
   .fullPanel{
-  position:static;
+  position:relative;
   border-bottom: 1px silver solid;
-  overflow: hidden;
-  overflow-y: scroll;
+  overflow-x: hidden;
+  white-space: wrap;
   background: white;
-  display: Block;
+  height: 100%;
+
   @apply(--layout-vertical);
-	@apply(--layout-flex); 
+	@apply(--layout-block); 
 	@apply(--layout-wrap);
 }
 .horizontalResizer{
-	width: 140%;
+	max-width: 100%;
 	position: static;
 	background: silver;
 	border: 1px black solid;
@@ -115,160 +91,77 @@
 	cursor: ns-resize;
 	display: block;
 	z-index: 100;
+	margin-bottom: 1px;
 
 }
+#myPanel{max-height: 99vh;}
 
-.rightPanel{
-	position:static; 
-	height: 100%;
-	background: white;
-	border: 2px silver solid; 
- 	  overflow: hidden; 
- 	  	overflow-y: scroll;
-	@apply(--layout-vertical);
-	@apply(--layout-flex); 
 
-}
 </style>
 
-<div id="containerLeftDrawer" class="horizontal layout flex">
-	<div id="columnOne" class="columnOne">
-			<div id="myPanel" class="fullPanel vertical layout"> 
-				<fc-animated-header container-height="{{currentHeight}}" style="padding-left: 24px; padding-right: 24px; margin-left:-24px; margin-right: -24px;"container-width="{{currentWidth}}">
+	<div id="containerLeftDrawer" class="horizontal layout flex">
+			<div id="myPanel" class="fullPanel vertical layout">  
+				<fc-animated-header container-height="{{currentHeight}}" container-width="[[_computeContainerWidth(leftInnerWidth, currentLeft)]]">
 				</fc-animated-header>
-				
-				<div class="column container">
-				
+				<div class="column-container">
 					   <content select=".leftPanel">
-					   	
-
-
-
-
-
-
-
-
-
-
-
 					   </content>
 				</div>    
 		 	</div>
+			<fc-resizer resizer-type="leftRight" on-track="passTrack" left-inner-width="{{leftInnerWidth}}" class="leftRight"></fc-resizer>
+			<div class="vertical layout flex">
+				<div class="fullPanel vertical layout">
+					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" pattern="{{pattern}}" container-width="[[computeOuterWidth(currentLeft,leftInnerWidth)]]">		
+					</fc-header>	
+					<div class="column-container">
+			   				<content select=".centerPanel">
+			   				</content>
+			   			</div>
+				</div> 
+				<fc-resizer resizer-type="upDown" on-track="passTrack" class="upDown"></fc-resizer>
+				<div id="myPanel9" class="fullPanel vertical layout"> 
+					<fc-animated-header container-height="{{currentHeight}}" container-width="[[currentWidth]]">
+					</fc-animated-header>		
+					<div class="column-container">
+					   		<content select=".bottomPanel">
+					   		</content>
+					</div>    
+				</div> 	
+			</div>
 	</div>
-	<section on-track="_resize" hidden="{{!isResizing}}" class="rightSideOfPanelResizer"></section>
-<div class="vertical layout flex justified" style="padding-left: 24px; margin-right:-24px;">
-<div id="columnTwo1" class="columnTwo">	
- 	<div id="columnTwo" class="columnTwo">	
-		<div class="rightPanel vertical layout justified">
-			<fc-animated-header container-height="{{currentHeight}}" container-width="{{computeContainerWidth(maxCurrentWidth, currentWidth)}}"></fc-animated-header>
-			<div class="column container" style="border: ridge 6px red;">
-			
-
-			<!-- <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector>  -->
-<!--       <neon-animated-pages id="pages" selected="0"  class="layout center-justified" style="margin-top:{{centerHeaderHeight}}px;" entry-animation="[[centerEntryAnimation]]" exit-animation="[[centerExitAnimation]]"> -->
-          
- 
-
-			<iframe id="player" name="myIframe" type="text/html" width="{{width}}" height="{{height}}" class="flex layout vertical self-stretch: style="position: sticky;" src="http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com frameborder="0">
-			</iframe>
-
-
-
-   				<content select=".centerPanel">
-   					
-
-
-
-   				</content>
-<!--    			</neon-animated-pages>	 -->
-			</div> 
-		</div>
- 	</div>
-</div>
-<section on-track="_upDown" hidden="{{!isResizing}}" class="horizontalResizer"></section>
-<div id="containerLeftDrawer1" class="vertical layout flex justified" style="margin-right: -24px; padding-right: 24px;">
-	<div id="columnOne109" class="columnOne">
-			<div id="myPanel" class="fullPanel vertical layout"> 
-				<fc-animated-header container-height="{{currentHeight}}" container-width="{{currentWidth}}">
-				</fc-animated-header>		
-				<div class="column container">
-					   <content select=".bottomPanel">
-					   	
-
-
-
-					   </content>
-				</div>    
-		 	</div>
-	</div>
-</div>
-</div>
- </div>
 </template>
 <script>
 
-      // 2. This code loads the IFrame Player API code asynchronously.
-      var tag = document.createElement('script');
 
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player('player', {
-          height: '390',
-          width: '640',
-          videoId: 'M7lc1UVf-VE',
-          events: {
-            'onReady': onPlayerReady,
-            'onStateChange': onPlayerStateChange
-          }
-        });
-      }
-
-      // 4. The API will call this function when the video player is ready.
-      function onPlayerReady(event) {
-        event.target.playVideo();
-      }
-
-      // 5. The API calls this function when the player's state changes.
-      //    The function indicates that when playing a video (state=1),
-      //    the player should play for six seconds and then stop.
-      var done = false;
-      function onPlayerStateChange(event) {
-        if (event.data == YT.PlayerState.PLAYING && !done) {
-          setTimeout(stopVideo, 6000);
-          done = true;
-        }
-      }
-      function stopVideo() {
-        player.stopVideo();
-      }
 FcThreeSectionDisplay=Polymer({
 	is: "fc-three-section-display",
 	behaviors:[
 	Polymer.IronResizableBehavior,
 	FCBehaviors.FocusedDataManagerBehavior],
 	properties: {
-		currentLeft:{
+		leftInnerWidth:{
 			type: Number,
-			value: function(){}
+			value: function(){return 290;},
+			notify: true
 		},
-		currentWidth: {
-			type: Number,
-			value: function(){return 400;},
-			notify: true,
-
-		},
-		topPanelMargin:{type: Number,notify: true},
-		bottomPanelMargin:{type: Number,notify: true},
 		maxCurrentWidth:{
 			type: Number, 
 			notify: true, 
+			observer: "observeMaxCurrentWidth",
+		},
+		pattern:{
+			type: String,
+			notify: true
+
+		},
+		currentLeft:{
+			type: Number,
+			notify: true,
+		},
+		currentWidth: {
+			type: Number,
+			notify: true,
+
 		},
 		_notifyingDescendant: {
         	type: Boolean,
@@ -280,26 +173,12 @@ FcThreeSectionDisplay=Polymer({
 			value:function(){return 500;},
 			notify: true
 		},
-		maxHeight:{
-			type: Number,
-		value: function(){return 1400;},
-			notify: true,
-
-
-		},
-		counter:{type: Number, value: function(){return 0;}, notify: true,},
-		maxHeight:{
-			type: Number,
-		value: function(){return 65;},
-			notify: true,
-
-
-		},
+	
 		totalHeight:{
 			type: Number, 
 			notify: true,
 		},
-		windowHeight:{
+		windowWidth:{
 			type: Number,
 			notify: true,
 
@@ -312,62 +191,59 @@ FcThreeSectionDisplay=Polymer({
 			type: Number,
 			value:function(){return 0;},
 			notify: true,
-
-
 		},
-		topPanelMargin:{
-			type: Number,
-			value: function(){return -402;},
+		localDashboard:{
+			type: Object,
 			notify: true,
-
 		},
-		bottomPanelMargin:{
-			type: Number,
-			value: function(){return 402;},
-			notify: true,
-
-		},
+		
 
 		isResizing:{
 			type: Boolean,
 			notify: true,
 			value:function(){return true;},
 		},
-		centerEntryAnimation:{
-				value: "fade-in-animation",
-				notify: true,
-
-		},
-		centerExitAnimation:{
-				value: "fade-out-animation",
-				notify: true,
-		},
+	
 
   },
   ready(){
-
-
-var player;
-function onYouTubeIframeAPIReady() {
-  player = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    videoId: 'M7lc1UVf-VE',
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-
+  },
+  attached(){},
+  observeMaxCurrentWidth(newValue, oldValue){
+  	if(newValue){
+  		console.log(newValue, "max width left drawer");
+  	}
 
   },
-  attached(){
-  	this.$.columnOne.style.width=this.currentWidth+"px";
-  	
+  passTrack(e){
+  	e.target._resize(e);
   },
 
+
+      computeContainerWidth(max, left, display){
+      	console.log(max, left, display, "in triple 224");
+      	var width=(display=="first")?left:max-left;
+      	console.log(width, "here is passed value")
+      	return width;
+      },
+      _computeContainerWidth(inner, left){
+      	console.log(inner, left, "HERE FOR WIDTH, likely second nan or undef");
+    var retVal = (inner<=left)?inner:left;
+      	return retVal;
+      },
+      computeOuterWidth(total,inner){
+      	var retVal=total-inner;
+      	console.log(retVal, "header interested in");
+      	return retVal;
+
+      },
+
+
+      
+});
+</script>
+</dom-module>
+<!--
 
  	 _resize: function(e){
           e.preventDefault();
@@ -375,23 +251,26 @@ function onYouTubeIframeAPIReady() {
            var next=Polymer.dom(resizer).nextElementSibling;
               next.style.width="auto";
            var elem=Polymer.dom(resizer).previousElementSibling;
-           var width=this.currentWidth;        
+           var max=this.currentWidth;   
+           elem.style.width=this.leftInnerWidth.toString() +"px";
+           console.log(max, this.leftInnerWidth, elem.style.width, this.maxCurrentWidth);     
           switch(e.detail.state) {
                 case 'start':  
                 break;
                 case 'track':
                 next.style.width="auto";
-                  var nwidth = parseInt(elem.style.width) + e.detail.ddx;
-      			  var max=this.maxCurrentWidth-10;
-                  var nwidth2=(nwidth<50)?50:(nwidth>=max)? max:nwidth;
-                  var trueWidth = nwidth2.toString()+'px';  
-                  this.set("currentWidth",nwidth2);
+                  var width = parseInt(elem.style.width) + e.detail.ddx;
+      			  var width2=(width<50)?50:(width>=max)? max:width;
+                  var trueWidth = width2.toString()+'px';  
+                  // this.set("currentWidth",nwidth2);
                   elem.style.width= trueWidth;
-                  next.marginLeft=(nwidth2-width).toString(); + "px";
+                  this.set("leftInnerWidth",width2);
+                  console.log(width2-width, "this is the width");
+                  next.marginLeft=(width2-width).toString(); + "px";
                 break;
                 case 'end':
                  	elem.style.width= trueWidth;
-                 	this.set("currentWidth", nwidth2);
+                 	//this.set("currentWidth", nwidth2);
                   	Polymer.dom.flush();
                   	resizer=null;
               	elem=null;
@@ -405,7 +284,62 @@ function onYouTubeIframeAPIReady() {
             var next=Polymer.dom(resizer).nextElementSibling;
             var elem=Polymer.dom(resizer).previousElementSibling;
             var neg=window.innerHeight;
-            var elemMargin;
+            var max=Math.ceil(window.innerHeight-18);
+            var min=18;
+            var eheight =parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
+	            var nexHi=parseInt(window.getComputedStyle(elem, null).getPropertyValue("height"));
+       
+        if(parseInt(elem.style.height)==NaN&&parseInt(next.style.height==NaN))
+        	{
+        		var elemNumHt=(Math.ceil(.65*(neg))-10),
+        		nextNumH=(Math.floor(neg*.35));
+        	elem.style.height=elemNumHt.toString()+"px";
+        	next.style.height=nextNumHt.toString()+"px";
+        	var tot=elemNumHt+nextNumHt;
+        	 console.log(elem.style.height,"<--elemheight", next.style.height, eheight,"<--elemHeight", nexHi, "heights");
+        	} 
+        else if(typeof nexHi ==="number" && eheight==NaN){eheight=neg-10-nexHi;}
+        else if(typeof eheight ==="number" && nexHi==NaN){nexHi=neg-10-eheight;}
+            	this.set("counter",this.counter++);
+           		var incrementChange;
+            	var bottom=nexHi;
+           		 var top=eheight;
+           		 console.log(top, top, top, bottom, bottom, bottom, "TOP");
+           		 e.preventDefault();
+            console.log(elem.style.marginBottom, next.style.marginBottom);
+        switch(e.detail.state){
+            case 'start':
+               // next.style.height=bottom.toString()+"px";
+               // elem.style.height=top.toString()+"px";
+            break;
+            case 'track':
+	          
+	          top=(top>max+2)?max:(top<min-2)?min:top+e.detail.ddy;
+	           bottom=window.innerHeight-top;
+	           var bottomString=bottom.toString()+"px";
+	           var topString=top.toString()+"px";
+	           next.style.height=bottomString;
+	           elem.style.height=topString;
+	           Polymer.dom(next).setAttribute("style.height", bottomString);
+	           Polymer.dom(elem).setAttribute("style.height",topString);
+	           resizer.style.bottom=(bottom+7).toString()+"px";
+	           resizer.style.top=topString; 
+	       
+           		 console.log(top, top, top, bottom, bottom, bottom, "TOP");
+			break;
+            case 'end':
+        
+              	Polymer.dom.flush();
+              	this.translate3d(0,0,0,elem);
+              	this.translate3d(0,0,0,next);
+              	this.translate3d(0,0,0,elem);
+              	console.log(elem.style.height, next.style.height);
+            break;
+            }
+     	
+        },
+
+var elemMargin;
             var nextMargin;
             var visibleBottom;
          next.style.marginBottom=this.bottomPanelMargin+"px";
@@ -484,15 +418,7 @@ function onYouTubeIframeAPIReady() {
             }
      	
         },
-      computeContainerWidth(max, current){
-      	var width=Math.floor(max-current-80);
-      	return width;
-      }
-      
-});
-</script>
-</dom-module>
-<!--
+
 
 		displayedDateObject:{
 				type:Object,

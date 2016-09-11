@@ -100,7 +100,12 @@ Custom property                          | Description                          
 
         leftDrawerCurrentWidth:{
           type: Number, 
-          notify: true ,
+          notify: true,
+          observer:"observeLeftWidth",
+        },
+        maxLeftCurrentWidth:{
+          type: Number,
+          notify: true,
         },
 
         _narrow:{ 
@@ -129,8 +134,18 @@ Custom property                          | Description                          
       },
 
       observers: [
+      'leftSetter(maxLeftCurrentWidth, leftDrawerCurrentWidth)'
        // 'resetLayout(_narrow, isAttached)'
       ],
+      leftSetter(max, left){
+        if(max&&left&&max!=NaN&left!=NaN&&max!=undefined&&left!=undefined){
+          if(left>max){
+            this.set("leftDrawerCurrentWidth", max);
+          }
+        }
+
+
+      },
 
        observeWindowWidth(windowWidth,oldVal){
         var right=380;
@@ -189,6 +204,13 @@ Custom property                          | Description                          
 
           this.notifyResize();
         });
+      },
+
+      observeLeftWidth(newVal, oldVal){
+        if(newVal&&newVal!=undefined){
+            console.log(newVal, oldVal,"leftWidth");
+        }
+
       },
 
       _computeMediaQuery: function(forceNarrow, responsiveWidth) {

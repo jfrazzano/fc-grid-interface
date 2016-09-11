@@ -8,6 +8,7 @@
 <link rel="import" href="../../bower_components/iron-a11y-keys/iron-a11y-keys.html">
 <link rel="import" href="fc-iss-input-behavior.html">
 <link rel="import" href="fc-iss-input-css-shared-styles.html">
+<link rel="import" href="fc-iss-parts/fc-checked-menu-shared-styles.html">
 
 <dom-module id="fc-iss-input">	
 <template>
@@ -30,9 +31,9 @@
                               <span on-up="focusInput" class$="{{_computeLabelSpanClass(isToggle,toggleClass,issClass)}}">{{issLabel}}
                               </span>
                          </label>
-                    	<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
+                     	<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
                     		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
-                    					   <paper-item class$="block {{issClass}}" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection"> <!-- hidden="{{!item.selectCheck}}" &#10148;-->
+                    					   <paper-item class$="block {{issClass}}" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">  <!-- hidden="{{!item.selectCheck}}" &#10148;-->
                                         <span  class="check">[[_computeSelectCheck(item.selectCheck, option)]]</span>
                                         <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
                                   </paper-item>

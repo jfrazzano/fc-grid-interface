@@ -1,0 +1,95 @@
+     
+<link rel="import" href=",,/fc-iss-parts/fc-parts-import-links.html">
+<link rel="import" href="../fc-iss-input-css-shared-styles.html">
+<link rel="import" href="fc-checked-menu-shared-styles.html">
+
+     <dom-module id="fc-iss-menu">
+     <template id="fc-iss-menu-template">	
+
+     <style is="custom-style" include="[[whichStyle]]"></style>
+
+
+				
+
+     					<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
+                    		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}})" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
+                    					   <paper-item class$="block {{issClass}}" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
+         								<span  class="check">[[_computeSelectCheck(item.selectCheck, option)]]</span>
+                                        <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
+                                  </paper-item>
+                    		 		</template>
+                    	</paper-listbox>
+     </template>
+     </dom-module>
+     <script>
+     FcIssMenu=Polymer({
+     	is:"fc-iss-menu",
+     	behaviors:[FCBehaviors.FcCheckedMenuBehavior, FCBehaviors.FcIssInputBehavior, FCBehaviors.FocusedDataManagerBehavior],
+     	observers:[observerFormDisplaysAndDdItems(dropdownItems, formsDisplay)]
+     	property:{
+     		typeOfMenu:{
+     			type: String,
+     			value: function(){return "issDropdown";},
+     			notify: true
+
+     			},
+     			parentOnFirstElementChildStamp:{
+     					type:Object,
+     					notify: true,
+     			},
+     			siblingOneBeforeNodeStamp:{
+
+     				type:Object,
+     				notify: true,
+
+     			},
+     			whichStyle:{
+     				type: String,
+     				computed: "_computeWhichToImport(typeOfMenu)",
+     				notify: true,
+     			}
+
+
+     },
+
+     _computeWhichToImport(menu){
+     	var retVal=(menu=="issDropdown")?"fc-iss-input-css-shared-styles":"fc-checked-menu-shared-styles";
+     	return retval;
+
+     },
+
+
+
+     });
+     </script>
+
+
+     <!-- Want to morph this into the item
+
+     			<paper-item hidden$="{{!item}}" class$="[[listType]] horizontal layout flex self-stretch" name="[[item.name]]" selected-checked="{{item.selectedChecked}}" on-tap="makeSelection" attr-for-selected="value" value$="[[item.value]]">  
+                    <section class="horizontal layout checkHolder" hidden$="[[_computeHiddenCheck(listType)]]">
+                            <section class="checkmark" hidden$="[[!_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]">
+                            ✅
+                            </section>
+                            <section hidden$="[[_computeSelectedCheck(item.selectedChecked, mySelected, item.value, listType)]]" class="checkmark" style="font-size: 1.75em;" >
+                            [[item.checkbox]]
+                            </section>
+                            <section class="checkmark" style$="font-size:[[item.fontEm]]em;">
+                            [[item.symbol]]
+                            </section>
+                    </section>
+                    <paper-item-body class="layout vertical flex-7">
+                        <section class$="label [[listType]]" style$="font-weight:[[computeFontSelected(item.selectedChecked, mySelected, item.value, listType)]];">
+                            [[item.label]]
+                        </section>
+                            <details hidden$="[[computeDetails(listType)]]" open="[[computeOpened(listType)]]">
+                                <summary hidden$="[[summHidden]]">Show Details</summary>
+                                <section class$="[[listType]]" style$="font-weight:[[computeFontSelected(item.selectedChecked, mySelected, item.value, listType)]]">[[item.text]]</section>
+                            </details>
+                    </paper-item-body>       
+                </paper-item>
+
+
+
+
+

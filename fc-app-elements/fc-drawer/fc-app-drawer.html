@@ -173,10 +173,10 @@ Custom property                  | Description                            | Defa
 
     <div id="scrim" on-tap="close"></div>
 
-    <div id="contentContainer" style$="width:{{_computeDrawerCurrentWidth(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px;background:white;">
+    <div id="contentContainer" style$="width:{{_computeDrawerCurrentWidth(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px; background:white;">
       
 
-       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize"  style$="position: relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:6px!important; height:120vh; cursor:ew-resize; padding: 1px; width: 6px!important; opacity: 1; border-right: 2px solid #aecefe; z-index: 965; border-right: silver solid 2px;  padding-right: 12px; background: white;" is-resizing dragging draggable>
+       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize"  style$="position:relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:8px!important; height:120vh; cursor:ew-resize; padding: 1px; width: 8px!important; opacity: 1; border-right: 2px solid #aecefe; z-index: 965; border-right: silver solid 2px;  padding-right: 14px; background: white;" is-resizing dragging draggable>
     </section>
 
 <div hidden$="{{computeContentHidden(widthOfContent)}}" style$="position:static; {{_computeDrawerCurrentWidthLess(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px;">
@@ -184,7 +184,7 @@ Custom property                  | Description                            | Defa
       <content></content>
 </div>
 
-     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize"  style$="position:relative; right:{{dashBoardRightDrawerCurrentWidth}}px; left: -10px; bottom:-40px; top: -40px; min-width: 6px; height: 120vh; background: white; cursor:ew-resize; padding: 1px; width:8px!important; opacity:1; border-left: 2px solid silver; z-index:965; padding-left: 8px; margin-left: -2px;" is-resizing dragging draggable>
+     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize"  style$="position:relative; right:{{dashBoardRightDrawerCurrentWidth}}px; left: -8px; bottom:-40px; top: -40px; min-width: 6px; height: 140vh; background: white; cursor:ew-resize; padding: 1px; width:8px!important; opacity:1; border-left: 2px solid silver; z-index:965; padding-left: 8px; margin-left: 2px;" is-resizing dragging draggable>
       </section>
 
     </div>
@@ -206,10 +206,14 @@ FcAppDrawer=Polymer({
 
           notify: true
         },
+        maxLeftCurrentWidth:{
+          type: Number, 
+          notify: true,
+        },
         drawerCurrentWidth:{
           type: Number,
           notify: true,
-          observer:"obsereDrawerCurrentWidth",
+          observer:"observeDrawerCurrentWidth",
           reflectToAttribute: true,
         },
         dragState:{
@@ -748,24 +752,26 @@ FcAppDrawer=Polymer({
        * @event app-drawer-transitioned
        */
 
-obsereDrawerCurrentWidth(nv, ov){
+observeDrawerCurrentWidth(nv, ov){
 if(nv){
- // console.log(nv,ov);
-}},
+  console.log(nv,ov);
+  }
+},
     _resize: function(e){
             e.preventDefault();
             this.isResizing=true;
 
              var nId=e.target.attributes.id.value.split("_"), elem=this.$.contentContainer;
-            // this.set("theMovingElement",elem);
-           var maxWidth=window.innerWidth-40;
-
-          //  console.log(maxWidth);
+             console.log(nId);
+             if(nId[0].match("Left")){var maxWidth=this.maxLeftCurrentWidth+4;}
+             else{
+              }
+             console.log(maxWidth);
             this.set("maxWidth",maxWidth);
             //console.log(width);
             var width=this.maxWidth;
             //console.log(width);
-            var height=Math.floor(parseFloat(window.screen.height)*.999);
+            var height=Math.floor(parseFloat(window.innerHeight)*.999);
             if(this.isResizing===true){
               var widthString=nId[0]+"CurrentWidth";
             switch(e.detail.state) {
@@ -780,6 +786,12 @@ if(nv){
                     var nwidth=this[widthString]+parseFloat(change[0]),
                     oppositeSide="dashboard"+change[1].toString()+"DrawerCurrentWidth";
                     var trueWidth=(nwidth<25)?25:(nwidth>width*.98)? Math.floor(width*.98):nwidth;
+                    console.log(trueWidth, this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth, "left drawer");
+                    if(widthString.match("Right")&&(trueWidth+this.dashboardLeftDrawerCurrentWidth>=window.innerWidth)){
+                      var newleft=window.innerWidth-trueWidth;
+                      console.log("inn if");
+                      this.set("dashboardLeftDrawerCurrentWidth",newleft);
+                    }
                    
                     this.set([widthString],trueWidth);
                  //   console.log(this.dashboardLeftDrawerCurrentWidth, this.dashboardRightDrawerCurrentWidth);

@@ -1,0 +1,11 @@
+     <dom-module id="fc-iss-input-menu"					
+
+
+     					<paper-listbox id="dropdownlist" class$="dropdown-content {{issClass}}" hidden="{{!dropdownItems}}" style$="min-height:220px; max-height:{{maxHeight}}px; overflow-y: scroll;">
+                    		 		<template is="dom-repeat" id="controllerList" style="height: 2200px;" items="{{dropdownItems}}" observe="selectCheck value name propertyName val" filter="{{createFilter(issValue, searchOff)}}">
+                    					   <paper-item class$="block {{issClass}}" name="{{_computeItemSelectedPropertyName(item, index,itemSelectedProperty)}}" value-object="{{item}}" value="{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}" on-up="toggleSelection">
+         								<span  class="check">[[_computeSelectCheck(item.selectCheck, option)]]</span>
+                                        <span>{{_computeItemSelectedPropValue(item,index, itemSelectProperty)}}</span>
+                                  </paper-item>
+                    		 		</template>
+                    	</paper-listbox>
