@@ -4,6 +4,7 @@
 <link rel="import" href="../fc-app-elements/fc-animated-header/fc-header.html">
 <link rel="import" href="../fc-app-elements/fc-resizer/fc-resizer.html">
 <link rel="import" href="../fc-app-elements/fc-animated-header/fc-animated-header.html">
+<link rel="import" href="../fc-app-elements/fc-passage-display/fc-passage-display.html">
 <!-- <link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-light.html">  -->
 <dom-module id="fc-three-section-display">
 <template>
@@ -44,7 +45,7 @@
 	@apply(--layout-block);
 }
 
-.rightSideOfPanelResizer{
+.leftRight{
 	position: relative;
 	display: flex;
 	 max-width:6px!important;
@@ -111,7 +112,7 @@
 			<fc-resizer resizer-type="leftRight" on-track="passTrack" left-inner-width="{{leftInnerWidth}}" class="leftRight"></fc-resizer>
 			<div class="vertical layout flex">
 				<div class="fullPanel vertical layout">
-					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" pattern="{{pattern}}" container-width="[[computeOuterWidth(currentLeft,leftInnerWidth)]]">		
+					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" pattern="{{pattern}}" view-array="{{}}" container-width="[[computeOuterWidth(currentLeft,leftInnerWidth)]]">		
 					</fc-header>	
 					<div class="column-container">
 			   				<content select=".centerPanel">

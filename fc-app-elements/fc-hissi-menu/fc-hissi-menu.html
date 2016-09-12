@@ -1,6 +1,17 @@
   <link rel="import" href="../../bower_components/paper-tabs/paper-tabs.html">
   <link rel="import" href="../../bower_components/paper-tabs/paper-tab.html">
+    <link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
 
+
+    <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/device-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+    <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/notification-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
   <dom-module id="fc-hissi-menu">
   <template>
   <style>
@@ -312,9 +323,10 @@ FcHissiMenu=Polymer({
         var firstbss=bss[0]
       	var last=glowing[lastm];
       	var first =glowing[0];
-      	var firstListener = this.addEventListener(firstbss);
       	
-      	var lastlistener = this.addEventListener(lastbss);
+      	// var firstListener = this.addEventListener(firstbss, );
+      	
+      	// var lastlistener = this.addEventListener(lastbss);
       	
         var distanceR= elemCon.getBoundingClientRect().right;
       	var dist2L = elemCon.getBoundingClientRect().left;

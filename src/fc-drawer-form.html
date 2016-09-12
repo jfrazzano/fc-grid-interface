@@ -259,27 +259,18 @@ position: absolute;
     </app-route> -->
 
   <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;padding: 4px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
+
+         <content></content>
 <div class="column-container">
 
   
-    <div class="header" hidden$="{{hideHeader}}" style$="margin-bottom: 0px; margin-left: 4.5px; z-index: 11; background: white; height:{{headerHeight}}px;">
-      <section class="horizontal layout block">
-    <span class="title" style$="font-size:{{titleFontSize}}px;top:{{titleTop}}px; padding-left: 4.5px;">{{_computeTitle(pageType, currentInnerWidth)}}</span>
-    </section>
-             <section class="bar"></section>
-        <section class="horizontal layout flex middleheader">
-          <span btn="leftClick" class="timestamp">
-                [[time]] on [[date]]
-          </span>
-            <span btn="rightClick" class="subheading"><span class="byebye">Page</span> {{shadowIndex}} of {{pageTotal}}</span>
-        </section>
-        </div>
  <div id="outerContentContainer" class="layout vertical center-justified" style$="width:calc({{_computeCurrentWidth(currentInnerWidth)}}+125)px; min-height:117vh; overflow-y: scroll;"  on-scroll="handleHeaderOnScroll" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}">
-         <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector> <!--removed margin-top for the new headers-they dont rely on the -150 margins-->
+<!--  <content></content> -->
+         <array-selector id="inputsArraySelector" items="{{dataSelected}}" selected="{{_computeSelected(dataSelected)}}"></array-selector>
       <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
           <div id="innerContainer1" class="container1">
-              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; left: 1px; padding-right: 18px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; padding-left: 21px; padding-right: 18px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
                <fc-call-center-form form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
                 </fc-call-center-form> 
               </div>

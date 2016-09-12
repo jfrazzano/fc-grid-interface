@@ -1,4 +1,4 @@
-<dom-module id="fc-time-keeper">
+<dom-module id="fc-time-keeper-primitive">
 <template>
 <style>
 	:host{
@@ -428,7 +428,7 @@ class FcClock
 	}
 };
 Polymer({
-	is: "fc-time-keeper",
+	is: "fc-time-keeper-primative",
 	listeners:{"on-tap": "addAlarm", "buttNew.tap": 'displayDatePicker'},
 	properties: {
 		currentClock: {
@@ -723,7 +723,7 @@ Polymer({
 	attached: function()
 	{	this.$.myAlarmNoise.muted=false;
 		this.initializeClocks();
-		this.$.myAlarmNoise.play();	
+		//this.$.myAlarmNoise.play();	
 	},
 //setting clocks and clock arrays and initialization from ready and attached
 	setClockConstructor:function(){

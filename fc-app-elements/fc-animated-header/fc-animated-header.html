@@ -108,7 +108,7 @@ left:12px;
 		    </section>
 		    <section hidden$="{{sectionsHidden.three}}" class="horizontal layout end justified">
 		    			
-		    			<section btn="changeAppInterfaceForInputs" class="title end justified" style$="top:{{titleTop}}px; font-size:{{titleFontSize}}px; margin-bottom:-4px;">{{_computeTitle(title, subtitleFontSize, containerWidth)}}</section> 
+		    			<section btn="changeAppInterfaceForInputs" class="title end justified" style$="top:{{titleTop}}px; font-size:{{titleFontSize}}px; margin-bottom:-4px;">{{_computeTitle(title, subtitleFontSize, contaconsoleinerWidth)}}</section> 
 
 		    			<section btn="rightClick" hidden$="{{subTitleHidden}}" class="subTitle layout block" style$="margin-bottom: calc(-2.5-({{subtitleFontSize}}/10))px; font-size:{{subtitleFontSize}}px;"> {{subTitle}}</section>
 		    </section>
@@ -283,7 +283,7 @@ Polymer({
       		type:Date,
       		value:function(){
           		var time=new Date().toLocaleTimeString();
-          		console.log(time);
+          		//console.log(time);
           		return time;
       		},
       	notify: true
@@ -389,9 +389,9 @@ Polymer({
 	},
 
 	attached(){
-		console.log(this.focusedManager.allSymbols, "SYMBOLS");
+		//console.log(this.focusedManager.allSymbols, "SYMBOLS");
 	var app=Polymer.dom(this.root).parentElement;
-		console.log(app);
+		//console.log(app);
 	},
 	seewhatsup(e){
 		this.set("menuType", "dropdown");
@@ -425,13 +425,13 @@ Polymer({
 		observeContainerWidth(newVal, oldVal){
 			if(newVal){
 				var parent = Polymer.dom(this).parentNode;
-				console.log(parent, "monkey", newVal);
+				//console.log(parent, "monkey", newVal);
 				var gp=parent.parentNode;
 				var parentHeight=parent.style.cssText;  //getBoundingClientRect().top;
 				var parentWidth=parent.style.cssText;   //getBoundingClientRect().bottom;
-				console.log(parentWidth,parentHeight, "see if this will work");
+				//console.log(parentWidth,parentHeight, "see if this will work");
 				var hh=Math.ceil(newVal*.1685);
-				console.log(hh);
+				//console.log(hh);
 				if(hh>120){hh=120;}
 				else{hh=hh;}
 				//console.log(hh, "loook here");
@@ -577,7 +577,7 @@ Polymer({
 	        
 	    var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
 
-	        console.log(scrollpercent);
+	        //console.log(scrollpercent);
 
 
 

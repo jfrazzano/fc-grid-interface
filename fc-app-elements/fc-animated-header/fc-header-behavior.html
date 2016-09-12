@@ -1,3 +1,4 @@
+<link rel="import" href="../../fc-grid/data-manager.html">
 <script>
 window.FCBehaviors = window.FCBehaviors || {};
 FCBehaviors.FcHeaderBehaviorImpl={
@@ -33,7 +34,7 @@ properties: {
 			}, 
 			notify: true,
 		},
-		titleFromInterface:{type: Boolean, value: function(){return true;},notify: true},
+		titleFromInterface:{type: String,notify: true},
 		canvasOne:{
     		type: Object,
     		value: function(){
@@ -61,7 +62,7 @@ properties: {
 		otherFonts:{
 			type: Object,
 			value: function(){
-				return {one: .64,two: .56,three: .45,four: .32,five: .18,
+				return {one: .64,two: .56,three: .46,four:.38,five: .18,
 				};
 			},
 			computed:"computeOtherFonts(titleFontSize)",
@@ -143,18 +144,17 @@ properties: {
 
 		title:{
 			type: String,
-			value: function(){return "Focus On Progress";},
 			notify: true,
 			observer: "titleObserver", 
 		}, 
 		propertyForTitle:{
 				type: String,
-			value: function(){return "focusOnProgress";},
+			computed:"_registerPropertyNameOfInterface(isTitleComputed,titleFromInterface)",
 			notify: true,
 		},
 		isTitleComputed:{
 			type: Boolean,
-			value: function(){return false;},
+			value: function(){return true;},
 			notify: true,
 		},
 		multiLayerArray:{
@@ -170,11 +170,14 @@ properties: {
 		},
 		subTitle:{
 			type: String,
-			value: function(){return "The Syllabus";},
 			notify: true,
 			observer: "subTitleObserver", 
 		}, 
-
+		notShow:{
+			type:Boolean,
+			value:function(){return false;},
+			notify: true,
+		},
 		subtitleFontSize:{
 			type: Number,
 			value:function(){return 18;}, 
@@ -189,6 +192,11 @@ properties: {
 		pageTotal:{
 			type: String, 
 			value: function(){return "4";},
+		},
+		subTitleFromProperty:{
+			type:String,
+			notify: true,
+			observer:"subTitlePropertyObserver",
 		},
 		date:{
 			  type: Date,
@@ -208,6 +216,12 @@ properties: {
       		},
       	notify: true
     	},
+    	notShown:{
+    		type: Boolean,
+    		value:function(){return false;},
+    		notify: true,
+
+    	},
 
 
 	},
@@ -217,17 +231,63 @@ properties: {
 
 
 	},
+
+
+	subTitlePropertyObserver(nv,ov){
+		if(nv&&nv!=undefined&&nv!=ov){
+			var label=this.focusedManager.propertyNameToLabel(nv);
+			label=label.toString();
+			this.set("subTitle",label);
+		}
+	},
+
+	//the below two should be one observer;
+	
+
+	 subTitleObserver(nv,ov){
+		if(nv&&nv!=undefined){
+			console.log("subtitles", nv, ov);
+			if(this.containerWidth>340){
+				this.setMultiArray();
+
+			}
+			else{this.setMultiArrayNarrow();}
+
+		}
+
+	},
+	titleObserver(newVal,oldVal){
+		console.log(newVal);
+		if(newVal && newVal!=undefined){
+			console.log(newVal);
+			if(this.containerWidth>340){
+				this.setMultiArray();
+
+			}
+			else{this.setMultiArrayNarrow();}
+
+		}
+	},
+
+	_registerPropertyNameOfInterface(isComputed,titleProp){
+		if(isComputed&&titleProp!=undefined){
+			var label=this.focusedManager.propertyNameToLabel(titleProp);
+			this.set("title", label);
+		
+		return titleProp;
+		}
+	},
 	computeOtherFonts(titleSize){
-		var one= Math.floor(.64*titleSize),
+		var one= Math.floor(.67*titleSize),
 			two=Math.floor(.56*titleSize),
-			three=Math.floor(.45*titleSize),
-			four=Math.floor(.32*titleSize),
-			five= Math.floor(.18*titleSize);
+			three=Math.floor(.46*titleSize),
+			four=Math.floor(.41*titleSize),
+			five= Math.floor(.32*titleSize);
 		return {one:one,two:two,three:three,four: four,five:five};
 	},
 
 	 _computeMinWidthHidden(cwidth){
-      var retVal=(cwidth-20<200)?true: false;
+      var retVal=(cwidth<110)?true: false;
       this.set("needToolsMenu", true);
       return retVal;//here an animated menu should replace the container 
   },
@@ -245,7 +305,7 @@ properties: {
 
    fitTextInDrawer(text, subtext, containerWidth){
     var size=this.maxTitleFontSize; 
-    var size2=Math.ceil(size/1.7);
+    var size2=Math.ceil(size/1.444);
     var c2=this.canvasTwo;	
     var c=this.canvasOne; 
     var ctx=c.getContext("2d");
@@ -271,6 +331,7 @@ properties: {
 
   observeContainerWidth(newVal, oldVal){
 		if(newVal){
+			console.log(newVal, oldVal, "lets make sure data is good, looks off");
 			var parent = Polymer.dom(this).parentNode;
 				console.log(parent, "monkey", newVal);
 			var hh=Math.ceil(newVal*.2285);
@@ -281,42 +342,34 @@ properties: {
 			var str=hh.toString()+"px";
 			console.log(str);
 			Polymer.dom(this).setAttribute("style.height", str);
-				if(newVal>480){
+				if(newVal>420){
 						this.set("sectionsHidden.one", false);
 					this.set("sectionsHidden.two", false);
 					this.set("sectionsHidden.six", false);
 
 				}
-				if(newVal<480){
+				if(newVal<420&&oldVal>419){
 					this.set("sectionsHidden.one", true);
-					this.set("sectionsHidden.two", true);
 					this.set("sectionsHidden.six", true);
 					console.log(this.headerHeight, this.style.height, this, "I AM SHRINKING HEADER");
 					// this.set("headerHeight", 4);
 					// Polymer.dom(this).setAttribute("style.height", "65px");
 
 				}
-				if(newVal>180){
-					this.set("sectionsHidden.zero", true);
-				}
-				if(newVal>280){
-					this.set("subTitleHidden",false);
-					}
-				if(newVal<280){
-					this.set("subTitleHidden",true);
+				if(newVal<340&&oldVal>339){
+					this.set("sectionsHidden.two", true);
 
 				}
-				if(newVal<275){
-					this.set("sectionsHidden.zero", true);
-					Polymer.dom(this).setAttribute("style.height", "28px");
-
-
+				if(newVal>339&&oldVal<340){
+					this.set("sectionsHidden.two", false);
 
 				}
+			
 				for(var i=0;i<7; i++){
 					var wordarray= ["zero","one","two","three","four","five","six"];
 					for(var j=0; j<3;j++){
 						this.set(["multiLayerArray",i,j,"shown"],this.sectionsHidden[wordarray[i]]);
+						
 						if(this.multiLayerArray&&this.multiLayerArray.length>0&&this.multiLayerArray[i]!=undefined&&this.multiLayerArray[i][j]!=undefined){
 
 							if(this.multiLayerArray[i][j].type=="mainTitle"){
@@ -327,16 +380,52 @@ properties: {
 							if(this.multiLayerArray[i][j].type==="subTitle"){
 							this.set(["multiLayerArray",i,j,"fontSize"],this.subtitleFontSize);
 							}
+					
+							if(this.multiLayerArray[i][j].type==="date"&&this.titleFontSize<22){
+								this.set(["multiLayerArray",i,j, "shown"], true);
+
+							}
+							if(this.multiLayerArray[i][j].type==="date"&&this.titleFontSize>21){
+								this.set(["multiLayerArray",i,j, "shown"], null);
+								this.set(["multiLayerArray",i,j, "shown"], false);
+
+							}
+							if(newVal<680 && oldVal>679 && this.multiLayerArray[i][j].type=="date"){
+							console.log(this.time, this.date, this.multiLayerArray[i][j].type, "WOOKEY");
+							var setter=this.time.toString();
+								// this.set(["multiLayerArray",i,j,"text"],null);
+								this.set(["multiLayerArray",i,j,"text"],setter);
+							}
+							if(newVal>680 &&oldVal<670 && this.multiLayerArray[i][j].type=="date"){
+							console.log(this.time, this.date, this.multiLayerArray[i][j].type);
+							var setter=this.time.toString()+ ", "+ this.date.toString();
+								// this.set(["multiLayerArray",i,j,"text"],null);
+								this.set(["multiLayerArray",i,j,"text"], setter);
+							}
+
 						}
 					}
+				}
+
+				if(newVal<340){
+					this.setMultiArrayNarrow();
+
+				}
+				if(oldVal<340&&newVal>339){
+					this.setMultiArray();
+
+
 				}
 			}
 		},
 
 		setMultiArray(){
+				this.set("notShown", false);
 				var dayVar=this.day;
 				var dateVar=this.date;
 				var timeVar=this.time;
+				var title=this.title;
+				var subTitle=this.subTitle;
 				var zero=this.sectionsHidden.zero;
 				var one=this.sectionsHidden.one;
 				var two=this.sectionsHidden.two;
@@ -362,24 +451,100 @@ properties: {
 											 {fontSize:"", text: "", shown: two, class: "rowSpacer", type: "spacer", row: 2, column: 3, funct:"", totalRows:  5, totalColumns: 3},
 										  ],
 										 [
-											{fontSize:"", text: 'Focus On Progress', shown: three, class: "title", type: "mainTitle", row: 3, column: 1, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: title, shown: three, class: "title", type: "mainTitle", row: 3, column: 1, funct:"", totalRows:  5, totalColumns: 3},
 											{fontSize:"", text: "", class: "", type: "", shown: three, row: 3, column: 2, funct:"", totalRows:  5, totalColumns: 3},
-											{fontSize:"", text: "The Syllabus", class: "subtitle", shown: three, type: "subTitle", row: 3, column: 3, funct:"", totalRows:  5, totalColumns: 3},
+											{fontSize:"", text: subTitle, class: "subtitle", shown: three, type: "subTitle", row: 3, column: 3, funct:"", totalRows:  5, totalColumns: 3},
 										 ],
 										 [
 										 	{type:"bar", class: "silver bar", shown: four, funct:"", totalRows:  4, row: 3, column: "na",totalColumns: 3}
 										 ],
 										 [
-										 	{fontSize:"", text: combined, class: "day date afterbar", shown: five, type: "text", row: 4, column: 1, funct:"", totalRows:  4, totalColumns: 3},
+										 	{fontSize:"", text: combined, class: "day date afterbar", shown: five, type:"date", row: 4, column: 1, funct:"", totalRows:  4, totalColumns: 3},
 											{menu: true, class:"afterbar", row: 4, column: 1, shown: five, funct:"", totalRows:  4},
 											{fontSize:"", text: "\⚙", class: "tools afterbar", shown: five, type: "toolsMenu", row: 4, column: 3, funct:"addToolMenuSlider", totalRows:  4, totalColumns: 3},
 										 ]
+										
 									];
 				this.set("multiLayerArray", val);
 								},
+	 setMultiArrayNarrow(){
+	 	var dayVar=this.day;
+				var dateVar=this.date;
+				var timeVar=this.time;
+					var title=this.title;
+					var subTitle=this.subTitle;
+				var zero=this.sectionsHidden.zero;
+				var one=this.sectionsHidden.one;
+				var two=this.sectionsHidden.two;
+				var three=this.sectionsHidden.three;
+				var four=this.sectionsHidden.four;
+				var five=this.sectionsHidden.five;
+				var six=this.sectionsHidden.six;
+				var combined=timeVar.toString() + " on " + dateVar.toString();
+				console.log(dayVar, dateVar, timeVar);
+				var val= [ 				[	
+											{row:0, totalRows: 5,shown:zero},
+											{row:0, totalRows: 5,shown:zero},
+											{row:0, totalRows: 5, shown:zero}
+										],
+										[
+											{fontSize:"16", text: '\☰ ' + title, class: "menuButton title", shown:three,  type: "textIcon mainTitle", row: 1, column: 1, funct:"", totalRows:  3, totalColumns: 3},
+											{fontSize:"", text: "", class: "spacer trigger", type: "api", row: 1, shown:three, column: 2, funct:"", totalRows:  3, totalColumns: 3},
+											{fontSize:"14", text: subTitle+ ' \⚙', class: "toolsMenu subtitle small",shown: three, type: "api", row: 1, column: 3, funct:this.revealMenu.bind(this), totalRows:  3, totalColumns: 3},
+										 ],
+										 [
+										 	{type:"bar", class: "silver bar", shown: four, funct:"", totalRows:  3, row: 2, column: "na",totalColumns: 3}
+										 ],
+										 [{menu: true, special: "slim"}
+										 ],
+
+									];
+
+					this.set("multiLayerArray", val);
+					this.set("notShown", true);
+	 },
 	_computeFontSize(size,type){
-		
+
+		if(type==="mainTitle" && this.titleFontSize<29){
+			var retVal=size.toString()+"px; padding-bottom: 2px!important; margin-bottom:1px!important; padding-top:12";
+			
+		}
+		else if(type==="spacer"&& this.titleFontSize<24){
+				var sizer=Math.floor(this.otherFonts.two);
+				var retVal=sizer.toString()+"px; padding:0px; margin:0";
+
+		}
+		else if(type==="date"){
+				if( this.titleFontSize<22){
+					var sizer=Math.floor(this.otherFonts.two);
+					var retVal="0px; display: none!important; opacity: 0; visibility: hidden; height: 0px; width:0px; padding: 0px; margin:0"; 
+					}
+					else{
+						var sizer=Math.floor(this.otherFonts.three);
+						var retVal=sizer.toString();
+					}
+		}
+		else if(type==="subTitle" && this.titleFontSize<26){
+			if(size>13){
+				var retVal=size.toString()+"px; padding-bottom: 4px!important; margin-bottom:4px!important; padding-top:12";
+			}
+			else { var retVal="13px; padding-bottom: 4px!important; margin-bottom:4px!important; padding-top:12";
+
+			}
+		}
+		else{
 			return size;
+		}
+		return retVal;
+	},
+	revealMenu(e){
+		this.set("notShown", !this.notShown);
+
+	},
+	_computeMenuHidden(notShown, row){
+		console.log(notShown, row);
+		var retVal=(notShown===true && row==true)? true: false;
+		return retVal;
 	},
 
 	determinHeightAndWidth(e){
@@ -387,13 +552,21 @@ properties: {
 		var width=Polymer.dom(this.root).getBoundingClientRect().width;
 		console.log(width, height, width, height, width, height, e, e, e);
 
-	}
+	},
+
+	  handleHeaderOnScroll(e){
+	        
+	    var scrollpercent = (this.scrollTop + this.$.innerContainer1.scrollTop) / (this.scrollHeight - this.$.innerContainer1.clientHeight);
+
+	        console.log(scrollpercent);
+
+	    },
 
 
 
 }
 
-FCBehaviors.FcHeaderBehavior=[FCBehaviors.FcHeaderBehaviorImpl];
+FCBehaviors.FcHeaderBehavior=[FCBehaviors.FocusedDataManagerBehavior, FCBehaviors.FcHeaderBehaviorImpl,];
 </script>
 
 

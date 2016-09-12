@@ -1,21 +1,36 @@
 
-<link rel="import" type="shared-styles" href="fc-time-keeper-shared-styles.html">
-<link rel="import" href="fc-time-keeper-behavior.html">
-<link rel="import" href="fc-time-keeper-digits.html">
+<!-- <link rel="import" type="shared-styles" href="fc-time-keeper-shared-styles.html"> -->
+<!-- <link rel="import" href="fc-time-keeper-behavior.html">  -->
+<!-- <link rel="import" href="fc-time-keeper-digits.html"> -->
  <link rel="import" href="../../fc-app-elements/fc-input-prime/fc-input-prime.html">
  <link rel="import" href="../../fc-app-elements/fc-hissi-menu/fc-hissi-menu.html">
  <link rel="import" href="../../fc-app-elements/fc-date-picker/fc-date-picker-dropdown">
- <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<!--  <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html"> -->
  <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
   <link rel="import" href="../../fc-app-elements/fc-draggable-behavior/fc-draggable-behavior.html">
-  <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html">
+<!--   <link rel="import" href="../../bower_components/iron-collapse/iron-collapse.html"> -->
+   <link rel="import" href="../../bower_components/iron-icons/communication-icons.html">
+   <link rel="import" href="../../fc-app-elements/fc-input-prime/fc-input-prime.html">
+
+
+    <link rel="import" href="../../bower_components/iron-icons/av-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/device-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/editor-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
+
+    <link rel="import" href="../../bower_components/iron-icons/maps-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/notification-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/hardware-icons.html">
+    <link rel="import" href="../../bower_components/iron-icons/social-icons.html">
+    <link rel="import" href="../../fc-app-elements/fc-hissi-menu/fc-hissi-menu.html">
 <dom-module id="fc-time-keeper-light">
 <template>
 <style>
-    :host{position: fixed; top: 5px;left: 85%; z-index: 120; padding: 4px 8px; display: block;
+ :host{position: fixed; top: 5px;left: 85%; z-index: 120; padding: 4px 8px; display: block;
             filter: blur(5px);
   
-     box-shadow: 2px 4px 8px 2px #efefef;}
+     box-shadow: 2px 4px 8px 2px #efefef;
+ }
     :host::before, :host::after {
     padding: 2px; border: 1px #fefefe solid;
    opacity:.4;
@@ -141,7 +156,7 @@
 }
     input::-webkit-inner-spin-button {
     div#spin{max-width: 6px!important;}
-    };
+    }
     fc-input-prime{
         @apply(--horizontal-layout);
         @apply(--layout-flex);
@@ -155,6 +170,7 @@
         border: 1px ridge #efefef;
     }
 </style>
+
 <div style="padding:6px 8px; border: 1px #008 ridge ; text-align: center;" class="layout vertical flex"  >
         <div style="padding: {{topBottomPaddingGrowth}}; 22px;" draggable drags  class="horizontal flex layout center-justified" on-track="focusedDragMe">
             <div style="padding: 4px; text-align: center;cursor:pointer;" class="layout horizontal flex nowrap center center-justified">
@@ -221,12 +237,12 @@
                 </section> 
          
             </div>
-          <!--   <fc-datepicker-dropdown id="friend" class="dropdown-content" on-tap="dateTimeSetter" style="max-width: 191px;position: absolute; z-index: 99998798797987987897; padding: 1px;right: 12px; top: 142px;" hidden="{{!calendarButton}}">
-            </fc-datepicker-dropdown> -->
+             <fc-datepicker-dropdown id="friend" class="dropdown-content" on-tap="dateTimeSetter" style="max-width: 191px;position: absolute; z-index: 99998798797987987897; padding: 1px;right: 12px; top: 142px;" hidden="{{!calendarButton}}">
+            </fc-datepicker-dropdown> 
             
             <audio loop id="myAlarmNoise" style="border: green 2px solid; width: 220px; height: 35px;">
-               <!--  <source src="fc-clock/beep-06.mp3" type="audio/mp3">
-                <source src="fc-clock/beep-10.mp3" type="audio/mp3"> -->
+                <source src="fc-clock/beep-06.mp3" type="audio/mp3">
+                <source src="fc-clock/beep-10.mp3" type="audio/mp3"> 
             </audio>
            
         </div>
@@ -254,15 +270,16 @@
 <script>
 FcTimeKeeperLight=Polymer({
     is:"fc-time-keeper-light",
+    // behaviors:[FCBehaviors.FcTimeKeeperBehavior],
     properties:{
         nool:{
             type: Boolean,
-            value: false,
+            value: function(){return false;},
             notify: true
         },
         orientation: {
             type: String,
-            value: "horizontal",
+            value: function(){return "horizontal"},
             notify: true
         }, 
         apiChoices:{
@@ -287,7 +304,7 @@ FcTimeKeeperLight=Polymer({
         },
         clockApi0:{
             type: Boolean,
-            value: false,
+            value: function(){return false;},
             notify: true
         },
         increment:{
@@ -303,6 +320,7 @@ FcTimeKeeperLight=Polymer({
             notify: true
         },
         date: {
+                type: String,
                 notify: true
         },
         theTime:{
@@ -326,21 +344,16 @@ FcTimeKeeperLight=Polymer({
             notify: true
             },
         currentClock: {
-            type: FcClock,
-            value: {},
+            type: Object,
             observer: "observeCurrentClock",
             notify: true,
         },
         dragCounter:{
             type: Number,
-            value: 0,
+            value: function(){return 0;},
             notify: true
         },
-        primaryClock: {
-            type: FcClock,
-            value: function(){return{};},
-            notify: true
-        }, 
+        
         clockArray:{
             type: Array,
             value: function(){return [];},
@@ -353,7 +366,7 @@ FcTimeKeeperLight=Polymer({
             notify: true
         },
         primaryClock: {
-            type: FcClock,
+            type: Object,
             value: function(){return{};},
             notify: true
         },
@@ -365,12 +378,12 @@ FcTimeKeeperLight=Polymer({
         },
         clockApiOne:{
             type: Boolean,
-            value: false,
+            value: function(){return false;},
             notify: true
         },
         paperWidth:{
             type: String,
-            value: "148px",
+            value: function(){return "148px";},
             notify: true
         },
         topBottomPaddingGrowth:{
@@ -442,7 +455,7 @@ FcTimeKeeperLight=Polymer({
         },
         calendarButton:{
             type: Boolean,
-            value: false,
+            value: function(){return false;},
             notify: true
         },
         makeCircle:{
@@ -544,19 +557,19 @@ FcTimeKeeperLight=Polymer({
         laterish=new Date(laterish);
         var date=new Date();
         this.clockArray = [];
-        this.push("clockArray", new FcClock("Local-Time", "Clock", "", 0,date));
-        this.push("clockArray", new FcClock("Start-Time", "Clock", "", 0,date));
-        this.push("clockArray", new FcClock("Now-ish", "Alarmclock", "", 0,nowish));
-        this.push("clockArray", new FcClock("Later-ish", "Alarmclock","", 0,laterish));
-        this.push("clockArray", new FcClock("Reading", "Countdown","Focused SAT Reading Countdown", 39000));
-        this.push("clockArray", new FcClock("Writing", "Countdown", "Focused SAT Writing Countdown", 21000));
-        this.push("clockArray", new FcClock("Math 25min", "Countdown","Focused SAT Math Countdown", 15000));
-        this.push("clockArray", new FcClock("Math 55min", "Countdown","Focused SAT Math Countdown 2", 33000));
-        this.push("clockArray", new FcClock("Essay", "Countdown","Focused Essay Writing Countdown", 30000));
-        this.push("clockArray", new FcClock("Timer 1", "Countdown", "Focused Programable Countdown ",0));
-        this.push("clockArray", new FcClock("Timer 2", "Countdown", "Focused Programable Countdown 2",0));
-        this.push("clockArray", new FcClock("Stopwatch 1", "Stopwatch", "Focused Fastback Stopwatch", 0));
-        this.push("clockArray", new FcClock("Stopwatch 2", "Stopwatch", "Focused Section Split Stopwatch", 0));
+        // this.push("clockArray", new FcClock("Local-Time", "Clock", "", 0,date));
+        // this.push("clockArray", new FcClock("Start-Time", "Clock", "", 0,date));
+        // this.push("clockArray", new FcClock("Now-ish", "Alarmclock", "", 0,nowish));
+        // this.push("clockArray", new FcClock("Later-ish", "Alarmclock","", 0,laterish));
+        // this.push("clockArray", new FcClock("Reading", "Countdown","Focused SAT Reading Countdown", 39000));
+        // this.push("clockArray", new FcClock("Writing", "Countdown", "Focused SAT Writing Countdown", 21000));
+        // this.push("clockArray", new FcClock("Math 25min", "Countdown","Focused SAT Math Countdown", 15000));
+        // this.push("clockArray", new FcClock("Math 55min", "Countdown","Focused SAT Math Countdown 2", 33000));
+        // this.push("clockArray", new FcClock("Essay", "Countdown","Focused Essay Writing Countdown", 30000));
+        // this.push("clockArray", new FcClock("Timer 1", "Countdown", "Focused Programable Countdown ",0));
+        // this.push("clockArray", new FcClock("Timer 2", "Countdown", "Focused Programable Countdown 2",0));
+        // this.push("clockArray", new FcClock("Stopwatch 1", "Stopwatch", "Focused Fastback Stopwatch", 0));
+        // this.push("clockArray", new FcClock("Stopwatch 2", "Stopwatch", "Focused Section Split Stopwatch", 0));
         
         var temp=this.clockArray.filter(function(val,index){
             return(val.clockType=="Alarmclock");
@@ -870,3 +883,147 @@ toggleRunning: function(event)
 });
 </script>
 </dom-module>
+
+<!--    :host{position: fixed; top: 5px;left: 85%; z-index: 120; padding: 4px 8px; display: block;
+            filter: blur(5px);
+  
+     box-shadow: 2px 4px 8px 2px #efefef;}
+    :host::before, :host::after {
+    padding: 2px; border: 1px #fefefe solid;
+   opacity:.4;
+    filter: blur(5px);
+    background: white;
+    }
+    .timer{ opacity: 1; font-weight: 600; font-family: times; color: #009; padding:4px; border: 1px solid #efefef;}
+    .hovering{
+        position: relative; 
+      
+      /*box-shadow: 4px 16px 24px 10px; */
+        padding: 4px 6px; 
+        margin: 2px; 
+        margin-left: -6px;
+        outline: 8px 4px;
+        max-width: 148px!important;
+         min-width: 147px!important;
+     
+    }
+    .hbutton{border-radius:50%;}
+    .hovering2{
+                position: relative; 
+      
+      /*box-shadow: 4px 16px 24px 10px; */
+        padding: 4px 6px; 
+        margin: 2px; 
+        margin-left: -6px;
+        outline: 8px 4px;
+        box-shadow: 2px 4px 8px 2px #efefef;
+    }
+    span.hovering2:active, span.hovering2:hover{
+        box-shadow: 2px 4px 8px 2px;
+    }
+    .solidone{
+            margin-right: -11px;
+    }
+ 
+    .newclass{
+        margin-right: -1px;
+        padding: 0px;
+    }
+    .newclass::after{
+        font-weight: 700;
+        font-size: 20px;
+        z-index: 2200997887;
+        padding-right: 4px;
+        color: #009;
+        font-family: times;
+     
+        margin-left: -6px;
+        margin-top:2px;
+        content: ":";
+    }
+    .subclass::after{
+        font-weight: 700;
+        padding:2px 0px 0px 0px;
+        font-family: times;
+        margin-top:6px;
+        content: "."; 
+    }
+    .closer{margin-right: -2px;
+        margin-left:-4px;
+       font-family: times;
+        font-weight: 600;
+    }
+    .closer::after{
+        margin-top:4px;
+        margin-left:-7px;
+        margin-right: 2px;
+        padding: right:2px;
+            content: ":"}
+    .closerleft{
+        margin-right: -4px; padding-right: 0px;
+    }
+    .digitsmall{ font-family:  merriweather;
+                   width: 30px!important;
+                   font-weight: 500;
+                   margin-left: -2px;
+                   z-index: 4px;
+                   margin-right: -12px;
+        }
+    .nodot{
+    margin:0px 4px;
+    margin-left: -1px;
+    }
+    .fatems{
+            font-family:  times;
+              
+        }
+        .invisoZero{
+                opacity: 0;
+                visibility: hidden;
+            
+        }
+        .fatems::after{
+            content:"."; 
+            opacity: 0;
+            width:2px;
+            padding:2px;
+        }
+    .nodot::after{
+        margin:0px;
+        padding:3px;
+        width: 0px;
+    }
+    .leftP{
+        margin-left:-9px;
+        margin-right:-2px;
+        max-width: 11px;
+        width: 10px;
+    }
+    .zeropacity{
+        
+            box-shadow:0px;
+    -webkit-transition: opacity .8s, box-shadow 1.4s, visibility .8s; /* Chrome, Safari, Opera */ 
+    transition: opacity: .8s,box-shadow: 1.4s, visibility: .8s;
+}
+    .zeropacity:hover{
+        visibility: visible;
+        opacity: 1; 
+        cursor: pointer;
+        box-shadow: 2px 3px 6px 1px #afafef;
+}
+    input::-webkit-inner-spin-button {
+    div#spin{max-width: 6px!important;}
+    };
+    fc-input-prime{
+        @apply(--horizontal-layout);
+        @apply(--layout-flex);
+        display: flex;
+    }
+    .slight{
+        padding-top: 12px;
+        font-weight: 400;
+        color: #009;
+        font-size: 14px;
+        border: 1px ridge #efefef;
+    }
+</style>

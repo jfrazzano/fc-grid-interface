@@ -1,8 +1,7 @@
 
 <script>
 "use strict";
-class FcClock
-{
+class FcClock{
 	constructor(argName, argType, argSubType, argTenths, argDateTimeObject, argSelf)
 	{
 		this.clockName = argName || "Focused Clock";
@@ -56,36 +55,37 @@ class FcClock
 		}
 		this.isRunning = !this.isRunning;
 	}
-};
-window.FcBehaviors = window.FcBehaviors || {};
-FcBehaviors.ClockDataBehavior = {
+}
+window.FCBehaviors = window.FCBehaviors || {};
+FCBehaviors.FcTimeKeeperBehaviorImpl = {
     properties: {
     	currentClock: {
 			type: FcClock,
-			value: {},
 			notify: true,
 		},
 		calendarButton:{
 			type: Boolean,
-			value: false,
+			value: function(){return false;},
 			notify: true
 		},
 		clockType: {
-			type: String, 
+			type: String,
+			value: function(){return "clock";}, 
 			notify: true,
 		},
 		openingArray:{
 			type: Array,
-			value:[],
+			value:function(){return [];},
 			notify: true,
 		},
 		primaryClock: {
 			type: FcClock,
-			value: {},
+			value: function(){return new FcClock()},
 			notify: true
 		}, 
 		clockArray:{
 			type: Array,
+			value: function(){return [];},
 			notify: true,
 			reflectToAttribite: true
 		},
@@ -291,7 +291,8 @@ convertFromTenths: function(argTenths)
 convertFromSeconds: function(argSeconds)
 {
 	this.convertFromTenths(argSeconds*10);
-},
+}
   
-};
+}
+FCBehaviors.FcTimeKeeperBehavior=[FCBehaviors.FcTimeKeeperBehaviorImpl];
 </script>

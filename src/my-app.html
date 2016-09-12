@@ -7,12 +7,15 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
-<link rel="import"  href="../fc-call-center/fc-form-routing-behavior.html">
+
 <link rel="import" href="../fc-grid/data-manager.html">
 
 <!-- <link rel="import" href="../fc-dashboard/fc-left-drawer/fc-left-drawer.html"> -->
 <link rel="import" ref="../fc-app-elements/fc-animated-header/fc-animated-header.html">
-<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/polymer/polymer.html"><!-- 
+<link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-light.html"> 
+<link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-demo.html">
+<link rel="import" href="../fc-app-elements/fc-time-keeper/fc-time-keeper-primative.html"> -->
 <link rel="import" href="../bower_components/app-route/app-location.html">
 <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 <link rel="import" href="../bower_components/app-route/app-route.html">
@@ -22,23 +25,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/app-layout/app-scroll-effects/app-scroll-effects.html">
 <link rel="import" href="../fc-app-elements/fc-tab-menu/fc-tab-menu.html">
-<!-- <link rel="import" href="../bower_components/app-layout/app-header/app-header.html">
-<link rel="import" href="../bower_components/app-layout/app-header-layout/app-header-layout.html"> -->
-<!-- <link rel="import" href="../bower_components/app-layout/app-toolbar/app-toolbar.html"> -->
+
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/iron-selector/iron-selector.html">
 <link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="../fc-grid/fc-dropdown-libre.html">
 <link rel="import" href="../fc-app-elements/fc-check-menu/fc-check-menu.html">
 <link rel="import" href="fc-three-section-display.html">
-<link rel="import" href="../fc-grid/fc-grid-rows.html">
-<!-- <link rel="import" href="../fc-app-elements/fc-panel/fc-panel.html"> -->
-<!-- <link rel="import" href="fc-form-right.html"> -->
+<link rel="import" href="../fc-app-elements/fc-hissi-menu/fc-hissi-menu.html">
 <link rel="import" href="fc-drawer-form.html">
-<!-- <link rel="import" href="fc-inputs-interface.html"> -->
 
 <link rel="import" href="../fc-app-elements/fc-drawer/fc-app-drawer.html"> 
-<link rel="import" href="../fc-drag-header-menu/fc-drag-header-menu.html">
 <dom-module id="my-app">
 
   <template>
@@ -50,215 +47,121 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   user-select: none;          /* Likely future */      
 
 }
-:host{
-  ::-webkit-scrollbar { 
-    display: none; 
-}
-}
-paper-tab {
-  --paper-tab-background-color: silver;
-  --paper-tab-border: snow;
-  --paper-tab-ink:#aecdfe;
-  --paper-tab-visited:color: #005c00;
-  --paper-tab-selected: color: #005c00;
-  --paper-tab:selected: #005c00;
-  @apply(--paper-tab);
-}
-a{color: #009; color: #aecdfe;
-      font-family: merriweather;
-      font-weight: 300;
-      font-size: 1.1em; 
-      white-space: wrap;}
-a:visited{
-      color: #aecdfe;
-      font-family: merriweather;
-      font-weight: 300;
-      font-size: 1.1em; 
-      white-space: wrap;
-                        }
-a:selected, a:active{
-    color: #009;
-
-}
-paper-tab {
-  color: #009;
-  background: white;
-  --paper-tab-visited-color: #009;
-}
-paper-tab.iron-selected {
-  color: blue;
-}
-paper-tabs.slidingtabs{
-  height: 48px; 
-   min-width: 280px; 
-   border-bottom: #009 1px solid; 
-   background:#fafafa; 
-   color: #009
-   opacity: .3;
-   -webkit-transition: height 0.8s ease, opacity .8 ease;
-  transition: height 0.8s ease, opacity .8s ease;
-
-}
-paper-tabs.slidingtabs:hover{
-  height: 48px; 
-   min-width: 280px; 
-   border-bottom: #009 1px solid; 
-   background:#fafafa; 
-   color: #009
-   opacity: 1;
-   -webkit-transition: height 0.8s ease, opacity .8 ease;
-  transition: height 0.8s ease, opacity .8s ease;
-
-
-}
+*{::-webkit-scrollbar { display: none; }}
 </style>
     <style>
 
-      :host {
-        display: block;
-        --app-primary-color: #4285f4;
-        --app-secondary-color: black;
-        max-width: 102vw;
-        @apply(--vertical-layout);
-        @apply(--flex-layout);
-        /*@apply(--layout-self-stretch);*/
-      }
-      .longest{display: flex; flex: row; width: 84px; height: 42px; border: 1px solid #aedefe;} 
-   .link{   
-    color: white;
-    font-family: 'Merriweather', 'Times', sans-serif;
-    font-size: 16px;
-    font-weight: 600;}
+	:host {
+	  display: block;
+	  --app-primary-color: #4285f4;
+	  --app-secondary-color: black;
+	  max-width: 102vw;
+	  @apply(--vertical-layout);
+	  @apply(--flex-layout);
+	  /*@apply(--layout-self-stretch);*/
+	}
+	.longest{display: flex; flex: row; width: 84px; height: 42px; border: 1px solid #aedefe;} 
+	.link{   
+	    color: white;
+	    font-family: 'Merriweather', 'Times', sans-serif;
+	    font-size: 16px;
+	    font-weight: 600;
+	}
    .turnedon{ font-size: 18px; color: green; background: white;}
 
-/*      app-header {
-        background-color: var(--app-primary-color);
-        color: #fff;
-      }
-      app-header paper-icon-button {
-        --paper-icon-button-ink-color: white;
-      }*/
-     
+     fc-app-drawer{
+	z-index: 6;
+     }
 
-      .drawer-list {
-        margin: 0 20px;
-      }
-      .drawer-list a {
-        display: block;
-        padding: 0 16px;
-        line-height: 40px;
-        text-decoration: none;
-        color: var(--app-secondary-color);
-      }
-      .drawer-list a.iron-selected {
-        color: black;
-        font-weight: bold;
-      }
-      .drawer-list a.subroute {
-        padding-left: 32px;
-      }
+	.drawer-list {
+	  margin: 0 20px;
+	}
+	.drawer-list a {
+	  display: block;
+	  padding: 0 16px;
+	  line-height: 40px;
+	  text-decoration: none;
+	  color: var(--app-secondary-color);
+	}
+	.drawer-list a.iron-selected {
+	  color: black;
+	  font-weight: bold;
+	}
+	.drawer-list a.subroute {
+	  padding-left: 32px;
+	}
+	fc-tab-menu{
+	  z-index:1;
+	  padding: 3px;
+	  width: 85%;
 
-   /*   .drawer-class{
-        margin-top:40px; position: absolute; top: 80px;
-
-
-      }*/
-
-
+	  overflow-x: scroll;
+	  @apply(--layout-horizontal);
+	  @apply(--layout-around-justified);
+	}
+ 
     </style>
 
     <app-location id="appLocationCenterOne" route="{{route}}" use-hash-as-path></app-location>
     <app-route
-        id="appRouteCenterOne"
-        route="{{route}}"
-        pattern="#/:gridPage"
-        data="{{routeData}}"
-        tail="{{subroute}}">
-    </app-route>
-  <!--   <app-location id="rightDrawerLocation" route="{{subroute}}" use-hash-as-path></app-location>
-        <app-route
-        id="appRouteRightDrawer"
-        route="{{subRoute}}"
-        pattern="#/:rightDrawerPage"
-        data="{{rightDrawerSelectedViewsArray}}"
-        tail="{{pageIndexSelected}}">
-    </app-route> -->
+	  id="appRouteCenterOne"
+	  route="{{route}}"
+	  pattern="#/:gridPage"
+	  data="{{routeData}}"
+	  tail="{{subroute}}">
+	 </app-route>
+
 
 <iron-media-query query="max-width: 680px" query-matches="{{smallScreen}}"></iron-media-query>
 <fc-two-drawer-layout fullbleed  left-drawer-current-width="{{leftCurrentWidth}}" max-left-current-width="{{_computeMaxWidthVariable(windowWidth, rightCurrentWidth)}}" window-width="{{windowWidth}}" right-drawer-current-width="{{rightCurrentWidth}}">
   {{centerContentAreaWidth}}
     
-        <fc-app-drawer id="dashboardLeftDrawer" max-left-current-width="{{_computeMaxWidthVariable(windowWidth, rightCurrentWidth)}}" limitone="{{totalWidthLost}}" left-inner-width="{{leftInnerWidth}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" opened persistent swipe-open align="left">
-                 <fc-three-section-display max-current-width="[[leftCurrentWidth]]" local-dashboard="[[localDashboard]]" current-left="[[leftCurrentWidth]]" style$="z-index: 9999; position: absolute; top: 110px; bottom: -220px; left: 0px; right: 0px; width:calc([[leftCurrentWidth]]-80)px!important; min-width:22px!important;" cc_load_policy="1" window-width="{{windowWidth}}" pattern="{{subroute}}" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}"> 
-              
+	  <fc-app-drawer id="dashboardLeftDrawer" max-left-current-width="{{_computeMaxWidthVariable(windowWidth, rightCurrentWidth)}}" limittwo="{{contentAreaWidth}}" drawer-current-width="{{leftCurrentWidth}}" opened persistent swipe-open align="left">
+		     <fc-three-section-display local-dashboard="[[localDashboard]]" current-left="[[leftCurrentWidth]]" style$="width:calc([[leftCurrentWidth]]-80)px!important;min-width:20px!important;" window-width="{{windowWidth}}" pattern="{{subroute}}" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}"> 
+		  
 
 
-            <div class="scrolling leftPanel justified center" style$="[[leftInnerWidth]]px;">
+		<div class="scrolling leftPanel justified center" style$="[[leftInnerWidth]]px;">
 
 
-                 <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:[[leftInnerWidth]]px;">
-                  </fc-drawer-form>
+		     <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:[[leftInnerWidth]]px;">
+			</fc-drawer-form>
 
-            </div>
+		</div>
 
 
-            <div class="scrolling centerPanel">
-                   <!--   <iframe autoplay="1" id="player" name="myIframe"  type="text/html" width="853" height="480" class="flex layout vertical self-stretch" style="padding: 8px; background: black;"  src="http://www.youtube.com/embed/M7lc1UVf-VE?enablejsapi=1&origin=http://example.com frameborder="0">
-                    </iframe> -->
-         <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
-                  </fc-drawer-form>
+		<div class="scrolling centerPanel">
+	   
 
 
 
-          </div>
+	    </div>
 
 
-          <div class="scrolling bottomPanel">
-                     <!--  <fc-value-object-scorecard class="bottomPanel" value-object="{{valueObject}}"  page-type="{{gridPage}}"data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" >
-             
-
-                      </fc-value-object-scorecard> -->
-                       <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
-                  </fc-drawer-form>
-          </div>
+	    <div class="scrolling bottomPanel">
+			
+			     <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
+			</fc-drawer-form>
+	    </div>
 
 
-                 </fc-three-section-display>
-        </fc-app-drawer>
-        <fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open persistent>
-                <fc-drawer-form current-inner-width="[[rightCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="right:0px; left:16px;  width:calc([[rightCurrentWidth]]-80)px;">
-                </fc-drawer-form>
-        </fc-app-drawer>
+		     </fc-three-section-display>
+	  </fc-app-drawer>
 
-      <!-- Main content -->
-  <div class="layout vertical block" style$="left:[[leftCurrentWidth]]px; width:calc([[windowWidth]]-([[rightCurrentWidth]]+[[leftCurrentWidth]]))px!important;  right:22px; position: relative;" has-scrolling-region>
-        <paper-tabs 
-          id="protoTabMenu" 
-          data="{{localDashboard}}"
-          scrollable="true"
-          class="horizontal layout end slidingtabs"
-          selected="{{_computeSelected(localDashboard,gridPage,localIndex)}}"  
-          attr-for-selected="name" 
-          bar="true">   
-       <paper-icon-button icon="menu" drawer-toggle></paper-icon-button> 
-     
-        <div class="horizontal layout flex" style="overflow-x: scroll;">
-        <template is="dom-repeat" items="{{localDashboard.array}}">
-        <paper-tab   selected="{{gridPage}}" on-tap="changePage" attr-for-selected="name" style="min-width: 160px">
-          <a name="{{item.name}}" href="#/{{item.name}}">{{_computeTabTitles(item.name)}}</a>
-        </paper-tab>
-        </template>
-        </div>
-            </paper-tabs>
-            <!-- <fc-tab-menu local-dashboard="{{localDashboard}}" view-array="[[gridView]]" -->
-   
-            <array-selector id="mainArraySelector" items="{{localDashboard.array}}" item="{{_computeSelected(localDashboard,gridPage, localIndex)}}" selected="{{selectedArray}}"></array-selector>
-        
-          <!-- <template is="dom-repeat" items="{{_computeSelected(localDashboard,gridPage, localIndex)}}"> -->
-                      <fc-grid id="liveGrid" name="[[gridPage]]" chosen="[[gridPage]]" grid-display-array="{{selectedArray}}">  
-                    </fc-grid>
-         <!--  </template> -->
-      </div>
+
+	<!-- Main content -->
+  	<div class="layout vertical block" style$="left:[[leftCurrentWidth]]px; width:calc([[windowWidth]]-([[rightCurrentWidth]]+[[leftCurrentWidth]]))px!important;  right:22px; position: relative;" has-scrolling-region>
+	  	<fc-tab-menu interface-name="{{gridPage}}" interface-type="grid" menu-class="slim" local-dashboard="{{localDashboard}}" view-array="{{selectedArray}}"></fc-tab-menu>
+		<array-selector id="mainArraySelector" items="{{localDashboard.array}}" item="{{selectedArray}}" selected="{{selectedArray}}"></array-selector>
+		<fc-grid id="liveGrid" name="[[gridPage]]" chosen="[[gridPage]]" grid-display-array="{{selectedArray}}"></fc-grid>
+	</div>
+
+	<fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open persistent>
+			<fc-drawer-form current-inner-width="[[rightCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="width:calc([[rightCurrentWidth]]-20)px;">
+					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" class="header" pattern="{{pattern}}" view-array="{{rightDrawerSelectedViewsArray}}" container-width="[[rightCurrentWidth]]">
+					</fc-header>
+			</fc-drawer-form>
+	</fc-app-drawer>
 
     </fc-two-drawer-layout>
 
@@ -267,268 +170,269 @@ paper-tabs.slidingtabs:hover{
 
     Polymer({
 
-      is: 'my-app',
-       behaviors:[ FCBehaviors.FocusedDataManagerBehavior],
-      properties: {
-         arePanelsSynched:{
-          type: Boolean, 
-          value: function(){return false;},
-          notify: true
-        },
+	is: 'my-app',
+	 behaviors:[ FCBehaviors.FocusedDataManagerBehavior],
+	properties: {
+	   arePanelsSynched:{
+	    type: Boolean, 
+	    value: function(){return false;},
+	    notify: true
+	  },
 
-        interfaceView:{
-          type:Object, 
-          value: function(){return {};},
-          notify: true,
-          observer: 'observeInterfaceView'
-        },
-        isLeftLinked:{
-          type: Boolean, 
-          value: function(){return false;},
-          notify: true
-        },
-      isRightLinked:{
-          type: Boolean, 
-          value: function(){return true;},
-          notify: true
-        },
-        gridView:{
-          type: Array,
-          value: function(){return [];},
-          notify: true,
+	  interfaceView:{
+	    type:Object, 
+	    value: function(){return {};},
+	    notify: true,
+	    observer: 'observeInterfaceView'
+	  },
+	  isLeftLinked:{
+	    type: Boolean, 
+	    value: function(){return false;},
+	    notify: true
+	  },
+	isRightLinked:{
+	    type: Boolean, 
+	    value: function(){return true;},
+	    notify: true
+	  },
+	  gridView:{
+	    type: Array,
+	    value: function(){return [];},
+	    notify: true,
 
-        },
-        subroute:{
-          type: String,
-          notify: true
+	  },
+	  subroute:{
+	    type: String,
+	    notify: true
 
-        },
+	  },
      
-        nowChosen:{
-          type: String,
-          notify: true,
-          observer:"createFinancialsEtc",
-        },
-        dimensions:{
-            leftCurrentWidth:  this.leftCurrentWidth,
-            leftCurrentScrollHeight: 1500,
-            leftCurrentScrollHeight: this.windowWidth-this.rightCurrentWidth-3, //@ init
-            rightCurrentWidth: this.rightCurrentWidth,
-            windowHeight: this.windowHeight, 
-            windowWidth: this.windowWidth,
-            leftLeftCurrentWidth: 510,
-            leftLeftHeaderRestHeight:110,
-            leftLeftHeaderMinHeight:38,
-            leftCenterTopWidth:this.windowWidth-this.leftCurrentWidth,//same thing just taking advantage of an already performed minor calculation/
-            leftCenterTopHeaderRestHeight:120,
-            leftCenterTopHeaderMinHeight: 42,
-            LeftCenterTopHeight:this.headerHeight*.6251,
-            leftCenterBottomHeight:(.33321*this.height),
-            leftCenterBottomWidth:this.leftCurrentWidth-this.leftLeftCurrentWidth,
-            leftCenterBottomHeaderRestHeight:120,
-            leftCenterBottomHeaderMinHeight:4,
-            mainDisplayRegionWidth: this.windowWidth-(this.leftCurrentWidth+this.rightCurrentWidth),
-            mainDisplayRegionHeight: Math.floor(92*this.windowInnerHeight),
-            mainDisplayRegionHeaderRestHeight:120, 
-            mainDisplayRegionHeaderMinHeight:6,
-        },
+	  nowChosen:{
+	    type: String,
+	    notify: true,
+	    observer:"createFinancialsEtc",
+	  },
+	  dimensions:{
+		leftCurrentWidth:  this.leftCurrentWidth,
+		leftCurrentScrollHeight: 1500,
+		leftCurrentScrollHeight: this.windowWidth-this.rightCurrentWidth-3, //@ init
+		rightCurrentWidth: this.rightCurrentWidth,
+		windowHeight: this.windowHeight, 
+		windowWidth: this.windowWidth,
+		leftLeftCurrentWidth: 510,
+		leftLeftHeaderRestHeight:110,
+		leftLeftHeaderMinHeight:38,
+		leftCenterTopWidth:this.windowWidth-this.leftCurrentWidth,//same thing just taking advantage of an already performed minor calculation/
+		leftCenterTopHeaderRestHeight:120,
+		leftCenterTopHeaderMinHeight: 42,
+		LeftCenterTopHeight:this.headerHeight*.6251,
+		leftCenterBottomHeight:(.33321*this.height),
+		leftCenterBottomWidth:this.leftCurrentWidth-this.leftLeftCurrentWidth,
+		leftCenterBottomHeaderRestHeight:120,
+		leftCenterBottomHeaderMinHeight:4,
+		mainDisplayRegionWidth: this.windowWidth-(this.leftCurrentWidth+this.rightCurrentWidth),
+		mainDisplayRegionHeight: Math.floor(92*this.windowInnerHeight),
+		mainDisplayRegionHeaderRestHeight:120, 
+		mainDisplayRegionHeaderMinHeight:6,
+	  },
 
-        inputsChosen:{
-          type:String,
-          notify: true,
-        },
-       
-        gridPage: {
-          type: String,
-          value: function(){return "intakes";},
-          reflectToAttribute: true,
-          observer: '_gridPageChanged'
-        },
-        leftDrawerPage:{
-          type: String,
-          reflectToAttribute: true,
-          computed: '_gridPageLeftDrawerChanged(gridPage, isLeftLinked, arePanelsSynched)'
-        },
-         rightDrawerPage:{
-          type: String,
-          reflectToAttribute: true,
-          computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched, rightDrawerControls)',
+	  inputsChosen:{
+	    type:String,
+	    notify: true,
+	  },
+	 
+	  gridPage: {
+	    type: String,
+	    value: function(){return "intakes";},
+	    reflectToAttribute: true,
+	    observer: '_gridPageChanged'
+	  },
+	  leftDrawerPage:{
+	    type: String,
+	    reflectToAttribute: true,
+	    computed: '_gridPageLeftDrawerChanged(gridPage, isLeftLinked, arePanelsSynched)'
+	  },
+	   rightDrawerPage:{
+	    type: String,
+	    reflectToAttribute: true,
+	    computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched, rightDrawerControls)',
 
-        },
-        leftInnerWidth:{
-          type: Number, 
-          notify: true,
-        },
-        selectedArray:{
-          type: Array, 
-          value: function(){return [];},
-          notify: true,
-          observer:"observeSelected",
-        },
-        selected:{
-          type: String,
-          value: function(){return "profiles";},
-          notify: true
+	  },
+	  leftInnerWidth:{
+	    type: Number, 
+	    notify: true,
+	  },
+	  selectedArray:{
+	    type: Array, 
+	    value: function(){return [];},
+	    notify: true,
+	    observer:"observeSelected",
+	  },
+	  selected:{
+	    type: String,
+	    value: function(){return "profiles";},
+	    notify: true
 
-        },
-        rightDrawerControls:{
-          type: String,
-          value: function(){return "intake-inputs";},
-          notify: true
-        },
-        routeData:{
-          type: Object,
-          notify: true,
-          observer:"observeRouteData",
-        },
-        localDashboard:{
-          type: Object, 
-          value:{},
-          notify: true,
-        },
-        rightDrawerSelectedViewsArray:{
-          type: Array, 
-          value: function(){return [];},
-          notify: true, 
-        },
-        leftDrawerSelectedViewsArray:{
-          type: Array, 
-          value: function(){return [];},
-          notify: true, 
-        },
-        localIndex: {
-          type: Array, 
-          notify: true, 
+	  },
+	  rightDrawerControls:{
+	    type: String,
+	    value: function(){return "intake-inputs";},
+	    notify: true
+	  },
+	  routeData:{
+	    type: Object,
+	    notify: true,
+	    observer:"observeRouteData",
+	  },
+	  localDashboard:{
+	    type: Object, 
+	    value:{},
+	    notify: true,
+	  },
+	  rightDrawerSelectedViewsArray:{
+	    type: Array, 
+	    value: function(){return [];},
+	    notify: true, 
+	  },
+	  leftDrawerSelectedViewsArray:{
+	    type: Array, 
+	    value: function(){return [];},
+	    notify: true, 
+	  },
+	  localIndex: {
+	    type: Array, 
+	    notify: true, 
 
-        },
-        counter:{
-          type: Number,
-          value: function(){return 0;},
-          notify: true
+	  },
+	  counter:{
+	    type: Number,
+	    value: function(){return 0;},
+	    notify: true
 
-        }, 
-      
+	  }, 
+	
 //width management is all beloow
-      leftCurrentWidth:{
-          type: Number, 
-            // value: function(){return 18;},
-          notify: true,
-        },
-        rightCurrentWidth: {
-          type: Number,
-          // value: function(){return 285;},
-          notify: true,
-        }, 
-        totalWidthLost: {
-          type:Number, 
-          computed:"_computeTotalWidthLost(leftCurrentWidth,rightCurrentWidth)",
-          notify: true,
-        },
-        centerContentAreaWidth:{
-          type: Number,
-          computed: "_computeContentAreaWidth(totalWidthLost)",
-          notify: true, 
-          observer: "observeCenterContentArea",
-        },
-        windowHeight:{
-          type: Number, 
-          value: function(){return window.innerHeight;},
-          notify: true,
+	leftCurrentWidth:{
+	    type: Number, 
+		// value: function(){return 18;},
+	    notify: true,
+	  },
+	  rightCurrentWidth: {
+	    type: Number,
+	    // value: function(){return 285;},
+	    notify: true,
+	  }, 
+	  totalWidthLost: {
+	    type:Number, 
+	    computed:"_computeTotalWidthLost(leftCurrentWidth,rightCurrentWidth)",
+	    notify: true,
+	  },
+	  centerContentAreaWidth:{
+	    type: Number,
+	    computed: "_computeContentAreaWidth(totalWidthLost)",
+	    notify: true, 
+	    observer: "observeCenterContentArea",
+	  },
+	  windowHeight:{
+	    type: Number, 
+	    value: function(){return window.innerHeight;},
+	    notify: true,
 
-          },
-        windowWidth:{
-          type: Number, 
-          value: function(){return window.innerWidth;},
-          notify: true,
-          observer:"observeWindowWidth",
+	    },
+	  windowWidth:{
+	    type: Number, 
+	    value: function(){return window.innerWidth;},
+	    notify: true,
+	    observer:"observeWindowWidth",
 
-          },
-          funcCounter:{
-            type: Number, 
-            value: function(){return 0;},
-            notify: true
-
-
-          },
+	    },
+	    funcCounter:{
+		type: Number, 
+		value: function(){return 0;},
+		notify: true
 
 
-      },
-
-      observers: [
-        '_routePageChanged(routeData.gridPage)',
-        // 'observeLeftAndRightWidth(leftCurrentWidth, rightCurrentWidth, windowWidth)',
-      ],
-
-      ready(){
-        this.dashboardSetterFunction();
-        if(this.windowWidth==undefined&&window.innerWidth!=undefined){
-              this.set("windowWidth", window.innerWidth);
-              this.setDrawersAtInitial();
-        }
-        else if(this.windowWidth==undefined&&window.innerWidth!=undefined){
-          console.log(window.innerWidth, "innerWidthAtReady");
-          this.set("windowWidth", window.innerWidth);
-          this.setDrawersAtInitial()
-        }
-        else{}
+	    },
 
 
-            
+	},
 
-        },
-      observeSelected(nv,ov){
-        if(nv&&nv!=undefined){
-          console.log(nv, ov);
+	observers: [
+	  '_routePageChanged(routeData.gridPage)',
+	  // 'observeLeftAndRightWidth(leftCurrentWidth, rightCurrentWidth, windowWidth)',
+	],
 
-        }
-      },
-      changePage(e){
-        console.log(e, e.target, e.target.name);
-        this.set("gridPage",e.target.name);
+	ready(){
+	  this.dashboardSetterFunction();
+	  if(this.windowWidth==undefined&&window.innerWidth!=undefined){
+		  this.set("windowWidth", window.innerWidth);
+		  this.setDrawersAtInitial();
+	  }
+	  else if(this.windowWidth==undefined&&window.innerWidth!=undefined){
+	    console.log(window.innerWidth, "innerWidthAtReady");
+	    this.set("windowWidth", window.innerWidth);
+	    this.setDrawersAtInitial()
+	  }
+	  else{}
 
-      },
+
+		
+
+	  },
+	observeSelected(nv,ov){
+	  if(nv&&nv!=undefined){
+	    console.log(nv, ov);
+
+	  }
+	},
+	changePage(e){
+	  console.log(e, e.target, e.target.name);
+	  this.set("gridPage",e.target.name);
+
+	},
 
     attached(){    
     console.log(this.selected,this.leftCurrentWidth, this.leftCurrentWidth, "in Attached");
-       // this.async(function(){this.set("rightCurrentWidth", 245);
-       //    this.set("leftCurrentWidth", 18);}
-       //  console.log(this.routeData, this.rightDrawerPage);
+	 // this.async(function(){this.set("rightCurrentWidth", 245);
+	 //    this.set("leftCurrentWidth", 18);}
+	 //  console.log(this.routeData, this.rightDrawerPage);
   
-        }, 
+	  }, 
     observeInterfaceView(newVal, oldVal){
-      if(newVal){
-        console.log(newVal, oldVal, "this is the interfaceView");
-        }
+	if(newVal){
+	  console.log(newVal, oldVal, "this is the interfaceView");
+	  }
 
     },
 
 
 
-      observeWindowWidth(newVal, oldVal){
-          if(newVal&&newVal!=undefined){
-            console.log("WINDOW WIDTH PAY ATTENTION:", newVal);
-      
-        }
+	observeWindowWidth(newVal, oldVal){
+	    if(newVal&&newVal!=undefined){
+		console.log("WINDOW WIDTH PAY ATTENTION:", newVal);
+	
+	  }
 
 
-      },
-      observeRouteData(newVal, oldVal){
+	},
+	observeRouteData(newVal, oldVal){
 
 
-      },
-      _computeMaxWidthVariable(win, right){
-      //  console.log(win, right, "his box bitty");
-        if(win&&right&&win!=undefined&&right!=undefined&&win!=NaN&&right!=NaN){
-        var retVal=win-right-4;
-        //console.log(retVal, "look here");
-        return retVal;
-      }
-      else{console.log("bitches cant get nothing right");}
-      },
+	},
+	_computeMaxWidthVariable(win, right){
+	//  console.log(win, right, "his box bitty");
+	  if(win&&right&&win!=undefined&&right!=undefined&&win!=NaN&&right!=NaN){
+	  var retVal=win-right-4;
+	  //console.log(retVal, "look here");
+	  return retVal;
+	}
+	else{console.log("bitches cant get nothing right");}
+	},
  
    
 observeCenterContentArea(newVal, oldVal){
   if(newVal){var width=parseInt(newVal);
+    console.log(newVal, newVal, "centerArea");
     if(width<2 &&this.leftCurrentWidth>15){this.set("leftCurrentWidth", this.leftCurrentWidth-10);}
     if(this.leftCurrentWidth<16&&width<2){this.set("rightCurrentWidth", this.rightCurrentWidth-10);}
   }
@@ -556,146 +460,146 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
 
    // },
    
-      _computeHidden(nowChosen){
-        var retVal=(nowChosen=="All Messages")?false: true;
-        return retVal;
-      },
+	_computeHidden(nowChosen){
+	  var retVal=(nowChosen=="All Messages")?false: true;
+	  return retVal;
+	},
    
-      dashboardSetterFunction(){
-        this.set("gridPage", "intakes");
-        var object=this.dashboardMapToObjectArray(this.focusedManager.dashboardMap);
-        this.set("localDashboard", object);
-        this.set("localIndex", object.index);
-       // console.log(this.localIndex, this.localDashboard);
+	dashboardSetterFunction(){
+	  this.set("gridPage", "intakes");
+	  var object=this.dashboardMapToObjectArray(this.focusedManager.dashboardMap);
+	  this.set("localDashboard", object);
+	  this.set("localIndex", object.index);
+	 // console.log(this.localIndex, this.localDashboard);
 
-      },
-      dashboardMapToObjectArray(map){
-        var length=((map.size)/2);
-         var dashboard={};
-          dashboard.index=[];
-        dashboard.array=[];
-        for(var i=0; i<length;i++){
-           var  object=map.get(i);
-           dashboard[object.name]=object;
-           dashboard[object.name].array=[];
-           dashboard.array.push(object);
-           dashboard.index[i]={index: i, name: object.name};
-        }
-        console.log(dashboard.index, dashboard, dashboard.courseCalendars);
-        return dashboard;
+	},
+	dashboardMapToObjectArray(map){
+	  var length=((map.size)/2);
+	   var dashboard={};
+	    dashboard.index=[];
+	  dashboard.array=[];
+	  for(var i=0; i<length;i++){
+	     var  object=map.get(i);
+	     dashboard[object.name]=object;
+	     dashboard[object.name].array=[];
+	     dashboard.array.push(object);
+	     dashboard.index[i]={index: i, name: object.name};
+	  }
+	  console.log(dashboard.index, dashboard, dashboard.courseCalendars);
+	  return dashboard;
 
-      },
+	},
 
 
 
-      _computeView(storeName){
-        if(storeName!=undefined){
-        var label= this.focusedManager.propertyNameToLabel(storeName);
-        return label;
-        }
-      },
+	_computeView(storeName){
+	  if(storeName!=undefined){
+	  var label= this.focusedManager.propertyNameToLabel(storeName);
+	  return label;
+	  }
+	},
 
-      
+	
 
-      _computeTotalWidthLost(left, right){
-        var retVal=left+right;
-        return retVal;
-      },
-      _computeContentAreaWidth(totalWidthLost){
-            var width=screen.width;
-            var retWidth=width-totalWidthLost;
-            return retWidth;
-      },
+	_computeTotalWidthLost(left, right){
+	  var retVal=left+right;
+	  return retVal;
+	},
+	_computeContentAreaWidth(totalWidthLost){
+		var width=screen.width;
+		var retWidth=width-totalWidthLost;
+		return retWidth;
+	},
      
-      _routePageChanged(gridPage) { 
-        console.log(gridPage);
-        this.gridPage = gridPage || "intakes";
-       if(this.focusedManager &&this.routeData){
-       
-        if(this.localDashboard[gridPage]==undefined&&this.counter<40){
+	_routePageChanged(gridPage) { 
+	  console.log(gridPage);
+	  this.gridPage = gridPage || "intakes";
+	 if(this.focusedManager &&this.routeData){
+	 
+	  if(this.localDashboard[gridPage]==undefined&&this.counter<40){
 
-          //here we add archive for last position to get from data
-          var data=this.focusedManager.dashboardMap.get("intakes");
-          console.log(data, this.counter);
-                this.set("routeData.dataset",data);
-          this.counter++;
-        }
-        else{
-         var data=this.localDashboard[gridPage];
-               this.set("routeData.dataset",data);
-         }
-       //   var dataObject="routeData."+gridPage;
-       //  this.set(dataObject,data);
-       // console.log(data.forms, this.routeData[gridPage].forms);
+	    //here we add archive for last position to get from data
+	    var data=this.focusedManager.dashboardMap.get("intakes");
+	    console.log(data, this.counter);
+		    this.set("routeData.dataset",data);
+	    this.counter++;
+	  }
+	  else{
+	   var data=this.localDashboard[gridPage];
+		   this.set("routeData.dataset",data);
+	   }
+	 //   var dataObject="routeData."+gridPage;
+	 //  this.set(dataObject,data);
+	 // console.log(data.forms, this.routeData[gridPage].forms);
   
-       var formset=this.routeData.dataset.forms.map((item)=>{
-          var form={"form": item};
-          return form;
-            }); 
-       console.log(formset);
-       var inputset=this.routeData.dataset.inputsArray.map((item)=>{
-            var input=item;
-            return input;
-       });
-      var selectedArray=  formset.concat(inputset);
-      this.set("rightDrawerSelectedViewsArray", selectedArray);
-      //this.set("leftDrawerSelectedViewsArray", selectedArray);
-        console.log(this.rightDrawerSelectedViewsArray, selectedArray, this.routeData.dataset, this.routeData);
-        }
-      },
+	 var formset=this.routeData.dataset.forms.map((item)=>{
+	    var form={"form": item};
+	    return form;
+		}); 
+	 console.log(formset);
+	 var inputset=this.routeData.dataset.inputsArray.map((item)=>{
+		var input=item;
+		return input;
+	 });
+	var selectedArray=  formset.concat(inputset);
+	this.set("rightDrawerSelectedViewsArray", selectedArray);
+	//this.set("leftDrawerSelectedViewsArray", selectedArray);
+	  console.log(this.rightDrawerSelectedViewsArray, selectedArray, this.routeData.dataset, this.routeData);
+	  }
+	},
 
-      _gridPageChanged: function(gridPage, oldval) {
-        // load gridPage import on demand.
-        console.log(gridPage, "here is the change function");
-        
-        this.importHref(
-          this.resolveUrl('fc-' + "grid" + '.html'), null, true);
-      },
-
-
+	_gridPageChanged: function(gridPage, oldval) {
+	  // load gridPage import on demand.
+	  console.log(gridPage, "here is the change function");
+	  
+	  this.importHref(
+	    this.resolveUrl('fc-' + "grid" + '.html'), null, true);
+	},
 
 
-      _gridPageLeftDrawerChanged(gridPage, leftLinked, synched){
-        console.log("is this called");
-        Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild.nodeName;
-        if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
-            if(this.isLeftLinked===true){
-              var page="left-drawer-"+gridPage;
-          this.importHref(
-            this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
-          
-        }
-          else{
-             var bug=  Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild;
-             var nn=bug.nodeName;
-             nn=nn.toLowerCase();
-            var page="left-drawer-"+gridPage+"-"+nn+"#";
-          
-            console.log(this.leftDrawerPage, bug,nn, page, "this is the first element child attemot");
-          // this.importHref(
-          //   this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
-        }
-         return page;        
-       }
-      },
 
-       _rightDrawerChanged(gridPage, rightLinked, synched, rightDrawerControls){
-       if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
-          if(rightLinked===true){
-            return "right-drawer-"+gridPage;
-          }
-          else {return "right-drawer-"+rightDrawerControls;} 
-       //       this.importHref(
-       //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
-        
-       //   }
-       //     else{
-       //       this.importHref(
-       //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
-         
-       //   }
-       //    return this.rightDrawerPage;        
-        }
+
+	_gridPageLeftDrawerChanged(gridPage, leftLinked, synched){
+	  console.log("is this called");
+	  Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild.nodeName;
+	  if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
+		if(this.isLeftLinked===true){
+		  var page="left-drawer-"+gridPage;
+	    this.importHref(
+		this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
+	    
+	  }
+	    else{
+		 var bug=  Polymer.dom(this.$.dashboardLeftDrawer).firstElementChild;
+		 var nn=bug.nodeName;
+		 nn=nn.toLowerCase();
+		var page="left-drawer-"+gridPage+"-"+nn+"#";
+	    
+		console.log(this.leftDrawerPage, bug,nn, page, "this is the first element child attemot");
+	    // this.importHref(
+	    //   this.resolveUrl('fc-' + "drawer-form" + '.html'), null, true);
+	  }
+	   return page;        
+	 }
+	},
+
+	 _rightDrawerChanged(gridPage, rightLinked, synched, rightDrawerControls){
+	 if(this.focusedManager&&this.focusedManager.dashboardMap&&this.focusedManager.dashboardMap.get(gridPage)){
+	    if(rightLinked===true){
+		return "right-drawer-"+gridPage;
+	    }
+	    else {return "right-drawer-"+rightDrawerControls;} 
+	 //       this.importHref(
+	 //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
+	  
+	 //   }
+	 //     else{
+	 //       this.importHref(
+	 //           this.resolveUrl('fc-'+"drawer-form"+".html"), null, true);
+	   
+	 //   }
+	 //    return this.rightDrawerPage;        
+	  }
     },
 
     
@@ -706,25 +610,25 @@ _computeTabTitles(name){return this.focusedManager.propertyNameToLabel(name);},
 </dom-module>
 <!--
  <iron-pages selected="{{selected}}}}"> -->
-                 <!--  <fc-triad style="z-index: 9999;position: absolute; top: 240px; bottom: -220px; left: 0px; right: -30px;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">></fc-triad> 
-                   <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows>
-                  <fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
-                   </fc-drawer-form> 
-          </iron-pages> 
+		     <!--  <fc-triad style="z-index: 9999;position: absolute; top: 240px; bottom: -220px; left: 0px; right: -30px;" focused-manager="{{focusedManager}}" value-object="{{valueObject}}" search-object="{{searchObject}}">></fc-triad> 
+			 <fc-grid-rows value-object="{{valueObject}}" selected-array-set="{{_computedSelect(localDashboard,gridPage, localIndex)}}"></fc-grid-rows>
+			<fc-drawer-form current-inner-width="{{leftCurrentWidth}}" page-type="{{gridPage}}" route="{{interiorLeftPage}}" data-selected="{{leftDrawerSelectedViewsArray}}"  local-dashboard="{{localDashboard}}"class="drawerClass left" style$="left:0px; padding-left: 4px; right: 6px; width:calc({{leftCurrentWidth}}-80)px; padding-right: 0px; margin-right: 0px; padding-left: 2px;">
+			 </fc-drawer-form> 
+	    </iron-pages> 
 
-        notRouter:{
-          type: Boolean,
-          value: function(){return true;},
-          notify: true,
+	  notRouter:{
+	    type: Boolean,
+	    value: function(){return true;},
+	    notify: true,
 
-        },
+	  },
      
 
  formDisplayArray:{
-           type: Array, 
-           value: function(){return [];},
-          notify: true, 
+	     type: Array, 
+	     value: function(){return [];},
+	    notify: true, 
 
-        },
+	  },
 
    formsDisplayArray:{type: Array, value: function(){return [];}, notify: true},

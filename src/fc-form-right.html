@@ -30,115 +30,18 @@
       right: 0;
       left: 0;
       bottom: 0;
-      margin-right: 18px;
-      margin-left: -19px;
+      margin-right: 12px;
+      margin-left: 12px;
      position: absolute;
       opacity: 1;
       display: block;
       visibility: visible;
       overflow: scroll;
       @apply(--vertical-layout);
-      @apply(--layout-flex);
-       @apply(--layout-reverse);
-      }
-   
-.header{
-position: absolute;
-  top: 0px;
-  right: 0px;
-  left:0px;
-  margin: 0px 0px -58px 0px; 
-  font-family: merriweather; 
-  padding-bottom: 10px;
-  line-height: 1;
-  color: #009; 
-  font-size: 1.2em;
-  font-weight: 300;
-  min-height: 222px!important;/*160 at smallest*/ 
-  max-height: 23vh; 
-  min-height: 20vh;
-  z-index:23999;
-  overflow: hidden;
-  box-shadow:3px 8px 17px 5px #bfbfbf;
+      @apply(--layout-block);
 
-}
-paper-tab{
-  --paper-tab:{
-      color: white;
-      background: silver;
-      font-size: 1.2em;
-      @apply(--paper-tab);
-    }
-}
-.title{
-
-  z-index: 220;
-  color: black;
-  position: absolute;
-  left:12px;
-  top: 218px;
- font-family:merriweather;
-  font-size: 2.1em; 
-  color: #009;
-  margin-bottom: 3px;
-}
-.timestamp{
-    font-weight: 300;
-    color: #009;
-    font-family: merriweather;
-   font-size: .7em;
-    position: absolute;
-    color: brown;
-    font-family: times;
-   top: 210px;
-   left: 12px;
-   margin-bottom: 4px;
-    }
-  .subheading{
-    font-size: .7em;
-    position: absolute;
-    color: brown;
-    font-family: times;
-    top: 192px;
-    right: 22px;
-    margin-bottom: 4px;
-
-  }
-
-      neon-animated-pages {
-        @apply(--layout-flex);
-        @apply(--layout-horizontal);
-        margin: 22px 12px 12px 0px;
-        padding: 6px;
-        background: white;
-        @apply(--layout-self-stretch);
-        min-height: 100%;
-        max-height: 80vh;
-      }
-      
-
-    .container1{
-      position: relative;
-      min-height: 65vh;
-      overflow-y:scroll;
-      margin-right: 4px;
       }
 
-  
-     .bar{
-      min-width:268px; 
-      height: 2px;
-      background:silver;
-      @apply(--vertical-layout);
-      @apply(--layout-flex);
-      @apply(--layout-self-stretch);
-      position: absolute;
-      left: 12px;
-      top: 205px;
-      right: 22px;
-      width: auto;
-
-    }
     .last {
       color:brown; 
       font-family: merriweather; 
