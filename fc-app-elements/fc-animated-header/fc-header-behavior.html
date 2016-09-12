@@ -102,17 +102,10 @@ properties: {
 			value: function(){return false;},
 			notify: true,
 		},		
-		triggers:{
-			type: Array, 
-			value:function(){
-				var array=[
-						{effect: "hidden", trigger: "containerHeight", isProgressive: false, triggerValue: 220, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
-						{effect: "hidden", trigger: "containerWidth", isProgressive: false, triggerValue: 180, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
-						{effect: "minimize",  trigger:"elapsedTime", isProgressive: true, triggerValue: [12000,15000, 18000, 20000], delay: 0, animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]},
-						{"effect": "minimize", trigger: "scrollTop", isProgressive: true, triggerValue: [70,140,210, 280, 350, 420],animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]}
-						];
-				return array;
-				},
+		
+		localDashboard:{
+			type: Object,
+			notify: true,
 
 		},
 		menuItems:{
@@ -147,10 +140,37 @@ properties: {
 			notify: true,
 			observer: "titleObserver", 
 		}, 
+		triggers:{
+			type: Array, 
+			value:function(){
+				var array=[
+						{effect: "hidden", trigger: "containerHeight", isProgressive: false, triggerValue: 220, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "hidden", trigger: "containerWidth", isProgressive: false, triggerValue: 180, delay: ".7s", animation: "easeOut", reverses: true, reverseTrigger: "same"},
+						{effect: "minimize",  trigger:"elapsedTime", isProgressive: true, triggerValue: [12000,15000, 18000, 20000], delay: 0, animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]},
+						{"effect": "minimize", trigger: "scrollTop", isProgressive: true, triggerValue: [70,140,210, 280, 350, 420],animation: "minimize", reverses: true, reverseTrigger: ["scrollTop: 0", "hover, headerButton"]}
+						];
+				return array;
+				},
+
+		},
 		propertyForTitle:{
 				type: String,
 			computed:"_registerPropertyNameOfInterface(isTitleComputed,titleFromInterface)",
 			notify: true,
+		},
+		pageReference:{
+			type: String,
+			value: function(){return "1";},
+			notify: true,
+		}, 
+		pageTotal:{
+			type: String, 
+			value: function(){return "4";},
+		},
+		subTitleFromProperty:{
+			type:String,
+			notify: true,
+			observer:"subTitlePropertyObserver",
 		},
 		isTitleComputed:{
 			type: Boolean,
@@ -182,22 +202,8 @@ properties: {
 			type: Number,
 			value:function(){return 18;}, 
 			notify: true
-
 		},
-		pageReference:{
-			type: String,
-			value: function(){return "1";},
-			notify: true,
-		}, 
-		pageTotal:{
-			type: String, 
-			value: function(){return "4";},
-		},
-		subTitleFromProperty:{
-			type:String,
-			notify: true,
-			observer:"subTitlePropertyObserver",
-		},
+		
 		date:{
 			  type: Date,
         value: function(){
@@ -222,6 +228,12 @@ properties: {
     		notify: true,
 
     	},
+    	viewArray:{
+    		type: Array,
+    		value: function(){return [];},
+    		notify: true,
+    		reflectToAttribute: true
+    	},
 
 
 	},
@@ -242,7 +254,9 @@ properties: {
 	},
 
 	//the below two should be one observer;
-	
+	//YOU MUST COMBINE THESE TWO OBSERVERS THEY GET CALLED IN TANDEM ALL THE TIME
+	// MUST MUST MUST
+	// TODO NOW JAY
 
 	 subTitleObserver(nv,ov){
 		if(nv&&nv!=undefined){
@@ -268,11 +282,12 @@ properties: {
 
 		}
 	},
-
+//FIX THIS WITH THE ABOVE TO OBSERVERS INTO ONE OBSERVER SO YOU CAN JUST SET THE PROPERTY ALL READY LIKELY BEST TO MAKE THE FOURTH PROPERTY ....nah dumb... you lose the titling and archiving`}
 	_registerPropertyNameOfInterface(isComputed,titleProp){
 		if(isComputed&&titleProp!=undefined){
 			var label=this.focusedManager.propertyNameToLabel(titleProp);
 			this.set("title", label);
+			this.set("viewArray", this.localDashboard[titleProp].inputsArray);
 		
 		return titleProp;
 		}
@@ -334,6 +349,10 @@ properties: {
 			console.log(newVal, oldVal, "lets make sure data is good, looks off");
 			var parent = Polymer.dom(this).parentNode;
 				console.log(parent, "monkey", newVal);
+				var bn =parseInt(newVal)-282;
+				console.log(bn,bn,bn,bn);
+				var width=bn.toString()+"px";
+				Polymer.dom(this).setAttribute("style.width", width);
 			var hh=Math.ceil(newVal*.2285);
 			if(hh>120){hh=120;}
 			else{hh=hh;}

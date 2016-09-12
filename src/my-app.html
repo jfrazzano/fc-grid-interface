@@ -131,16 +131,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 
 		<div class="scrolling centerPanel">
-	   
-
-
-
+	    <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[otherPanel]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
+			     <fc-header panel="{{rightDrawer}}" container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" class="header center" pattern="{{pattern}}" view-array="{{otherPanel}}" interface-name="{{otherPanelObject.rightOneApi}}" container-width="[[_computeContainerWidth(rightCurrentWidth)]]">
+					</fc-header>
 	    </div>
 
 
 	    <div class="scrolling bottomPanel">
 			
-			     <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
+			     <fc-drawer-form hide-header current-inner-width="[[leftCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[otherPanel]]"  class="leftPanel drawerClass" style$="left:0px; right:15px; z-index: 199; height:90hv; width:calc([[leftCurrentWidth]]-[[leftInnerWidth]])px;">
+			   
 			</fc-drawer-form>
 	    </div>
 
@@ -157,8 +157,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	</div>
 
 	<fc-app-drawer id="dashboardRightDrawer" drawer-current-width="{{rightCurrentWidth}}" position="right"  align="end" opened swipe-open persistent>
-			<fc-drawer-form current-inner-width="[[rightCurrentWidth]]" page-type="{{gridPage}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="width:calc([[rightCurrentWidth]]-20)px;">
-					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" class="header" pattern="{{pattern}}" view-array="{{rightDrawerSelectedViewsArray}}" container-width="[[rightCurrentWidth]]">
+			<fc-drawer-form current-width="[[rightCurrentWidth]]" page-type="{{rightDrawer.rightOneApi}}" data-selected="[[rightDrawerSelectedViewsArray]]"  class="drawerClass" style$="max-width:calc([[rightCurrentWidth]]-80)px;">
+					<fc-header panel="{{rightDrawer}}" container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" class="header" pattern="{{pattern}}" view-array="{{rightDrawerSelectedViewsArray}}" interface-name="{{rightDrawer.rightOneApi}}" container-width="[[_computeContainerWidth(rightCurrentWidth)]]">
 					</fc-header>
 			</fc-drawer-form>
 	</fc-app-drawer>
@@ -199,6 +199,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	    type: Array,
 	    value: function(){return [];},
 	    notify: true,
+
+	  },
+	  otherPanel:{
+	  	type: Array,
+	  	value:function(){return [];},
+	  	notify:true,
+	  },
+	  otherPanelObject:{
+
+
 
 	  },
 	  subroute:{
@@ -252,11 +262,24 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	    reflectToAttribute: true,
 	    computed: '_gridPageLeftDrawerChanged(gridPage, isLeftLinked, arePanelsSynched)'
 	  },
-	   rightDrawerPage:{
-	    type: String,
+	   rightDrawer:{
+	   	type: Object,
+	   	value:function(){
+	   		var rightDataObject={
+	   			rightOneWidth: this.rightCurrentWidth || window.innerHeight, 
+	   			rightOneHeight: this.rightCurrentWidth || window.innerWidth,
+	   			rightOneDisplayType: "inputs",
+	   			rightOneApi:"calendars",
+	   			rightOneViewNumber:"2",
+	   			rightOneViewData:{name:"someObject", value: "someValues"},
+	   			path: "grid#/wild",
+	   			rightOnePageReverence: 1,
+	   			rightOnePageTotal: 3
+	   		};
+	   		return rightDataObject;
+	   	},
 	    reflectToAttribute: true,
-	    computed: '_rightDrawerChanged(gridPage, isRightLinked, arePanelsSynched, rightDrawerControls)',
-
+	  
 	  },
 	  leftInnerWidth:{
 	    type: Number, 
@@ -291,7 +314,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	  },
 	  rightDrawerSelectedViewsArray:{
 	    type: Array, 
-	    value: function(){return [];},
+	      observer:"observeRightDrawer",
+	    
 	    notify: true, 
 	  },
 	  leftDrawerSelectedViewsArray:{
@@ -373,7 +397,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	    this.set("windowWidth", window.innerWidth);
 	    this.setDrawersAtInitial()
 	  }
-	  else{}
+	  else{
+
+	  }
 
 
 		
@@ -382,8 +408,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	observeSelected(nv,ov){
 	  if(nv&&nv!=undefined){
 	    console.log(nv, ov);
-
 	  }
+	},
+
+	_computeContainerWidth(rw){
+		if(rw){console.log(rw, rw, rw, rw);
+			var w=parseInt(rw);
+			return w;
+
+		}
+
 	},
 	changePage(e){
 	  console.log(e, e.target, e.target.name);
@@ -405,7 +439,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     },
 
+    observeRightDrawer(nv,ov){
+    	if(nv){
+    	console.log(nv, ov);
+    }
 
+    },
 
 	observeWindowWidth(newVal, oldVal){
 	    if(newVal&&newVal!=undefined){

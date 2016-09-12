@@ -94,12 +94,11 @@ Custom property                  | Description                            | Defa
    z-index:10;
      height: auto;
      mask: luminance;
-    box-shadow: 4px 11px 21px 7px #9fafaf;
+    box-shadow: 4px 11px 11px 7px #9fafaf;
     visibility: visible;
     transition: visibility 0.2s 
   @apply(--layout-block);
   @apply(--layout-wrap);
-
 
       }
   .resizer-right{
@@ -112,16 +111,16 @@ Custom property                  | Description                            | Defa
    background: #eaeaea;
    z-index:10;     height: auto;
      mask: luminance;
-    box-shadow: 4px 11px 21px 7px #9fafaf;
+     margin-left:-4px;
+    box-shadow: 4px 11px 11px 6px #9fafaf;
   overflow: hidden;
+  overflow:clip;
     visibility: visible;
     transition: visibility 0.2s 
   @apply(--layout-block);
 
-
-
       }
-      .left{padding-left: 15px; margin-left: 20px;}
+
       #contentContainer {
         position: absolute;
         top: 0;
@@ -146,9 +145,9 @@ Custom property                  | Description                            | Defa
       :host([position=right]) > #contentContainer {
         right: -10px;
         left: auto;
-
+/*
         -webkit-transform: translate3d(100%, 0, 0);
-        transform: translate3d(100%, 0, 0);
+        transform: translate3d(100%, 0, 0);*/
       }
 
       :host([swipe-open]) > #contentContainer::after {
@@ -215,7 +214,7 @@ Custom property                  | Description                            | Defa
     <div id="contentContainer" style$="width:{{_computeDrawerCurrentWidth(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px; background:white;">
       
 
-       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize" class="resizer-left" style$="position:relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:18px; width: 22px!important; height:140vh; cursor:ew-resize; padding: 1px; opacity: 1; border-right: 2px solid #aecefe; z-index: 9; border-right: silver solid 1px; border-left: silver solid 1px; background: #eaeaea;" is-resizing dragging draggable>
+       <section hidden$="{{_computeLeftHidden(position,align)}}"  id="dashboardLeftDrawer_resizer" on-track="_resize" class="resizer-left" style$="position:relative; left:{{dashboardLeftDrawerCurrentWidth}}px; bottom:-40px; top: -40px; min-width:18px; width: 12px!important; height:140vh; cursor:ew-resize; padding: 1px; opacity: 1; border-right: 2px solid #aecefe; z-index: 9; border-right: silver solid 1px; border-left: silver solid 1px; background: #eaeaea;" is-resizing dragging draggable>
     </section>
 
 <div hidden$="{{computeContentHidden(widthOfContent)}}" style$="position:relative; padding: 12px;" class="[[align]]" {{_computeDrawerCurrentWidthLess(align,dashboardRightDrawerCurrentWidth,dashboardLeftDrawerCurrentWidth)}}px;">
@@ -223,7 +222,7 @@ Custom property                  | Description                            | Defa
       <content></content>
 </div>
 
-     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize" class="resizer-right" style$="position:relative; margin-right:calc({{dashBoardRightDrawerCurrentWidth}}+48)px; bottom:-40px; top: -40px; min-width:18px; width: 22px!important; height:140vh; cursor:ew-resize; padding: 1px; opacity: 1; border-right: 2px solid #aecefe; z-index: 9;border-right: silver solid 1px; border-left: silver solid 1px; background: #eaeaea;" is-resizing dragging draggable>
+     <section hidden="{{_computeHidden(position,align)}}" id="dashboardRightDrawer_resizer" on-track="_resize" class="resizer-right" style$="position:relative; right:calc({{dashBoardRightDrawerCurrentWidth}}+48)px; bottom:-40px; top: -40px; min-width:8px; width: 18px!important; height:140vh; cursor:ew-resize; padding: 1px; opacity: 1; border-right: 2px solid #aecefe; z-index: 9; border-right: silver solid 1px; border-left: silver solid 1px; background: #eaeaea;" is-resizing dragging draggable>
       </section>
 
     </div>

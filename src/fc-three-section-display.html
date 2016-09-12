@@ -112,7 +112,7 @@
 			<fc-resizer resizer-type="leftRight" on-track="passTrack" left-inner-width="{{leftInnerWidth}}" class="leftRight"></fc-resizer>
 			<div class="vertical layout flex">
 				<div class="fullPanel vertical layout">
-					<fc-header container-height="{{currentHeight}}" local-dashboard="{{localDashboard}}" pattern="{{pattern}}" view-array="{{}}" container-width="[[computeOuterWidth(currentLeft,leftInnerWidth)]]">		
+				<content select=".header"></content>	
 					</fc-header>	
 					<div class="column-container">
 			   				<content select=".centerPanel">
@@ -149,6 +149,11 @@ FcThreeSectionDisplay=Polymer({
 			type: Number, 
 			notify: true, 
 			observer: "observeMaxCurrentWidth",
+		},
+		dataSelected:{
+			type: String,
+			value: function(){return [];},
+			notify: true,
 		},
 		pattern:{
 			type: String,

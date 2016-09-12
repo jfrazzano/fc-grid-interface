@@ -39,9 +39,11 @@
       @apply(--layout-flex);
        @apply(--layout-reverse);
     .left.header{
-      padding-left: 8px
-      right: 14px;
+      padding-left: 8px;
       margin-right: 7px;
+
+      }
+      .right.header{
 
       }
     };
@@ -127,8 +129,8 @@ position: absolute;
 
       neon-animated-pages {
         @apply(--layout-flex);
-        @apply(--layout-horizontal);
-        margin: 22px 12px 12px 0px;
+        @apply(--layout-vertical);
+        margin: 2px 12px 12px 0px;
         padding: 6px;
         background: white;
         @apply(--layout-self-stretch);
@@ -141,7 +143,8 @@ position: absolute;
       position: relative;
       min-height: 200vh;
       margin-right: 0px;
-      width: 110%
+      left: 0;
+      width: 93%
       padding: 0px 3px;
       }
 
@@ -150,7 +153,7 @@ position: absolute;
       font-family: merriweather; 
       float: left; 
       text-align: left;
-      padding-bottom: 12px;
+      padding-bottom: 25px;
     }
     .reverseArrow{
 
@@ -170,11 +173,13 @@ position: absolute;
    
     .column-container{
       max-height: 200vh;
-      width: 100%;
+      width: 92%;
       min-height: 96vh;
-      right: -8px;
-      padding-right: 8px;
-      margin-bottom: -80px;
+      right: 0px;
+      left: 0px;
+      position: absolute;
+      padding: 4px;
+      margin-bottom: 0px;
 
      /* max-width: 410px;*/
       white-space: wrap;  
@@ -187,19 +192,20 @@ position: absolute;
     .footer-container{
     position: absolute;
     overflow:hidden;
-    bottom: -4px;
-    right: 0px;
-    left: -5px;
-    padding: 4px;
+    bottom: 1px;
+    right: 6%;
+    left: 4%;
+    padding: 4%;
     border-top: solid 1px silver; 
     margin: 3px auto 4px auto; 
     width: 100%; 
     background: white;
     overflow-x: hidden; 
-    min-height: 11vh; 
-    max-height: 17vh!important;
-    /*max-height: 80px!important;*/
-    top: 92%;
+    min-height: 2%; 
+    max-height: 5%!important;
+    max-height: 90px!important;
+    max-bottom:70px;
+    
     }
     .next{
       color:#005c00;
@@ -208,7 +214,8 @@ position: absolute;
       margin-right: 24px;
       white-space: nowrap;
       text-align: right;
-      padding-bottom: 12px;
+      padding-bottom: 48px;
+      padding-right: 9%;
 
     }
     .one{
@@ -239,7 +246,12 @@ position: absolute;
   .last{display: none;}*/
   .title{font-size: .6em;top: 80px; left: 12px;}
 }
+.contained{
+  @apply(--layout-vertical);
+  @apply(--layout-block);
+  @apply(--layout-fit);
 
+}
       .intakeForm{
         border: 1px #efefef solid;
         margin: 12px 0px;
@@ -259,8 +271,10 @@ position: absolute;
     </app-route> -->
 
   <form is="iron-form" id="callIntakeForm" on-tap="_tapHandler" style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: white;padding: 4px;" hidden$="{{_computeMinWidthHidden(currentInnerWidth)}}"  method="get" action="/">
-
-         <content></content>
+  <div style="contained">
+ 
+        <content select=".header"></content>
+</div>
 <div class="column-container">
 
   
@@ -270,7 +284,7 @@ position: absolute;
       <neon-animated-pages id="pages" selected="{{selected}}"  class="layout center-justified" entry-animation="[[entryAnimation]]" exit-animation="[[exitAnimation]]">
           <template id="drawerFormRepeater" is="dom-repeat" items="{{dataSelected}}">
           <div id="innerContainer1" class="container1">
-              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; padding-left: 21px; padding-right: 18px;" form-name="[[pageType]]_[[index]]"forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
+              <fc-check-menu id="mycheckMenu" shadow-index="{{shadowIndex}}" style="position: absolute; padding-left: 21px; padding-right: 18px;" form-name="[[pageType]]_[[index]]" forms-display="{{item.form}}" form-name="{{formName}}" caller-role-list="{{callerRoleList}}" value-object="{{valueObject}}" check-event="{{checkEvent}}"></fc-check-menu>
                <fc-call-center-form form-name="[[pageType]][[index]]" form-id="[[item.fcid]]" form-index="[[index]]" value-object="{{valueObject}}" id="generalForm" style="min-height: 650px; padding-bottom: 24px; id="ioForm"  focused-manager="{{focusedManager}}" item-object="{{item}}">
                 </fc-call-center-form> 
               </div>
@@ -368,7 +382,8 @@ properties:{
     },
     rightRouteData:{
       type: Object,
-      value: function(){return {};}, 
+      value: function(){return {};},
+      observer:"observeDataSelected", 
       notify: true,
     },
   
@@ -485,6 +500,11 @@ console.log(this.formName);
     // var time=setInterval(()=>{console.log(this.style.height); this.set("deNowHeight",this.style.height); this.arrat=[];
     //   this.push("arrat",this.deNowHeight)},500);
   }, 
+  observeDataSelected(newVal, oldVal){
+    if(newVal){console.log(newVal,oldVal, newVal, "DATA");}
+
+
+  },
 
   get scrolly(){
     return this.$.outerContentContainer;
